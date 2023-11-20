@@ -1,17 +1,27 @@
-import {useMatches, NavLink} from '@remix-run/react';
-import type {FooterQuery} from 'storefrontapi.generated';
+import {NavLink} from '@remix-run/react';
+import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {useRootLoaderData} from '~/root';
 
-export function Footer({menu}: FooterQuery) {
+export function Footer({
+  menu,
+  shop,
+}: FooterQuery & {shop: HeaderQuery['shop']}) {
   return (
     <footer className="footer">
-      <FooterMenu menu={menu} />
+      <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
     </footer>
   );
 }
 
-function FooterMenu({menu}: Pick<FooterQuery, 'menu'>) {
-  const [root] = useMatches();
-  const publicStoreDomain = root?.data?.publicStoreDomain;
+function FooterMenu({
+  menu,
+  primaryDomainUrl,
+}: {
+  menu: FooterQuery['menu'];
+  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
+}) {
+  const {publicStoreDomain} = useRootLoaderData();
+
   return (
     <nav className="footer-menu" role="navigation">
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
@@ -19,7 +29,8 @@ function FooterMenu({menu}: Pick<FooterQuery, 'menu'>) {
         // if the url is internal, we strip the domain
         const url =
           item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain)
+          item.url.includes(publicStoreDomain) ||
+          item.url.includes(primaryDomainUrl)
             ? new URL(item.url).pathname
             : item.url;
         const isExternal = !url.startsWith('/');
@@ -93,7 +104,7 @@ function activeLinkStyle({
   isPending: boolean;
 }) {
   return {
-    fontWeight: isActive ? 'bold' : '',
+    fontWeight: isActive ? 'bold' : undefined,
     color: isPending ? 'grey' : 'white',
   };
 }

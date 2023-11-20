@@ -1,16 +1,16 @@
 import {Form, NavLink, Outlet, useLoaderData} from '@remix-run/react';
-import {json, redirect, type LoaderArgs} from '@shopify/remix-oxygen';
+import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
 
 export function shouldRevalidate() {
   return true;
 }
 
-export async function loader({request, context}: LoaderArgs) {
+export async function loader({request, context}: LoaderFunctionArgs) {
   const {session, storefront} = context;
   const {pathname} = new URL(request.url);
   const customerAccessToken = await session.get('customerAccessToken');
-  const isLoggedIn = Boolean(customerAccessToken?.accessToken);
+  const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
     /^\/account\/(orders|orders\/.*|profile|addresses|addresses\/.*)$/.test(
@@ -109,13 +109,13 @@ function AccountLayout({
     <div className="account">
       <h1>{heading}</h1>
       <br />
-      <AcccountMenu />
+      <AccountMenu />
       {children}
     </div>
   );
 }
 
-function AcccountMenu() {
+function AccountMenu() {
   function isActiveStyle({
     isActive,
     isPending,
@@ -124,10 +124,11 @@ function AcccountMenu() {
     isPending: boolean;
   }) {
     return {
-      fontWeight: isActive ? 'bold' : '',
+      fontWeight: isActive ? 'bold' : undefined,
       color: isPending ? 'grey' : 'black',
     };
   }
+
   return (
     <nav role="navigation">
       <NavLink to="/account/orders" style={isActiveStyle}>

@@ -1,9 +1,9 @@
 import {useLoaderData, Link} from '@remix-run/react';
-import {json, type LoaderArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 
-export async function loader({context, request}: LoaderArgs) {
+export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 4,
   });
@@ -66,7 +66,7 @@ function CollectionItem({
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
-      {collection.image && (
+      {collection?.image && (
         <Image
           alt={collection.image.altText || collection.title}
           aspectRatio="1/1"

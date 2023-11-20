@@ -1,17 +1,16 @@
-import {Await, useMatches} from '@remix-run/react';
+import {Await, type MetaFunction} from '@remix-run/react';
 import {Suspense} from 'react';
 import type {CartQueryData} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
-import type {V2_MetaFunction} from '@shopify/remix-oxygen';
-import {type ActionArgs, json} from '@shopify/remix-oxygen';
-import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/Cart';
+import {useRootLoaderData} from '~/root';
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{title: `Hydrogen | Cart`}];
 };
 
-export async function action({request, context}: ActionArgs) {
+export async function action({request, context}: ActionFunctionArgs) {
   const {session, cart} = context;
 
   const [formData, customerAccessToken] = await Promise.all([
@@ -55,7 +54,7 @@ export async function action({request, context}: ActionArgs) {
     case CartForm.ACTIONS.BuyerIdentityUpdate: {
       result = await cart.updateBuyerIdentity({
         ...inputs.buyerIdentity,
-        customerAccessToken,
+        customerAccessToken: customerAccessToken?.accessToken,
       });
       break;
     }
@@ -86,14 +85,17 @@ export async function action({request, context}: ActionArgs) {
 }
 
 export default function Cart() {
-  const [root] = useMatches();
-  const cart = root.data?.cart as Promise<CartApiQueryFragment | null>;
+  const rootData = useRootLoaderData();
+  const cartPromise = rootData.cart;
 
   return (
     <div className="cart">
       <h1>Cart</h1>
       <Suspense fallback={<p>Loading cart ...</p>}>
-        <Await errorElement={<div>An error occurred</div>} resolve={cart}>
+        <Await
+          resolve={cartPromise}
+          errorElement={<div>An error occurred</div>}
+        >
           {(cart) => {
             return <CartMain layout="page" cart={cart} />;
           }}

@@ -1,8 +1,12 @@
 import {Suspense} from 'react';
-import type {V2_MetaFunction} from '@shopify/remix-oxygen';
-import {defer, redirect, type LoaderArgs} from '@shopify/remix-oxygen';
-import type {FetcherWithComponents} from '@remix-run/react';
-import {Await, Link, useLoaderData} from '@remix-run/react';
+import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  Await,
+  Link,
+  useLoaderData,
+  type MetaFunction,
+  type FetcherWithComponents,
+} from '@remix-run/react';
 import type {
   ProductFragment,
   ProductVariantsQuery,
@@ -17,14 +21,17 @@ import {
   getSelectedProductOptions,
   CartForm,
 } from '@shopify/hydrogen';
-import type {CartLineInput} from '@shopify/hydrogen/storefront-api-types';
+import type {
+  CartLineInput,
+  SelectedOption,
+} from '@shopify/hydrogen/storefront-api-types';
 import {getVariantUrl} from '~/utils';
 
-export const meta: V2_MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data.product.title}`}];
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
 };
 
-export async function loader({params, request, context}: LoaderArgs) {
+export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
   const {storefront} = context;
 
@@ -35,7 +42,9 @@ export async function loader({params, request, context}: LoaderArgs) {
       !option.name.startsWith('_pos') &&
       !option.name.startsWith('_psq') &&
       !option.name.startsWith('_ss') &&
-      !option.name.startsWith('_v'),
+      !option.name.startsWith('_v') &&
+      // Filter out third party tracking params
+      !option.name.startsWith('fbclid'),
   );
 
   if (!handle) {
@@ -47,15 +56,6 @@ export async function loader({params, request, context}: LoaderArgs) {
     variables: {handle, selectedOptions},
   });
 
-  // In order to show which variants are available in the UI, we need to query
-  // all of them. But there might be a *lot*, so instead separate the variants
-  // into it's own separate query that is deferred. So there's a brief moment
-  // where variant options might show as available when they're not, but after
-  // this deffered query resolves, the UI will update.
-  const variants = storefront.query(VARIANTS_QUERY, {
-    variables: {handle},
-  });
-
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
@@ -63,7 +63,8 @@ export async function loader({params, request, context}: LoaderArgs) {
   const firstVariant = product.variants.nodes[0];
   const firstVariantIsDefault = Boolean(
     firstVariant.selectedOptions.find(
-      (option) => option.name === 'Title' && option.value === 'Default Title',
+      (option: SelectedOption) =>
+        option.name === 'Title' && option.value === 'Default Title',
     ),
   );
 
@@ -73,9 +74,19 @@ export async function loader({params, request, context}: LoaderArgs) {
     // if no selected variant was returned from the selected options,
     // we redirect to the first variant's url with it's selected options applied
     if (!product.selectedVariant) {
-      return redirectToFirstVariant({product, request});
+      throw redirectToFirstVariant({product, request});
     }
   }
+
+  // In order to show which variants are available in the UI, we need to query
+  // all of them. But there might be a *lot*, so instead separate the variants
+  // into it's own separate query that is deferred. So there's a brief moment
+  // where variant options might show as available when they're not, but after
+  // this deffered query resolves, the UI will update.
+  const variants = storefront.query(VARIANTS_QUERY, {
+    variables: {handle},
+  });
+
   return defer({product, variants});
 }
 
@@ -89,7 +100,7 @@ function redirectToFirstVariant({
   const url = new URL(request.url);
   const firstVariant = product.variants.nodes[0];
 
-  throw redirect(
+  return redirect(
     getVariantUrl({
       pathname: url.pathname,
       handle: product.handle,
@@ -337,7 +348,6 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       title
       handle
     }
-    quantityAvailable
     selectedOptions {
       name
       value
