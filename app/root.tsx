@@ -22,6 +22,7 @@ import favicon from '../public/favicon.svg';
 import resetStyles from './styles/reset.css';
 import appStyles from './styles/app.css';
 import {Layout} from '~/components/Layout';
+import {withWeaverse} from '@weaverse/hydrogen';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -102,12 +103,13 @@ export async function loader({context}: LoaderFunctionArgs) {
       header: await headerPromise,
       isLoggedIn,
       publicStoreDomain,
+      weaverseTheme: await context.weaverse.loadThemeSettings(),
     },
     {headers},
   );
 }
 
-export default function App() {
+function App() {
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
 
@@ -130,6 +132,8 @@ export default function App() {
     </html>
   );
 }
+
+export default withWeaverse(App);
 
 export function ErrorBoundary() {
   const error = useRouteError();

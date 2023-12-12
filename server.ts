@@ -14,6 +14,7 @@ import {
   type SessionStorage,
   type Session,
 } from '@shopify/remix-oxygen';
+import {createWeaverseClient} from '~/weaverse/weaverse.server';
 
 /**
  * Export a fetch handler in module format.
@@ -52,6 +53,14 @@ export default {
         storefrontHeaders: getStorefrontHeaders(request),
       });
 
+      const weaverse = createWeaverseClient({
+        storefront,
+        request,
+        env,
+        cache,
+        waitUntil,
+      });
+
       /*
        * Create a cart handler that will be used to
        * create and update the cart in the session.
@@ -70,7 +79,14 @@ export default {
       const handleRequest = createRequestHandler({
         build: remixBuild,
         mode: process.env.NODE_ENV,
-        getLoadContext: () => ({session, storefront, cart, env, waitUntil}),
+        getLoadContext: () => ({
+          session,
+          storefront,
+          cart,
+          env,
+          waitUntil,
+          weaverse,
+        }),
       });
 
       const response = await handleRequest(request);
