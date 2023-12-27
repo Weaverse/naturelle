@@ -6,6 +6,8 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
+  return null;
+
   return (
     <footer className="footer">
       {menu && shop?.primaryDomain?.url && (
