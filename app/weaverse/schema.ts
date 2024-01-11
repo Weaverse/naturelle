@@ -1,5 +1,4 @@
 import type {HydrogenThemeSchema} from '@weaverse/hydrogen';
-
 export const themeSchema: HydrogenThemeSchema = {
   info: {
     version: '1.0.0',
@@ -35,7 +34,91 @@ export const themeSchema: HydrogenThemeSchema = {
           type: 'color',
           label: 'Background',
           name: 'colorBackground',
-          defaultValue: '#ffffff',
+          defaultValue: '#EEEFEA',
+        },
+        {
+          type: 'color',
+          label: 'Subtle background',
+          name: 'colorBackgroundSubtle',
+          defaultValue: '#E5E6D4',
+        },
+        {
+          type: 'color',
+          label: 'Subtle background 2',
+          name: 'colorBackgroundSubtle2',
+          defaultValue: '#C5C6BB',
+        },
+        {
+          type: 'color',
+          label: 'Basic background',
+          name: 'colorBackgroundBasic',
+          defaultValue: '#FFFFFF',
+        },
+        {
+          type: 'color',
+          label: 'Foreground',
+          name: 'colorForeground',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          label: 'Subtle foreground',
+          name: 'colorForegroundSubtle',
+          defaultValue: '#8B926D',
+        },
+        {
+          type: 'color',
+          label: 'Basic foreground',
+          name: 'colorForegroundBasic',
+          defaultValue: '#FFFFFF',
+        },
+        {
+          type: 'color',
+          label: 'Primary',
+          name: 'colorPrimary',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          label: 'Primary foreground',
+          name: 'colorPrimaryForeground',
+          defaultValue: '#EAEAD6',
+        },
+        {
+          type: 'color',
+          label: 'Secondary',
+          name: 'colorSecondary',
+          defaultValue: '#F8F8F0',
+        },
+        {
+          type: 'color',
+          label: 'Secondary foreground',
+          name: 'colorSecondaryForeground',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          label: 'Outline',
+          name: 'colorOutline',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          label: 'Outline foreground',
+          name: 'colorOutlineForeground',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          label: 'Border',
+          name: 'colorBorder',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          label: 'Border subtle',
+          name: 'colorBorderSubtle',
+          defaultValue: '#C5C8B6',
         },
       ],
     },
