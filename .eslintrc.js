@@ -14,5 +14,7 @@ module.exports = {
     'no-useless-escape': 'off',
     '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
     'no-case-declarations': 'off',
+    'prefer-const': 'off',
+    // 'prettier/prettier': ['error', {semi: false}],
   },
 };

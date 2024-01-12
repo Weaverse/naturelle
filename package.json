@@ -13,7 +13,10 @@
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
+    "@fontsource-variable/cormorant": "^5.0.9",
+    "@fontsource-variable/open-sans": "^5.0.22",
     "@radix-ui/react-slot": "^1.0.2",
+    "@remix-run/css-bundle": "^2.5.0",
     "@remix-run/react": "2.4.1",
     "@remix-run/server-runtime": "2.4.1",
     "@shopify/cli": "3.52.0",
