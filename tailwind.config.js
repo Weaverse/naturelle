@@ -14,33 +14,33 @@ module.exports = {
     extend: {
       colors: {
         background: {
-          DEFAULT: 'var(--color-background)',
+          DEFAULT: 'rgb(var(--color-background) / <alpha-value>)',
           subtle: {
-            1: 'var(--color-background-subtle-1)',
-            2: 'var(--color-background-subtle-2)',
+            1: 'rgb(var(--color-background-subtle) / <alpha-value>)',
+            2: 'rgb(var(--color-background-subtle-2) / <alpha-value>)',
           },
-          basic: 'var(--color-background-basic)',
+          basic: 'rgb(var(--color-background-basic) / <alpha-value>)',
         },
         foreground: {
-          DEFAULT: 'var(--color-text)',
-          subtle: 'var(--color-text-subtle)',
-          basic: 'var(--color-text-basis)',
+          DEFAULT: 'rgb(var(--color-foreground) / <alpha-value>)',
+          subtle: 'rgb(var(--color-foreground-subtle) / <alpha-value>)',
+          basic: 'rgb(var(--color-foreground-basis) / <alpha-value>)',
         },
         primary: {
-          DEFAULT: 'var(--color-primary)',
-          foreground: 'var(--color-primary-foreground)',
+          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-primary-foreground) / <alpha-value>)',
         },
         secondary: {
-          DEFAULT: 'var(--color-secondary)',
-          foreground: 'var(--color-secondary-foreground)',
+          DEFAULT: 'rgb(var(--color-secondary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-secondary-foreground) / <alpha-value>)',
         },
         outline: {
-          DEFAULT: 'var(--color-outline)',
-          foreground: 'var(--color-outline-foreground)',
+          DEFAULT: 'rgb(var(--color-outline) / <alpha-value>)',
+          foreground: 'rgb(var(--color-outline-foreground) / <alpha-value>)',
         },
         bar: {
-          DEFAULT: 'var(--color-border)',
-          subtle: 'var(--color-border-subtle)',
+          DEFAULT: 'rgb(var(--color-border) / <alpha-value>)',
+          subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
         },
         label: {
           sale: '#AB2E2E',

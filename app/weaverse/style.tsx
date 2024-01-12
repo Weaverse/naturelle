@@ -18,81 +18,6 @@ function hexToRgbString(hexColor = ''): string {
   return `${val}${a ? ` / ${a}%` : ''}`.trim();
 }
 
-const colors = [
-  {
-    name: 'colorBackground',
-    defaultValue: '#EEEFEA',
-  },
-  {
-    name: 'colorBackgroundSubtle',
-    defaultValue: '#E5E6D4',
-  },
-  {
-    name: 'colorBackgroundSubtle2',
-    defaultValue: '#C5C6BB',
-  },
-  {
-    name: 'colorBackgroundBasic',
-    defaultValue: '#FFFFFF',
-  },
-  {
-    name: 'colorForeground',
-    defaultValue: '#03D490B',
-  },
-  {
-    name: 'colorForegroundSubtle',
-    defaultValue: '#0F0F0F',
-  },
-  {
-    name: 'colorForegroundBasic',
-    defaultValue: '#FFFFFF',
-  },
-  {
-    name: 'colorPrimary',
-    defaultValue: '#3D490B',
-  },
-  {
-    name: 'colorPrimaryForeground',
-    defaultValue: '#EAEAD6',
-  },
-  {
-    name: 'colorSecondary',
-    defaultValue: '#F8F8F0',
-  },
-  {
-    name: 'colorSecondaryForeground',
-    defaultValue: '#3D490B',
-  },
-  {
-    name: 'colorOutline',
-    defaultValue: '#3D490B',
-  },
-  {
-    name: 'colorOutlineForeground',
-    defaultValue: '#3D490B',
-  },
-  {
-    name: 'colorBorder',
-    defaultValue: '#3D490B',
-  },
-  {
-    name: 'colorBorderSubtle',
-    defaultValue: '#C5C8B6',
-  },
-  {
-    name: 'colorSale',
-    defaultValue: '#AB2E2E',
-  },
-  {
-    name: 'colorNew',
-    defaultValue: '#FFFFFF',
-  },
-  {
-    name: 'colorSoldout',
-    defaultValue: '#FFFFFF',
-  },
-],
-
 export function GlobalStyle() {
   const settings = useThemeSettings();
   if (settings) {
@@ -140,6 +65,7 @@ export function GlobalStyle() {
       buttonSubtleColorHover,
       buttonSubtleBorder,
       buttonSubtleBorderHover,
+      radius,
     } = settings;
     colorBackground = hexToRgbString(colorBackground);
     colorBackgroundSubtle = hexToRgbString(colorBackgroundSubtle);
@@ -166,7 +92,7 @@ export function GlobalStyle() {
               /* Colors */
               --color-background: ${colorBackground};
               --color-background-subtle: ${colorBackgroundSubtle};
-              --color-background-subtle2: ${colorBackgroundSubtle2};
+              --color-background-subtle-2: ${colorBackgroundSubtle2};
               --color-background-basic: ${colorBackgroundBasic};
               --color-foreground: ${colorForeground};
               --color-foreground-subtle: ${colorForegroundSubtle};
@@ -188,6 +114,8 @@ export function GlobalStyle() {
               --heading-base-spacing: ${headingBaseSpacing};
               --heading-base-line-height: ${headingBaseLineHeight};
 
+              /* Button */
+              --radius: ${radius}rem;
               --height-nav: ${settings.navHeightMobile}rem;
             }
 
