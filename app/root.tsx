@@ -22,6 +22,11 @@ import favicon from '../public/favicon.svg';
 import tailwind from './styles/tailwind.css';
 import {Layout} from '~/components/Layout';
 import {withWeaverse} from '@weaverse/hydrogen';
+import {GlobalStyle} from './weaverse/style';
+
+import {cssBundleHref} from '@remix-run/css-bundle';
+import '@fontsource-variable/cormorant/wght.css';
+import '@fontsource-variable/open-sans/wght.css';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -46,6 +51,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
+    ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
     {rel: 'stylesheet', href: tailwind},
     {
       rel: 'preconnect',
@@ -118,6 +124,7 @@ function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <GlobalStyle />
       </head>
       <body>
         <Layout {...data}>

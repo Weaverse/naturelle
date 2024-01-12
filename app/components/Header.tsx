@@ -1,21 +1,23 @@
 import {Await, NavLink} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Suspense, useMemo} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
-import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
-
+import type {LayoutProps} from './Layout';
+import {Logo} from './Logo';
+import {Link} from './Link';
+import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
 
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
-  return null;
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+    <header className="grid grid-cols-3 gap-4 items-center py-4">
+      {/* <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
         <strong>{shop.name}</strong>
-      </NavLink>
+      </NavLink> */}
+      <Logo />
       <HeaderMenu
         menu={menu}
         viewport="desktop"
@@ -44,6 +46,8 @@ export function HeaderMenu({
       window.location.href = event.currentTarget.href;
     }
   }
+
+  return <div className="text-center">MENU</div>;
 
   return (
     <nav className={className} role="navigation">
@@ -91,14 +95,29 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        {isLoggedIn ? 'Account' : 'Sign in'}
-      </NavLink>
+    <nav
+      className="header-ctas justify-end items-center flex gap-2"
+      role="navigation"
+    >
+      {/* <HeaderMenuMobileToggle /> */}
       <SearchToggle />
-      <CartToggle cart={cart} />
+      <AccountLink />
+      <CartCount isHome={false} openCart={() => {}} />
     </nav>
+  );
+}
+
+function AccountLink({className}: {className?: string}) {
+  const rootData = useRootLoaderData();
+  const isLoggedIn = rootData?.isLoggedIn;
+  return isLoggedIn ? (
+    <Link prefetch="intent" to="/account" className={className}>
+      <IconAccount />
+    </Link>
+  ) : (
+    <Link to="/account/login" className={className}>
+      <IconLogin />
+    </Link>
   );
 }
 
@@ -111,25 +130,90 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
+  return <IconSearch />;
   return <a href="#search-aside">Search</a>;
 }
 
-function CartBadge({count}: {count: number}) {
-  return <a href="#cart-aside">Cart {count}</a>;
-}
-
-function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
+function CartCount({
+  isHome,
+  openCart,
+}: {
+  isHome: boolean;
+  openCart: () => void;
+}) {
+  const rootData = useRootLoaderData();
   return (
-    <Suspense fallback={<CartBadge count={0} />}>
-      <Await resolve={cart}>
-        {(cart) => {
-          if (!cart) return <CartBadge count={0} />;
-          return <CartBadge count={cart.totalQuantity || 0} />;
-        }}
+    <Suspense fallback={<Badge count={0} dark={isHome} openCart={openCart} />}>
+      <Await resolve={rootData?.cart}>
+        {(cart) => (
+          <Badge
+            dark={isHome}
+            openCart={openCart}
+            count={cart?.totalQuantity || 0}
+          />
+        )}
       </Await>
     </Suspense>
   );
 }
+
+function Badge({
+  openCart,
+  dark,
+  count,
+}: {
+  count: number;
+  dark: boolean;
+  openCart: () => void;
+}) {
+  const isHydrated = true; // useIsHydrated();
+
+  const BadgeCounter = useMemo(
+    () => (
+      <>
+        <IconBag />
+        <div className="bg-secondary text-inv-body absolute top-1 right-1 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px">
+          <span>{count || 0}</span>
+        </div>
+      </>
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [count, dark],
+  );
+
+  return isHydrated ? (
+    <button
+      onClick={openCart}
+      className="relative flex items-center justify-center w-8 h-8 focus:ring-border"
+    >
+      {BadgeCounter}
+    </button>
+  ) : (
+    <Link
+      to="/cart"
+      className="relative flex items-center justify-center w-8 h-8 focus:ring-border"
+    >
+      {BadgeCounter}
+    </Link>
+  );
+}
+
+// function CartBadge({count}: {count: number}) {
+//   return <a href="#cart-aside">Cart {count}</a>;
+// }
+
+// function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
+//   return (
+//     <Suspense fallback={<CartBadge count={0} />}>
+//       <Await resolve={cart}>
+//         {(cart) => {
+//           if (!cart) return <CartBadge count={0} />;
+//           return <CartBadge count={cart.totalQuantity || 0} />;
+//         }}
+//       </Await>
+//     </Suspense>
+//   );
+// }
 
 const FALLBACK_HEADER_MENU = {
   id: 'gid://shopify/Menu/199655587896',
