@@ -18,9 +18,8 @@ export const themeSchema: HydrogenThemeSchema = {
           name: 'logoData',
           label: 'Logo',
           defaultValue: {
-            id: 'gid://shopify/MediaImage/34144817938616',
             altText: 'Logo',
-            url: 'https://cdn.shopify.com/s/files/1/0623/5095/0584/files/Pilot_logo_b04f1938-06e5-414d-8a47-d5fcca424000.png?v=1697101908',
+            url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle_logo.png?v=1705045487',
             width: 320,
             height: 116,
           },

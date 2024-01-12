@@ -5,9 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource-variable/cormorant':
+    specifier: ^5.0.9
+    version: 5.0.9
+  '@fontsource-variable/open-sans':
+    specifier: ^5.0.22
+    version: 5.0.22
   '@radix-ui/react-slot':
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.45)(react@18.2.0)
+  '@remix-run/css-bundle':
+    specifier: ^2.5.0
+    version: 2.5.0
   '@remix-run/react':
     specifier: 2.4.1
     version: 2.4.1(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)
@@ -1753,6 +1762,14 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
+  /@fontsource-variable/cormorant@5.0.9:
+    resolution: {integrity: sha512-fdzHLp5BNL5dkpeV90k2R0XJ7y7yy1tSIjtrJBkgL6SOdvomv53oGQv6+pwX9YKaqn9bBercHCVSpPZjMVywIg==}
+    dev: false
+
+  /@fontsource-variable/open-sans@5.0.22:
+    resolution: {integrity: sha512-FZbvFF15ynac7lJYsAc0MHt39IN+phGX99ru5ncs2fra10FiqIZaFJXYNbvSSwGUpNUMv/tJ8WjDqpNLpT+I6A==}
+    dev: false
+
   /@google/model-viewer@1.12.1:
     resolution: {integrity: sha512-GOf/By81rbxSmwWRVxBtlY5b3050msJ+BDWqonPj7M0/I7rNS/vVNjbLxTofbGjZObS3n0ELHj8TZ47UtkZbtg==}
     engines: {node: '>=6.0.0'}
@@ -3066,6 +3083,11 @@ packages:
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.45)(react@18.2.0)
       '@types/react': 18.2.45
       react: 18.2.0
+    dev: false
+
+  /@remix-run/css-bundle@2.5.0:
+    resolution: {integrity: sha512-G57IFEFjte94YMBapbzzFrMnqIAAIf3qUNOsD7PC7VOiLW0AHd75yvq0cDc79zRaRthZhhYb3HkNkE8CsndfHA==}
+    engines: {node: '>=18.0.0'}
     dev: false
 
   /@remix-run/dev@2.4.1(@types/node@20.10.5)(typescript@5.3.3):

@@ -8,6 +8,12 @@ const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
     <div ref={ref} {...props}>
       <div className="w-full gap-4 bg-background-subtle-1 text-body flex flex-col items-center justify-center py-8">
         <h2 className="font-bold">Style Guide</h2>
+        <div className="space-y-6">
+          <h3 className="text-center font-bold">Font family</h3>
+          <h1 className="text-center font-bold">Cormorant</h1>
+          <h2 className="text-center font-bold">Cormorant</h2>
+        </div>
+        <div className="flex gap-4"></div>
         <div className="flex gap-4">
           <div className="space-y-6">
             <h3 className="text-center font-bold">Colors</h3>

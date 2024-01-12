@@ -24,6 +24,10 @@ import {Layout} from '~/components/Layout';
 import {withWeaverse} from '@weaverse/hydrogen';
 import {GlobalStyle} from './weaverse/style';
 
+import {cssBundleHref} from '@remix-run/css-bundle';
+import '@fontsource-variable/cormorant/wght.css';
+import '@fontsource-variable/open-sans/wght.css';
+
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  */
@@ -47,6 +51,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
+    ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
     {rel: 'stylesheet', href: tailwind},
     {
       rel: 'preconnect',
