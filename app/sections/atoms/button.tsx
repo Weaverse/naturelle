@@ -5,7 +5,7 @@ import {forwardRef} from 'react';
 const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
     return (
-      <Button ref={ref} {...props}>
+      <Button ref={ref} {...props} className='w-fit mx-auto'>
         {props.value}
       </Button>
     );
