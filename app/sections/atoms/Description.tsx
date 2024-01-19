@@ -110,7 +110,7 @@ export let schema: HydrogenComponentSchema = {
               },
             ],
           },
-          defaultValue: 'narrow',
+          defaultValue: 'full',
         },
         {
           type: 'toggle-group',
