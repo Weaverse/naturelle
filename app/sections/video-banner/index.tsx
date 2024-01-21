@@ -6,7 +6,7 @@ import { forwardRef, CSSProperties } from 'react';
 import clsx from 'clsx';
 import ReactPlayer from 'react-player/youtube';
 
-interface HeaderImageProps extends HydrogenComponentProps {
+interface VideoBannerProps extends HydrogenComponentProps {
     videoLink: string;
     enableOverlay: boolean;
     overlayColor: string;
@@ -19,7 +19,7 @@ interface HeaderImageProps extends HydrogenComponentProps {
     enableMuted: boolean;
 }
 
-const HeaderImage = forwardRef<HTMLElement, HeaderImageProps>((props, ref) => {
+const VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
     let {
         videoLink,
         enableOverlay,
@@ -74,7 +74,7 @@ const HeaderImage = forwardRef<HTMLElement, HeaderImageProps>((props, ref) => {
     );
 });
 
-export default HeaderImage;
+export default VideoBanner;
 
 export let schema: HydrogenComponentSchema = {
     type: 'video-banner',
