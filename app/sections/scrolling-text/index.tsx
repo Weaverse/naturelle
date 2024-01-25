@@ -151,7 +151,7 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Speed',
                     defaultValue: 70,
                     configs: {
-                        min: 20,
+                        min: 10,
                         max: 100,
                         step: 5,
                         unit: 's',
