@@ -28,6 +28,7 @@ export function getWeaverseCsp(request: Request) {
     defaultSrc: [
       "'self'",
       'cdn.shopify.com',
+      '*.youtube.com',
       'shopify.com',
       ...localDirectives,
       ...weaverseHosts,

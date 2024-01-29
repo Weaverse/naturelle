@@ -1,32 +1,36 @@
 import type {
     HydrogenComponentProps,
     HydrogenComponentSchema,
-    WeaverseImage,
 } from '@weaverse/hydrogen';
 import { forwardRef, CSSProperties } from 'react';
 import clsx from 'clsx';
-import { Image } from '@shopify/hydrogen';
-import { IconImageBlank } from '~/components/Icons';
+import ReactPlayer from 'react-player/youtube';
 
-interface HeaderImageProps extends HydrogenComponentProps {
-    backgroundImage: WeaverseImage;
-    contentAlignment: string;
+interface VideoBannerProps extends HydrogenComponentProps {
+    videoLink: string;
     enableOverlay: boolean;
     overlayColor: string;
     overlayOpacity: number;
+    contentAlignment: string;
     sectionHeightDesktop: number;
     sectionHeightMobile: number;
+    enableAutoPlay: boolean;
+    enableLoop: boolean;
+    enableMuted: boolean;
 }
 
-const HeaderImage = forwardRef<HTMLElement, HeaderImageProps>((props, ref) => {
+const VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
     let {
-        backgroundImage,
-        contentAlignment,
+        videoLink,
         enableOverlay,
         overlayColor,
         overlayOpacity,
+        contentAlignment,
         sectionHeightDesktop,
         sectionHeightMobile,
+        enableAutoPlay,
+        enableLoop,
+        enableMuted,
         children,
         ...rest
     } = props;
@@ -44,69 +48,54 @@ const HeaderImage = forwardRef<HTMLElement, HeaderImageProps>((props, ref) => {
             ref={ref}
             {...rest}
             className={clsx(
-                'flex relative gap-3 items-center h-[var(--section-height-mobile)] sm:h-[var(--section-height-desktop)]',
+                'flex relative gap-3 items-center bg-secondary h-[var(--section-height-mobile)] sm:h-[var(--section-height-desktop)] overflow-hidden',
             )}
             style={sectionStyle}
         >
-            <div className="absolute inset-0">
-                {backgroundImage ? (
-                    <Image
-                        data={backgroundImage}
-                        className="w-full h-full object-cover"
-                        sizes="auto"
-                    />
-                ) : (
-                    <div className="w-full h-full flex justify-center items-center bg-gray-200">
-                        <IconImageBlank
-                            className="!w-24 !h-24 opacity-30"
-                            viewBox="0 0 100 100"
-                        />
-                    </div>
-                )}
-                {enableOverlay && (
-                    <div className="absolute inset-0 bg-[var(--overlay-color)] opacity-[var(--overlay-opacity)]"></div>
-                )}
-            </div>
-            <div className="z-10 w-[var(--max-width-content)] sm-max:w-5/6 h-fit flex flex-col text-center gap-5">
+            <ReactPlayer
+                url={videoLink}
+                playing={enableAutoPlay}
+                volume={1}
+                muted={enableMuted}
+                loop={enableLoop}
+                controls={false}
+                width={'100%'}
+                height={'100%'}
+                className="absolute inset-0 scale-[3.0] sm:scale-150"
+            />
+            <div className={clsx(
+                "absolute inset-0",
+                enableOverlay && 'bg-[var(--overlay-color)] opacity-[var(--overlay-opacity)]'
+            )}></div>
+            <div className="z-10 sm:w-[var(--max-width-content)] w-5/6 h-fit flex flex-col text-center gap-5">
                 {children}
             </div>
         </section>
     );
 });
 
-export default HeaderImage;
+export default VideoBanner;
 
 export let schema: HydrogenComponentSchema = {
-    type: 'image-banner',
-    title: 'Image banner',
+    type: 'video-banner',
+    title: 'Video banner',
     toolbar: ['general-settings', ['duplicate', 'delete']],
     inspector: [
         {
-            group: 'Image',
+            group: 'video',
             inputs: [
                 {
-                    type: 'image',
-                    name: 'backgroundImage',
-                    label: 'Background image',
-                },
-                {
-                    type: 'toggle-group',
-                    label: 'Content alignment',
-                    name: 'contentAlignment',
-                    configs: {
-                        options: [
-                            { label: 'Left', value: 'flex-start' },
-                            { label: 'Center', value: 'center' },
-                            { label: 'Right', value: 'flex-end' },
-                        ],
-                    },
-                    defaultValue: 'center',
+                    type: 'text',
+                    name: 'videoLink',
+                    label: 'Video link',
+                    defaultValue: 'https://www.youtube.com/embed/_9VUPq3SxOc',
+                    placeholder: 'https://',
                 },
                 {
                     type: 'switch',
                     name: 'enableOverlay',
                     label: 'Enable overlay',
-                    defaultValue: true,
+                    defaultValue: false,
                 },
                 {
                     type: 'color',
@@ -127,6 +116,19 @@ export let schema: HydrogenComponentSchema = {
                         unit: '%',
                     },
                     condition: `enableOverlay.eq.true`,
+                },
+                {
+                    type: 'toggle-group',
+                    label: 'Content alignment',
+                    name: 'contentAlignment',
+                    configs: {
+                        options: [
+                            { label: 'Left', value: 'flex-start' },
+                            { label: 'Center', value: 'center' },
+                            { label: 'Right', value: 'flex-end' },
+                        ],
+                    },
+                    defaultValue: 'center',
                 },
                 {
                     type: 'range',
@@ -151,6 +153,24 @@ export let schema: HydrogenComponentSchema = {
                         step: 10,
                         unit: 'px',
                     },
+                },
+                {
+                    type: 'switch',
+                    name: 'enableAutoPlay',
+                    label: 'Auto play',
+                    defaultValue: true,
+                },
+                {
+                    type: 'switch',
+                    name: 'enableLoop',
+                    label: 'Loop',
+                    defaultValue: true,
+                },
+                {
+                    type: 'switch',
+                    name: 'enableMuted',
+                    label: 'Muted',
+                    defaultValue: true,
                 },
             ],
         },
