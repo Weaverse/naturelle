@@ -5,6 +5,8 @@ import * as HeaderImage from '~/sections/Image-banner/Image-banner';
 import * as Highlights from '~/sections/hightlight/index';
 import * as HightlightItem from '~/sections/hightlight/item';
 import * as ImageWithText from '~/sections/image-with-text/index';
+import * as Slides from '~/sections/slides/index';
+import * as Slide from '~/sections/slides/slide';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -12,5 +14,7 @@ export const components: HydrogenComponent[] = [
     Highlights,
     HightlightItem,
     ImageWithText,
+    Slides,
+    Slide,
     StyleGuide
 ];

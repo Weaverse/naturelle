@@ -80,6 +80,24 @@ export function IconBag(props: IconProps) {
   );
 }
 
+export function IconArrowRight(props: IconProps) {
+  return (
+    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
+      <path d="M5.5 16H27.5" stroke="#3D490B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M18.5 7L27.5 16L18.5 25" stroke="#3D490B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </Icon>
+  );
+}
+
+export function IconArrowLeft(props: IconProps) {
+  return (
+    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
+        <path d="M27.5 16H5.5" stroke="#3D490B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M14.5 7L5.5 16L14.5 25" stroke="#3D490B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </Icon>
+  );
+}
+
 export function IconImageBlank(props: IconProps) {
   return (
     <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
