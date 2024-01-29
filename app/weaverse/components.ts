@@ -8,6 +8,8 @@ import * as ImageWithText from '~/sections/image-with-text/index';
 import * as ScrollingText from '~/sections/scrolling-text/index';
 import * as Testimonials from '~/sections/testimonials/index';
 import * as Review from '~/sections/testimonials/review';
+import * as Slides from '~/sections/slides/index';
+import * as Slide from '~/sections/slides/slide';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -18,5 +20,7 @@ export const components: HydrogenComponent[] = [
     ScrollingText,
     Testimonials,
     Review,
+    Slides,
+    Slide,
     StyleGuide
 ];
