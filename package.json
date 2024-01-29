@@ -2,7 +2,7 @@
   "name": "naturelle",
   "private": true,
   "sideEffects": false,
-  "version": "1.0.2",
+  "version": "1.1.0",
   "scripts": {
     "build": "shopify hydrogen build",
     "dev": "shopify hydrogen dev --codegen --port 3456",
