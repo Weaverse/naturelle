@@ -1,9 +1,9 @@
-import type {WeaverseClientArgs} from '@weaverse/hydrogen';
 import {WeaverseClient} from '@weaverse/hydrogen';
 import {components} from '~/weaverse/components';
 import {themeSchema} from '~/weaverse/schema';
+import type {CreateWeaverseClientArgs} from '@weaverse/hydrogen';
 
-export function createWeaverseClient(args: WeaverseClientArgs) {
+export function createWeaverseClient(args: CreateWeaverseClientArgs) {
   return new WeaverseClient({
     ...args,
     themeSchema,
