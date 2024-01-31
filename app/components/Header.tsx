@@ -1,28 +1,34 @@
-import {Await, NavLink} from '@remix-run/react';
-import {Suspense, useMemo} from 'react';
+import {Await, Form, NavLink} from '@remix-run/react';
+import {Suspense, useMemo, useState} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import type {LayoutProps} from './Layout';
 import {Logo} from './Logo';
 import {Link} from './Link';
 import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
+import {Image} from '@shopify/hydrogen';
+import {Drawer} from './Drawer';
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
 
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
+  let [showMenu, setShowMenu] = useState(false);
   return (
-    <header className="grid grid-cols-3 gap-4 items-center py-4">
-      {/* <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink> */}
+    <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
       <Logo />
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-      />
+      {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
+      <Drawer>
+        <HeaderMenu
+          menu={menu}
+          viewport="desktop"
+          primaryDomainUrl={header.shop.primaryDomain.url}
+          showMenu={showMenu}
+          onCloseMenu={() => setShowMenu(false)}
+        />
+      </Drawer>
+
       <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
     </header>
   );
@@ -32,13 +38,17 @@ export function HeaderMenu({
   menu,
   primaryDomainUrl,
   viewport,
+  showMenu,
+  onCloseMenu,
 }: {
   menu: HeaderProps['header']['menu'];
   primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
   viewport: Viewport;
+  showMenu: boolean;
+  onCloseMenu: () => void;
 }) {
   const {publicStoreDomain} = useRootLoaderData();
-  const className = `header-menu-${viewport}`;
+  // const className = `header-menu-${viewport}`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
     if (viewport === 'mobile') {
@@ -47,11 +57,14 @@ export function HeaderMenu({
     }
   }
 
-  return <div className="text-center">MENU</div>;
-
   return (
-    <nav className={className} role="navigation">
-      {viewport === 'mobile' && (
+    <div className="w-full h-full bg-background-subtle-1 flex flex-col">
+      <div className="h-8 w-full border-b flex items-center justify-end p-8">
+        <button onClick={onCloseMenu}>x</button>
+      </div>
+      <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
+        <nav className="flex flex-col gap-4 p-8" role="navigation">
+          {/* {viewport === 'mobile' && (
         <NavLink
           end
           onClick={closeAside}
@@ -61,32 +74,51 @@ export function HeaderMenu({
         >
           Home
         </NavLink>
-      )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
+      )} */}
+          {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+            if (!item.url) return null;
 
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={closeAside}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+            // if the url is internal, we strip the domain
+            const url =
+              item.url.includes('myshopify.com') ||
+              item.url.includes(publicStoreDomain) ||
+              item.url.includes(primaryDomainUrl)
+                ? new URL(item.url).pathname
+                : item.url;
+            return (
+              <NavLink
+                className="font-heading text-4xl"
+                end
+                key={item.id}
+                onClick={closeAside}
+                prefetch="intent"
+                to={url}
+              >
+                {item.title}
+              </NavLink>
+            );
+          })}
+        </nav>
+        {/* <div
+          style={{
+            backgroundImage:
+              'url(https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle-menu-bg.jpg?v=1706411874)',
+          }}
+        ></div> */}
+        <div className="h-auto w-full">
+          <Image
+            data={{
+              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle-menu-bg.jpg?v=1706411874',
+              altText: 'Naturelle Menu',
+              // width: 668,
+              // height: 1002,
+            }}
+            aspectRatio="2/1"
+            sizes="auto"
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -112,7 +144,7 @@ function AccountLink({className}: {className?: string}) {
   const isLoggedIn = rootData?.isLoggedIn;
   return isLoggedIn ? (
     <Link prefetch="intent" to="/account" className={className}>
-      <IconAccount />
+      <IconAccount viewBox="0 0 24 24" />
     </Link>
   ) : (
     <Link to="/account/login" className={className}>
@@ -130,8 +162,16 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
-  return <IconSearch />;
-  return <a href="#search-aside">Search</a>;
+  return (
+    <Form method="get" action="/search" className="flex items-center gap-2">
+      <button
+        type="submit"
+        className="relative flex items-center justify-center w-8 h-8 focus:ring-primary/5"
+      >
+        <IconSearch />
+      </button>
+    </Form>
+  );
 }
 
 function CartCount({
@@ -171,7 +211,7 @@ function Badge({
   const BadgeCounter = useMemo(
     () => (
       <>
-        <IconBag />
+        <IconBag viewBox="0 0 24 24" />
         <div className="bg-secondary text-inv-body absolute top-1 right-1 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px">
           <span>{count || 0}</span>
         </div>
