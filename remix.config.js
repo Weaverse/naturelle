@@ -16,6 +16,8 @@ module.exports = {
   serverModuleFormat: 'esm',
   serverPlatform: 'neutral',
   serverMinify: process.env.NODE_ENV === 'production',
-  tailwind: true,
-  postcss: true,
+  future: {
+    v3_fetcherPersist: true,
+    v3_relativeSplatpath: true,
+  },
 };

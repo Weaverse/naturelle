@@ -5,9 +5,12 @@
 // Enhance TypeScript's built-in typings.
 import '@total-typescript/ts-reset';
 
-import type {Storefront, HydrogenCart} from '@shopify/hydrogen';
-import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
-import type {HydrogenSession} from './server';
+import type {Storefront, CustomerClient, HydrogenCart} from '@shopify/hydrogen';
+import type {
+  LanguageCode,
+  CountryCode,
+} from '@shopify/hydrogen/storefront-api-types';
+import type {AppSession} from '~/lib/session';
 import type {WeaverseClient} from '@weaverse/hydrogen';
 
 declare global {
@@ -27,9 +30,21 @@ declare global {
     PUBLIC_STOREFRONT_ID: string;
     PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: string;
     PUBLIC_CUSTOMER_ACCOUNT_API_URL: string;
+
+
     WEAVERSE_PROJECT_ID: string;
+    WEAVERSE_HOST: string;
     WEAVERSE_API_KEY: string;
   }
+
+  /**
+   * The I18nLocale used for Storefront API query context.
+   */
+  type I18nLocale = {
+    language: LanguageCode;
+    country: CountryCode;
+    pathPrefix: string;
+  };
 }
 
 declare module '@shopify/remix-oxygen' {
@@ -39,16 +54,11 @@ declare module '@shopify/remix-oxygen' {
   export interface AppLoadContext {
     env: Env;
     cart: HydrogenCart;
-    storefront: Storefront;
-    session: HydrogenSession;
+    storefront: Storefront<I18nLocale>;
+    customerAccount: CustomerClient;
+    session: AppSession;
     waitUntil: ExecutionContext['waitUntil'];
-    weaverse: WeaverseClient;
-  }
 
-  /**
-   * Declare the data we expect to access via `context.session`.
-   */
-  export interface SessionData {
-    customerAccessToken: CustomerAccessToken;
+    weaverse: WeaverseClient;
   }
 }

@@ -142,14 +142,23 @@ function HeaderCtas({
 function AccountLink({className}: {className?: string}) {
   const rootData = useRootLoaderData();
   const isLoggedIn = rootData?.isLoggedIn;
-  return isLoggedIn ? (
-    <Link prefetch="intent" to="/account" className={className}>
-      <IconAccount viewBox="0 0 24 24" />
-    </Link>
-  ) : (
-    <Link to="/account/login" className={className}>
-      <IconLogin />
-    </Link>
+
+  return (
+    <Suspense fallback="Sign in">
+      <Await resolve={isLoggedIn} errorElement="Sign in">
+        {(isLoggedIn) => {
+          return isLoggedIn ? (
+            <Link prefetch="intent" to="/account" className={className}>
+              <IconAccount />
+            </Link>
+          ) : (
+            <Link to="/account/login" className={className}>
+              <IconLogin />
+            </Link>
+          );
+        }}
+      </Await>
+    </Suspense>
   );
 }
 
