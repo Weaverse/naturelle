@@ -10,6 +10,7 @@ import * as Testimonials from '~/sections/testimonials/index';
 import * as Review from '~/sections/testimonials/review';
 import * as Slides from '~/sections/slides/index';
 import * as Slide from '~/sections/slides/slide';
+import * as Blogs from '~/sections/blogs/index';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -22,5 +23,6 @@ export const components: HydrogenComponent[] = [
     Review,
     Slides,
     Slide,
+    Blogs,
     StyleGuide
 ];
