@@ -10,8 +10,8 @@ export function Footer({
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
   return (
     <footer className="footer bg-background-subtle-2">
-      <div className="container grid grid-cols-1 md:grid-cols-2 divide-x">
-        <div className="space-y-4 p-16 pb-24">
+      <div className="container grid grid-cols-1 md:grid-cols-2 md:divide-x">
+        <div className="space-y-4 p-6 md:p-16 md:pb-24">
           <h3>Newsletter</h3>
           <p>Sign up for 15% off and updates straight to your inbox.</p>
           <form className="flex gap-2">
@@ -23,7 +23,7 @@ export function Footer({
             <Button type="submit">Subscribe</Button>
           </form>
         </div>
-        <div className="space-y-6 p-16 pb-24">
+        <div className="space-y-6 p-6 md:p-16 md:pb-24">
           <h3>Quick links</h3>
           {menu && shop?.primaryDomain?.url && (
             <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />

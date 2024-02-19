@@ -2,6 +2,7 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
+import {Button} from '@/components/ui/button';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
@@ -13,7 +14,7 @@ export const loader = async ({
   context: {storefront},
 }: LoaderFunctionArgs) => {
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 2,
   });
 
   if (!params.blogHandle) {
@@ -40,8 +41,10 @@ export default function Blog() {
 
   return (
     <div className="blog">
-      <h1>{blog.title}</h1>
-      <div className="blog-grid">
+      <div className="h-36 w-full flex items-center justify-center bg-slate-200">
+        <h1>{blog.title}</h1>
+      </div>
+      <div className="container my-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Pagination connection={articles}>
           {({nodes, isLoading, PreviousLink, NextLink}) => {
             return (
@@ -58,9 +61,15 @@ export default function Blog() {
                     />
                   );
                 })}
-                <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-                </NextLink>
+                <div className="text-center col-span-full p-4">
+                  <NextLink>
+                    {isLoading ? (
+                      'Loading...'
+                    ) : (
+                      <Button variant="outline">Show more +</Button>
+                    )}
+                  </NextLink>
+                </div>
               </>
             );
           }}
@@ -82,12 +91,14 @@ function ArticleItem({
     month: 'long',
     day: 'numeric',
   }).format(new Date(article.publishedAt!));
+  console.log('9779 article', article);
   return (
-    <div className="blog-article" key={article.id}>
+    <div className="space-y-4 divide-y divide-bar-subtle" key={article.id}>
       <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
         {article.image && (
           <div className="blog-article-image">
             <Image
+              className="rounded-[4px]"
               alt={article.image.altText || article.title}
               aspectRatio="3/2"
               data={article.image}
@@ -96,9 +107,19 @@ function ArticleItem({
             />
           </div>
         )}
-        <h3>{article.title}</h3>
-        <small>{publishedAt}</small>
+        <h2 className="mt-4 font-medium">{article.title}</h2>
       </Link>
+      <div className="hidden md:block">
+        <p
+          className="py-4"
+          dangerouslySetInnerHTML={{__html: article.excerptHtml!}}
+        />
+        <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
+          Read more -&gt;
+        </Link>
+      </div>
+
+      {/* <small>{publishedAt}</small> */}
     </div>
   );
 }
@@ -155,6 +176,8 @@ const BLOGS_QUERY = `#graphql
     }
     publishedAt
     title
+    excerpt
+    excerptHtml
     blog {
       handle
     }
