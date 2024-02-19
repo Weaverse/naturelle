@@ -4,6 +4,7 @@ import {Link} from '@remix-run/react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {IconRemove} from './Icon';
+import {Button} from '@/components/ui/button';
 
 type CartLine = CartApiQueryFragment['lines']['nodes'][0];
 
@@ -19,7 +20,7 @@ export function CartMain({layout, cart}: CartMainProps) {
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
 
   return (
-    <div className="cart-main container">
+    <div className="cart-main container mt-10">
       <CartEmpty hidden={linesCount} layout={layout} />
       <CartDetails cart={cart} layout={layout} />
     </div>
@@ -38,6 +39,51 @@ function CartDetails({layout, cart}: CartMainProps) {
           <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
         </CartSummary>
       )}
+      <div className="text-center p-6 space-y-4">
+        <p>We accept</p>
+        <div className="flex gap-2 items-center justify-center">
+          <Image
+            data={{
+              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_visa.svg?v=1708336750',
+              altText: 'Visa',
+            }}
+            width={32}
+            sizes="auto"
+          />
+          <Image
+            data={{
+              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_mastercard.svg?v=1708336923',
+              altText: 'Mastercard',
+            }}
+            width={32}
+            sizes="auto"
+          />
+          <Image
+            data={{
+              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/simple-icons_applepay.svg?v=1708336923',
+              altText: 'Apple Pay',
+            }}
+            width={32}
+            sizes="auto"
+          />
+          <Image
+            data={{
+              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_amex.svg?v=1708336923',
+              altText: 'Amex',
+            }}
+            width={32}
+            sizes="auto"
+          />
+          <Image
+            data={{
+              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_paypal.svg?v=1708336923',
+              altText: 'Paypal',
+            }}
+            width={32}
+            sizes="auto"
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -162,7 +208,7 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl: string}) {
   return (
     <div>
       <a href={checkoutUrl} target="_self">
-        <p>Continue to Checkout &rarr;</p>
+        <Button className="w-full">Checkout</Button>
       </a>
       <br />
     </div>
@@ -178,22 +224,20 @@ export function CartSummary({
   cost: CartApiQueryFragment['cost'];
   layout: CartMainProps['layout'];
 }) {
-  const className =
-    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
-
   return (
-    <div aria-labelledby="cart-summary" className={className}>
-      <h4>Totals</h4>
-      <dl className="cart-subtotal">
-        <dt>Subtotal</dt>
-        <dd>
+    <div aria-labelledby="cart-summary" className="bg-white p-6 space-y-6">
+      <div className="flex items-center justify-between font-medium text-2xl">
+        <h4>Totals</h4>
+        <div>
           {cost?.subtotalAmount?.amount ? (
             <Money data={cost?.subtotalAmount} />
           ) : (
             '-'
           )}
-        </dd>
-      </dl>
+        </div>
+      </div>
+      <p className="text-sm">Shipping & taxes calculated at checkout</p>
+      {/* <p className="underline">Add delivery note</p> */}
       {children}
     </div>
   );
