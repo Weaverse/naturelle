@@ -1,6 +1,7 @@
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
+import {Button} from '@/components/ui/button';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
@@ -37,19 +38,30 @@ export default function Article() {
   }).format(new Date(article.publishedAt));
 
   return (
-    <div className="article">
-      <h1>
-        {title}
-        <span>
-          {publishedDate} &middot; {author?.name}
-        </span>
-      </h1>
-
-      {image && <Image data={image} sizes="90vw" loading="eager" />}
-      <div
-        dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="article"
-      />
+    <div className="article space-y-10 mb-10">
+      {image && (
+        <Image
+          data={image}
+          className="max-h-[720px] object-cover"
+          sizes="90vw"
+          loading="eager"
+        />
+      )}
+      <div className="container space-y-10">
+        <div className="space-y-4 text-center">
+          <Button>Blog badge</Button>
+          <h1 className="font-bold">{title}</h1>
+        </div>
+        <div
+          dangerouslySetInnerHTML={{__html: contentHtml}}
+          className="article"
+        />
+        <p className="text-foreground-subtle">
+          <span>
+            {publishedDate} &middot; {author?.name}
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
