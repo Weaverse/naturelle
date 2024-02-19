@@ -3,6 +3,7 @@ import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from '@remix-run/react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
+import {IconRemove} from './Icon';
 
 type CartLine = CartApiQueryFragment['lines']['nodes'][0];
 
@@ -16,10 +17,9 @@ export function CartMain({layout, cart}: CartMainProps) {
   const withDiscount =
     cart &&
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
 
   return (
-    <div className={className}>
+    <div className="cart-main container">
       <CartEmpty hidden={linesCount} layout={layout} />
       <CartDetails cart={cart} layout={layout} />
     </div>
@@ -53,11 +53,31 @@ function CartLines({
 
   return (
     <div aria-labelledby="cart-lines">
-      <ul>
-        {lines.nodes.map((line) => (
-          <CartLineItem key={line.id} line={line} layout={layout} />
-        ))}
-      </ul>
+      <table className="table-auto w-full">
+        <thead>
+          <tr className="font-semibold p-2">
+            <th className="p-4 text-left border-bar/15 border-b border-bar">
+              Product
+            </th>
+            <th className="p-4 border-b border-bar/15 hidden lg:table-cell"></th>
+            <th className="p-4 border-b border-bar/15 hidden lg:table-cell">
+              Price
+            </th>
+            <th className="p-4 border-b border-bar/15 hidden lg:table-cell">
+              Quantity
+            </th>
+            <th className="p-4 border-b border-bar/15 hidden lg:table-cell">
+              Total
+            </th>
+            <th className="p-4 border-b border-bar/15 hidden lg:table-cell"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {lines.nodes.map((line) => (
+            <CartLineItem key={line.id} line={line} layout={layout} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -72,21 +92,25 @@ function CartLineItem({
   const {id, merchandise} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
-
+  let styles = {
+    page: 'grid lg:table-row gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]',
+    aside: 'grid gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]',
+  };
   return (
-    <li key={id} className="cart-line">
-      {image && (
-        <Image
-          alt={title}
-          aspectRatio="1/1"
-          data={image}
-          height={100}
-          loading="lazy"
-          width={100}
-        />
-      )}
-
-      <div>
+    <tr key={id} className={styles[layout]}>
+      <td className="py-2 row-start-1 row-end-3">
+        {image && (
+          <Image
+            alt={title}
+            aspectRatio="1/1"
+            data={image}
+            height={100}
+            loading="lazy"
+            width={100}
+          />
+        )}
+      </td>
+      <td className="py-2 lg:p-4">
         <Link
           prefetch="intent"
           to={lineItemUrl}
@@ -101,7 +125,6 @@ function CartLineItem({
             <strong>{product.title}</strong>
           </p>
         </Link>
-        <CartLinePrice line={line} as="span" />
         <ul>
           {selectedOptions.map((option) => (
             <li key={option.name}>
@@ -111,9 +134,25 @@ function CartLineItem({
             </li>
           ))}
         </ul>
-        <CartLineQuantity line={line} />
-      </div>
-    </li>
+      </td>
+      <td className="py-2 lg:p-4 text-center">
+        <CartLinePrice line={line} as="span" />
+      </td>
+      <td className="py-2 lg:p-4 row-start-2">
+        <div className="flex items-center gap-2">
+          <CartLineQuantity line={line} />
+          <div className="lg:hidden">
+            <CartLineRemoveButton lineIds={[line.id]} />
+          </div>
+        </div>
+      </td>
+      <td className="py-2 lg:p-4 text-center  col-start-3 hidden lg:table-cell">
+        $190
+      </td>
+      <td className="py-2 lg:p-4 text-center lg:table-cell hidden">
+        <CartLineRemoveButton lineIds={[line.id]} />
+      </td>
+    </tr>
   );
 }
 
@@ -167,7 +206,9 @@ function CartLineRemoveButton({lineIds}: {lineIds: string[]}) {
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
-      <button type="submit">Remove</button>
+      <button type="submit">
+        <IconRemove />
+      </button>
     </CartForm>
   );
 }
@@ -179,10 +220,10 @@ function CartLineQuantity({line}: {line: CartLine}) {
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="cart-line-quantiy">
-      <small>Quantity: {quantity} &nbsp;&nbsp;</small>
+    <div className="flex items-center border rounded w-fit mx-auto">
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
+          className="w-10 h-10 transition "
           aria-label="Decrease quantity"
           disabled={quantity <= 1}
           name="decrease-quantity"
@@ -191,9 +232,10 @@ function CartLineQuantity({line}: {line: CartLine}) {
           <span>&#8722; </span>
         </button>
       </CartLineUpdateButton>
-      &nbsp;
+      <div className="px-2 text-center">{quantity}</div>
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
+          className="w-10 h-10 transition "
           aria-label="Increase quantity"
           name="increase-quantity"
           value={nextQuantity}
@@ -201,8 +243,6 @@ function CartLineQuantity({line}: {line: CartLine}) {
           <span>&#43;</span>
         </button>
       </CartLineUpdateButton>
-      &nbsp;
-      <CartLineRemoveButton lineIds={[lineId]} />
     </div>
   );
 }
