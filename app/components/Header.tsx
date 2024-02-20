@@ -134,7 +134,12 @@ function HeaderCtas({
       {/* <HeaderMenuMobileToggle /> */}
       <SearchToggle />
       <AccountLink />
-      <CartCount isHome={false} openCart={() => {}} />
+      <CartCount
+        isHome={false}
+        openCart={() => {
+          window.location.href = '/cart';
+        }}
+      />
     </nav>
   );
 }
