@@ -31,57 +31,59 @@ function CartDetails({layout, cart}: CartMainProps) {
   const cartHasItems = !!cart && cart.totalQuantity > 0;
 
   return (
-    <div className="cart-details">
+    <div className="cart-details grid gap-y-6 lg:gap-10 grid-cols-1 lg:grid-cols-3">
       <CartLines lines={cart?.lines} layout={layout} />
-      {cartHasItems && (
-        <CartSummary cost={cart.cost} layout={layout}>
-          <CartDiscounts discountCodes={cart.discountCodes} />
-          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-        </CartSummary>
-      )}
-      <div className="text-center p-6 space-y-4">
-        <p>We accept</p>
-        <div className="flex gap-2 items-center justify-center">
-          <Image
-            data={{
-              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_visa.svg?v=1708336750',
-              altText: 'Visa',
-            }}
-            width={32}
-            sizes="auto"
-          />
-          <Image
-            data={{
-              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_mastercard.svg?v=1708336923',
-              altText: 'Mastercard',
-            }}
-            width={32}
-            sizes="auto"
-          />
-          <Image
-            data={{
-              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/simple-icons_applepay.svg?v=1708336923',
-              altText: 'Apple Pay',
-            }}
-            width={32}
-            sizes="auto"
-          />
-          <Image
-            data={{
-              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_amex.svg?v=1708336923',
-              altText: 'Amex',
-            }}
-            width={32}
-            sizes="auto"
-          />
-          <Image
-            data={{
-              url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_paypal.svg?v=1708336923',
-              altText: 'Paypal',
-            }}
-            width={32}
-            sizes="auto"
-          />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1 border-bar-subtle md:border-t md:pt-6 lg:p-0 lg:border-none">
+        {cartHasItems && (
+          <CartSummary cost={cart.cost} layout={layout}>
+            <CartDiscounts discountCodes={cart.discountCodes} />
+            <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+          </CartSummary>
+        )}
+        <div className="text-center px-6 py-4 space-y-4 md:order-first lg:order-last">
+          <p>We accept</p>
+          <div className="flex gap-5 items-center justify-center">
+            <Image
+              data={{
+                url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_visa.svg?v=1708336750',
+                altText: 'Visa',
+              }}
+              width={32}
+              sizes="auto"
+            />
+            <Image
+              data={{
+                url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_mastercard.svg?v=1708336923',
+                altText: 'Mastercard',
+              }}
+              width={32}
+              sizes="auto"
+            />
+            <Image
+              data={{
+                url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/simple-icons_applepay.svg?v=1708336923',
+                altText: 'Apple Pay',
+              }}
+              width={32}
+              sizes="auto"
+            />
+            <Image
+              data={{
+                url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_amex.svg?v=1708336923',
+                altText: 'Amex',
+              }}
+              width={32}
+              sizes="auto"
+            />
+            <Image
+              data={{
+                url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_paypal.svg?v=1708336923',
+                altText: 'Paypal',
+              }}
+              width={32}
+              sizes="auto"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -98,24 +100,24 @@ function CartLines({
   if (!lines) return null;
 
   return (
-    <div aria-labelledby="cart-lines">
+    <div aria-labelledby="cart-lines" className="col-span-2">
       <table className="table-auto w-full">
         <thead>
           <tr className="font-semibold p-2">
             <th className="p-4 text-left border-bar/15 border-b border-bar">
               Product
             </th>
-            <th className="p-4 border-b border-bar/15 hidden lg:table-cell"></th>
-            <th className="p-4 border-b border-bar/15 hidden lg:table-cell">
+            <th className="p-4 border-b border-bar/15 hidden md:table-cell"></th>
+            <th className="p-4 border-b border-bar/15 hidden md:table-cell">
               Price
             </th>
-            <th className="p-4 border-b border-bar/15 hidden lg:table-cell">
+            <th className="p-4 border-b border-bar/15 hidden md:table-cell">
               Quantity
             </th>
-            <th className="p-4 border-b border-bar/15 hidden lg:table-cell">
+            <th className="p-4 border-b border-bar/15 hidden md:table-cell">
               Total
             </th>
-            <th className="p-4 border-b border-bar/15 hidden lg:table-cell"></th>
+            <th className="p-4 border-b border-bar/15 hidden md:table-cell"></th>
           </tr>
         </thead>
         <tbody>
@@ -139,7 +141,7 @@ function CartLineItem({
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   let styles = {
-    page: 'grid lg:table-row gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]',
+    page: 'grid md:table-row gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]',
     aside: 'grid gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]',
   };
   return (
@@ -181,21 +183,21 @@ function CartLineItem({
           ))}
         </ul>
       </td>
-      <td className="py-2 lg:p-4 text-center">
-        <CartLinePrice line={line} as="span" />
+      <td className="py-2 md:p-4 text-center">
+        <Money withoutTrailingZeros data={line.cost.amountPerQuantity} />
       </td>
-      <td className="py-2 lg:p-4 row-start-2">
+      <td className="py-2 md:p-4 row-start-2">
         <div className="flex items-center gap-2">
           <CartLineQuantity line={line} />
-          <div className="lg:hidden">
+          <div className="md:hidden">
             <CartLineRemoveButton lineIds={[line.id]} />
           </div>
         </div>
       </td>
-      <td className="py-2 lg:p-4 text-center  col-start-3 hidden lg:table-cell">
-        $190
+      <td className="py-2 md:p-4 text-center  col-start-3 hidden md:table-cell">
+        <CartLinePrice line={line} as="span" />
       </td>
-      <td className="py-2 lg:p-4 text-center lg:table-cell hidden">
+      <td className="py-2 md:p-4 text-center md:table-cell hidden">
         <CartLineRemoveButton lineIds={[line.id]} />
       </td>
     </tr>
@@ -264,7 +266,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="flex items-center border rounded w-fit mx-auto">
+    <div className="flex items-center border border-bar-subtle rounded w-fit mx-auto">
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
           className="w-10 h-10 transition "
