@@ -252,7 +252,7 @@ export const schema: HydrogenComponentSchema = {
                 {
                     type: 'text',
                     name: 'instagramToken',
-                    label: 'Instagram token',
+                    label: 'Instagram api token',
                     defaultValue: 'IGQWRPMkNrNUVTQVdsNnJJX21RYVlUZAWNKcHU2R2xVT0xMeFowRWhDakZAEckhzMmxqaU83QlVuUlp1YlVGZAEUyRmZAMbXc5NXBVSktOMERoQ2EtX09hbS04R2FYUnp1MmNucFBxUEZArLS1xbVZAnWDZAkYlFpMXVPRWMZD',
                     placeholder: '@instagram',
                     helpText: 'Learn more about how to get <a href="https://docs.oceanwp.org/article/487-how-to-get-instagram-access-token" target="_blank">API token for Instagram</a> section.',
@@ -277,7 +277,7 @@ export const schema: HydrogenComponentSchema = {
                 {
                     type: 'range',
                     name: 'speed',
-                    label: 'Speed',
+                    label: 'Scrolling speed',
                     defaultValue: 70,
                     configs: {
                         min: 10,
