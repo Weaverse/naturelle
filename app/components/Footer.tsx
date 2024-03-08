@@ -41,7 +41,6 @@ function FooterMenu({
   menu: FooterQuery['menu'];
   primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
 }) {
-  console.log('🚀 ~ menu:', menu);
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
