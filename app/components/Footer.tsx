@@ -1,3 +1,5 @@
+import {Input} from '@/components/input';
+import {Button} from '@/components/ui/button';
 import {NavLink} from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
@@ -6,13 +8,28 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
-  return null;
-
   return (
-    <footer className="footer">
-      {menu && shop?.primaryDomain?.url && (
-        <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
-      )}
+    <footer className="footer bg-background-subtle-2">
+      <div className="container grid grid-cols-1 md:grid-cols-2 md:divide-x">
+        <div className="space-y-4 p-6 md:p-16 md:pb-24">
+          <h3>Newsletter</h3>
+          <p>Sign up for 15% off and updates straight to your inbox.</p>
+          <form className="flex gap-2">
+            <Input
+              className="bg-transparent"
+              type="email"
+              placeholder="Enter your email"
+            />
+            <Button type="submit">Subscribe</Button>
+          </form>
+        </div>
+        <div className="space-y-6 p-6 md:p-16 md:pb-24">
+          <h3>Quick links</h3>
+          {menu && shop?.primaryDomain?.url && (
+            <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
+          )}
+        </div>
+      </div>
     </footer>
   );
 }
@@ -24,10 +41,11 @@ function FooterMenu({
   menu: FooterQuery['menu'];
   primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
 }) {
+  console.log('🚀 ~ menu:', menu);
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
-    <nav className="footer-menu" role="navigation">
+    <nav className="flex flex-col gap-4" role="navigation">
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
@@ -47,7 +65,7 @@ function FooterMenu({
             end
             key={item.id}
             prefetch="intent"
-            style={activeLinkStyle}
+            // style={activeLinkStyle}
             to={url}
           >
             {item.title}

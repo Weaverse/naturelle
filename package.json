@@ -35,7 +35,8 @@
     "react-player": "^2.14.1",
     "swiper": "^11.0.5",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^0.8.9"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.5.1",
