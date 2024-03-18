@@ -72,7 +72,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                     <h2 className="font-medium">{heading}</h2>
                 </div>}
                 <div className={clsx(
-                    "flex flex-col sm:grid sm:justify-self-center gap-7",
+                    "flex flex-col sm:grid sm:justify-self-center gap-5 sm:gap-0",
                     articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)]
                 )}>
                     {res?.map((idx: any) => (
@@ -83,7 +83,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <Image
                                     data={idx.image}
                                     sizes="auto"
-                                    className="!w-full aspect-square"
+                                    className="!w-full !aspect-square object-cover"
                                 />) : (
                                 <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
                                     <IconImageBlank

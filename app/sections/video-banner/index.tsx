@@ -60,8 +60,8 @@ const VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
                 loop={enableLoop}
                 controls={false}
                 width={'100%'}
-                height={'100%'}
-                className="absolute inset-0 scale-[3.0] sm:scale-150"
+                height={'auto'}
+                className="absolute inset-0 aspect-video"
             />
             <div className={clsx(
                 "absolute inset-0",

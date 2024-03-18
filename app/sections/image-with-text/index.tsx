@@ -39,7 +39,7 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
                             <Image
                                 data={backgroundImage}
                                 sizes="auto"
-                                className="!w-full !h-full group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
+                                className="!w-full !h-full object-cover group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
                             />
                         ) : (
                             <div className="flex justify-center items-center bg-background-subtle-1 w-full h-full">

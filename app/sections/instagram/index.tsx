@@ -81,7 +81,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                                 <Image
                                                     src={item.media_url}
                                                     sizes="auto"
-                                                    className="w-80 h-80 aspect-square"
+                                                    className="w-80 h-80 object-cover aspect-square"
                                                 />
                                             </SwiperSlide>
                                         );
@@ -94,7 +94,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -106,7 +106,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -118,7 +118,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -130,7 +130,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -142,7 +142,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -154,7 +154,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -166,7 +166,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -178,7 +178,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -190,7 +190,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -202,7 +202,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -214,7 +214,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                             <Image
                                                 key={index}
                                                 src={item.media_url}
-                                                className="min-w-80 aspect-square"
+                                                className="min-w-80 object-cover aspect-square"
                                             />
                                         );
                                     })}
@@ -253,7 +253,7 @@ export const schema: HydrogenComponentSchema = {
                     type: 'text',
                     name: 'instagramToken',
                     label: 'Instagram api token',
-                    defaultValue: 'IGQWRPMkNrNUVTQVdsNnJJX21RYVlUZAWNKcHU2R2xVT0xMeFowRWhDakZAEckhzMmxqaU83QlVuUlp1YlVGZAEUyRmZAMbXc5NXBVSktOMERoQ2EtX09hbS04R2FYUnp1MmNucFBxUEZArLS1xbVZAnWDZAkYlFpMXVPRWMZD',
+                    defaultValue: 'IGQWRPX3Eyc1RHd3padDVwRXZANdkp4ZAkE1bkxjRlNtd3V4WnBXZAXUxWWlvVjlTc2h3SU45NmZAVOHptcEswalkyTHYtckh6cnlUNTUtaHpDUjYxTE04X0RwVG5qRnJ0cDhxcnlBVjRib3BoYUxGa2xCTlFZAZAC1PMmMZD',
                     placeholder: '@instagram',
                     helpText: 'Learn more about how to get <a href="https://docs.oceanwp.org/article/487-how-to-get-instagram-access-token" target="_blank">API token for Instagram</a> section.',
                 },
