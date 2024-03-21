@@ -37,6 +37,7 @@ export function getWeaverseCsp(request: Request) {
       "'self'",
       'data:',
       'cdn.shopify.com',
+      '*.cdninstagram.com',
       ...localDirectives,
       ...weaverseHosts,
     ],
