@@ -21,6 +21,7 @@ import {
   DELETE_ADDRESS_MUTATION,
   CREATE_ADDRESS_MUTATION,
 } from '~/graphql/customer-account/CustomerAddressMutations';
+import {Button} from '@/components/ui/button';
 
 export type ActionResponse = {
   addressId?: string | null;
@@ -310,19 +311,64 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 }
 
+function AddressCard(props: {
+  address: AddressFragment;
+  defaultAddress?: boolean;
+}) {
+  let {address, defaultAddress} = props;
+  return (
+    <div className="p-5 border border-bar-subtle space-y-2">
+      {defaultAddress && (
+        <div className="py-1 px-2.5 rounded bg-label-soldout text-white w-fit">
+          Default
+        </div>
+      )}
+      <h3>
+        {address.firstName} {address.lastName}
+      </h3>
+      <p>{address.address1}</p>
+      <p>
+        {address.city}, {address.territoryCode}
+      </p>
+      <p>{address.zip}</p>
+      <p></p>
+      <p>{address.phoneNumber}</p>
+      <div>
+        <Button variant="link">Edit</Button>
+        <Form id={address.id}>
+          <input type="hidden" name="addressId" defaultValue={address.id} />
+          <Button variant="link" formMethod="DELETE" type="submit">
+            Remove
+          </Button>
+        </Form>
+      </div>
+    </div>
+  );
+}
+
 export default function Addresses() {
   const {customer} = useOutletContext<{customer: CustomerFragment}>();
-  const {defaultAddress, addresses} = customer;
+  const {defaultAddress, addresses: _addresses} = customer;
+  console.log('🚀 ~ defaultAddress:', defaultAddress);
+  let addresses = _addresses.nodes.filter(
+    (address) => address.id !== defaultAddress?.id,
+  );
 
   return (
     <div className="account-addresses">
-      <h2>Addresses</h2>
-      <br />
-      {!addresses.nodes.length ? (
+      <h2>Address Book</h2>
+      <Button className="mt-4 mb-5">Add new address</Button>
+      {!addresses.length ? (
         <p>You have no addresses saved.</p>
       ) : (
         <div>
-          <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AddressCard address={defaultAddress} defaultAddress />
+            {addresses.map((address) => (
+              <AddressCard key={address.id} address={address} />
+            ))}
+          </div>
+          {/* <div>
             <legend>Create address</legend>
             <NewAddressForm />
           </div>
@@ -332,7 +378,7 @@ export default function Addresses() {
           <ExistingAddresses
             addresses={addresses}
             defaultAddress={defaultAddress}
-          />
+          /> */}
         </div>
       )}
     </div>
