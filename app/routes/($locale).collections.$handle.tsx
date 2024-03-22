@@ -1,21 +1,23 @@
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
+import { json, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { useLoaderData, Link, type MetaFunction } from '@remix-run/react';
 import {
   Pagination,
   getPaginationVariables,
   Image,
   Money,
 } from '@shopify/hydrogen';
-import type {ProductItemFragment} from 'storefrontapi.generated';
-import {useVariantUrl} from '~/lib/variants';
+import type { ProductItemFragment } from 'storefrontapi.generated';
+import { useVariantUrl } from '~/lib/variants';
+import { WeaverseContent } from '~/weaverse';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Hydrogen | ${data?.collection.title ?? ''} Collection` }];
 };
 
-export async function loader({request, params, context}: LoaderFunctionArgs) {
-  const {handle} = params;
-  const {storefront} = context;
+export async function loader({ request, params, context }: LoaderFunctionArgs) {
+  const { handle } = params;
+  const { storefront } = context;
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 8,
   });
@@ -24,8 +26,8 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     return redirect('/collections');
   }
 
-  const {collection} = await storefront.query(COLLECTION_QUERY, {
-    variables: {handle, ...paginationVariables},
+  const { collection } = await storefront.query(COLLECTION_QUERY, {
+    variables: { handle, ...paginationVariables },
   });
 
   if (!collection) {
@@ -33,35 +35,38 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
       status: 404,
     });
   }
-  return json({collection});
+  return json({ collection, weaverseData: await context.weaverse.loadPage({ type: 'COLLECTION' }), });
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const { collection } = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <Pagination connection={collection.products}>
-        {({nodes, isLoading, PreviousLink, NextLink}) => (
-          <>
-            <PreviousLink>
-              {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-            </PreviousLink>
-            <ProductsGrid products={nodes} />
-            <br />
-            <NextLink>
-              {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-            </NextLink>
-          </>
-        )}
-      </Pagination>
-    </div>
+    <>
+      <div className="collection">
+        <h1>{collection.title}</h1>
+        <p className="collection-description">{collection.description}</p>
+        <Pagination connection={collection.products}>
+          {({ nodes, isLoading, PreviousLink, NextLink }) => (
+            <>
+              <PreviousLink>
+                {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+              </PreviousLink>
+              <ProductsGrid products={nodes} />
+              <br />
+              <NextLink>
+                {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+              </NextLink>
+            </>
+          )}
+        </Pagination>
+      </div>
+      <WeaverseContent />
+    </>
   );
 }
 
-function ProductsGrid({products}: {products: ProductItemFragment[]}) {
+function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
   return (
     <div className="products-grid">
       {products.map((product, index) => {

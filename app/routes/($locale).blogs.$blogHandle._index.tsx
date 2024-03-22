@@ -1,27 +1,29 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
-import type {ArticleItemFragment} from 'storefrontapi.generated';
-import {Button} from '@/components/ui/button';
+import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { Link, useLoaderData, type MetaFunction } from '@remix-run/react';
+import { Image, Pagination, getPaginationVariables } from '@shopify/hydrogen';
+import type { ArticleItemFragment } from 'storefrontapi.generated';
+import { Button } from '@/components/ui/button';
+import { WeaverseContent } from '~/weaverse';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Hydrogen | ${data?.blog.title ?? ''} blog` }];
 };
 
 export const loader = async ({
   request,
   params,
-  context: {storefront},
+  context,
 }: LoaderFunctionArgs) => {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 2,
   });
 
   if (!params.blogHandle) {
-    throw new Response(`blog not found`, {status: 404});
+    throw new Response(`blog not found`, { status: 404 });
   }
 
-  const {blog} = await storefront.query(BLOGS_QUERY, {
+  const { blog } = await context.storefront.query(BLOGS_QUERY, {
     variables: {
       blogHandle: params.blogHandle,
       ...paginationVariables,
@@ -29,53 +31,56 @@ export const loader = async ({
   });
 
   if (!blog?.articles) {
-    throw new Response('Not found', {status: 404});
+    throw new Response('Not found', { status: 404 });
   }
 
-  return json({blog});
+  return json({ blog, weaverseData: await context.weaverse.loadPage({ type: 'BLOG' }), });
 };
 
 export default function Blog() {
-  const {blog} = useLoaderData<typeof loader>();
-  const {articles} = blog;
+  const { blog } = useLoaderData<typeof loader>();
+  const { articles } = blog;
 
   return (
-    <div className="blog">
-      <div className="h-36 w-full flex items-center justify-center bg-slate-200">
-        <h1>{blog.title}</h1>
+    <>
+      <div className="blog">
+        <div className="h-36 w-full flex items-center justify-center bg-slate-200">
+          <h1>{blog.title}</h1>
+        </div>
+        <div className="container my-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Pagination connection={articles}>
+            {({ nodes, isLoading, PreviousLink, NextLink }) => {
+              return (
+                <>
+                  <PreviousLink>
+                    {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  </PreviousLink>
+                  {nodes.map((article, index) => {
+                    return (
+                      <ArticleItem
+                        article={article}
+                        key={article.id}
+                        loading={index < 2 ? 'eager' : 'lazy'}
+                      />
+                    );
+                  })}
+                  <div className="text-center col-span-full p-4">
+                    <NextLink>
+                      {isLoading ? (
+                        'Loading...'
+                      ) : (
+                        <Button variant="outline">Show more +</Button>
+                      )}
+                    </NextLink>
+                  </div>
+                </>
+              );
+            }}
+          </Pagination>
+        </div>
       </div>
-      <div className="container my-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Pagination connection={articles}>
-          {({nodes, isLoading, PreviousLink, NextLink}) => {
-            return (
-              <>
-                <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-                </PreviousLink>
-                {nodes.map((article, index) => {
-                  return (
-                    <ArticleItem
-                      article={article}
-                      key={article.id}
-                      loading={index < 2 ? 'eager' : 'lazy'}
-                    />
-                  );
-                })}
-                <div className="text-center col-span-full p-4">
-                  <NextLink>
-                    {isLoading ? (
-                      'Loading...'
-                    ) : (
-                      <Button variant="outline">Show more +</Button>
-                    )}
-                  </NextLink>
-                </div>
-              </>
-            );
-          }}
-        </Pagination>
-      </div>
-    </div>
+      <WeaverseContent />
+    </>
   );
 }
 
@@ -112,7 +117,7 @@ function ArticleItem({
       <div className="hidden md:block">
         <p
           className="py-4"
-          dangerouslySetInnerHTML={{__html: article.excerptHtml!}}
+          dangerouslySetInnerHTML={{ __html: article.excerptHtml! }}
         />
         <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
           Read more -&gt;

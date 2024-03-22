@@ -1,5 +1,5 @@
-import {Suspense} from 'react';
-import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { Suspense } from 'react';
+import { defer, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import {
   Await,
   Link,
@@ -25,15 +25,16 @@ import type {
   CartLineInput,
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
-import {getVariantUrl} from '~/lib/variants';
+import { getVariantUrl } from '~/lib/variants';
+import { WeaverseContent } from '~/weaverse';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Hydrogen | ${data?.product.title ?? ''}` }];
 };
 
-export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {handle} = params;
-  const {storefront} = context;
+export async function loader({ params, request, context }: LoaderFunctionArgs) {
+  const { handle } = params;
+  const { storefront } = context;
 
   const selectedOptions = getSelectedProductOptions(request).filter(
     (option) =>
@@ -52,12 +53,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   }
 
   // await the query for the critical product data
-  const {product} = await storefront.query(PRODUCT_QUERY, {
-    variables: {handle, selectedOptions},
+  const { product } = await storefront.query(PRODUCT_QUERY, {
+    variables: { handle, selectedOptions },
   });
 
   if (!product?.id) {
-    throw new Response(null, {status: 404});
+    throw new Response(null, { status: 404 });
   }
 
   const firstVariant = product.variants.nodes[0];
@@ -74,7 +75,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     // if no selected variant was returned from the selected options,
     // we redirect to the first variant's url with it's selected options applied
     if (!product.selectedVariant) {
-      throw redirectToFirstVariant({product, request});
+      throw redirectToFirstVariant({ product, request });
     }
   }
 
@@ -84,10 +85,10 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   // where variant options might show as available when they're not, but after
   // this deffered query resolves, the UI will update.
   const variants = storefront.query(VARIANTS_QUERY, {
-    variables: {handle},
+    variables: { handle },
   });
 
-  return defer({product, variants});
+  return defer({ product, variants, weaverseData: await context.weaverse.loadPage({ type: 'PRODUCT' }), });
 }
 
 function redirectToFirstVariant({
@@ -114,21 +115,24 @@ function redirectToFirstVariant({
 }
 
 export default function Product() {
-  const {product, variants} = useLoaderData<typeof loader>();
-  const {selectedVariant} = product;
+  const { product, variants } = useLoaderData<typeof loader>();
+  const { selectedVariant } = product;
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <ProductMain
-        selectedVariant={selectedVariant}
-        product={product}
-        variants={variants}
-      />
-    </div>
+    <>
+      <div className="product">
+        <ProductImage image={selectedVariant?.image} />
+        <ProductMain
+          selectedVariant={selectedVariant}
+          product={product}
+          variants={variants}
+        />
+      </div>
+      <WeaverseContent />
+    </>
   );
 }
 
-function ProductImage({image}: {image: ProductVariantFragment['image']}) {
+function ProductImage({ image }: { image: ProductVariantFragment['image'] }) {
   if (!image) {
     return <div className="product-image" />;
   }
@@ -154,7 +158,7 @@ function ProductMain({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Promise<ProductVariantsQuery>;
 }) {
-  const {title, descriptionHtml} = product;
+  const { title, descriptionHtml } = product;
   return (
     <div className="product-main">
       <h1>{title}</h1>
@@ -188,7 +192,7 @@ function ProductMain({
         <strong>Description</strong>
       </p>
       <br />
-      <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
       <br />
     </div>
   );
@@ -235,7 +239,7 @@ function ProductForm({
         options={product.options}
         variants={variants}
       >
-        {({option}) => <ProductOptions key={option.name} option={option} />}
+        {({ option }) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
       <br />
       <AddToCartButton
@@ -246,11 +250,11 @@ function ProductForm({
         lines={
           selectedVariant
             ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                },
-              ]
+              {
+                merchandiseId: selectedVariant.id,
+                quantity: 1,
+              },
+            ]
             : []
         }
       >
@@ -260,12 +264,12 @@ function ProductForm({
   );
 }
 
-function ProductOptions({option}: {option: VariantOption}) {
+function ProductOptions({ option }: { option: VariantOption }) {
   return (
     <div className="product-options" key={option.name}>
       <h5>{option.name}</h5>
       <div className="product-options-grid">
-        {option.values.map(({value, isAvailable, isActive, to}) => {
+        {option.values.map(({ value, isAvailable, isActive, to }) => {
           return (
             <Link
               className="product-options-item"
@@ -303,7 +307,7 @@ function AddToCartButton({
   onClick?: () => void;
 }) {
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
+    <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher: FetcherWithComponents<any>) => (
         <>
           <input
