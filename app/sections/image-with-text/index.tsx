@@ -31,7 +31,7 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
     return (
         <section ref={ref} {...rest} style={styleSection} className='group sm:h-[var(--section-height)] h-auto'>
             <div className='h-full w-full sm:px-0'>
-                <div className={clsx('flex flex-col justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
+                <div className={clsx('flex flex-col-reverse justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
                     <div
                         className="w-full h-1/2 sm:h-full flex flex-1 items-center justify-center sm:w-1/2 aspect-square overflow-hidden"
                     >

@@ -135,7 +135,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
                                     <IconImageBlank
                                         viewBox="0 0 526 526"
-                                        className="w-80 h-80 opacity-80"
+                                        className="w-full h-full opacity-80"
                                     />
                                 </div>)}
                             <div className="flex flex-col gap-4">
