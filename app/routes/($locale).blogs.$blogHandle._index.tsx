@@ -34,7 +34,7 @@ export const loader = async ({
     throw new Response('Not found', { status: 404 });
   }
 
-  return json({ blog, weaverseData: await context.weaverse.loadPage({ type: 'BLOG' }), });
+  return json({ blog, weaverseData: await context.weaverse.loadPage({ type: 'BLOG', handle: params.blogHandle }), });
 };
 
 export default function Blog() {
