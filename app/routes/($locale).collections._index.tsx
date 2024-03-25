@@ -1,44 +1,48 @@
-import {useLoaderData, Link} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen';
-import type {CollectionFragment} from 'storefrontapi.generated';
+import { useLoaderData, Link } from '@remix-run/react';
+import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { Pagination, getPaginationVariables, Image } from '@shopify/hydrogen';
+import type { CollectionFragment } from 'storefrontapi.generated';
+import { WeaverseContent } from '~/weaverse';
 
-export async function loader({context, request}: LoaderFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 4,
   });
 
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
+  const { collections } = await context.storefront.query(COLLECTIONS_QUERY, {
     variables: paginationVariables,
   });
 
-  return json({collections});
+  return json({ collections, weaverseData: await context.weaverse.loadPage({ type: 'COLLECTION_LIST' }), });
 }
 
 export default function Collections() {
-  const {collections} = useLoaderData<typeof loader>();
+  const { collections } = useLoaderData<typeof loader>();
 
   return (
-    <div className="collections">
-      <h1>Collections</h1>
-      <Pagination connection={collections}>
-        {({nodes, isLoading, PreviousLink, NextLink}) => (
-          <div>
-            <PreviousLink>
-              {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-            </PreviousLink>
-            <CollectionsGrid collections={nodes} />
-            <NextLink>
-              {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-            </NextLink>
-          </div>
-        )}
-      </Pagination>
-    </div>
+    <>
+      <div className="collections">
+        <h1>Collections</h1>
+        <Pagination connection={collections}>
+          {({ nodes, isLoading, PreviousLink, NextLink }) => (
+            <div>
+              <PreviousLink>
+                {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+              </PreviousLink>
+              <CollectionsGrid collections={nodes} />
+              <NextLink>
+                {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+              </NextLink>
+            </div>
+          )}
+        </Pagination>
+      </div>
+      <WeaverseContent />
+    </>
   );
 }
 
-function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
+function CollectionsGrid({ collections }: { collections: CollectionFragment[] }) {
   return (
     <div className="collections-grid">
       {collections.map((collection, index) => (
