@@ -35,7 +35,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       status: 404,
     });
   }
-  return json({ collection, weaverseData: await context.weaverse.loadPage({ type: 'COLLECTION' }), });
+  return json({ collection, weaverseData: await context.weaverse.loadPage({ type: 'COLLECTION', handle: handle }), });
 }
 
 export default function Collection() {

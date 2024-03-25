@@ -22,7 +22,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     throw new Response('Not Found', { status: 404 });
   }
 
-  return json({ page, weaverseData: await context.weaverse.loadPage({ type: 'PAGE' }), });
+  return json({ page, weaverseData: await context.weaverse.loadPage({ type: 'PAGE', handle: params.handle }), });
 }
 
 export default function Page() {

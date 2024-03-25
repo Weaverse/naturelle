@@ -88,7 +88,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     variables: { handle },
   });
 
-  return defer({ product, variants, weaverseData: await context.weaverse.loadPage({ type: 'PRODUCT' }), });
+  return defer({ product, variants, weaverseData: await context.weaverse.loadPage({ type: 'PRODUCT', handle: handle }), });
 }
 
 function redirectToFirstVariant({

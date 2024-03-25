@@ -26,7 +26,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 
   const article = blog.articleByHandle;
 
-  return json({ article, weaverseData: await context.weaverse.loadPage({ type: 'ARTICLE' }), });
+  return json({ article, weaverseData: await context.weaverse.loadPage({ type: 'ARTICLE', handle: articleHandle }), });
 }
 
 export default function Article() {
