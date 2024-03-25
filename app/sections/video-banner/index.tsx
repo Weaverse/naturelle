@@ -4,7 +4,7 @@ import type {
 } from '@weaverse/hydrogen';
 import { forwardRef, CSSProperties } from 'react';
 import clsx from 'clsx';
-import ReactPlayer from 'react-player/youtube';
+import ReactPlayer from 'react-player';
 
 interface VideoBannerProps extends HydrogenComponentProps {
     videoLink: string;
@@ -59,9 +59,7 @@ const VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
                 muted={enableMuted}
                 loop={enableLoop}
                 controls={false}
-                width={'100%'}
-                height={'auto'}
-                className="absolute inset-0 aspect-video"
+                className="absolute sm:!w-full sm:!h-auto inset-0 aspect-video max-sm:scale-[2.5]"
             />
             <div className={clsx(
                 "absolute inset-0",
@@ -88,7 +86,7 @@ export let schema: HydrogenComponentSchema = {
                     type: 'text',
                     name: 'videoLink',
                     label: 'Video link',
-                    defaultValue: 'https://www.youtube.com/embed/_9VUPq3SxOc',
+                    defaultValue: 'https://cdn.shopify.com/videos/c/o/v/da736f2426744842b544038265c59a8d.mp4',
                     placeholder: 'https://',
                 },
                 {
