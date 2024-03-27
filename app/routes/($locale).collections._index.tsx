@@ -1,7 +1,7 @@
-import { useLoaderData, Link } from '@remix-run/react';
+// import { useLoaderData, Link } from '@remix-run/react';
 import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { Pagination, getPaginationVariables, Image } from '@shopify/hydrogen';
-import type { CollectionFragment } from 'storefrontapi.generated';
+import { getPaginationVariables } from '@shopify/hydrogen';
+// import type { CollectionFragment } from 'storefrontapi.generated';
 import { WeaverseContent } from '~/weaverse';
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -17,71 +17,53 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 }
 
 export default function Collections() {
-  const { collections } = useLoaderData<typeof loader>();
+  // const { collections } = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <div className="collections">
-        <h1>Collections</h1>
-        <Pagination connection={collections}>
-          {({ nodes, isLoading, PreviousLink, NextLink }) => (
-            <div>
-              <PreviousLink>
-                {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-              </PreviousLink>
-              <CollectionsGrid collections={nodes} />
-              <NextLink>
-                {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-              </NextLink>
-            </div>
-          )}
-        </Pagination>
-      </div>
       <WeaverseContent />
-    </>
   );
 }
 
-function CollectionsGrid({ collections }: { collections: CollectionFragment[] }) {
-  return (
-    <div className="collections-grid">
-      {collections.map((collection, index) => (
-        <CollectionItem
-          key={collection.id}
-          collection={collection}
-          index={index}
-        />
-      ))}
-    </div>
-  );
-}
+// function CollectionsGrid({ collections }: { collections: CollectionFragment[] }) {
+//   return (
+//     <div className="collections-grid">
+//       {collections.map((collection, index) => (
+//         <CollectionItem
+//           key={collection.id}
+//           collection={collection}
+//           index={index}
+//         />
+//       ))}
+//     </div>
+//   );
+// }
 
-function CollectionItem({
-  collection,
-  index,
-}: {
-  collection: CollectionFragment;
-  index: number;
-}) {
-  return (
-    <Link
-      className="collection-item"
-      key={collection.id}
-      to={`/collections/${collection.handle}`}
-      prefetch="intent"
-    >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
-        />
-      )}
-      <h5>{collection.title}</h5>
-    </Link>
-  );
-}
+// function CollectionItem({
+//   collection,
+//   index,
+// }: {
+//   collection: CollectionFragment;
+//   index: number;
+// }) {
+//   return (
+//     <Link
+//       className="collection-item"
+//       key={collection.id}
+//       to={`/collections/${collection.handle}`}
+//       prefetch="intent"
+//     >
+//       {collection?.image && (
+//         <Image
+//           alt={collection.image.altText || collection.title}
+//           aspectRatio="1/1"
+//           data={collection.image}
+//           loading={index < 3 ? 'eager' : undefined}
+//         />
+//       )}
+//       <h5>{collection.title}</h5>
+//     </Link>
+//   );
+// }
 
 const COLLECTIONS_QUERY = `#graphql
   fragment Collection on Collection {
