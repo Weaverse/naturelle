@@ -224,6 +224,29 @@ export type HeaderQuery = {
   >;
 };
 
+export type CollectionsQuery = {
+  collections: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Collection,
+        'id' | 'title' | 'description' | 'handle'
+      > & {
+        seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
+        image?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'url' | 'width' | 'height' | 'altText'
+          >
+        >;
+      }
+    >;
+    pageInfo: Pick<
+      StorefrontAPI.PageInfo,
+      'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'
+    >;
+  };
+};
+
 export type FooterQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   footerMenuHandle: StorefrontAPI.Scalars['String']['input'];

@@ -15,6 +15,7 @@ import * as Instagram from '~/sections/instagram';
 import * as BeforeAndAfter from '~/sections/before-and-after/index';
 import * as BeforeAndAfterSlide from '~/sections/before-and-after/slider';
 import * as FeaturedProducts from '~/sections/feature-product/index';
+import * as CollectionList from '~/sections/collection-list/index';
 import * as HeaderImage from '~/sections/image-banner/index';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
@@ -33,6 +34,7 @@ export const components: HydrogenComponent[] = [
     BeforeAndAfter,
     BeforeAndAfterSlide,
     FeaturedProducts,
+    CollectionList,
     HeaderImage,
     StyleGuide
 ];

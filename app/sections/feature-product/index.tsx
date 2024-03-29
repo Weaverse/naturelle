@@ -172,11 +172,11 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                                     );
                                 })}
                             </Swiper>
-                            <div className={clsx('sm:grid justify-self-center gap-4 hidden',
+                            <div className={clsx('sm:grid justify-self-center gap-4 hidden h-fit',
                                 productPerRowClasses[Math.min(productsPerRow, displayedProducts?.length || 1)]).concat(' justify-items-center')}>
                                 {displayedProducts?.map((idx: any) => (
                                     <Link key={idx.id} to={`/products/${idx.handle}`}>
-                                        <div className='flex flex-col gap-4 w-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
+                                        <div className='flex flex-col gap-4 w-full h-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
                                             {idx.featuredImage ? (
                                                 <Image
                                                     data={idx.featuredImage}
