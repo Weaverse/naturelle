@@ -3,6 +3,7 @@ import {Image} from '@shopify/hydrogen';
 import {Link} from './Link';
 
 export function Logo() {
+  return null;
   let settings = useThemeSettings();
   let {logoData} = settings;
   if (!logoData) {
