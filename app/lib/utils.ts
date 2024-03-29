@@ -1,6 +1,7 @@
 import typographicBase from 'typographic-base';
 import type { MoneyV2 } from '@shopify/hydrogen/storefront-api-types';
 import {countries} from '~/data/countries';
+import {useRootLoaderData} from '~/root';
 import type {I18nLocale} from './type';
 
 
@@ -52,3 +53,12 @@ export const DEFAULT_LOCALE: I18nLocale = Object.freeze({
   ...countries.default,
   pathPrefix: '',
 });
+
+export function usePrefixPathWithLocale(path: string) {
+  const rootData = useRootLoaderData();
+  const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
+
+  return `${selectedLocale.pathPrefix}${
+    path.startsWith('/') ? path : '/' + path
+  }`;
+}

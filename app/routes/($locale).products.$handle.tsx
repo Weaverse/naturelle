@@ -1,432 +1,190 @@
-import { Suspense } from 'react';
-import { defer, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
+import {AnalyticsPageType} from '@shopify/hydrogen';
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {defer} from '@shopify/remix-oxygen';
+import type {ProductRecommendationsQuery} from 'storefrontapi.generated';
+import invariant from 'tiny-invariant';
+import {routeHeaders} from '~/data/cache';
 import {
-  Await,
-  Link,
-  useLoaderData,
-  type MetaFunction,
-  type FetcherWithComponents,
-} from '@remix-run/react';
-import type {
-  ProductFragment,
-  ProductVariantsQuery,
-  ProductVariantFragment,
-} from 'storefrontapi.generated';
+  PRODUCT_QUERY,
+  RECOMMENDED_PRODUCTS_QUERY,
+  VARIANTS_QUERY,
+} from '~/data/queries';
+import {seoPayload} from '~/lib/seo.server';
+import type {Storefront} from '~/lib/type';
+import {WeaverseContent} from '~/weaverse';
+import {useLoaderData, useSearchParams} from '@remix-run/react';
+import type {SelectedOptionInput} from '@shopify/hydrogen/storefront-api-types';
+import {useEffect} from 'react';
+import {getJudgemeReviews} from '~/lib/judgeme';
+import {getSelectedProductOptions} from '@weaverse/hydrogen';
 
-import {
-  Image,
-  Money,
-  VariantSelector,
-  type VariantOption,
-  getSelectedProductOptions,
-  CartForm,
-} from '@shopify/hydrogen';
-import type {
-  CartLineInput,
-  SelectedOption,
-} from '@shopify/hydrogen/storefront-api-types';
-import { getVariantUrl } from '~/lib/variants';
-import { WeaverseContent } from '~/weaverse';
+export const headers = routeHeaders;
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `Hydrogen | ${data?.product.title ?? ''}` }];
-};
+export async function loader({params, request, context}: LoaderFunctionArgs) {
+  const {handle} = params;
+  console.log('productHandle', handle);
+  
+  invariant(handle, 'Missing productHandle param, check route filename');
 
-export async function loader({ params, request, context }: LoaderFunctionArgs) {
-  const { handle } = params;
-  const { storefront } = context;
-
-  const selectedOptions = getSelectedProductOptions(request).filter(
-    (option) =>
-      // Filter out Shopify predictive search query params
-      !option.name.startsWith('_sid') &&
-      !option.name.startsWith('_pos') &&
-      !option.name.startsWith('_psq') &&
-      !option.name.startsWith('_ss') &&
-      !option.name.startsWith('_v') &&
-      // Filter out third party tracking params
-      !option.name.startsWith('fbclid'),
-  );
-
-  if (!handle) {
-    throw new Error('Expected product handle to be defined');
-  }
-
-  // await the query for the critical product data
-  const { product } = await storefront.query(PRODUCT_QUERY, {
-    variables: { handle, selectedOptions },
+  const selectedOptions = getSelectedProductOptions(request);
+  const {shop, product} = await context.storefront.query(PRODUCT_QUERY, {
+    variables: {
+      handle: handle,
+      selectedOptions,
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+    },
   });
 
   if (!product?.id) {
-    throw new Response(null, { status: 404 });
+    throw new Response('product', {status: 404});
   }
 
-  const firstVariant = product.variants.nodes[0];
-  const firstVariantIsDefault = Boolean(
-    firstVariant.selectedOptions.find(
-      (option: SelectedOption) =>
-        option.name === 'Title' && option.value === 'Default Title',
-    ),
-  );
-
-  if (firstVariantIsDefault) {
-    product.selectedVariant = firstVariant;
-  } else {
-    // if no selected variant was returned from the selected options,
-    // we redirect to the first variant's url with it's selected options applied
-    if (!product.selectedVariant) {
-      throw redirectToFirstVariant({ product, request });
+  if (!product.selectedVariant && product.options.length) {
+    // set the selectedVariant to the first variant if there is only one option
+    if (product.options.length < 2) {
+      product.selectedVariant = product.variants.nodes[0];
     }
   }
 
   // In order to show which variants are available in the UI, we need to query
   // all of them. But there might be a *lot*, so instead separate the variants
-  // into it's own separate query that is deferred. So there's a brief moment
+  // into its own separate query that is deferred. So there's a brief moment
   // where variant options might show as available when they're not, but after
-  // this deffered query resolves, the UI will update.
-  const variants = storefront.query(VARIANTS_QUERY, {
-    variables: { handle },
+  // this deferred query resolves, the UI will update.
+  const variants = await context.storefront.query(VARIANTS_QUERY, {
+    variables: {
+      handle: handle,
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+    },
   });
 
-  return defer({ product, variants, weaverseData: await context.weaverse.loadPage({ type: 'PRODUCT', handle: handle }), });
-}
+  const recommended = getRecommendedProducts(context.storefront, product.id);
 
-function redirectToFirstVariant({
-  product,
-  request,
-}: {
-  product: ProductFragment;
-  request: Request;
-}) {
-  const url = new URL(request.url);
+  // TODO: firstVariant is never used because we will always have a selectedVariant due to redirect
+  // Investigate if we can avoid the redirect for product pages with no search params for first variant
   const firstVariant = product.variants.nodes[0];
+  const selectedVariant = product.selectedVariant ?? firstVariant;
 
-  return redirect(
-    getVariantUrl({
-      pathname: url.pathname,
-      handle: product.handle,
-      selectedOptions: firstVariant.selectedOptions,
-      searchParams: new URLSearchParams(url.search),
-    }),
-    {
-      status: 302,
+  const productAnalytics: ShopifyAnalyticsProduct = {
+    productGid: product.id,
+    variantGid: selectedVariant.id,
+    name: product.title,
+    variantName: selectedVariant.title,
+    brand: product.vendor,
+    price: selectedVariant.price.amount,
+  };
+
+  const seo = seoPayload.product({
+    product,
+    selectedVariant,
+    url: request.url,
+  });
+
+  let judgeme_API_TOKEN = context.env.JUDGEME_PUBLIC_TOKEN;
+  let judgemeReviews = null;
+  if (judgeme_API_TOKEN) {
+    let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
+    judgemeReviews = await getJudgemeReviews(
+      judgeme_API_TOKEN,
+      shop_domain,
+      handle,
+    );
+  }
+
+  return defer({
+    variants,
+    product,
+    shop,
+    storeDomain: shop.primaryDomain.url,
+    recommended,
+    analytics: {
+      pageType: AnalyticsPageType.product,
+      resourceId: product.id,
+      products: [productAnalytics],
+      totalValue: parseFloat(selectedVariant.price.amount),
     },
-  );
+    seo,
+    weaverseData: await context.weaverse.loadPage({
+      type: 'PRODUCT',
+      handle: handle
+    }),
+    judgemeReviews,
+  });
 }
+
+// function redirectToFirstVariant({
+//   product,
+//   request,
+// }: {
+//   product: ProductQuery['product'];
+//   request: Request;
+// }) {
+//   const searchParams = new URLSearchParams(new URL(request.url).search);
+//   const firstVariant = product!.variants.nodes[0];
+//   for (const option of firstVariant.selectedOptions) {
+//     searchParams.set(option.name, option.value);
+//   }
+//
+//   return redirect(
+//     `/products/${product!.handle}?${searchParams.toString()}`,
+//     302,
+//   );
+// }
+
+/**
+ * We need to handle the route change from client to keep the view transition persistent
+ */
+let useApplyFirstVariant = () => {
+  let {product} = useLoaderData<typeof loader>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (!product.selectedVariant) {
+      let selectedOptions = product.variants?.nodes?.[0]?.selectedOptions;
+      selectedOptions?.forEach((option: SelectedOptionInput) => {
+        searchParams.set(option.name, option.value);
+      });
+      setSearchParams(searchParams, {
+        replace: true, // prevent adding a new entry to the history stack
+      });
+    }
+    // eslint-disable-next-line
+  }, [product]);
+};
 
 export default function Product() {
-  const { product, variants } = useLoaderData<typeof loader>();
-  const { selectedVariant } = product;
-  return (
-    <>
-      <div className="product">
-        <ProductImage image={selectedVariant?.image} />
-        <ProductMain
-          selectedVariant={selectedVariant}
-          product={product}
-          variants={variants}
-        />
-      </div>
-      <WeaverseContent />
-    </>
-  );
+  useApplyFirstVariant();
+  return <WeaverseContent />;
 }
 
-function ProductImage({ image }: { image: ProductVariantFragment['image'] }) {
-  if (!image) {
-    return <div className="product-image" />;
-  }
-  return (
-    <div className="product-image">
-      <Image
-        alt={image.altText || 'Product Image'}
-        aspectRatio="1/1"
-        data={image}
-        key={image.id}
-        sizes="(min-width: 45em) 50vw, 100vw"
-      />
-    </div>
+async function getRecommendedProducts(
+  storefront: Storefront,
+  productId: string,
+) {
+  const products = await storefront.query<ProductRecommendationsQuery>(
+    RECOMMENDED_PRODUCTS_QUERY,
+    {
+      variables: {productId, count: 12},
+    },
   );
-}
 
-function ProductMain({
-  selectedVariant,
-  product,
-  variants,
-}: {
-  product: ProductFragment;
-  selectedVariant: ProductFragment['selectedVariant'];
-  variants: Promise<ProductVariantsQuery>;
-}) {
-  const { title, descriptionHtml } = product;
-  return (
-    <div className="product-main">
-      <h1>{title}</h1>
-      <ProductPrice selectedVariant={selectedVariant} />
-      <br />
-      <Suspense
-        fallback={
-          <ProductForm
-            product={product}
-            selectedVariant={selectedVariant}
-            variants={[]}
-          />
-        }
-      >
-        <Await
-          errorElement="There was a problem loading product variants"
-          resolve={variants}
-        >
-          {(data) => (
-            <ProductForm
-              product={product}
-              selectedVariant={selectedVariant}
-              variants={data.product?.variants.nodes || []}
-            />
-          )}
-        </Await>
-      </Suspense>
-      <br />
-      <br />
-      <p>
-        <strong>Description</strong>
-      </p>
-      <br />
-      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-      <br />
-    </div>
+  invariant(products, 'No data returned from Shopify API');
+
+  const mergedProducts = (products.recommended ?? [])
+    .concat(products.additional.nodes)
+    .filter(
+      (value, index, array) =>
+        array.findIndex((value2) => value2.id === value.id) === index,
+    );
+
+  const originalProduct = mergedProducts.findIndex(
+    (item) => item.id === productId,
   );
+
+  mergedProducts.splice(originalProduct, 1);
+
+  return {nodes: mergedProducts};
 }
-
-function ProductPrice({
-  selectedVariant,
-}: {
-  selectedVariant: ProductFragment['selectedVariant'];
-}) {
-  return (
-    <div className="product-price">
-      {selectedVariant?.compareAtPrice ? (
-        <>
-          <p>Sale</p>
-          <br />
-          <div className="product-price-on-sale">
-            {selectedVariant ? <Money data={selectedVariant.price} /> : null}
-            <s>
-              <Money data={selectedVariant.compareAtPrice} />
-            </s>
-          </div>
-        </>
-      ) : (
-        selectedVariant?.price && <Money data={selectedVariant?.price} />
-      )}
-    </div>
-  );
-}
-
-function ProductForm({
-  product,
-  selectedVariant,
-  variants,
-}: {
-  product: ProductFragment;
-  selectedVariant: ProductFragment['selectedVariant'];
-  variants: Array<ProductVariantFragment>;
-}) {
-  return (
-    <div className="product-form">
-      <VariantSelector
-        handle={product.handle}
-        options={product.options}
-        variants={variants}
-      >
-        {({ option }) => <ProductOptions key={option.name} option={option} />}
-      </VariantSelector>
-      <br />
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          window.location.href = window.location.href + '#cart-aside';
-        }}
-        lines={
-          selectedVariant
-            ? [
-              {
-                merchandiseId: selectedVariant.id,
-                quantity: 1,
-              },
-            ]
-            : []
-        }
-      >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
-    </div>
-  );
-}
-
-function ProductOptions({ option }: { option: VariantOption }) {
-  return (
-    <div className="product-options" key={option.name}>
-      <h5>{option.name}</h5>
-      <div className="product-options-grid">
-        {option.values.map(({ value, isAvailable, isActive, to }) => {
-          return (
-            <Link
-              className="product-options-item"
-              key={option.name + value}
-              prefetch="intent"
-              preventScrollReset
-              replace
-              to={to}
-              style={{
-                border: isActive ? '1px solid black' : '1px solid transparent',
-                opacity: isAvailable ? 1 : 0.3,
-              }}
-            >
-              {value}
-            </Link>
-          );
-        })}
-      </div>
-      <br />
-    </div>
-  );
-}
-
-function AddToCartButton({
-  analytics,
-  children,
-  disabled,
-  lines,
-  onClick,
-}: {
-  analytics?: unknown;
-  children: React.ReactNode;
-  disabled?: boolean;
-  lines: CartLineInput[];
-  onClick?: () => void;
-}) {
-  return (
-    <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => (
-        <>
-          <input
-            name="analytics"
-            type="hidden"
-            value={JSON.stringify(analytics)}
-          />
-          <button
-            type="submit"
-            onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
-            {children}
-          </button>
-        </>
-      )}
-    </CartForm>
-  );
-}
-
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    id
-    image {
-      __typename
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-    selectedOptions {
-      name
-      value
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
-  }
-` as const;
-
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
-    id
-    title
-    vendor
-    handle
-    descriptionHtml
-    description
-    options {
-      name
-      values
-    }
-    selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
-      ...ProductVariant
-    }
-    variants(first: 1) {
-      nodes {
-        ...ProductVariant
-      }
-    }
-    seo {
-      description
-      title
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-const PRODUCT_QUERY = `#graphql
-  query Product(
-    $country: CountryCode
-    $handle: String!
-    $language: LanguageCode
-    $selectedOptions: [SelectedOptionInput!]!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...Product
-    }
-  }
-  ${PRODUCT_FRAGMENT}
-` as const;
-
-const PRODUCT_VARIANTS_FRAGMENT = `#graphql
-  fragment ProductVariants on Product {
-    variants(first: 250) {
-      nodes {
-        ...ProductVariant
-      }
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-const VARIANTS_QUERY = `#graphql
-  ${PRODUCT_VARIANTS_FRAGMENT}
-  query ProductVariants(
-    $country: CountryCode
-    $language: LanguageCode
-    $handle: String!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...ProductVariants
-    }
-  }
-` as const;
