@@ -19,6 +19,7 @@ import * as CollectionList from '~/sections/collection-list/index';
 import * as AllProducts from '~/sections/all-products/index';
 import * as ProductInformation from '~/sections/product-information/index';
 import * as CollectionFilters from '~/sections/collection-filters/index';
+import * as Page from '~/sections/page/page';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -40,5 +41,6 @@ export const components: HydrogenComponent[] = [
     AllProducts,
     ProductInformation,
     CollectionFilters,
+    Page,
     StyleGuide
 ];
