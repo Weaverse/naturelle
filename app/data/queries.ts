@@ -274,3 +274,103 @@ export let COLLECTION_QUERY = `#graphql
   }
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
+
+export let BLOGS_PAGE_QUERY = `#graphql
+  query Blog(
+    $language: LanguageCode
+    $blogHandle: String!
+    $pageBy: Int!
+    $cursor: String
+  ) @inContext(language: $language) {
+    blog(handle: $blogHandle) {
+      title
+      handle
+      seo {
+        title
+        description
+      }
+      articles(first: $pageBy, after: $cursor) {
+        edges {
+          node {
+            ...Article
+          }
+        }
+      }
+    }
+  }
+
+  fragment Article on Article {
+    author: authorV2 {
+      name
+    }
+    contentHtml
+    excerpt
+    excerptHtml
+    handle
+    id
+    image {
+      id
+      altText
+      url
+      width
+      height
+    }
+    publishedAt
+    title
+  }
+`;
+
+export let ARTICLE_QUERY = `#graphql
+  query ArticleDetails(
+    $language: LanguageCode
+    $blogHandle: String!
+    $articleHandle: String!
+  ) @inContext(language: $language) {
+    blog(handle: $blogHandle) {
+      articleByHandle(handle: $articleHandle) {
+        title
+        contentHtml
+        publishedAt
+        tags
+        author: authorV2 {
+          name
+        }
+        image {
+          id
+          altText
+          url
+          width
+          height
+        }
+        seo {
+          description
+          title
+        }
+      }
+      articles (first: 20) {
+        nodes {
+            ...Article
+        }
+      }
+    }
+  }
+  fragment Article on Article {
+    author: authorV2 {
+      name
+    }
+    contentHtml
+    excerpt
+    excerptHtml
+    handle
+    id
+    image {
+      id
+      altText
+      url
+      width
+      height
+    }
+    publishedAt
+    title
+  }
+`;
