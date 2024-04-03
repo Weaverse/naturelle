@@ -232,3 +232,185 @@ export function IconArrowSlideLeft(props: IconProps) {
     </Icon>
   );
 }
+
+export function IconFilledStar(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      stroke={props.stroke || 'currentColor'}
+      stroke-width="2"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path
+        d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z"
+        stroke-width="0"
+        fill="currentColor"
+      />
+    </Icon>
+  );
+}
+export function IconStarReview(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      stroke={props.stroke || 'currentColor'}
+      stroke-width="2"
+      fill='none'
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+    </Icon>
+  );
+}
+export function IconHalfFilledStar(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      stroke={props.stroke || 'currentColor'}
+      stroke-width="2"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path
+        d="M12 1a.993 .993 0 0 1 .823 .443l.067 .116l2.852 5.781l6.38 .925c.741 .108 1.08 .94 .703 1.526l-.07 .095l-.078 .086l-4.624 4.499l1.09 6.355a1.001 1.001 0 0 1 -1.249 1.135l-.101 -.035l-.101 -.046l-5.693 -3l-5.706 3c-.105 .055 -.212 .09 -.32 .106l-.106 .01a1.003 1.003 0 0 1 -1.038 -1.06l.013 -.11l1.09 -6.355l-4.623 -4.5a1.001 1.001 0 0 1 .328 -1.647l.113 -.036l.114 -.023l6.379 -.925l2.853 -5.78a.968 .968 0 0 1 .904 -.56zm0 3.274v12.476a1 1 0 0 1 .239 .029l.115 .036l.112 .05l4.363 2.299l-.836 -4.873a1 1 0 0 1 .136 -.696l.07 -.099l.082 -.09l3.546 -3.453l-4.891 -.708a1 1 0 0 1 -.62 -.344l-.073 -.097l-.06 -.106l-2.183 -4.424z"
+        stroke-width="0"
+        fill="currentColor"
+      />
+    </Icon>
+  );
+}
+
+export function IconClose(props: IconProps) {
+  return (
+    <Icon {...props} stroke={props.stroke || 'currentColor'}>
+      <title>Close</title>
+      <line
+        x1="4.44194"
+        y1="4.30806"
+        x2="15.7556"
+        y2="15.6218"
+        strokeWidth="1.25"
+      />
+      <line
+        y1="-0.625"
+        x2="16"
+        y2="-0.625"
+        transform="matrix(-0.707107 0.707107 0.707107 0.707107 16 4.75)"
+        strokeWidth="1.25"
+      />
+    </Icon>
+  );
+}
+
+export function IconFilters(props: IconProps) {
+  return (
+    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+      <title>Filters</title>
+      <circle cx="4.5" cy="6.5" r="2" />
+      <line x1="6" y1="6.5" x2="14" y2="6.5" />
+      <line x1="4.37114e-08" y1="6.5" x2="3" y2="6.5" />
+      <line x1="4.37114e-08" y1="13.5" x2="8" y2="13.5" />
+      <line x1="11" y1="13.5" x2="14" y2="13.5" />
+      <circle cx="9.5" cy="13.5" r="2" />
+    </Icon>
+  );
+}
+
+export function IconCaret({
+  direction = 'down',
+  stroke = 'currentColor',
+  ...props
+}: IconProps) {
+  let rotate;
+
+  switch (direction) {
+    case 'down':
+      rotate = 'rotate-0';
+      break;
+    case 'up':
+      rotate = 'rotate-180';
+      break;
+    case 'left':
+      rotate = '-rotate-90';
+      break;
+    case 'right':
+      rotate = 'rotate-90';
+      break;
+    default:
+      rotate = 'rotate-0';
+  }
+
+  return (
+    <Icon
+      {...props}
+      className={`w-5 h-5 transition ${rotate}`}
+      fill="transparent"
+      stroke={stroke}
+    >
+      <title>Caret</title>
+      <path d="M14 8L10 12L6 8" strokeWidth="1.25" />
+    </Icon>
+  );
+}
+
+export function IconXMark({
+  stroke = 'currentColor',
+  ...props
+}: React.ComponentProps<typeof Icon>) {
+  return (
+    <Icon {...props} fill="transparent" stroke={stroke}>
+      <title>Delete</title>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </Icon>
+  );
+}
+
+export function IconFacebook(props: IconProps) {
+  return (
+    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+      <path
+        d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15.75 8.24999H14.25C13.9542 8.24875 13.6611 8.3061 13.3875 8.41873C13.114 8.53137 12.8654 8.69705 12.6563 8.90623C12.4471 9.11541 12.2814 9.36394 12.1688 9.63749C12.0561 9.91103 11.9988 10.2042 12 10.5V21"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 13.5H15"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
+export function IconPinterest(props: IconProps) {
+  return (
+    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+      <path
+        d="M11.25 8.25L8.25 21"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.76562 14.6813C5.1148 13.7081 4.70085 12.596 4.55691 11.4342C4.41296 10.2723 4.54302 9.09285 4.93667 7.99026C5.33031 6.88767 5.97662 5.89255 6.82385 5.08455C7.67108 4.27655 8.6957 3.67812 9.8157 3.33715C10.9357 2.99618 12.12 2.92215 13.2737 3.12097C14.4275 3.3198 15.5186 3.78597 16.4599 4.48216C17.4012 5.17836 18.1664 6.08524 18.6943 7.13022C19.2222 8.1752 19.4981 9.32925 19.5 10.5C19.5 14.6438 16.5 17.25 13.5 17.25C10.5 17.25 9.59999 15.2719 9.59999 15.2719"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}

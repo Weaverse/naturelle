@@ -15,6 +15,15 @@ import * as Instagram from '~/sections/instagram';
 import * as BeforeAndAfter from '~/sections/before-and-after/index';
 import * as BeforeAndAfterSlide from '~/sections/before-and-after/slider';
 import * as FeaturedProducts from '~/sections/feature-product/index';
+import * as CollectionList from '~/sections/collection-list/index';
+import * as AllProducts from '~/sections/all-products/index';
+import * as ProductInformation from '~/sections/product-information/index';
+import * as HeaderImage from '~/sections/image-banner/index';
+import * as CollectionFilters from '~/sections/collection-filters/index';
+import * as Page from '~/sections/page/page';
+import * as RelatedArticles from '~/sections/related-articles/related-articles';
+import * as BlogPost from '~/sections/blog-post/blog-post';
+import * as RelatedProducts from '~/sections/related-products/related-products';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -32,5 +41,14 @@ export const components: HydrogenComponent[] = [
     BeforeAndAfter,
     BeforeAndAfterSlide,
     FeaturedProducts,
+    CollectionList,
+    AllProducts,
+    ProductInformation,
+    HeaderImage,
+    CollectionFilters,
+    Page,
+    RelatedArticles,
+    BlogPost,
+    RelatedProducts,
     StyleGuide
 ];

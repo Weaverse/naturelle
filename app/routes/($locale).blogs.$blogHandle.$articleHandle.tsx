@@ -1,104 +1,70 @@
-import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { useLoaderData, type MetaFunction } from '@remix-run/react';
-import { Image } from '@shopify/hydrogen';
-import { Button } from '@/components/ui/button';
-import { WeaverseContent } from '~/weaverse';
+import {json} from '@shopify/remix-oxygen';
+import {type RouteLoaderArgs} from '@weaverse/hydrogen';
+import type {ArticleDetailsQuery} from 'storefrontapi.generated';
+import invariant from 'tiny-invariant';
+import {routeHeaders} from '~/data/cache';
+import {ARTICLE_QUERY} from '~/data/queries';
+import {seoPayload} from '~/lib/seo.server';
+import {WeaverseContent} from '~/weaverse';
 
+// import styles from '../styles/custom-font.css';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `Hydrogen | ${data?.article.title ?? ''} article` }];
-};
+export const headers = routeHeaders;
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
-  const { blogHandle, articleHandle } = params;
+// export const links: LinksFunction = () => {
+//   return [{rel: 'stylesheet', href: styles}];
+// };
 
-  if (!articleHandle || !blogHandle) {
-    throw new Response('Not found', { status: 404 });
-  }
+export async function loader(args: RouteLoaderArgs) {
+  let {request, params, context} = args;
+  const {language, country} = context.storefront.i18n;
 
-  const { blog } = await context.storefront.query(ARTICLE_QUERY, {
-    variables: { blogHandle, articleHandle },
-  });
+  invariant(params.blogHandle, 'Missing blog handle');
+  invariant(params.articleHandle, 'Missing article handle');
+
+  const {blog} = await context.storefront.query<ArticleDetailsQuery>(
+    ARTICLE_QUERY,
+    {
+      variables: {
+        blogHandle: params.blogHandle,
+        articleHandle: params.articleHandle,
+        language,
+      },
+    },
+  );
 
   if (!blog?.articleByHandle) {
-    throw new Response(null, { status: 404 });
+    throw new Response(null, {status: 404});
   }
 
   const article = blog.articleByHandle;
+  const relatedArticles = blog.articles.nodes.filter(
+    (art: any) => art?.handle !== params?.articleHandle,
+  );
 
-  return json({ article, weaverseData: await context.weaverse.loadPage({ type: 'ARTICLE', handle: articleHandle }), });
-}
-
-export default function Article() {
-  const { article } = useLoaderData<typeof loader>();
-  const { title, image, contentHtml, author } = article;
-
-  const publishedDate = new Intl.DateTimeFormat('en-US', {
+  const formattedDate = new Intl.DateTimeFormat(`${language}-${country}`, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(new Date(article.publishedAt));
+  }).format(new Date(article?.publishedAt!));
 
-  return (
-    <>
-      <div className="article space-y-10 mb-10">
-        {image && (
-          <Image
-            data={image}
-            className="max-h-[720px] object-cover"
-            sizes="90vw"
-            loading="eager"
-          />
-        )}
-        <div className="container space-y-10">
-          <div className="space-y-4 text-center">
-            <Button>Blog badge</Button>
-            <h1 className="font-bold">{title}</h1>
-          </div>
-          <div
-            dangerouslySetInnerHTML={{ __html: contentHtml }}
-            className="article"
-          />
-          <p className="text-foreground-subtle">
-            <span>
-              {publishedDate} &middot; {author?.name}
-            </span>
-          </p>
-        </div>
-      </div>
-      <WeaverseContent />
-    </>
-  );
+  const seo = seoPayload.article({article, url: request.url});
+
+  return json({
+    article,
+    blog: {
+      handle: params.blogHandle,
+    },
+    relatedArticles,
+    formattedDate,
+    seo,
+    weaverseData: await context.weaverse.loadPage({
+      type: 'ARTICLE',
+      handle: params.articleHandle,
+    }),
+  });
 }
 
-// NOTE: https://shopify.dev/docs/api/storefront/latest/objects/blog#field-blog-articlebyhandle
-const ARTICLE_QUERY = `#graphql
-  query Article(
-    $articleHandle: String!
-    $blogHandle: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    blog(handle: $blogHandle) {
-      articleByHandle(handle: $articleHandle) {
-        title
-        contentHtml
-        publishedAt
-        author: authorV2 {
-          name
-        }
-        image {
-          id
-          altText
-          url
-          width
-          height
-        }
-        seo {
-          description
-          title
-        }
-      }
-    }
-  }
-` as const;
+export default function Article() {
+  return <WeaverseContent />;
+}
