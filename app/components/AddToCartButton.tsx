@@ -1,16 +1,16 @@
-import type {CartLineInput} from '@shopify/hydrogen/storefront-api-types';
-import type {ShopifyAddToCartPayload} from '@shopify/hydrogen';
+import type { CartLineInput } from '@shopify/hydrogen/storefront-api-types';
+import type { ShopifyAddToCartPayload } from '@shopify/hydrogen';
 import {
   AnalyticsEventName,
   CartForm,
   getClientBrowserParameters,
   sendShopifyAnalytics,
 } from '@shopify/hydrogen';
-import type {FetcherWithComponents} from '@remix-run/react';
-import {useEffect} from 'react';
+import type { FetcherWithComponents } from '@remix-run/react';
+import { useEffect } from 'react';
 
-import {Button} from '~/components/Button';
-import {usePageAnalytics} from '~/hooks/usePageAnalytics';
+import { Button } from '@/components/ui/button';
+import { usePageAnalytics } from '~/hooks/usePageAnalytics';
 
 export function AddToCartButton({
   children,
@@ -50,8 +50,8 @@ export function AddToCartButton({
             <Button
               as="button"
               type="submit"
-              width={width}
-              variant={variant}
+              variant="outline"
+              size="lg"
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}
               {...props}
@@ -74,7 +74,7 @@ function AddToCartAnalytics({
 }): JSX.Element {
   const fetcherData = fetcher.data;
   const formData = fetcher.formData;
-  const pageAnalytics = usePageAnalytics({hasUserConsent: true});
+  const pageAnalytics = usePageAnalytics({ hasUserConsent: true });
 
   useEffect(() => {
     if (formData) {

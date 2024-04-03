@@ -8,10 +8,10 @@ import type {
 import { forwardRef, CSSProperties } from 'react';
 import type { CollectionsQuery } from 'storefrontapi.generated';
 import { PageHeader, Section } from '~/components/Text';
-import { Button } from '~/components/Button';
 import { Grid } from '~/components/Grid';
 import { getImageLoadingPriority } from '~/lib/const';
 import { CollectionCard } from './collection-card';
+import { Button } from '@/components/ui/button';
 
 interface CollectionListProps extends HydrogenComponentProps {
   heading: string;
@@ -39,7 +39,7 @@ let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
             {({ nodes, isLoading, PreviousLink, NextLink }) => (
               <>
                 <div className="flex items-center justify-center mb-6">
-                  <Button as={PreviousLink} variant="secondary" width="full">
+                  <Button as={PreviousLink} variant="outline">
                     {isLoading ? 'Loading...' : prevButtonText}
                   </Button>
                 </div>
@@ -57,7 +57,7 @@ let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
                   ))}
                 </Grid>
                 <div className="flex items-center justify-center mt-6">
-                  <Button as={NextLink} variant="secondary" width="full">
+                  <Button as={NextLink} variant="outline">
                     {isLoading ? 'Loading...' : nextButtonText}
                   </Button>
                 </div>
