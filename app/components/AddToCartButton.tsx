@@ -9,7 +9,7 @@ import {
 import type {FetcherWithComponents} from '@remix-run/react';
 import {useEffect} from 'react';
 
-import {Button} from '~/components/Button';
+import { Button } from '@/components/ui/button';
 import {usePageAnalytics} from '~/hooks/usePageAnalytics';
 
 export function AddToCartButton({
@@ -48,10 +48,8 @@ export function AddToCartButton({
               value={JSON.stringify(analytics)}
             />
             <Button
-              as="button"
               type="submit"
-              width={width}
-              variant={variant}
+              variant="outline"
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}
               {...props}

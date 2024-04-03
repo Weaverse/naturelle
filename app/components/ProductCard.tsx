@@ -6,7 +6,7 @@ import type {MoneyV2, Product} from '@shopify/hydrogen/storefront-api-types';
 import type {ProductCardFragment} from 'storefrontapi.generated';
 import {Text} from '~/components/Text';
 import {Link} from '~/components/Link';
-import {Button} from '~/components/Button';
+import { Button } from '@/components/ui/button';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {isDiscounted, isNewArrival} from '~/lib/utils';
 import {getProductPlaceholder} from '~/lib/placeholders';
