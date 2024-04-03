@@ -56,7 +56,7 @@ declare module '@shopify/remix-oxygen' {
   export interface AppLoadContext {
     env: Env;
     cart: HydrogenCart;
-    storefront: Storefront<I18nLocale>;
+    storefront: Storefront;
     customerAccount: CustomerClient;
     session: AppSession;
     waitUntil: ExecutionContext['waitUntil'];
