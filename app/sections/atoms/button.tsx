@@ -1,12 +1,15 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import type { HydrogenComponentSchema } from '@weaverse/hydrogen';
 import { IconEllipse } from '~/components/Icon';
-import { forwardRef } from 'react';
+import { forwardRef, CSSProperties } from 'react';
 
 const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
-    const { href, target, value, variant, ...rest } = props;
+    const { href, target, value, variant, textColor, ...rest } = props;
     const Component = href ? 'a' : 'button';
+    let style = {
+      color: textColor,
+    } as CSSProperties;
     return (
       <Button
         as={Component}
@@ -16,11 +19,12 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...rest}
         className={`w-fit mx-auto ${props.className}`}
+        style={style}
       >
         {variant === 'primary' ? (
           <>
             <IconEllipse className='absolute inset-0 !w-[148px] !h-[61px] transform transition-transform duration-500 hover:rotate-[-11deg]'
-              stroke='rgb(var(--color-foreground))'
+              stroke={textColor ? textColor : 'rgb(var(--color-foreground))'}
               viewBox="0 0 148 61" />
             <div className='flex pl-4 pt-3'>{value}</div>
           </>
@@ -37,6 +41,11 @@ export const schema: HydrogenComponentSchema = {
     {
       group: 'Settings',
       inputs: [
+        {
+          type: 'color',
+          label: 'Text color',
+          name: 'textColor',
+        },
         {
           type: 'select',
           name: 'variant',
