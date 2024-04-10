@@ -15,6 +15,8 @@ import {
   useNavigation,
   useOutletContext,
   type MetaFunction,
+  useOutlet,
+  Outlet,
 } from '@remix-run/react';
 import {
   UPDATE_ADDRESS_MUTATION,
@@ -333,7 +335,7 @@ function AddressCard(props: {
       <p>{address.zip}</p>
       <p></p>
       <p>{address.phoneNumber}</p>
-      <div>
+      <div className="flex gap-1">
         <Button variant="link">Edit</Button>
         <Form id={address.id}>
           <input type="hidden" name="addressId" defaultValue={address.id} />
@@ -347,12 +349,19 @@ function AddressCard(props: {
 }
 
 export default function Addresses() {
+  const outlet = useOutlet();
   const {customer} = useOutletContext<{customer: CustomerFragment}>();
   const {defaultAddress, addresses: _addresses} = customer;
-  console.log('🚀 ~ defaultAddress:', defaultAddress);
   let addresses = _addresses.nodes.filter(
     (address) => address.id !== defaultAddress?.id,
   );
+
+  if (outlet)
+    return (
+      <div>
+        <Outlet />
+      </div>
+    );
 
   return (
     <div className="account-addresses">

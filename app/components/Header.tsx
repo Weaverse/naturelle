@@ -19,7 +19,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
-      <Drawer>
+      <Drawer open={showMenu} onOpenChange={setShowMenu}>
         <HeaderMenu
           menu={menu}
           viewport="desktop"
@@ -113,7 +113,8 @@ export function HeaderMenu({
               // width: 668,
               // height: 1002,
             }}
-            aspectRatio="2/1"
+            loading="eager"
+            className="object-cover aspect-auto lg:aspect-[2/1]"
             sizes="auto"
           />
         </div>
