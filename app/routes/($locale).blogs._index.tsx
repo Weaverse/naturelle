@@ -1,63 +1,67 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { Link, useLoaderData, type MetaFunction } from '@remix-run/react';
+import { Pagination, getPaginationVariables } from '@shopify/hydrogen';
+import { WeaverseContent } from '~/weaverse';
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Blogs`}];
+  return [{ title: `Hydrogen | Blogs` }];
 };
 
 export const loader = async ({
   request,
-  context: {storefront},
+  context,
 }: LoaderFunctionArgs) => {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 10,
   });
 
-  const {blogs} = await storefront.query(BLOGS_QUERY, {
+  const { blogs } = await context.storefront.query(BLOGS_QUERY, {
     variables: {
       ...paginationVariables,
     },
   });
 
-  return json({blogs});
+  return json({ blogs, weaverseData: await context.weaverse.loadPage({ type: 'BLOG' }), });
 };
 
 export default function Blogs() {
-  const {blogs} = useLoaderData<typeof loader>();
+  const { blogs } = useLoaderData<typeof loader>();
 
   return (
-    <div className="blogs">
-      <h1>Blogs</h1>
-      <div className="blogs-grid">
-        <Pagination connection={blogs}>
-          {({nodes, isLoading, PreviousLink, NextLink}) => {
-            return (
-              <>
-                <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-                </PreviousLink>
-                {nodes.map((blog) => {
-                  return (
-                    <Link
-                      className="blog"
-                      key={blog.handle}
-                      prefetch="intent"
-                      to={`/blogs/${blog.handle}`}
-                    >
-                      <h2>{blog.title}</h2>
-                    </Link>
-                  );
-                })}
-                <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-                </NextLink>
-              </>
-            );
-          }}
-        </Pagination>
+    <>
+      <div className="blogs">
+        <h1>Blogs</h1>
+        <div className="blogs-grid">
+          <Pagination connection={blogs}>
+            {({ nodes, isLoading, PreviousLink, NextLink }) => {
+              return (
+                <>
+                  <PreviousLink>
+                    {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  </PreviousLink>
+                  {nodes.map((blog) => {
+                    return (
+                      <Link
+                        className="blog"
+                        key={blog.handle}
+                        prefetch="intent"
+                        to={`/blogs/${blog.handle}`}
+                      >
+                        <h2>{blog.title}</h2>
+                      </Link>
+                    );
+                  })}
+                  <NextLink>
+                    {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                  </NextLink>
+                </>
+              );
+            }}
+          </Pagination>
+        </div>
       </div>
-    </div>
+      <WeaverseContent />
+    </>
   );
 }
 

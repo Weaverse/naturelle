@@ -38,6 +38,68 @@ export type BlogSingleQuery = {
   }>;
 };
 
+export type ArticleDetailsQuery = {
+  blog?: StorefrontAPI.Maybe<{
+    articleByHandle?: StorefrontAPI.Maybe<
+      Pick<
+        StorefrontAPI.Article,
+        'title' | 'contentHtml' | 'publishedAt' | 'tags'
+      > & {
+        author?: StorefrontAPI.Maybe<Pick<StorefrontAPI.ArticleAuthor, 'name'>>;
+        image?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'altText' | 'url' | 'width' | 'height'
+          >
+        >;
+        seo?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Seo, 'description' | 'title'>
+        >;
+      }
+    >;
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          | 'contentHtml'
+          | 'excerpt'
+          | 'excerptHtml'
+          | 'handle'
+          | 'id'
+          | 'publishedAt'
+          | 'title'
+        > & {
+          author?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.ArticleAuthor, 'name'>
+          >;
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+        }
+      >;
+    };
+  }>;
+};
+
+export type ArticleFragment = Pick<
+  StorefrontAPI.Article,
+  | 'contentHtml'
+  | 'excerpt'
+  | 'excerptHtml'
+  | 'handle'
+  | 'id'
+  | 'publishedAt'
+  | 'title'
+> & {
+  author?: StorefrontAPI.Maybe<Pick<StorefrontAPI.ArticleAuthor, 'name'>>;
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+  >;
+};
+
 export type MoneyFragment = Pick<
   StorefrontAPI.MoneyV2,
   'currencyCode' | 'amount'
@@ -224,6 +286,213 @@ export type HeaderQuery = {
   >;
 };
 
+export type CollectionDetailsQuery = {
+  collection?: StorefrontAPI.Maybe<
+    Pick<
+      StorefrontAPI.Collection,
+      'id' | 'handle' | 'title' | 'description'
+    > & {
+      seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
+      image?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height' | 'altText'>
+      >;
+      products: {
+        filters: Array<
+          Pick<StorefrontAPI.Filter, 'id' | 'label' | 'type'> & {
+            values: Array<
+              Pick<
+                StorefrontAPI.FilterValue,
+                'id' | 'label' | 'count' | 'input'
+              >
+            >;
+          }
+        >;
+        nodes: Array<
+          Pick<
+            StorefrontAPI.Product,
+            'id' | 'title' | 'publishedAt' | 'handle' | 'vendor'
+          > & {
+            variants: {
+              nodes: Array<
+                Pick<
+                  StorefrontAPI.ProductVariant,
+                  'id' | 'availableForSale' | 'sku'
+                > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'url' | 'altText' | 'width' | 'height'
+                    >
+                  >;
+                  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+                  compareAtPrice?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                  >;
+                  selectedOptions: Array<
+                    Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+                  >;
+                  product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+                }
+              >;
+            };
+          }
+        >;
+        pageInfo: Pick<
+          StorefrontAPI.PageInfo,
+          'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'
+        >;
+      };
+    }
+  >;
+  collections: {
+    edges: Array<{node: Pick<StorefrontAPI.Collection, 'title' | 'handle'>}>;
+  };
+};
+
+export type CollectionsQuery = {
+  collections: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Collection,
+        'id' | 'title' | 'description' | 'handle'
+      > & {
+        seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
+        image?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'url' | 'width' | 'height' | 'altText'
+          >
+        >;
+      }
+    >;
+    pageInfo: Pick<
+      StorefrontAPI.PageInfo,
+      'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'
+    >;
+  };
+};
+
+export type HomepageFeaturedProductsQuery = {
+  products: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'publishedAt' | 'handle' | 'vendor'
+      > & {
+        variants: {
+          nodes: Array<
+            Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'availableForSale' | 'sku'
+            > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              selectedOptions: Array<
+                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+              product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
+export type AllProductsQuery = {
+  products: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'publishedAt' | 'handle' | 'vendor'
+      > & {
+        variants: {
+          nodes: Array<
+            Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'availableForSale' | 'sku'
+            > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              selectedOptions: Array<
+                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+              product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+            }
+          >;
+        };
+      }
+    >;
+    pageInfo: Pick<
+      StorefrontAPI.PageInfo,
+      'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'
+    >;
+  };
+};
+
+export type ProductVariantFragmentFragment = Pick<
+  StorefrontAPI.ProductVariant,
+  'id' | 'availableForSale' | 'quantityAvailable' | 'sku' | 'title'
+> & {
+  selectedOptions: Array<Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>>;
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+  >;
+  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  compareAtPrice?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+  >;
+  unitPrice?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+  >;
+  product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
+};
+
+export type MediaFragment =
+  | Media_ExternalVideo_Fragment
+  | Media_MediaImage_Fragment
+  | Media_Model3d_Fragment
+  | Media_Video_Fragment;
+
+export type ProductCardFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'publishedAt' | 'handle' | 'vendor'
+> & {
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id' | 'availableForSale' | 'sku'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+        compareAtPrice?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+        >;
+        selectedOptions: Array<
+          Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+        >;
+        product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+      }
+    >;
+  };
+};
+
 export type FooterQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   footerMenuHandle: StorefrontAPI.Scalars['String']['input'];
@@ -304,6 +573,73 @@ export type FeaturedCollectionQuery = {
             'id' | 'url' | 'altText' | 'width' | 'height'
           >
         >;
+      }
+    >;
+  };
+};
+
+export type ProductRecommendationsQuery = {
+  recommended?: StorefrontAPI.Maybe<
+    Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'publishedAt' | 'handle' | 'vendor'
+      > & {
+        variants: {
+          nodes: Array<
+            Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'availableForSale' | 'sku'
+            > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              selectedOptions: Array<
+                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+              product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+            }
+          >;
+        };
+      }
+    >
+  >;
+  additional: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'publishedAt' | 'handle' | 'vendor'
+      > & {
+        variants: {
+          nodes: Array<
+            Pick<
+              StorefrontAPI.ProductVariant,
+              'id' | 'availableForSale' | 'sku'
+            > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              selectedOptions: Array<
+                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+              product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+            }
+          >;
+        };
       }
     >;
   };
@@ -888,56 +1224,141 @@ export type ProductQuery = {
       selectedVariant?: StorefrontAPI.Maybe<
         Pick<
           StorefrontAPI.ProductVariant,
-          'availableForSale' | 'id' | 'sku' | 'title'
+          'id' | 'availableForSale' | 'quantityAvailable' | 'sku' | 'title'
         > & {
-          compareAtPrice?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          selectedOptions: Array<
+            Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
           >;
           image?: StorefrontAPI.Maybe<
-            {__typename: 'Image'} & Pick<
+            Pick<
               StorefrontAPI.Image,
               'id' | 'url' | 'altText' | 'width' | 'height'
             >
           >;
           price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-          product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
-          selectedOptions: Array<
-            Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+          compareAtPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
           >;
           unitPrice?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
           >;
+          product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
         }
       >;
+      media: {
+        nodes: Array<
+          | ({__typename: 'ExternalVideo'} & Pick<
+              StorefrontAPI.ExternalVideo,
+              'id' | 'embedUrl' | 'host' | 'mediaContentType' | 'alt'
+            > & {
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url'>
+                >;
+              })
+          | ({__typename: 'MediaImage'} & Pick<
+              StorefrontAPI.MediaImage,
+              'id' | 'mediaContentType' | 'alt'
+            > & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
+                >;
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url'>
+                >;
+              })
+          | ({__typename: 'Model3d'} & Pick<
+              StorefrontAPI.Model3d,
+              'id' | 'mediaContentType' | 'alt'
+            > & {
+                sources: Array<
+                  Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
+                >;
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url'>
+                >;
+              })
+          | ({__typename: 'Video'} & Pick<
+              StorefrontAPI.Video,
+              'id' | 'mediaContentType' | 'alt'
+            > & {
+                sources: Array<
+                  Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>
+                >;
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url'>
+                >;
+              })
+        >;
+      };
       variants: {
         nodes: Array<
           Pick<
             StorefrontAPI.ProductVariant,
-            'availableForSale' | 'id' | 'sku' | 'title'
+            'id' | 'availableForSale' | 'quantityAvailable' | 'sku' | 'title'
           > & {
-            compareAtPrice?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+            selectedOptions: Array<
+              Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
             >;
             image?: StorefrontAPI.Maybe<
-              {__typename: 'Image'} & Pick<
+              Pick<
                 StorefrontAPI.Image,
                 'id' | 'url' | 'altText' | 'width' | 'height'
               >
             >;
             price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-            product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
-            selectedOptions: Array<
-              Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+            compareAtPrice?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
             >;
             unitPrice?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
             >;
+            product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
           }
         >;
       };
       seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
     }
   >;
+  shop: Pick<StorefrontAPI.Shop, 'name'> & {
+    primaryDomain: Pick<StorefrontAPI.Domain, 'url'>;
+    shippingPolicy?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.ShopPolicy, 'body' | 'handle'>
+    >;
+    refundPolicy?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.ShopPolicy, 'body' | 'handle'>
+    >;
+  };
+};
+
+export type VariantsQuery = {
+  product?: StorefrontAPI.Maybe<{
+    variants: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.ProductVariant,
+          'id' | 'availableForSale' | 'quantityAvailable' | 'sku' | 'title'
+        > & {
+          selectedOptions: Array<
+            Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+          >;
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'url' | 'altText' | 'width' | 'height'
+            >
+          >;
+          price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          compareAtPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          >;
+          unitPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          >;
+          product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
+        }
+      >;
+    };
+  }>;
 };
 
 export type ProductVariantsFragment = {

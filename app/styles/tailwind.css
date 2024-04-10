@@ -1,9 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
 @layer base {
-  /* :root {
+    /* :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -33,8 +32,7 @@
     --ring: 222.2 84% 4.9%;
  
   } */
- 
-  /* .dark {
+    /* .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
  
@@ -64,18 +62,38 @@
     --ring: 212.7 26.8% 83.9%;
   } */
 }
- 
+
 @layer base {
-  * {
-    @apply border-bar;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Open Sans Variable', sans-serif;
-  }
-  h1,h2,h3,h4,h5,h6,.font-heading {
-    @apply font-sans;
-    font-family: 'Cormorant Variable', sans-serif;
-  }
+    * {
+        @apply border-bar;
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-family: 'Open Sans Variable', sans-serif;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-heading {
+        @apply font-sans;
+        font-family: 'Cormorant Variable', sans-serif;
+    }
 }
 
+@layer components {
+    .swimlane {
+        @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll px-6 pb-4;
+    }
+}
+
+@layer utilities {
+    .hiddenScroll {
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}

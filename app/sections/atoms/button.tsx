@@ -1,12 +1,34 @@
-import {Button, type ButtonProps} from '@/components/ui/button';
-import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
-import {forwardRef} from 'react';
+import { Button, type ButtonProps } from '@/components/ui/button';
+import type { HydrogenComponentSchema } from '@weaverse/hydrogen';
+import { IconEllipse } from '~/components/Icon';
+import { forwardRef, CSSProperties } from 'react';
 
 const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
+    const { href, target, value, variant, textColor, ...rest } = props;
+    const Component = href ? 'a' : 'button';
+    let style = {
+      color: textColor,
+    } as CSSProperties;
     return (
-      <Button ref={ref} {...props} className='w-fit mx-auto'>
-        {props.value}
+      <Button
+        as={Component}
+        href={href}
+        target={href ? (target || '_self') : undefined}
+        variant={variant}
+        ref={ref}
+        {...rest}
+        className={`w-fit mx-auto ${props.className}`}
+        style={style}
+      >
+        {variant === 'primary' ? (
+          <>
+            <IconEllipse className='absolute inset-0 !w-[148px] !h-[61px] transform transition-transform duration-500 hover:rotate-[-11deg]'
+              stroke={textColor ? textColor : 'rgb(var(--color-foreground))'}
+              viewBox="0 0 148 61" />
+            <div className='flex pl-4 pt-3'>{value}</div>
+          </>
+        ): (<>{value}</>)}
       </Button>
     );
   },
@@ -20,18 +42,21 @@ export const schema: HydrogenComponentSchema = {
       group: 'Settings',
       inputs: [
         {
+          type: 'color',
+          label: 'Text color',
+          name: 'textColor',
+        },
+        {
           type: 'select',
           name: 'variant',
           label: 'Variant',
           defaultValue: 'default',
           configs: {
             options: [
-              {label: 'Default', value: 'default'},
-              {label: 'Destructive', value: 'destructive'},
-              {label: 'Outline', value: 'outline'},
-              {label: 'Secondary', value: 'secondary'},
-              {label: 'Ghost', value: 'ghost'},
-              {label: 'Link', value: 'link'},
+              { label: 'Default', value: 'default' },
+              { label: 'Outline', value: 'outline' },
+              { label: 'Secondary', value: 'secondary' },
+              { label: 'Primary', value: 'primary' },
             ],
           },
         },
@@ -42,10 +67,10 @@ export const schema: HydrogenComponentSchema = {
           defaultValue: 'default',
           configs: {
             options: [
-              {label: 'Default', value: 'default'},
-              {label: 'Small', value: 'sm'},
-              {label: 'Large', value: 'lg'},
-              {label: 'Icon', value: 'icon'},
+              { label: 'Default', value: 'default' },
+              { label: 'Small', value: 'sm' },
+              { label: 'Large', value: 'lg' },
+              { label: 'Icon', value: 'icon' },
             ],
           },
         },
@@ -62,10 +87,18 @@ export const schema: HydrogenComponentSchema = {
           defaultValue: '',
         },
         {
-          type: 'text',
+          type: 'select',
           name: 'target',
           label: 'Target',
-          defaultValue: '',
+          defaultValue: '_blank',
+          configs: {
+            options: [
+              { label: 'Open the current page', value: '_self' },
+              { label: 'Open a new page', value: '_blank' },
+              { label: 'Open the parent page', value: '_parent' },
+              { label: 'Open the first page', value: '_top' },
+            ],
+          },
         },
       ],
     },
