@@ -58,10 +58,12 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                             </div>
                         )}
                     </div>
-                    <div className='flex flex-col px-6 py-12 gap-4 justify-center bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'>
-                        {children}
-                        <div className='flex gap-4 justify-center'>
-                            <IconArrowLeft onClick={() => swiper.slidePrev()}  className='w-8 h-8 cursor-pointer' viewBox='0 0 32 32' />
+                    <div className='relative flex items-center px-6 py-12 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'>
+                        <div className='flex flex-col justify-center gap-4'>
+                            {children}
+                        </div>
+                        <div className='flex gap-4 justify-center absolute bottom-12 left-1/2 -translate-x-1/2'>
+                            <IconArrowLeft onClick={() => swiper.slidePrev()} className='w-8 h-8 cursor-pointer' viewBox='0 0 32 32' />
                             <IconArrowRight onClick={() => swiper.slideNext()} className='w-8 h-8 cursor-pointer' viewBox='0 0 32 32' />
                         </div>
                     </div>

@@ -46,30 +46,25 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
             !visibleOnMobile && 'hidden sm:block',
         )}>
             <div className='overflow-hidden flex'>
-                <p
-                    className='font-medium sm:whitespace-nowrap inline-block sm:hidden sm:animate-scrollText text-[var(--text-color)]'
-                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`,}}
-                >
+                <h3 className='font-medium sm:whitespace-nowrap inline-block sm:hidden sm:animate-scrollText text-[var(--text-color)]'
+                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}>
                     {content}
-                </p>
-                <p
-                    className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
-                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`,}}
+                </h3>
+                <h3 className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
+                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
-                </p>
-                <p
-                    className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
-                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`,}}
+                </h3>
+                <h3 className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
+                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
-                </p>
-                <p
-                    className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
-                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`,}}
+                </h3>
+                <h3 className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
+                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
-                </p>
+                </h3>
             </div>
         </section>
     );

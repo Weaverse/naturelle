@@ -2,9 +2,11 @@ import type {
     HydrogenComponentProps,
     HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import { forwardRef, CSSProperties, useState, useCallback, useEffect } from 'react';
+import { forwardRef, CSSProperties } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
+import { EffectFade } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-fade';
 
 interface SlidesProps extends HydrogenComponentProps {
     sectionHeight: number;
@@ -26,8 +28,12 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
             <Swiper
                 loop={true}
                 slidesPerView={1}
-                className='h-full'
-
+                className='h-full mySwiper'
+                effect={'fade'}
+                fadeEffect={{
+                    crossFade: true,
+                }}
+                modules={[EffectFade]}
             >
                 {children?.map((child, index) => (
                     <SwiperSlide key={index}>
