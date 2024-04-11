@@ -9,6 +9,7 @@ import clsx from 'clsx';
 interface HighlightsProps extends HydrogenComponentProps {
     heading: string;
     backgroundColor: string;
+    borderColor: string;
     itemPerRow: number;
     gap: number;
     sectionHeight: number;
@@ -28,6 +29,7 @@ const Highlights = forwardRef<
     let {
         heading,
         backgroundColor,
+        borderColor,
         itemPerRow,
         gap,
         sectionHeight,
@@ -36,14 +38,15 @@ const Highlights = forwardRef<
     } = props;
     let sectionStyle: CSSProperties = {
         backgroundColor: backgroundColor,
+        '--border-color': borderColor,
         '--section-height': `${sectionHeight}px`,
         '--item-gap': `${gap}px`,
     } as CSSProperties;
     let actualItemPerRow = Math.min(itemPerRow, React.Children.count(children));
 
     return (
-        <section ref={ref} {...rest} className="w-full h-full" style={sectionStyle}>
-            <div className="px-10 py-20 flex flex-col gap-12">
+        <section ref={ref} {...rest} className="w-full h-full flex justify-center" style={sectionStyle}>
+            <div className="px-10 py-20 flex flex-col gap-12 max-w-[1440px]">
                 {heading && <div className="flex justify-center">
                     <h2 className="font-medium">{heading}</h2>
                 </div>}
@@ -80,6 +83,12 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Background color',
                     name: 'backgroundColor',
                     defaultValue: '#F8F8F0',
+                },
+                {
+                    type: 'color',
+                    label: 'Border color',
+                    name: 'borderColor',
+                    defaultValue: '#9AA473',
                 },
                 {
                     type: 'range',
