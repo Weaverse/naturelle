@@ -159,6 +159,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   ]}
                   variant="primary"
                   data-test="add-to-cart"
+                  className='w-[360px]'
                 >
                   <span> {atcText}</span>
                 </AddToCartButton>
