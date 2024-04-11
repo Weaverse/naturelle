@@ -9,8 +9,8 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
+  console.log("🚀 ~ menu:", menu)
   let fetcher = useFetcher<any>()
-  console.log("🚀 ~ fetcher:", fetcher.state, fetcher.data)
   let isError = fetcher.state ==='idle' && fetcher.data?.errors 
   return (
     <footer className="footer bg-background-subtle-2">

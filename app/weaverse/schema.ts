@@ -117,7 +117,7 @@ export const themeSchema: HydrogenThemeSchema = {
           type: 'color',
           label: 'Border subtle',
           name: 'colorBorderSubtle',
-          defaultValue: '#C5C8B6',
+          defaultValue: '#9AA473',
         },
       ],
     },
