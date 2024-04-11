@@ -5,7 +5,7 @@ import {useRootLoaderData} from '~/root';
 import type {LayoutProps} from './Layout';
 import {Logo} from './Logo';
 import {Link} from './Link';
-import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
+import {IconAccount, IconBag, IconClose, IconLogin, IconSearch} from './Icon';
 import {Image} from '@shopify/hydrogen';
 import {Drawer} from './Drawer';
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
@@ -60,7 +60,9 @@ export function HeaderMenu({
   return (
     <div className="w-full h-full bg-background-subtle-1 flex flex-col">
       <div className="h-8 w-full border-b flex items-center justify-end p-8">
-        <button onClick={onCloseMenu}>x</button>
+        <button onClick={onCloseMenu}>
+          <IconClose />
+        </button>
       </div>
       <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
         <nav className="flex flex-col gap-4 p-8" role="navigation">
@@ -159,7 +161,7 @@ function AccountLink({className}: {className?: string}) {
             </Link>
           ) : (
             <Link to="/account/login" className={className}>
-              <IconLogin />
+              <IconLogin className="w-6 h-6" />
             </Link>
           );
         }}
@@ -183,7 +185,7 @@ function SearchToggle() {
         type="submit"
         className="relative flex items-center justify-center w-8 h-8 focus:ring-primary/5"
       >
-        <IconSearch />
+        <IconSearch className="w-6 h-6" />
       </button>
     </Form>
   );
@@ -226,8 +228,8 @@ function Badge({
   const BadgeCounter = useMemo(
     () => (
       <>
-        <IconBag viewBox="0 0 24 24" />
-        <div className="bg-secondary text-inv-body absolute top-1 right-1 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px">
+        <IconBag className="w-6 h-6" viewBox="0 0 24 24"/>
+        <div className="bg-primary text-primary-foreground absolute top-0 right-0 text-[0.625rem] font-medium subpixel-antialiased h-4 w-4 flex items-center justify-center leading-none text-center rounded-full p-[0.125rem]">
           <span>{count || 0}</span>
         </div>
       </>

@@ -9,7 +9,6 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
-  console.log("🚀 ~ menu:", menu)
   let fetcher = useFetcher<any>()
   let isError = fetcher.state ==='idle' && fetcher.data?.errors 
   return (
