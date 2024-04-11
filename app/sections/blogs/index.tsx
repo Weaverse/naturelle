@@ -87,7 +87,6 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
                                 <div className="border-b-2 border-gray-300 w-full"></div>
                                 <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                <p className='hover:underline no-underline cursor-pointer'>Read more --{'>'}</p>
                             </div>
                         </div>
                         <div
@@ -103,7 +102,6 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
                                 <div className="border-b-2 border-gray-300 w-full"></div>
                                 <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                <p className='hover:underline no-underline cursor-pointer'>Read more --{'>'}</p>
                             </div>
                         </div>
                         <div
@@ -119,7 +117,6 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
                                 <div className="border-b-2 border-gray-300 w-full"></div>
                                 <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                <p className='hover:underline no-underline cursor-pointer'>Read more --{'>'}</p>
                             </div>
                         </div>
                     </div>

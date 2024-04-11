@@ -372,6 +372,19 @@ export type CollectionsQuery = {
   };
 };
 
+export type HomepageFeaturedCollectionsQuery = {
+  collections: {
+    nodes: Array<
+      Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'width' | 'height' | 'url'>
+        >;
+      }
+    >;
+  };
+};
+
+
 export type HomepageFeaturedProductsQuery = {
   products: {
     nodes: Array<

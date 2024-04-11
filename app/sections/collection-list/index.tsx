@@ -14,6 +14,7 @@ import { CollectionCard } from './collection-card';
 import { Button } from '@/components/ui/button';
 
 interface CollectionListProps extends HydrogenComponentProps {
+  textColor: string;
   heading: string;
   contentAlignment: string;
   prevButtonText: string;
@@ -24,10 +25,11 @@ interface CollectionListProps extends HydrogenComponentProps {
 let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
   (props, ref) => {
     let { collections } = useLoaderData<CollectionsQuery>();
-    let { heading, contentAlignment, prevButtonText, nextButtonText, imageAspectRatio, ...rest } =
+    let { textColor, heading, contentAlignment, prevButtonText, nextButtonText, imageAspectRatio, ...rest } =
       props;
     let contentStyle: CSSProperties = {
       textAlign: contentAlignment,
+      color: textColor,
     } as CSSProperties;
     return (
       <section ref={ref} {...rest} style={contentStyle}>
@@ -84,6 +86,11 @@ export let schema: HydrogenComponentSchema = {
     {
       group: 'Collection list',
       inputs: [
+        {
+          type: 'color',
+          name: 'textColor',
+          label: 'Text color',
+        },
         {
           type: 'text',
           name: 'heading',
