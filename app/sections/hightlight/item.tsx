@@ -24,7 +24,7 @@ const HighlightItem = forwardRef<HTMLDivElement, HightlightProps>(
             <div
                 ref={ref}
                 {...rest}
-                className={clsx('flex flex-col gap-4 items-center w-full border-2 border-gray-300 rounded px-8 py-10',
+                className={clsx('flex flex-col gap-4 items-center w-full border-2 border-[var(--border-color)] rounded px-8 py-10',
                 !visibleOnMobile && 'hidden sm:flex',
                 )}
             >

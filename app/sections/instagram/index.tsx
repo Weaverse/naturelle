@@ -37,6 +37,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     let sectionStyle: CSSProperties = {
         backgroundColor: backgroundColor,
         '--speed': `${speed}s`,
+        '--swiper-theme-color': '#3D490B',
     } as CSSProperties;
 
     let res = loaderData?.data;
@@ -83,6 +84,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                                     sizes="auto"
                                                     className="w-80 h-80 object-cover aspect-square"
                                                 />
+                                                <div className='py-8 cursor-pointer'></div>
                                             </SwiperSlide>
                                         );
                                     })}
