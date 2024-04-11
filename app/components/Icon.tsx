@@ -59,31 +59,21 @@ export function IconSearch(props: IconProps) {
 
 export function IconLogin(props: IconProps) {
   return (
-    <Icon {...props}>
+    <Icon {...props} viewBox="0 0 24 24" fill="none">
       <title>Login</title>
-      <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-        <path
-          d="M8,10.6928545 C10.362615,10.6928545 12.4860225,11.7170237 13.9504747,13.3456144 C12.4860225,14.9758308 10.362615,16 8,16 C5.63738499,16 3.51397752,14.9758308 2.04952533,13.3472401 C3.51397752,11.7170237 5.63738499,10.6928545 8,10.6928545 Z"
-          fill="currentColor"
-        ></path>
-        <path
-          d="M8,3.5 C6.433,3.5 5.25,4.894 5.25,6.5 C5.25,8.106 6.433,9.5 8,9.5 C9.567,9.5 10.75,8.106 10.75,6.5 C10.75,4.894 9.567,3.5 8,3.5 Z"
-          fill="currentColor"
-          fillRule="nonzero"
-        ></path>
-      </g>
+  <path d="M12 15C15.3137 15 18 12.3137 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 12.3137 8.68629 15 12 15Z" stroke="#3D490B" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M2.90625 20.2501C3.82775 18.6537 5.15328 17.328 6.74958 16.4062C8.34588 15.4845 10.1567 14.9993 12 14.9993C13.8433 14.9993 15.6541 15.4845 17.2504 16.4062C18.8467 17.328 20.1722 18.6537 21.0938 20.2501" stroke="#3D490B" stroke-linecap="round" stroke-linejoin="round"/>
+
     </Icon>
   );
 }
 
 export function IconBag(props: IconProps) {
   return (
-    <Icon {...props}>
+    <Icon {...props} fill="none">
       <title>Bag</title>
-      <path
-        fillRule="evenodd"
-        d="M8.125 5a1.875 1.875 0 0 1 3.75 0v.375h-3.75V5Zm-1.25.375V5a3.125 3.125 0 1 1 6.25 0v.375h3.5V15A2.625 2.625 0 0 1 14 17.625H6A2.625 2.625 0 0 1 3.375 15V5.375h3.5ZM4.625 15V6.625h10.75V15c0 .76-.616 1.375-1.375 1.375H6c-.76 0-1.375-.616-1.375-1.375Z"
-      />
+      <path d="M20.25 4.5H3.75C3.33579 4.5 3 4.83579 3 5.25V18.75C3 19.1642 3.33579 19.5 3.75 19.5H20.25C20.6642 19.5 21 19.1642 21 18.75V5.25C21 4.83579 20.6642 4.5 20.25 4.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M15.75 8.25C15.75 9.24456 15.3549 10.1984 14.6517 10.9017C13.9484 11.6049 12.9946 12 12 12C11.0054 12 10.0516 11.6049 9.34835 10.9017C8.64509 10.1984 8.25 9.24456 8.25 8.25" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
     </Icon>
   );
 }
@@ -233,6 +223,28 @@ export function IconArrowSlideLeft(props: IconProps) {
   );
 }
 
+export function IconClose(props: IconProps) {
+  return (
+    <Icon {...props} stroke={props.stroke || 'currentColor'}>
+      <title>Close</title>
+      <line
+        x1="4.44194"
+        y1="4.30806"
+        x2="15.7556"
+        y2="15.6218"
+        strokeWidth="1.25"
+      />
+      <line
+        y1="-0.625"
+        x2="16"
+        y2="-0.625"
+        transform="matrix(-0.707107 0.707107 0.707107 0.707107 16 4.75)"
+        strokeWidth="1.25"
+      />
+    </Icon>
+  );
+}
+
 export function IconFilledStar(props: IconProps) {
   return (
     <Icon
@@ -277,28 +289,6 @@ export function IconHalfFilledStar(props: IconProps) {
         d="M12 1a.993 .993 0 0 1 .823 .443l.067 .116l2.852 5.781l6.38 .925c.741 .108 1.08 .94 .703 1.526l-.07 .095l-.078 .086l-4.624 4.499l1.09 6.355a1.001 1.001 0 0 1 -1.249 1.135l-.101 -.035l-.101 -.046l-5.693 -3l-5.706 3c-.105 .055 -.212 .09 -.32 .106l-.106 .01a1.003 1.003 0 0 1 -1.038 -1.06l.013 -.11l1.09 -6.355l-4.623 -4.5a1.001 1.001 0 0 1 .328 -1.647l.113 -.036l.114 -.023l6.379 -.925l2.853 -5.78a.968 .968 0 0 1 .904 -.56zm0 3.274v12.476a1 1 0 0 1 .239 .029l.115 .036l.112 .05l4.363 2.299l-.836 -4.873a1 1 0 0 1 .136 -.696l.07 -.099l.082 -.09l3.546 -3.453l-4.891 -.708a1 1 0 0 1 -.62 -.344l-.073 -.097l-.06 -.106l-2.183 -4.424z"
         stroke-width="0"
         fill="currentColor"
-      />
-    </Icon>
-  );
-}
-
-export function IconClose(props: IconProps) {
-  return (
-    <Icon {...props} stroke={props.stroke || 'currentColor'}>
-      <title>Close</title>
-      <line
-        x1="4.44194"
-        y1="4.30806"
-        x2="15.7556"
-        y2="15.6218"
-        strokeWidth="1.25"
-      />
-      <line
-        y1="-0.625"
-        x2="16"
-        y2="-0.625"
-        transform="matrix(-0.707107 0.707107 0.707107 0.707107 16 4.75)"
-        strokeWidth="1.25"
       />
     </Icon>
   );
@@ -422,3 +412,14 @@ export function IconEllipse(props: IconProps) {
     </Icon>
   );
 }
+
+export function IconSpinner(props: IconProps) {
+  return (
+    <Icon {...props} fill={props.fill || "transparent"} viewBox="0 0 256 256"
+      className="animate-spin"
+    >
+      <rect width="256" height="256" fill="none"/><line x1="128" y1="32" x2="128" y2="64" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="224" y1="128" x2="192" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="195.88" y1="195.88" x2="173.25" y2="173.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="128" y1="224" x2="128" y2="192" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="60.12" y1="195.88" x2="82.75" y2="173.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="32" y1="128" x2="64" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="60.12" y1="60.12" x2="82.75" y2="82.75" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+    </Icon>
+  )
+}
+

@@ -64,7 +64,8 @@ const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
             <div className="space-y-3 p-4 border">
               <h4 className="text-center font-bold">Button</h4>
               <div className="flex gap-2">
-                <Button>Default</Button>
+                <Button>Primary</Button>
+                <Button variant="secondary">Secondary</Button>
                 <Button variant="outline">Outline</Button>
                 <Button variant="link">Link</Button>
               </div>
@@ -72,7 +73,7 @@ const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
             <div className="space-y-3 p-4 border">
               <h4 className="text-center font-bold">Input</h4>
               <div className="flex gap-2">
-                <Input placeholder="Input placeholder abc" />
+                <Input placeholder="Input placeholder" />
               </div>
             </div>
           </div>

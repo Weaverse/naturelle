@@ -11,6 +11,9 @@ export const CUSTOMER_FRAGMENT = `#graphql
         ...Address
       }
     }
+    emailAddress {
+      emailAddress
+    }
   }
   fragment Address on CustomerAddress {
     id
