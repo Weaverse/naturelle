@@ -50,7 +50,6 @@ export function AddToCartButton({
             <Button
               as="button"
               type="submit"
-              variant="outline"
               size="lg"
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}

@@ -97,7 +97,7 @@ export function ProductVariants(props: ProductVariantsProps) {
             .filter(Boolean);
           let handleSelectOptionValue = (value: string) =>
             handleSelectOption(optionName, value);
-          let config = swatch.configs.find((config) => {
+          let config = swatch?.configs.find((config) => {
             return config.name.toLowerCase() === optionName.toLowerCase();
           });
           let selectedValue = selectedOptions?.find(
@@ -111,7 +111,7 @@ export function ProductVariants(props: ProductVariantsProps) {
               values={values}
               selectedOptionValue={selectedValue}
               onSelectOptionValue={handleSelectOptionValue}
-              swatches={swatch.swatches}
+              swatches={swatch?.swatches}
             />
           );
         }}
