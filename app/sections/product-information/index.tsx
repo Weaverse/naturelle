@@ -76,9 +76,16 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       } else if (selectedVariant?.id !== product?.selectedVariant?.id) {
         setSelectedVariant(product?.selectedVariant);
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [product?.id]);
-    let {swatches} = useThemeSettings();
+    let themeSettings = useThemeSettings();
+    let swatches = themeSettings?.swatches || {
+      configs: [],
+      swatches: {
+        imageSwatches: [],
+        colorSwatches: [],
+      },
+    };
 
     let handleSelectedVariantChange = (variant: any) => {
       setSelectedVariant(variant);
@@ -104,24 +111,24 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
         <section ref={ref} {...rest}>
           <div className="container p-6 md:p-8 lg:p-12 lg:px-12 px-4 md:px-6 mx-auto">
             <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">
-                <ProductMedia
-                  media={product?.media.nodes}
-                  selectedVariant={selectedVariant}
-                  showThumbnails={showThumbnails}
-                  numberOfThumbnails={numberOfThumbnails}
-                  spacing={spacing}
-                />
+              <ProductMedia
+                media={product?.media.nodes}
+                selectedVariant={selectedVariant}
+                showThumbnails={showThumbnails}
+                numberOfThumbnails={numberOfThumbnails}
+                spacing={spacing}
+              />
               <div className="flex flex-col justify-start space-y-5">
                 <div className="space-y-4">
                   <div className="flex flex-col gap-2">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
                       {title}
                     </h2>
                     {showVendor && vendor && (
                       <Text className={'opacity-50 font-medium'}>{vendor}</Text>
                     )}
                   </div>
-                  <p className="text-2xl md:text-3xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed">
+                  <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed">
                     {selectedVariant ? (
                       <Money
                         withoutTrailingZeros
@@ -159,7 +166,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   ]}
                   variant="primary"
                   data-test="add-to-cart"
-                  className='w-[360px]'
+                  className="w-[360px]"
                 >
                   <span> {atcText}</span>
                 </AddToCartButton>

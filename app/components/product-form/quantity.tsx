@@ -1,3 +1,5 @@
+import { Input } from "@/components/input";
+
 interface QuantityProps {
   value: number;
   onChange: (value: number) => void;
@@ -18,27 +20,27 @@ export function Quantity(props: QuantityProps) {
   };
   return (
     <div className="space-y-1.5">
-      <legend className="whitespace-pre-wrap max-w-prose font-bold text-lg leading-snug">
+      <legend className="whitespace-pre-wrap max-w-prose text-lg leading-snug">
         Quantity
       </legend>
       <div className="w-fit flex gap-2">
         <button
           name="decrease-quantity"
           aria-label="Decrease quantity"
-          className="transition py-3 px-5 border-2 rounded border-[#9AA473]"
+          className="transition py-3 px-5 border-2 rounded border-bar-subtle"
           disabled={value <= 1}
           onClick={() => onChange(value - 1)}
         >
           <span>&#8722;</span>
         </button>
-        <input
-          className="py-3 w-24 text-center border-2 rounded border-[#9AA473]"
+        <Input
+          className="py-3 w-24 text-center border-2 rounded-none bg-background"
           value={value}
           onKeyDown={handleKeyDown}
           onChange={(e) => onChange(Number(e.currentTarget.value))}
         />
         <button
-          className="transition py-3 px-5 border-2 rounded border-[#9AA473]"
+          className="transition py-3 px-5 border-2 rounded border-bar-subtle"
           name="increase-quantity"
           aria-label="Increase quantity"
           onClick={() => onChange(value + 1)}
