@@ -11,6 +11,16 @@ export const ORDER_ITEM_FRAGMENT = `#graphql
         status
       }
     }
+    lineItems(first: 1) {
+      nodes {
+        title
+        quantity
+        image {
+          altText
+          url
+        }
+      }
+    }
     id
     number
     processedAt

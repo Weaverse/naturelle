@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import {Image} from '@shopify/hydrogen';
 import type {WeaverseImage} from '@weaverse/hydrogen';
+import { cn } from "@/lib/utils";
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
@@ -59,7 +60,7 @@ export function VariantOption(props: VariantOptionProps) {
   );
 
   let defaultButtonClassName = clsx(
-    'border cursor-pointer',
+    'border border-bar-subtle cursor-pointer',
     BUTTON_SIZE_MAP[size],
     'p-2 text-sm text-center',
     roundedClassName,
@@ -70,7 +71,7 @@ export function VariantOption(props: VariantOptionProps) {
   return (
     <div className="space-y-4">
       <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-[4rem]">
-        <span className="font-bold">{displayName || name}:</span>
+        <span>{displayName || name}:</span>
         <span className="ml-2">{selectedOptionValue}</span>
       </legend>
       {type === 'button' && (
@@ -78,10 +79,10 @@ export function VariantOption(props: VariantOptionProps) {
           {values.map((value) => (
             <button
               key={value.value}
-              className={clsx(
+              className={cn(
                 defaultButtonClassName,
                 selectedOptionValue === value.value &&
-                  'bg-btn text-btn-content',
+                  'border-bar bg-background-subtle-1',
                 !value.isAvailable && 'opacity-50 bg-btn/30',
               )}
               onClick={() => onSelectOptionValue(value.value)}

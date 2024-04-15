@@ -44,13 +44,31 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
         ...rest
     } = props;
 
+    function calculateHoverBackgroundColor(baseColor: string): string {
+        let hoverColor = '#';
+        const rgbValues = baseColor.match(/\w\w/g)?.map(component => parseInt(component, 16)) || [255, 255, 255];
+        const hoverRgbValues = rgbValues.map((value, index) => {
+            if (index === 2) {
+                return Math.min(255, value - 50);
+            }
+            return value;
+        });
+        hoverRgbValues.forEach(value => {
+            hoverColor += (value < 16 ? '0' : '') + value.toString(16);
+        });
+        return hoverColor;
+    }
+
+    const hoverBackgroundColor = calculateHoverBackgroundColor(backgroundColor);
+
     let sectionStyle: CSSProperties = {
-        backgroundColor: backgroundColor,
+        '--background-color': backgroundColor,
+        '--background-color-hover': hoverBackgroundColor,
     } as CSSProperties;
 
     if (loaderData === undefined) {
         return (
-            <section ref={ref} {...rest} className="w-full h-full" style={sectionStyle}>
+            <section ref={ref} {...rest} className="w-full h-full bg-[var(--background-color)]" style={sectionStyle}>
                 <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20">
                     {heading && <div className="flex justify-center">
                         <h2 className="font-medium">{heading}</h2>
@@ -69,7 +87,6 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
                                 <div className="border-b-2 border-gray-300 w-full"></div>
                                 <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                <p className='hover:underline no-underline cursor-pointer'>Read more --{'>'}</p>
                             </div>
                         </div>
                         <div
@@ -85,7 +102,6 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
                                 <div className="border-b-2 border-gray-300 w-full"></div>
                                 <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                <p className='hover:underline no-underline cursor-pointer'>Read more --{'>'}</p>
                             </div>
                         </div>
                         <div
@@ -101,7 +117,6 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
                                 <div className="border-b-2 border-gray-300 w-full"></div>
                                 <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                                <p className='hover:underline no-underline cursor-pointer'>Read more --{'>'}</p>
                             </div>
                         </div>
                     </div>
@@ -113,8 +128,8 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     let res = loaderData?.blog?.articles.nodes;
 
     return (
-        <section ref={ref} {...rest} className="w-full h-full" style={sectionStyle}>
-            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20">
+        <section ref={ref} {...rest} className="h-full w-full flex justify-center bg-[var(--background-color)]" style={sectionStyle}>
+            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20 max-w-[1440px]">
                 {heading && <div className="flex justify-center">
                     <h2 className="font-medium">{heading}</h2>
                 </div>}
@@ -123,28 +138,29 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                     articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)]
                 )}>
                     {res?.map((idx: any) => (
-                        <div key={idx.id}
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            {idx.image ? (
-                                <Image
-                                    data={idx.image}
-                                    sizes="auto"
-                                    className="!w-full !aspect-square object-cover"
-                                />) : (
-                                <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                    <IconImageBlank
-                                        viewBox="0 0 526 526"
-                                        className="w-full h-full opacity-80"
-                                    />
-                                </div>)}
-                            <div className="flex flex-col gap-4">
-                                <h3>{idx.title}</h3>
-                                {showSeperator && <div className="border-b-2 border-gray-300 w-full"></div>}
-                                <p dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
-                                {showReadMoreButton && <Link className={'hover:underline no-underline'} to={`/blogs/${blogs.handle}/${idx.handle}`}>Read more --{'>'}</Link>}
+                        <Link to={`/blogs/${blogs.handle}/${idx.handle}`} className={'group'}>
+                            <div key={idx.id}
+                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-[var(--background-color-hover)] transition-colors duration-500 rounded cursor-pointer'
+                            >
+                                {idx.image ? (
+                                    <Image
+                                        data={idx.image}
+                                        sizes="auto"
+                                        className="!w-full !aspect-square object-cover rounded"
+                                    />) : (
+                                    <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                                        <IconImageBlank
+                                            viewBox="0 0 526 526"
+                                            className="w-full h-full opacity-80"
+                                        />
+                                    </div>)}
+                                <div className="flex flex-col gap-4">
+                                    <h3 className='group-hover:underline'>{idx.title}</h3>
+                                    {showSeperator && <div className="border-b-2 border-gray-300 w-full"></div>}
+                                    <p dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

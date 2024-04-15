@@ -105,50 +105,67 @@ export default function AccountProfile() {
   const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
+  console.log('🚀 ~ customer:', customer);
 
   return (
-    <div className="account-profile">
-      <h2>My profile</h2>
+    <div className="account-profile container">
+      <h2>Account</h2>
       <br />
-      <Form method="PUT">
-        <legend>Personal information</legend>
-        <fieldset>
-          <label htmlFor="firstName">First name</label>
-          <input
-            id="firstName"
-            name="firstName"
-            type="text"
-            autoComplete="given-name"
-            placeholder="First name"
-            aria-label="First name"
-            defaultValue={customer.firstName ?? ''}
-            minLength={2}
-          />
-          <label htmlFor="lastName">Last name</label>
-          <input
-            id="lastName"
-            name="lastName"
-            type="text"
-            autoComplete="family-name"
-            placeholder="Last name"
-            aria-label="Last name"
-            defaultValue={customer.lastName ?? ''}
-            minLength={2}
-          />
-        </fieldset>
-        {action?.error ? (
-          <p>
-            <mark>
-              <small>{action.error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        <button type="submit" disabled={state !== 'idle'}>
-          {state !== 'idle' ? 'Updating' : 'Update'}
-        </button>
-      </Form>
+      <div className="p-5 border border-bar-subtle space-y-3">
+        <div className="space-y-1">
+          <p>First Name</p>
+          <p className="font-medium">{customer.firstName}</p>
+        </div>
+        <div className="space-y-1">
+          <p>Last Name</p>
+          <p className="font-medium">{customer.lastName}</p>
+        </div>
+        <div className="space-y-1">
+          <p>Email</p>
+          <p className="font-medium">{customer.emailAddress?.emailAddress}</p>
+        </div>
+      </div>
+      <div className="hidden">
+        <Form method="PUT">
+          <legend>Personal information</legend>
+          <fieldset>
+            <label htmlFor="firstName">First name</label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              autoComplete="given-name"
+              placeholder="First name"
+              aria-label="First name"
+              defaultValue={customer.firstName ?? ''}
+              minLength={2}
+            />
+            <label htmlFor="lastName">Last name</label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              autoComplete="family-name"
+              placeholder="Last name"
+              aria-label="Last name"
+              defaultValue={customer.lastName ?? ''}
+              minLength={2}
+            />
+          </fieldset>
+          {action?.error ? (
+            <p>
+              <mark>
+                <small>{action.error}</small>
+              </mark>
+            </p>
+          ) : (
+            <br />
+          )}
+          <button type="submit" disabled={state !== 'idle'}>
+            {state !== 'idle' ? 'Updating' : 'Update'}
+          </button>
+        </Form>
+      </div>
     </div>
   );
 }

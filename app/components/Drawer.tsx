@@ -1,8 +1,8 @@
 import {Drawer as VaulDrawer} from 'vaul';
 
-export function Drawer({children}) {
+export function Drawer({children, open, onOpenChange}) {
   return (
-    <VaulDrawer.Root direction="top">
+    <VaulDrawer.Root direction="top" open={open} onOpenChange={onOpenChange}>
       <VaulDrawer.Trigger asChild>
         <button>MENU</button>
       </VaulDrawer.Trigger>

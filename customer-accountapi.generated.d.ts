@@ -106,6 +106,9 @@ export type CustomerFragment = Pick<
       >
     >;
   };
+  emailAddress?: CustomerAccountAPI.Maybe<
+    Pick<CustomerAccountAPI.CustomerEmailAddress, 'emailAddress'>
+  >;
 };
 
 export type AddressFragment = Pick<
@@ -166,6 +169,9 @@ export type CustomerDetailsQuery = {
         >
       >;
     };
+    emailAddress?: CustomerAccountAPI.Maybe<
+      Pick<CustomerAccountAPI.CustomerEmailAddress, 'emailAddress'>
+    >;
   };
 };
 
@@ -379,6 +385,15 @@ export type OrderItemFragment = Pick<
 > & {
   totalPrice: Pick<CustomerAccountAPI.MoneyV2, 'amount' | 'currencyCode'>;
   fulfillments: {nodes: Array<Pick<CustomerAccountAPI.Fulfillment, 'status'>>};
+  lineItems: {
+    nodes: Array<
+      Pick<CustomerAccountAPI.LineItem, 'title' | 'quantity'> & {
+        image?: CustomerAccountAPI.Maybe<
+          Pick<CustomerAccountAPI.Image, 'altText' | 'url'>
+        >;
+      }
+    >;
+  };
 };
 
 export type CustomerOrdersFragment = {
@@ -391,6 +406,15 @@ export type CustomerOrdersFragment = {
         totalPrice: Pick<CustomerAccountAPI.MoneyV2, 'amount' | 'currencyCode'>;
         fulfillments: {
           nodes: Array<Pick<CustomerAccountAPI.Fulfillment, 'status'>>;
+        };
+        lineItems: {
+          nodes: Array<
+            Pick<CustomerAccountAPI.LineItem, 'title' | 'quantity'> & {
+              image?: CustomerAccountAPI.Maybe<
+                Pick<CustomerAccountAPI.Image, 'altText' | 'url'>
+              >;
+            }
+          >;
         };
       }
     >;
@@ -431,6 +455,15 @@ export type CustomerOrdersQuery = {
           fulfillments: {
             nodes: Array<Pick<CustomerAccountAPI.Fulfillment, 'status'>>;
           };
+          lineItems: {
+            nodes: Array<
+              Pick<CustomerAccountAPI.LineItem, 'title' | 'quantity'> & {
+                image?: CustomerAccountAPI.Maybe<
+                  Pick<CustomerAccountAPI.Image, 'altText' | 'url'>
+                >;
+              }
+            >;
+          };
         }
       >;
       pageInfo: Pick<
@@ -467,7 +500,7 @@ export type CustomerUpdateMutation = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\n  query CustomerDetails {\n    customer {\n      ...Customer\n    }\n  }\n  #graphql\n  fragment Customer on Customer {\n    firstName\n    lastName\n    defaultAddress {\n      ...Address\n    }\n    addresses(first: 6) {\n      nodes {\n        ...Address\n      }\n    }\n  }\n  fragment Address on CustomerAddress {\n    id\n    formatted\n    firstName\n    lastName\n    company\n    address1\n    address2\n    territoryCode\n    zoneCode\n    city\n    zip\n    phoneNumber\n  }\n\n': {
+  '#graphql\n  query CustomerDetails {\n    customer {\n      ...Customer\n    }\n  }\n  #graphql\n  fragment Customer on Customer {\n    firstName\n    lastName\n    defaultAddress {\n      ...Address\n    }\n    addresses(first: 6) {\n      nodes {\n        ...Address\n      }\n    }\n    emailAddress {\n      emailAddress\n    }\n  }\n  fragment Address on CustomerAddress {\n    id\n    formatted\n    firstName\n    lastName\n    company\n    address1\n    address2\n    territoryCode\n    zoneCode\n    city\n    zip\n    phoneNumber\n  }\n\n': {
     return: CustomerDetailsQuery;
     variables: CustomerDetailsQueryVariables;
   };
@@ -475,7 +508,7 @@ interface GeneratedQueryTypes {
     return: OrderQuery;
     variables: OrderQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment CustomerOrders on Customer {\n    orders(\n      sortKey: PROCESSED_AT,\n      reverse: true,\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor\n    ) {\n      nodes {\n        ...OrderItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        endCursor\n        startCursor\n      }\n    }\n  }\n  #graphql\n  fragment OrderItem on Order {\n    totalPrice {\n      amount\n      currencyCode\n    }\n    financialStatus\n    fulfillments(first: 1) {\n      nodes {\n        status\n      }\n    }\n    id\n    number\n    processedAt\n  }\n\n\n  query CustomerOrders(\n    $endCursor: String\n    $first: Int\n    $last: Int\n    $startCursor: String\n  ) {\n    customer {\n      ...CustomerOrders\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment CustomerOrders on Customer {\n    orders(\n      sortKey: PROCESSED_AT,\n      reverse: true,\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor\n    ) {\n      nodes {\n        ...OrderItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        endCursor\n        startCursor\n      }\n    }\n  }\n  #graphql\n  fragment OrderItem on Order {\n    totalPrice {\n      amount\n      currencyCode\n    }\n    financialStatus\n    fulfillments(first: 1) {\n      nodes {\n        status\n      }\n    }\n    lineItems(first: 1) {\n      nodes {\n        title\n        quantity\n        image {\n          altText\n          url\n        }\n      }\n    }\n    id\n    number\n    processedAt\n  }\n\n\n  query CustomerOrders(\n    $endCursor: String\n    $first: Int\n    $last: Int\n    $startCursor: String\n  ) {\n    customer {\n      ...CustomerOrders\n    }\n  }\n': {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };

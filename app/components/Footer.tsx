@@ -1,27 +1,33 @@
 import {Input} from '@/components/input';
-import {Button} from '@/components/ui/button';
-import {NavLink} from '@remix-run/react';
+import { Button } from "@/components/ui/button";
+import {NavLink, useFetcher} from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
+import { IconSpinner } from "./Icon";
 
 export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
+  let fetcher = useFetcher<any>()
+  let isError = fetcher.state ==='idle' && fetcher.data?.errors 
   return (
     <footer className="footer bg-background-subtle-2">
       <div className="container grid grid-cols-1 md:grid-cols-2 md:divide-x">
         <div className="space-y-4 p-6 md:p-16 md:pb-24">
           <h3>Newsletter</h3>
           <p>Sign up for 15% off and updates straight to your inbox.</p>
-          <form className="flex gap-2">
+          <fetcher.Form method="POST" action="/api/customer" className="flex gap-2">
             <Input
               className="bg-transparent"
               type="email"
+              name="email"
               placeholder="Enter your email"
+              required
             />
-            <Button type="submit">Subscribe</Button>
-          </form>
+            <Button loading={fetcher.state === 'submitting'} type="submit">Subscribe</Button>
+          </fetcher.Form>
+          {isError && <p className="!mt-1 text-xs text-red-700">{fetcher.data.errors[0].message}</p>}
         </div>
         <div className="space-y-6 p-6 md:p-16 md:pb-24">
           <h3>Quick links</h3>

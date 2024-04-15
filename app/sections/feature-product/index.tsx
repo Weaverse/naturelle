@@ -54,8 +54,8 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
         let res = loaderData?.collection?.products?.nodes;
         let displayedProducts = res?.slice(0, totalProduct);
         return (
-            <section ref={ref} {...rest} className='w-full h-full' style={sectionStyle}>
-                <div className='px-4 flex flex-col items-center gap-6 sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
+            <section ref={ref} {...rest} className='w-full h-full flex justify-center' style={sectionStyle}>
+                <div className='px-4 flex flex-col max-w-[1440px] items-center gap-6 sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
                     <div className='flex justify-center'>
                         {heading && <h2 className='font-medium'>{heading}</h2>}
                     </div>
@@ -176,14 +176,22 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                                 productPerRowClasses[Math.min(productsPerRow, displayedProducts?.length || 1)]).concat(' justify-items-center')}>
                                 {displayedProducts?.map((idx: any) => (
                                     <Link key={idx.id} to={`/products/${idx.handle}`}>
-                                        <div className='flex flex-col gap-4 w-full h-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
+                                        <div className='flex flex-col gap-4 w-full h-full cursor-pointer group'>
                                             {idx.featuredImage ? (
-                                                <Image
-                                                    data={idx.featuredImage}
-                                                    loading={lazyLoadImage ? 'lazy' : 'eager'}
-                                                    sizes="auto"
-                                                    className="!w-full !aspect-square object-cover"
-                                                />) : (
+                                                <div className='relative flex justify-center items-center'>
+                                                    <Image
+                                                        data={idx.featuredImage}
+                                                        loading={lazyLoadImage ? 'lazy' : 'eager'}
+                                                        sizes="auto"
+                                                        className="!w-full !aspect-square object-cover"
+                                                    />
+                                                    <div className='absolute bottom-0 py-4 px-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl'>
+                                                        <button className='border rounded-full w-full text-center px-1 py-2 hover:bg-white duration-500'>
+                                                            Add to Bag
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
                                                 <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
                                                     <IconImageBlank
                                                         viewBox="0 0 526 526"
@@ -201,8 +209,8 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                             </div>
                         </>)}
                     {showViewAllLink && loaderData && loaderData.collection && (
-                        <Link to={`/collections/${loaderData.collection.handle}`} className='flex justify-center text-primary'>
-                            <div className='border rounded-full px-5 py-3'>View all</div>
+                        <Link to={`/collections/${loaderData.collection.handle}`} className='flex justify-center'>
+                            <h3 className='border rounded-full px-5 py-3'>View All</h3>
                         </Link>
                     )}
                 </div>
