@@ -20,16 +20,18 @@ import {
   getFeaturedData,
   type FeaturedData,
 } from './($locale).featured-products';
+import { IconSearch } from '~/components/Icon';
+import { Button } from '@/components/ui/button';
 
 export async function loader({
   request,
-  context: {storefront},
+  context: { storefront },
 }: LoaderFunctionArgs) {
   const searchParams = new URL(request.url).searchParams;
   const searchTerm = searchParams.get('q')!;
-  const variables = getPaginationVariables(request, {pageBy: PAGINATION_SIZE});
+  const variables = getPaginationVariables(request, { pageBy: PAGINATION_SIZE });
 
-  const {products} = await storefront.query(SEARCH_QUERY, {
+  const { products } = await storefront.query(SEARCH_QUERY, {
     variables: {
       searchTerm,
       ...variables,
@@ -69,27 +71,28 @@ export async function loader({
 }
 
 export default function Search() {
-  const {searchTerm, products, noResultRecommendations} =
+  const { searchTerm, products, noResultRecommendations } =
     useLoaderData<typeof loader>();
   const noResults = products?.nodes?.length === 0;
 
   return (
     <>
-      <PageHeader>
-        <Heading as="h1" size="copy">
-          Search
+      <PageHeader className='flex flex-col justify-center items-center bg-background-subtle-1'>
+        <Heading as="h1" size="display">
+          Search results for “ordinary”
         </Heading>
-        <Form method="get" className="relative flex w-full text-heading">
+        <Form method="get" className="relative flex justify-center items-center w-full box-border">
+          <button type="submit" className='absolute left-0 ml-3 cursor-pointer'>
+            <IconSearch className=" !w-8 !h-8 opacity-55" viewBox="0 0 24 24" />
+          </button>
           <Input
             defaultValue={searchTerm}
             name="q"
-            placeholder="Search…"
+            placeholder="ordinary"
+            className='w-full bg-inherit !rounded border-2 border-bar-subtle pl-11'
             type="search"
             variant="search"
           />
-          <button className="absolute right-0 py-2" type="submit">
-            Go
-          </button>
         </Form>
       </PageHeader>
       {!searchTerm || noResults ? (
@@ -100,7 +103,7 @@ export default function Search() {
       ) : (
         <Section>
           <Pagination connection={products}>
-            {({nodes, isLoading, NextLink, PreviousLink}) => {
+            {({ nodes, isLoading, NextLink, PreviousLink }) => {
               const itemsMarkup = nodes.map((product: any, i: number) => (
                 <ProductCard
                   key={product.id}
@@ -112,15 +115,23 @@ export default function Search() {
               return (
                 <>
                   <div className="flex items-center justify-center mt-6">
-                    <PreviousLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
+                    <Button
+                      as={PreviousLink}
+                      variant="secondary"
+                      width="full"
+                    >
                       {isLoading ? 'Loading...' : 'Previous'}
-                    </PreviousLink>
+                    </Button>
                   </div>
                   <Grid data-test="product-grid">{itemsMarkup}</Grid>
                   <div className="flex items-center justify-center mt-6">
-                    <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-primary/10 bg-contrast text-primary w-full">
-                      {isLoading ? 'Loading...' : 'Next'}
-                    </NextLink>
+                    <Button
+                      as={NextLink}
+                      variant="secondary"
+                      width="full"
+                    >
+                      {isLoading ? 'Loading...' : 'Show more +'}
+                    </Button>
                   </div>
                 </>
               );
@@ -139,6 +150,8 @@ function NoResults({
   noResults: boolean;
   recommendations: Promise<null | FeaturedData>;
 }) {
+  const { products } =
+    useLoaderData<typeof loader>();
   return (
     <>
       {noResults && (
@@ -155,18 +168,55 @@ function NoResults({
         >
           {(result) => {
             if (!result) return null;
-            const {featuredCollections, featuredProducts} = result;
+            // const { featuredCollections, featuredProducts } = result;
 
             return (
               <>
-                <FeaturedCollections
+                {/* <FeaturedCollections
                   title="Trending Collections"
                   collections={featuredCollections}
-                />
-                <ProductSwimlane
+                /> */}
+                {/* <ProductSwimlane
                   title="Trending Products"
                   products={featuredProducts}
-                />
+                /> */}
+                <Section>
+                  <Pagination connection={products}>
+                    {({ nodes, isLoading, NextLink, PreviousLink }) => {
+                      const itemsMarkup = nodes.map((product: any, i: number) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          loading={getImageLoadingPriority(i)}
+                        />
+                      ));
+
+                      return (
+                        <>
+                          <div className="flex items-center justify-center mt-6">
+                            <Button
+                              as={PreviousLink}
+                              variant="secondary"
+                              width="full"
+                            >
+                              {isLoading ? 'Loading...' : 'Previous'}
+                            </Button>
+                          </div>
+                          <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                          <div className="flex items-center justify-center mt-6">
+                            <Button
+                              as={NextLink}
+                              variant="secondary"
+                              width="full"
+                            >
+                              {isLoading ? 'Loading...' : 'Show more +'}
+                            </Button>
+                          </div>
+                        </>
+                      );
+                    }}
+                  </Pagination>
+                </Section>
               </>
             );
           }}
@@ -179,7 +229,7 @@ function NoResults({
 export function getNoResultRecommendations(
   storefront: LoaderFunctionArgs['context']['storefront'],
 ) {
-  return getFeaturedData(storefront, {pageBy: PAGINATION_SIZE});
+  return getFeaturedData(storefront, { pageBy: PAGINATION_SIZE });
 }
 
 const SEARCH_QUERY = `#graphql
