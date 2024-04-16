@@ -25,6 +25,7 @@ import * as RelatedArticles from '~/sections/related-articles/related-articles';
 import * as BlogPost from '~/sections/blog-post/blog-post';
 import * as RelatedProducts from '~/sections/related-products/related-products';
 import * as CollectionBanner from '~/sections/collection-banner/collection-banner';
+import * as Newsletter from '~/sections/newsletter/index';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -52,5 +53,6 @@ export const components: HydrogenComponent[] = [
     BlogPost,
     RelatedProducts,
     CollectionBanner,
+    Newsletter,
     StyleGuide
 ];
