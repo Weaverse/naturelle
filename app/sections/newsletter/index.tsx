@@ -3,12 +3,13 @@ import type {
     HydrogenComponentSchema,
     WeaverseImage,
 } from '@weaverse/hydrogen';
-import { forwardRef, CSSProperties } from 'react';
+import { forwardRef, CSSProperties, useRef } from 'react';
 import { IconNewsletter } from '~/components/Icon';
 import { Image } from '@shopify/hydrogen';
 import { Input } from '@/components/input';
 import { Button } from "@/components/ui/button";
 import { useFetcher } from '@remix-run/react';
+import clsx from 'clsx';
 
 interface NewsletterProps extends HydrogenComponentProps {
     verticalPadding: number;
@@ -40,7 +41,20 @@ const Newsletter = forwardRef<
         ...rest
     } = props;
     let fetcher = useFetcher<any>()
+    const emailInputRef = useRef<HTMLInputElement>(null);
     let isError = fetcher.state === 'idle' && fetcher.data?.errors
+    let isSuccess = fetcher.state === 'idle' && fetcher.data?.customer
+    let alertMessage = '';
+    let alertMessageClass = '';
+    if (isError && fetcher.data?.errors) {
+        const firstError = fetcher.data?.errors[0];
+        alertMessage = firstError.code === "TAKEN" ? firstError.message : "Some things went wrong!";
+        alertMessageClass = 'text-red-700';
+    } else if (isSuccess && fetcher.data?.customer && emailInputRef.current) {
+        alertMessage = "Subscribe success!";
+        emailInputRef.current.value = '';
+        alertMessageClass = 'text-green-700';
+    }
     let sectionStyle: CSSProperties = {
         height: `${sectionHeight}px`,
         backgroundColor: backgroundColor,
@@ -65,11 +79,12 @@ const Newsletter = forwardRef<
                         type="email"
                         name="email"
                         placeholder={placeholder}
+                        ref={emailInputRef}
                         required
                     />
                     <Button loading={fetcher.state === 'submitting'} variant={buttonStyle} type="submit">{buttonLabel}</Button>
                 </fetcher.Form>
-                {isError && <p className="!mt-1 text-xs text-red-700">{fetcher.data.errors[0].message}</p>}
+                {alertMessage && <p className={clsx("!mt-1 text-xs", alertMessageClass)}>{alertMessage}</p>}
             </div>
         </section>
     );
@@ -168,7 +183,7 @@ export let schema: HydrogenComponentSchema = {
                             { label: 'Secondary', value: 'secondary' },
                         ],
                     },
-                    defaultValue: '16',
+                    defaultValue: 'Default',
                 },
             ],
         },
