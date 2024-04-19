@@ -51,7 +51,7 @@ const Newsletter = forwardRef<
         alertMessage = firstError.code === "TAKEN" ? firstError.message : "Some things went wrong!";
         alertMessageClass = 'text-red-700';
     } else if (isSuccess && fetcher.data?.customer && emailInputRef.current) {
-        alertMessage = "Subscribe success!";
+        alertMessage = "Subscribe successfully!";
         emailInputRef.current.value = '';
         alertMessageClass = 'text-green-700';
     }

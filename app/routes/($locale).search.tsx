@@ -80,7 +80,7 @@ export default function Search() {
       <PageHeader className='flex flex-col justify-center items-center bg-background-subtle-1'>
         <Heading as="h1" size="display">
           {searchTerm && `Search results for “${searchTerm}”`}
-          {!searchTerm && 'Search results for original'}
+          {!searchTerm && 'Search our site'}
         </Heading>
         <Form method="get" className="relative flex justify-center items-center w-full box-border">
           <button type="submit" className='absolute left-0 ml-3 cursor-pointer'>
