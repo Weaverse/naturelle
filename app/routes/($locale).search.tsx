@@ -79,7 +79,8 @@ export default function Search() {
     <>
       <PageHeader className='flex flex-col justify-center items-center bg-background-subtle-1'>
         <Heading as="h1" size="display">
-          Search results for “ordinary”
+          {searchTerm && `Search results for “${searchTerm}”`}
+          {!searchTerm && 'Search our site'}
         </Heading>
         <Form method="get" className="relative flex justify-center items-center w-full box-border">
           <button type="submit" className='absolute left-0 ml-3 cursor-pointer'>
@@ -89,7 +90,7 @@ export default function Search() {
             defaultValue={searchTerm}
             name="q"
             placeholder="ordinary"
-            className='w-full bg-inherit !rounded border-2 border-bar-subtle pl-11'
+            className='w-full !bg-inherit !rounded border-2 border-bar-subtle pl-11'
             type="search"
             variant="search"
           />
