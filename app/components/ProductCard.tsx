@@ -1,18 +1,16 @@
-import type { ShopifyAnalyticsProduct } from '@shopify/hydrogen';
-import { flattenConnection, Image, Money, useMoney } from '@shopify/hydrogen';
-import type { MoneyV2, Product } from '@shopify/hydrogen/storefront-api-types';
+import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
+import {flattenConnection, Image, Money, useMoney} from '@shopify/hydrogen';
+import type {MoneyV2, Product} from '@shopify/hydrogen/storefront-api-types';
 import clsx from 'clsx';
 
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import type { ProductCardFragment } from 'storefrontapi.generated';
-import { AddToCartButton } from '~/components/AddToCartButton';
-import { Link } from '~/components/Link';
-import { Text } from '~/components/Text';
-import { getProductPlaceholder } from '~/lib/placeholders';
-import { isDiscounted, isNewArrival } from '~/lib/utils';
-import { Modal } from './Modal';
-import { QuickView, QuickViewTrigger } from './QuickView';
+import {Button} from '@/components/ui/button';
+import type {ProductCardFragment} from 'storefrontapi.generated';
+import {AddToCartButton} from '~/components/AddToCartButton';
+import {Link} from '~/components/Link';
+import {Text} from '~/components/Text';
+import {getProductPlaceholder} from '~/lib/placeholders';
+import {isDiscounted, isNewArrival} from '~/lib/utils';
+import {QuickViewTrigger} from './QuickView';
 
 export function ProductCard({
   product,
@@ -29,7 +27,6 @@ export function ProductCard({
   onClick?: () => void;
   quickAdd?: boolean;
 }) {
-  let [quickAddOpen, setQuickAddOpen] = useState(false);
   let cardLabel;
   const cardProduct: Product = product?.variants
     ? (product as Product)
@@ -152,7 +149,7 @@ export function ProductCard({
           </div>
         </div>
       </div>
-      {quickAdd && firstVariant.availableForSale && (
+      {quickAdd && variants.length === 1 && firstVariant.availableForSale && (
         <AddToCartButton
           lines={[
             {
@@ -161,28 +158,32 @@ export function ProductCard({
             },
           ]}
           variant="secondary"
-          className="mt-2 lg:hidden"
+          className="mt-4 lg:hidden w-full"
           analytics={{
             products: [productAnalytics],
             totalValue: parseFloat(productAnalytics.price),
           }}
         >
           <Text as="span" className="flex items-center justify-center gap-2">
-            Add to Cart
+            Add to Bag
           </Text>
         </AddToCartButton>
       )}
-      {quickAdd && !firstVariant.availableForSale && (
-        <Button variant="secondary" className="mt-2 lg:hidden" disabled>
+      {quickAdd && variants.length > 1 && (
+        <Button
+          className="mt-4 lg:hidden"
+          variant="secondary"
+          to={`/products/${product.handle}`}
+        >
+          Select Options
+        </Button>
+      )}
+      {quickAdd && variants.length === 1 && !firstVariant.availableForSale && (
+        <Button variant="secondary" className="mt-4 lg:hidden" disabled>
           <Text as="span" className="flex items-center justify-center gap-2">
             Sold out
           </Text>
         </Button>
-      )}
-      {quickAdd && quickAddOpen && variants.length > 1 && (
-        <Modal onClose={() => setQuickAddOpen(false)}>
-          <QuickView productHandle={product.handle} />
-        </Modal>
       )}
     </div>
   );
