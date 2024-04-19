@@ -10,6 +10,7 @@ import { PageHeader, Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
 import {Grid} from '~/components/Grid';
 import {getImageLoadingPriority} from '~/lib/const';
+import { Button } from '@/components/ui/button';
 
 interface AllProductsProps extends HydrogenComponentProps {
   heading: string;
@@ -53,15 +54,23 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
               return (
                 <>
                   <div className="flex items-center justify-center mt-6">
-                    <PreviousLink className="inline-block rounded font-medium text-center py-3 px-6 border border-bar/10 bg-contrast text-body w-full">
-                      {isLoading ? 'Loading...' : prevPageText}
-                    </PreviousLink>
+                    <Button
+                        as={PreviousLink}
+                        variant="secondary"
+                        width="full"
+                      >
+                        {isLoading ? 'Loading...' : prevPageText}
+                      </Button>
                   </div>
                   <Grid data-test="product-grid">{itemsMarkup}</Grid>
                   <div className="flex items-center justify-center mt-6">
-                    <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-bar/10 bg-contrast text-body w-full">
-                      {isLoading ? 'Loading...' : nextPageText}
-                    </NextLink>
+                    <Button
+                        as={NextLink}
+                        variant="secondary"
+                        width="full"
+                      >
+                        {isLoading ? 'Loading...' : nextPageText}
+                      </Button>
                   </div>
                 </>
               );
