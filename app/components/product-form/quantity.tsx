@@ -34,7 +34,7 @@ export function Quantity(props: QuantityProps) {
           <span>&#8722;</span>
         </button>
         <Input
-          className="py-3 w-24 text-center border-2 rounded-none bg-background"
+          className="py-3 w-24 text-center border-2 rounded bg-background"
           value={value}
           onKeyDown={handleKeyDown}
           onChange={(e) => onChange(Number(e.currentTarget.value))}

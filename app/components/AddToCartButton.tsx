@@ -53,6 +53,7 @@ export function AddToCartButton({
               size="lg"
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}
+              loading={fetcher.state === 'submitting'}
               {...props}
             >
               {children}

@@ -1,6 +1,6 @@
 import {Image} from '@shopify/hydrogen';
 import clsx from 'clsx';
-import {useKeenSlider} from 'keen-slider/react';
+import {useKeenSlider, KeenSliderPlugin} from 'keen-slider/react';
 import {useCallback, useEffect, useState} from 'react';
 import type {MediaFragment} from 'storefrontapi.generated';
 
@@ -12,6 +12,7 @@ interface ProductMediaProps {
   spacing: number;
 }
 
+
 export function ProductMedia(props: ProductMediaProps) {
   let {
     selectedVariant,
@@ -21,7 +22,6 @@ export function ProductMedia(props: ProductMediaProps) {
     spacing,
   } = props;
   let media = _media.filter((med) => med.__typename === 'MediaImage');
-
   let slideOptions = {
     initial: 0,
     loop: true,
@@ -55,6 +55,7 @@ export function ProductMedia(props: ProductMediaProps) {
     },
   });
 
+
   function moveToIdx(idx: number) {
     setActiveInd(idx);
     if (instanceRef.current) {
@@ -72,7 +73,7 @@ export function ProductMedia(props: ProductMediaProps) {
     // thumbnailInstance.current?.update(thumbnailOptions);
     let selectedInd = media.findIndex((med) => {
       if (med.__typename !== 'MediaImage') return false;
-      return med.image?.url === selectedVariant.image.url;
+      return med.image?.url === selectedVariant?.image.url;
     });
     moveToIdx(selectedInd);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,8 +116,8 @@ export function ProductMedia(props: ProductMediaProps) {
                 <div
                   key={med.id}
                   className={clsx(
-                    'keen-slider__slide border-2 cursor-pointer',
-                    i === activeInd ? 'border-bar/70' : '',
+                    'keen-slider__slide border-2 cursor-pointer rounded',
+                    i === activeInd ? 'border-bar' : '',
                   )}
                   onClick={() => handleClickThumbnail(i)}
                 >
