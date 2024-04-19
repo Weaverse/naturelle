@@ -27,10 +27,10 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
 
     let {ref, inView} = useInView();
     let {collection, collections, appliedFilters} = useLoaderData<
-      CollectionDetailsQuery & {
-        collections: Array<{handle: string; title: string}>;
-        appliedFilters: AppliedFilter[];
-      }
+    CollectionDetailsQuery & {
+      collections: Array<{handle: string; title: string}>;
+      appliedFilters: AppliedFilter[];
+    }
     >();
 
     if (collection?.products && collections) {
@@ -47,7 +47,7 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
               </div>
             )}
           </PageHeader>
-          <Section as="div">
+          <Section as="div" className="container">
             <SortFilter
               filters={collection.products.filters as Filter[]}
               appliedFilters={appliedFilters}

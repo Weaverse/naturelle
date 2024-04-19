@@ -128,7 +128,16 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                       <Text className={'opacity-50 font-medium'}>{vendor}</Text>
                     )}
                   </div>
-                  <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed">
+                  <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3">
+                    {selectedVariant && selectedVariant.compareAtPrice && (
+                      <Money
+                        withoutTrailingZeros
+                        data={selectedVariant.compareAtPrice}
+                        className="text-label-sale line-through"
+                        as="span"
+                      />
+                    )}
+
                     {selectedVariant ? (
                       <Money
                         withoutTrailingZeros
@@ -138,12 +147,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                     ) : null}
                   </p>
                   {children}
-                  <p
-                    className="max-w-[600px] leading-relaxed"
-                    dangerouslySetInnerHTML={{
-                      __html: descriptionHtml,
-                    }}
-                  />
+
                   <ProductVariants
                     product={product}
                     selectedVariant={selectedVariant}
@@ -182,6 +186,12 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                     storeDomain={storeDomain}
                   />
                 )}
+                <p
+                  className="max-w-[600px] leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: descriptionHtml,
+                  }}
+                />
                 <div className="grid gap-4 py-4">
                   {showShippingPolicy && shippingPolicy?.body && (
                     <ProductDetail
