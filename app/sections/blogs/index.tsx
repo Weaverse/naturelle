@@ -16,7 +16,6 @@ type BlogData = {
     heading: string;
     backgroundColor: string;
     articlePerRow: number;
-    showReadMoreButton: boolean;
     showSeperator: boolean;
 };
 
@@ -38,32 +37,14 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
         heading,
         backgroundColor,
         articlePerRow,
-        showReadMoreButton,
         showSeperator,
         loaderData,
         ...rest
     } = props;
 
-    function calculateHoverBackgroundColor(baseColor: string): string {
-        let hoverColor = '#';
-        const rgbValues = baseColor.match(/\w\w/g)?.map(component => parseInt(component, 16)) || [255, 255, 255];
-        const hoverRgbValues = rgbValues.map((value, index) => {
-            if (index === 2) {
-                return Math.min(255, value - 50);
-            }
-            return value;
-        });
-        hoverRgbValues.forEach(value => {
-            hoverColor += (value < 16 ? '0' : '') + value.toString(16);
-        });
-        return hoverColor;
-    }
-
-    const hoverBackgroundColor = calculateHoverBackgroundColor(backgroundColor);
 
     let sectionStyle: CSSProperties = {
         '--background-color': backgroundColor,
-        '--background-color-hover': hoverBackgroundColor,
     } as CSSProperties;
 
     if (loaderData === undefined) {
@@ -140,7 +121,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                     {res?.map((idx: any) => (
                         <Link to={`/blogs/${blogs.handle}/${idx.handle}`} className={'group'}>
                             <div key={idx.id}
-                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-[var(--background-color-hover)] transition-colors duration-500 rounded cursor-pointer'
+                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-background-subtle-1 transition-colors duration-500 rounded cursor-pointer'
                             >
                                 {idx.image ? (
                                     <Image
@@ -156,7 +137,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                     </div>)}
                                 <div className="flex flex-col gap-4">
                                     <h3 className='group-hover:underline'>{idx.title}</h3>
-                                    {showSeperator && <div className="border-b-2 border-gray-300 w-full"></div>}
+                                    {showSeperator && <div className="border-b-2 border-bar-subtle w-full"></div>}
                                     <p dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
                                 </div>
                             </div>
@@ -219,12 +200,6 @@ export const schema: HydrogenComponentSchema = {
                         max: 4,
                         step: 1,
                     },
-                },
-                {
-                    type: 'switch',
-                    name: 'showReadMoreButton',
-                    label: 'Show “Read more” button',
-                    defaultValue: true,
                 },
                 {
                     type: 'switch',

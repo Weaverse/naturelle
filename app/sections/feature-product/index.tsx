@@ -55,7 +55,7 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
         let displayedProducts = res?.slice(0, totalProduct);
         return (
             <section ref={ref} {...rest} className='w-full h-full flex justify-center' style={sectionStyle}>
-                <div className='px-4 flex flex-col max-w-[1440px] items-center gap-6 sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
+                <div className='px-4 w-full flex flex-col max-w-[1440px] items-center gap-6 sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
                     <div className='flex justify-center'>
                         {heading && <h2 className='font-medium'>{heading}</h2>}
                     </div>
