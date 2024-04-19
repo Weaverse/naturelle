@@ -19,7 +19,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
-      <Drawer open={showMenu} onOpenChange={setShowMenu}>
+      <Drawer trigger={<button>MENU</button>} open={showMenu} onOpenChange={setShowMenu} className="bg-white flex flex-col h-fit w-full fixed top-0">
         <HeaderMenu
           menu={menu}
           viewport="desktop"
@@ -60,9 +60,6 @@ export function HeaderMenu({
   return (
     <div className="w-full h-full bg-background-subtle-1 flex flex-col">
       <div className="h-8 w-full border-b flex items-center justify-end p-8">
-        <button onClick={onCloseMenu}>
-          <IconClose />
-        </button>
       </div>
       <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
         <nav className="flex flex-col gap-4 p-8" role="navigation">

@@ -6,7 +6,7 @@ import {cn} from '@/lib/utils';
 import { Spinner } from "../spinner";
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -20,10 +20,15 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-[50px] px-5 py-3',
-        sm: 'h-10 rounded-md px-3',
-        lg: 'h-14 rounded-md px-8',
+        sm: 'h-10 px-3',
+        md: 'h-[46px] px-4',
+        lg: 'h-14 px-8',
         icon: 'h-10 w-10',
       },
+      shape: {
+        default: '',
+        round: 'rounded-md'
+      }
     },
     defaultVariants: {
       variant: 'default',
@@ -38,6 +43,7 @@ export interface ButtonProps
   loading?: boolean;
   asChild?: boolean;
   as?: React.ElementType;
+  to?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -47,6 +53,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading,
       variant,
       size = 'default',
+      shape = 'round',
       asChild,
       as = 'button',
       children,
@@ -60,7 +67,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Component
         className={cn(
-          buttonVariants({variant, size, className}),
+          buttonVariants({variant, size, shape, className}),
           loading && 'pointer-events-none relative',
         )}
         ref={ref}

@@ -25,7 +25,7 @@ export function AddToCartButton({
   children: React.ReactNode;
   lines: CartLineInput[];
   className?: string;
-  variant?: 'primary' | 'secondary' | 'inline';
+  variant?: 'primary' | 'secondary' | 'outline';
   width?: 'auto' | 'full';
   disabled?: boolean;
   analytics?: unknown;
@@ -54,6 +54,7 @@ export function AddToCartButton({
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}
               loading={fetcher.state === 'submitting'}
+              variant={variant}
               {...props}
             >
               {children}
