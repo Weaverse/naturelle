@@ -63,9 +63,9 @@ const VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
             />
             <div className={clsx(
                 "absolute inset-0",
-                enableOverlay && 'bg-[var(--overlay-color)] opacity-[var(--overlay-opacity)]'
+                enableOverlay && 'bg-[var(--overlay-color)] opacity-[var(--overlay-opacity)] -z-0'
             )}></div>
-            <div className="z-10 sm:w-[var(--max-width-content)] w-5/6 h-fit flex flex-col text-center gap-5">
+            <div className="z-0 sm:w-[var(--max-width-content)] w-5/6 h-fit flex flex-col text-center gap-5">
                 {children}
             </div>
         </section>

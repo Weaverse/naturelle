@@ -28,12 +28,13 @@ const Review = forwardRef<HTMLDivElement, ReviewProps>((props, ref) => {
         return stars;
     };
     return (
-        <div ref={ref} {...rest} className='border rounded border-[var(--border-color)] gap-2 p-6 flex flex-col'>
+        <div ref={ref} {...rest} className='border rounded border-[var(--border-color)] gap-2 p-6 flex flex-col relative'>
             {name && <h4 className='font-medium text-[var(--text-color)]'>{name}</h4>}
             <p className='flex gap-1'>
                 {renderStars()}
             </p>
             {content && <p className='font-normal text-[var(--text-color)]'>{content}</p>}
+            <div className='hover:opacity-10 hover:bg-white opacity-0 absolute inset-0 transition-opacity duration-500'/>
         </div>
     );
 });
