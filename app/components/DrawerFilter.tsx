@@ -41,7 +41,6 @@ export function DrawerFilter({
   filters,
   appliedFilters = [],
   children,
-  collections = [],
   productNumber = 0,
 }: DrawerFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
