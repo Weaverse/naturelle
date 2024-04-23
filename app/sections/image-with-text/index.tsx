@@ -9,11 +9,15 @@ import { IconImageBlank } from '~/components/Icon';
 import clsx from 'clsx';
 
 type AlignImage = 'left' | 'right';
+type Alignment = 'left' | 'center' | 'right';
 interface ImageWithTextProps extends HydrogenComponentProps {
     backgroundImage?: WeaverseImage;
     sectionHeight: number;
     backgroundColor: string;
     imageAlignment?: AlignImage;
+    textAlignment: Alignment;
+    marginTop?: number;
+    marginBottom?: number;
 }
 
 let AlignImageClasses: Record<AlignImage, string> = {
@@ -21,15 +25,23 @@ let AlignImageClasses: Record<AlignImage, string> = {
     right: 'sm:flex-row',
 };
 
+let alignmentTextClasses: Record<Alignment, string> = {
+    left: 'items-start',
+    center: 'items-center',
+    right: 'items-end',
+};
+
 const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) => {
-    let { backgroundImage, imageAlignment, sectionHeight, backgroundColor, children, ...rest } = props;
+    let { backgroundImage, imageAlignment, marginTop, marginBottom, sectionHeight, backgroundColor, textAlignment, children, ...rest } = props;
     let styleSection: CSSProperties = {
         '--section-height': `${sectionHeight}px`,
+        '--margin-top': `${marginTop}px`,
+        '--margin-bottom': `${marginBottom}px`,
         '--background-color': backgroundColor,
     } as CSSProperties;
 
     return (
-        <section ref={ref} {...rest} style={styleSection} className='group sm:h-[var(--section-height)] h-auto'>
+        <section ref={ref} {...rest} style={styleSection} className='group sm:h-[var(--section-height)] h-auto mt-[var(--margin-top)] mb-[var(--margin-bottom)]'>
             <div className='h-full w-full sm:px-0'>
                 <div className={clsx('flex flex-col-reverse justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
                     <div
@@ -50,7 +62,9 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
                             </div>
                         )}
                     </div>
-                    <div className='flex flex-col px-6 py-12 gap-4 justify-center bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'>
+                    <div className={clsx(alignmentTextClasses[textAlignment!],
+                        'flex flex-col justify-center px-6 py-12 gap-4 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'
+                    )}>
                         {children}
                     </div>
                 </div>
@@ -87,6 +101,19 @@ export let schema: HydrogenComponentSchema = {
                     defaultValue: 'left',
                 },
                 {
+                    type: 'toggle-group',
+                    label: 'Text alignment',
+                    name: 'textAlignment',
+                    configs: {
+                        options: [
+                            { label: 'Left', value: 'left' },
+                            { label: 'Center', value: 'center'},
+                            { label: 'Right', value: 'right' },
+                        ],
+                    },
+                    defaultValue: 'center',
+                },
+                {
                     type: 'color',
                     name: 'backgroundColor',
                     label: 'Background color',
@@ -101,6 +128,30 @@ export let schema: HydrogenComponentSchema = {
                         min: 400,
                         max: 700,
                         step: 10,
+                        unit: 'px',
+                    },
+                },
+                {
+                    type: 'range',
+                    name: 'marginTop',
+                    label: 'Margin top',
+                    defaultValue: 0,
+                    configs: {
+                        min: 0,
+                        max: 100,
+                        step: 1,
+                        unit: 'px',
+                    },
+                },
+                {
+                    type: 'range',
+                    name: 'marginBottom',
+                    label: 'Margin bottom',
+                    defaultValue: 0,
+                    configs: {
+                        min: 0,
+                        max: 100,
+                        step: 1,
                         unit: 'px',
                     },
                 },

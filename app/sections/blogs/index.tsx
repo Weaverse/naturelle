@@ -50,7 +50,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     if (loaderData === undefined) {
         return (
             <section ref={ref} {...rest} className="w-full h-full bg-[var(--background-color)]" style={sectionStyle}>
-                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20">
+                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20">
                     {heading && <div className="flex justify-center">
                         <h2 className="font-medium">{heading}</h2>
                     </div>}
@@ -107,10 +107,15 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     }
 
     let res = loaderData?.blog?.articles.nodes;
-
+    const truncateText = (content: any, maxLength: number) => {
+        if (content.length > maxLength) {
+            return content.slice(0, maxLength) + '...';
+        }
+        return content;
+    };
     return (
         <section ref={ref} {...rest} className="h-full w-full flex justify-center bg-[var(--background-color)]" style={sectionStyle}>
-            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20 max-w-[1440px]">
+            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20 max-w-[1440px]">
                 {heading && <div className="flex justify-center">
                     <h2 className="font-medium">{heading}</h2>
                 </div>}
@@ -138,7 +143,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <div className="flex flex-col gap-4">
                                     <h3 className='group-hover:underline'>{idx.title}</h3>
                                     {showSeperator && <div className="border-b-2 border-bar-subtle w-full"></div>}
-                                    <p dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
+                                    <div dangerouslySetInnerHTML={{ __html: truncateText(idx.contentHtml, 150) }}></div>
                                 </div>
                             </div>
                         </Link>
