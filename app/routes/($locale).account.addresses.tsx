@@ -23,7 +23,7 @@ import {
   DELETE_ADDRESS_MUTATION,
   CREATE_ADDRESS_MUTATION,
 } from '~/graphql/customer-account/CustomerAddressMutations';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/button';
 
 export type ActionResponse = {
   addressId?: string | null;

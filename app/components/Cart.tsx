@@ -4,7 +4,7 @@ import {Link} from '@remix-run/react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {IconRemove} from './Icon';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/button';
 
 type CartLine = CartApiQueryFragment['lines']['nodes'][0];
 

@@ -1,6 +1,6 @@
 import {Link} from '@remix-run/react';
 import {IconClose} from './Icon';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import { useEffect } from "react";
 
 export function Modal({

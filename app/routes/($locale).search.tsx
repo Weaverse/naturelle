@@ -21,7 +21,7 @@ import {
   type FeaturedData,
 } from './($locale).featured-products';
 import { IconSearch } from '~/components/Icon';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/button';
 
 export async function loader({
   request,

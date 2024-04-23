@@ -11,7 +11,7 @@ import { Section } from '~/components/Text';
 import { Grid } from '~/components/Grid';
 import { getImageLoadingPriority } from '~/lib/const';
 import { CollectionCard } from './collection-card';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/button';
 
 interface CollectionListProps extends HydrogenComponentProps {
   textColor: string;
