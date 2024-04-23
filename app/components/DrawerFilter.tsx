@@ -1,5 +1,4 @@
 import {Disclosure, Menu} from '@headlessui/react';
-import type {Location} from '@remix-run/react';
 
 import {
   Link,
@@ -15,41 +14,38 @@ import type {SyntheticEvent} from 'react';
 import {useMemo, useState} from 'react';
 import {useDebounce} from 'react-use';
 
+import {Checkbox} from '@/components/checkbox';
+import {Input} from '@/components/input';
 import {Button} from '@/components/ui/button';
 import {IconCaret, IconXMark} from '~/components/Icon';
 import {Heading, Text} from '~/components/Text';
+import {FILTER_URL_PREFIX} from '~/lib/const';
+import {
+  SortParam,
+  filterInputToParams,
+  getAppliedFilterLink,
+  getFilterLink,
+  type AppliedFilter,
+} from '~/lib/filter';
 import {Drawer} from './Drawer';
-import { Input } from "@/components/input";
 
-export type AppliedFilter = {
-  label: string;
-  filter: ProductFilter;
-};
-
-export type SortParam =
-  | 'price-low-high'
-  | 'price-high-low'
-  | 'best-selling'
-  | 'newest'
-  | 'featured';
-
-type Props = {
-  productNumber?: number
+type DrawerFilterProps = {
+  productNumber?: number;
   filters: Filter[];
   appliedFilters?: AppliedFilter[];
   children: React.ReactNode;
   collections?: Array<{handle: string; title: string}>;
 };
-export const FILTER_URL_PREFIX = 'filter.';
 
 export function DrawerFilter({
   filters,
   appliedFilters = [],
   children,
   collections = [],
-  productNumber = 0
-}: Props) {
+  productNumber = 0,
+}: DrawerFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <div className="flex items-center justify-between w-full">
@@ -59,12 +55,7 @@ export function DrawerFilter({
           <Drawer
             direction="left"
             trigger={
-              <Button
-                // onClick={() => setIsOpen(!isOpen)}
-                shape="default"
-                variant="secondary"
-                size="md"
-              >
+              <Button shape="default" variant="secondary" size="md">
                 <span>Filter</span>
               </Button>
             }
@@ -72,39 +63,61 @@ export function DrawerFilter({
             onOpenChange={setIsOpen}
             className="bg-white h-full w-fit fixed top-0"
           >
-            <div className="w-80 px-5">
-              <FiltersDrawer filters={filters} appliedFilters={appliedFilters} />
+            <div className="w-96 p-6">
+              <FiltersDrawer
+                filters={filters}
+                appliedFilters={appliedFilters}
+              />
             </div>
           </Drawer>
         </div>
       </div>
-      <div className="flex flex-col flex-wrap md:flex-row">
-        <div className="flex-1">{children}</div>
-      </div>
-      {/* <div
-        className={`transition-all duration-200 
-        ${
-          true
-            ? 'opacity-100 min-w-full md:min-w-[240px] md:w-[240px] md:pr-8 max-h-full'
-            : 'opacity-0 md:min-w-[0px] md:w-[0px] pr-0 max-h-0 md:max-h-full'
-        }`}
-      >
-        <div className="fixed inset-0 transition-opacity bg-opacity-75 bg-primary/40">
-          <div className="z-50 overflow-y-hidden bg-white w-80 px-5">
-            <FiltersDrawer filters={filters} appliedFilters={appliedFilters} />
-          </div>
-        </div>
-      </div> */}
+      <div className="flex flex-col flex-wrap md:flex-row">{children}</div>
     </>
+  );
+}
+
+function ListItemFilter({
+  option,
+  appliedFilters,
+}: {
+  option: Filter['values'][0];
+  appliedFilters: AppliedFilter[];
+}) {
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const location = useLocation();
+  let filter = appliedFilters.find(
+    (filter) => JSON.stringify(filter.filter) === option.input,
+  );
+  let [checked, setChecked] = useState(!!filter);
+
+  let handleCheckedChange = (checked: boolean) => {
+    setChecked(checked);
+    if (checked) {
+      const link = getFilterLink(option.input as string, params, location);
+      navigate(link);
+    } else if (filter) {
+      let link = getAppliedFilterLink(filter, params, location);
+      navigate(link);
+    }
+  };
+  return (
+    <div className="flex gap-2">
+      <Checkbox
+        checked={checked}
+        onCheckedChange={handleCheckedChange}
+        label={option.label}
+      />
+    </div>
   );
 }
 
 export function FiltersDrawer({
   filters = [],
   appliedFilters = [],
-}: Omit<Props, 'children'>) {
+}: Omit<DrawerFilterProps, 'children'>) {
   const [params] = useSearchParams();
-  const location = useLocation();
 
   const filterMarkup = (filter: Filter, option: Filter['values'][0]) => {
     switch (filter.type) {
@@ -115,62 +128,44 @@ export function FiltersDrawer({
           : undefined;
         const min = isNaN(Number(price?.min)) ? undefined : Number(price?.min);
         const max = isNaN(Number(price?.max)) ? undefined : Number(price?.max);
-
         return <PriceRangeFilter min={min} max={max} />;
 
       default:
-        const to = getFilterLink(option.input as string, params, location);
         return (
-          <Link
-            className="focus:underline hover:underline"
-            prefetch="intent"
-            to={to}
-          >
-            {option.label}
-          </Link>
+          <ListItemFilter appliedFilters={appliedFilters} option={option} />
         );
     }
   };
 
   return (
-    <>
-      <nav className="py-8">
-        {appliedFilters.length > 0 ? (
-          <div className="pb-8">
-            <AppliedFilters filters={appliedFilters} />
-          </div>
-        ) : null}
-
-        <Heading as="h4" size="lead" className="pb-4">
-          Filter
-        </Heading>
-        <div className="divide-y">
-          {filters.map((filter: Filter) => (
-            <Disclosure as="div" key={filter.id} className="w-full">
-              {({open}) => (
-                <>
-                  <Disclosure.Button className="flex justify-between w-full py-4">
-                    <Text size="lead">{filter.label}</Text>
-                    <IconCaret direction={open ? 'up' : 'down'} />
-                  </Disclosure.Button>
-                  <Disclosure.Panel key={filter.id}>
-                    <ul key={filter.id} className="py-2">
-                      {filter.values?.map((option) => {
-                        return (
-                          <li key={option.id} className="pb-4">
-                            {filterMarkup(filter, option)}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </Disclosure.Panel>
-                </>
-              )}
-            </Disclosure>
-          ))}
-        </div>
-      </nav>
-    </>
+    <nav className="">
+      <Heading as="h4" size="heading" className="pb-3">
+        Filter
+      </Heading>
+      <div className="divide-y">
+        {filters.map((filter: Filter) => (
+          <Disclosure as="div" key={filter.id} className="w-full pt-5 pb-6">
+            {({open}) => (
+              <>
+                <Disclosure.Button className="flex justify-between w-full">
+                  <Text size="lead">{filter.label}</Text>
+                  <IconCaret direction={open ? 'down' : 'left'} />
+                </Disclosure.Button>
+                <Disclosure.Panel key={filter.id}>
+                  <ul key={filter.id} className="space-y-4 pt-4">
+                    {filter.values?.map((option) => {
+                      return (
+                        <li key={option.id}>{filterMarkup(filter, option)}</li>
+                      );
+                    })}
+                  </ul>
+                </Disclosure.Panel>
+              </>
+            )}
+          </Disclosure>
+        ))}
+      </div>
+    </nav>
   );
 }
 
@@ -200,38 +195,6 @@ function AppliedFilters({filters = []}: {filters: AppliedFilter[]}) {
       </div>
     </>
   );
-}
-
-function getAppliedFilterLink(
-  filter: AppliedFilter,
-  params: URLSearchParams,
-  location: Location,
-) {
-  const paramsClone = new URLSearchParams(params);
-  Object.entries(filter.filter).forEach(([key, value]) => {
-    const fullKey = FILTER_URL_PREFIX + key;
-    paramsClone.delete(fullKey, JSON.stringify(value));
-  });
-  return `${location.pathname}?${paramsClone.toString()}`;
-}
-
-function getSortLink(
-  sort: SortParam,
-  params: URLSearchParams,
-  location: Location,
-) {
-  params.set('sort', sort);
-  return `${location.pathname}?${params.toString()}`;
-}
-
-function getFilterLink(
-  rawInput: string | ProductFilter,
-  params: URLSearchParams,
-  location: ReturnType<typeof useLocation>,
-) {
-  const paramsClone = new URLSearchParams(params);
-  const newParams = filterInputToParams(rawInput, paramsClone);
-  return `${location.pathname}?${newParams.toString()}`;
 }
 
 const PRICE_RANGE_FILTER_DEBOUNCE = 500;
@@ -283,55 +246,29 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
   };
 
   return (
-    <div className="flex flex-col">
-      <label className="mb-4">
-        <span>from</span>
+    <div className="flex gap-6">
+      <label className="flex gap-1 items-center">
+        <span>$</span>
         <Input
           name="minPrice"
-          className="mt-2"
           type="number"
           value={minPrice ?? ''}
-          placeholder={'$'}
+          placeholder="From"
           onChange={onChangeMin}
         />
       </label>
-      <label>
-        <span>to</span>
+      <label className="flex gap-1 items-center">
+        <span>$</span>
         <Input
           name="maxPrice"
-          className="mt-2"
           type="number"
           value={maxPrice ?? ''}
-          placeholder={'$'}
+          placeholder="To"
           onChange={onChangeMax}
         />
       </label>
     </div>
   );
-}
-
-function filterInputToParams(
-  rawInput: string | ProductFilter,
-  params: URLSearchParams,
-) {
-  const input =
-    typeof rawInput === 'string'
-      ? (JSON.parse(rawInput) as ProductFilter)
-      : rawInput;
-
-  Object.entries(input).forEach(([key, value]) => {
-    if (params.has(`${FILTER_URL_PREFIX}${key}`, JSON.stringify(value))) {
-      return;
-    }
-    if (key === 'price') {
-      // For price, we want to overwrite
-      params.set(`${FILTER_URL_PREFIX}${key}`, JSON.stringify(value));
-    } else {
-      params.append(`${FILTER_URL_PREFIX}${key}`, JSON.stringify(value));
-    }
-  });
-
-  return params;
 }
 
 export default function SortMenu() {

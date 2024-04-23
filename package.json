@@ -16,6 +16,7 @@
     "@fontsource-variable/cormorant": "^5.0.13",
     "@fontsource-variable/open-sans": "^5.0.26",
     "@headlessui/react": "^1.7.18",
+    "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-slot": "^1.0.2",
     "@remix-run/css-bundle": "^2.8.1",
     "@remix-run/react": "^2.8.1",

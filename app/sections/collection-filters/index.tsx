@@ -9,11 +9,10 @@ import { forwardRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { CollectionDetailsQuery } from 'storefrontapi.generated';
 import { Button } from '~/components/Button';
-import type { AppliedFilter } from '~/components/SortFilter';
-import { SortFilter } from '~/components/SortFilter';
 import { Section } from '~/components/Text';
 import { ProductsLoadedOnScroll } from './products-loaded-on-scroll';
 import { DrawerFilter } from "~/components/DrawerFilter";
+import type { AppliedFilter } from "~/lib/filter";
 
 interface CollectionFiltersProps extends HydrogenComponentProps {
   showCollectionDescription: boolean;

@@ -30,7 +30,7 @@ export function Drawer(props: DrawerProps) {
       <VaulDrawer.Portal>
         <VaulDrawer.Overlay className="fixed inset-0 bg-black/40" />
         <VaulDrawer.Content className={cn("z-50", className)}>
-          <button className="absolute top-0 right-0 p-4" onClick={() => onOpenChange(false)}>
+          <button className="absolute top-4 right-4 p-2" onClick={() => onOpenChange(false)}>
             <IconClose />
           </button>
           {children}
