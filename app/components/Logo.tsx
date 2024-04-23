@@ -1,26 +1,25 @@
-import {useThemeSettings} from '@weaverse/hydrogen';
+import {useNavigate} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
-import {Link} from './Link';
+import {useThemeSettings} from '@weaverse/hydrogen';
 
 export function Logo() {
   let settings = useThemeSettings();
-  let {logoData} = settings;
+  let navigate = useNavigate();
+  let {logoData} = settings || {};
+  let redirectToHomepage = () => {
+    navigate('/');
+  };
   if (!logoData) {
     return null;
   }
+
   return (
-    <Link
-      className="flex items-center justify-center w-full h-full lg:w-fit lg:h-fit"
-      to="/"
-      prefetch="intent"
-    >
-      <div className="max-w-[120px]">
-        <Image
-          data={logoData}
-          sizes="auto"
-          className="w-full h-full object-contain"
-        />
-      </div>
-    </Link>
+    <div className="max-w-[120px]" role="button" onClick={redirectToHomepage}>
+      <Image
+        data={logoData}
+        sizes="auto"
+        className="w-full h-full object-contain"
+      />
+    </div>
   );
 }
