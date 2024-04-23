@@ -7,7 +7,7 @@ import { forwardRef, CSSProperties, useRef } from 'react';
 import { IconNewsletter } from '~/components/Icon';
 import { Image } from '@shopify/hydrogen';
 import { Input } from '@/components/input';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import { useFetcher } from '@remix-run/react';
 import clsx from 'clsx';
 

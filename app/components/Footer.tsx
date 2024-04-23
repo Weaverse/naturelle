@@ -1,5 +1,5 @@
 import {Input} from '@/components/input';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import {NavLink, useFetcher} from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';

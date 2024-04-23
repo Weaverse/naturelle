@@ -16,7 +16,7 @@ import {useDebounce} from 'react-use';
 
 import {Checkbox} from '@/components/checkbox';
 import {Input} from '@/components/input';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/button';
 import {IconCaret, IconXMark} from '~/components/Icon';
 import {Heading, Text} from '~/components/Text';
 import {FILTER_URL_PREFIX} from '~/lib/const';

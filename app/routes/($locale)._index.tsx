@@ -7,7 +7,6 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {WeaverseContent} from '~/weaverse';
-import {Button} from '@/components/ui/button';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
