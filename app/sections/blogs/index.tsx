@@ -137,7 +137,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                 <div className="flex flex-col gap-4">
                                     <h3 className='group-hover:underline'>{idx.title}</h3>
                                     {showSeperator && <div className="border-b-2 border-bar-subtle w-full"></div>}
-                                    <p className='line-clamp-3 max-h-36' dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
+                                    <p className='line-clamp-3'>{idx.excerpt}</p>
                                 </div>
                             </div>
                         </Link>
