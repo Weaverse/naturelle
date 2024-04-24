@@ -53,6 +53,13 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      height: {
+        screen: 'var(--screen-height, 100vh)',
+        'screen-no-nav':
+          'calc(var(--screen-height, 100vh) - var(--height-nav))',
+        'screen-in-drawer': 'calc(var(--screen-height, 100vh) - 90px)',
+        'screen-dynamic': 'var(--screen-height-dynamic, 100vh)',
+      },
       keyframes: {
         'accordion-down': {
           from: {height: '0'},

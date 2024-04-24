@@ -1,13 +1,18 @@
 import {Await, Form, NavLink} from '@remix-run/react';
-import {Suspense, useMemo, useState} from 'react';
+import {Suspense, useEffect, useMemo, useState} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import type {LayoutProps} from './Layout';
 import {Logo} from './Logo';
 import {Link} from './Link';
 import {IconAccount, IconBag, IconClose, IconLogin, IconSearch} from './Icon';
-import {Image} from '@shopify/hydrogen';
+import {CartForm, Image} from '@shopify/hydrogen';
 import {Drawer} from './Drawer';
+import {CartDrawer, useCartDrawer} from './CartDrawer';
+import {CartLoading} from './CartLoading';
+import Cart from '~/routes/($locale).cart';
+import {CartMain} from './Cart';
+import { useCartFetchers } from "~/hooks/useCartFetchers";
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
@@ -19,7 +24,12 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
-      <Drawer trigger={<button>MENU</button>} open={showMenu} onOpenChange={setShowMenu} className="bg-white flex flex-col h-fit w-full fixed top-0">
+      <Drawer
+        trigger={<button>MENU</button>}
+        open={showMenu}
+        onOpenChange={setShowMenu}
+        className="bg-white flex flex-col h-fit w-full fixed top-0"
+      >
         <HeaderMenu
           menu={menu}
           viewport="desktop"
@@ -59,8 +69,7 @@ export function HeaderMenu({
 
   return (
     <div className="w-full h-full bg-background-subtle-1 flex flex-col">
-      <div className="h-8 w-full border-b flex items-center justify-end p-8">
-      </div>
+      <div className="h-8 w-full border-b flex items-center justify-end p-8"></div>
       <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
         <nav className="flex flex-col gap-4 p-8" role="navigation">
           {/* {viewport === 'mobile' && (
@@ -126,6 +135,13 @@ function HeaderCtas({
   isLoggedIn,
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
+  const {
+    isOpen: isCartOpen,
+    openDrawer: openCart,
+    closeDrawer: closeCart,
+  } = useCartDrawer();
+  useCartFetchers(CartForm.ACTIONS.LinesAdd, openCart);
+
   return (
     <nav
       className="header-ctas justify-end items-center flex gap-2"
@@ -134,12 +150,27 @@ function HeaderCtas({
       {/* <HeaderMenuMobileToggle /> */}
       <SearchToggle />
       <AccountLink />
-      <CartCount
-        isHome={false}
-        openCart={() => {
-          window.location.href = '/cart';
-        }}
-      />
+      <CartCount isHome={false} openCart={openCart} />
+      <CartDrawer
+        open={isCartOpen}
+        onClose={closeCart}
+        openFrom="right"
+        heading="Cart"
+      >
+        <div>
+          <Suspense fallback={<CartLoading />}>
+            <Await resolve={cart}>
+              {(cart) => (
+                <CartMain
+                  layout="aside"
+                  // onClose={onClose}
+                  cart={cart}
+                />
+              )}
+            </Await>
+          </Suspense>
+        </div>
+      </CartDrawer>
     </nav>
   );
 }
@@ -225,7 +256,7 @@ function Badge({
   const BadgeCounter = useMemo(
     () => (
       <>
-        <IconBag className="w-6 h-6" viewBox="0 0 24 24"/>
+        <IconBag className="w-6 h-6" viewBox="0 0 24 24" />
         <div className="bg-primary text-primary-foreground absolute top-0 right-0 text-[0.625rem] font-medium subpixel-antialiased h-4 w-4 flex items-center justify-center leading-none text-center rounded-full p-[0.125rem]">
           <span>{count || 0}</span>
         </div>

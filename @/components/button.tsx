@@ -62,8 +62,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const Component = props?.to ? Link : as;
-    if (loading) {
-    }
+
     return (
       <Component
         className={cn(
