@@ -34,10 +34,6 @@ export function Modal({
           <div
             className="relative flex-1 overflow-hidden text-left transition-all transform rounded sm:flex-none"
             role="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault()
-            }}
             onKeyPress={(e) => {
               e.stopPropagation();
             }}
