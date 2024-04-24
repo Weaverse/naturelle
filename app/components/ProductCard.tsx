@@ -117,13 +117,9 @@ export function ProductCard({
               </div>
             )}
         </div>
-        <div className="grid gap-1">
+        <div className="grid gap-2">
           <p className="text-foreground-subtle">{product.vendor}</p>
-
-          <Text
-            className="w-full overflow-hidden whitespace-nowrap text-ellipsis space-x-1"
-            as="h4"
-          >
+          <h4 className="w-full overflow-hidden whitespace-nowrap text-ellipsis space-x-1 text-xl font-medium">
             <Link
               onClick={onClick}
               to={`/products/${product.handle}`}
@@ -135,7 +131,7 @@ export function ProductCard({
               <span>{product.title}</span>
               {firstVariant.sku && <span>({firstVariant.sku})</span>}
             </Link>
-          </Text>
+          </h4>
           <div className="flex">
             <Text className="flex gap-2">
               {isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
