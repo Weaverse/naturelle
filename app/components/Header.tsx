@@ -16,7 +16,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   let [showMenu, setShowMenu] = useState(false);
   return (
-    <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
+    <header className="grid grid-cols-3 gap-3 items-center z-10 py-4 px-6 bg-background-subtle-1 border-y border-foreground">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
       <Drawer trigger={<button>MENU</button>} open={showMenu} onOpenChange={setShowMenu} className="bg-white flex flex-col h-fit w-full fixed top-0">
@@ -59,7 +59,7 @@ export function HeaderMenu({
 
   return (
     <div className="w-full h-full bg-background-subtle-1 flex flex-col">
-      <div className="h-8 w-full border-b flex items-center justify-end p-8">
+      <div className="h-8 w-full border-b border-foreground-subtle flex items-center justify-end p-8">
       </div>
       <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
         <nav className="flex flex-col gap-4 p-8" role="navigation">
@@ -86,14 +86,16 @@ export function HeaderMenu({
                 : item.url;
             return (
               <NavLink
-                className="font-heading text-4xl"
+                className="font-heading text-4xl text-foreground-subtle hover:text-foreground-basic transition-colors duration-300"
                 end
                 key={item.id}
                 onClick={closeAside}
                 prefetch="intent"
                 to={url}
               >
-                {item.title}
+                <h3 className=' font-medium'>
+                  {item.title}
+                </h3>
               </NavLink>
             );
           })}
@@ -285,18 +287,18 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Blog',
+      title: 'Products',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/collections/frontpage',
       items: [],
     },
     {
-      id: 'gid://shopify/MenuItem/461609566264',
+      id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Policies',
+      title: 'Blog',
       type: 'HTTP',
-      url: '/policies',
+      url: '/blogs/journal',
       items: [],
     },
     {

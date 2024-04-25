@@ -14,6 +14,7 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Link } from '~/components/Link';
 import clsx from 'clsx';
+import { Button } from '@/components/button';
 
 
 type FeaturedProductsData = {
@@ -175,43 +176,42 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                             <div className={clsx('sm:grid justify-self-center gap-4 hidden h-fit',
                                 productPerRowClasses[Math.min(productsPerRow, displayedProducts?.length || 1)]).concat(' justify-items-center')}>
                                 {displayedProducts?.map((idx: any) => (
-                                    <Link key={idx.id} to={`/products/${idx.handle}`}>
-                                        <div className='flex flex-col gap-4 w-full h-full cursor-pointer group'>
-                                            {idx.featuredImage ? (
-                                                <div className='relative flex justify-center items-center'>
-                                                    <Image
-                                                        data={idx.featuredImage}
-                                                        loading={lazyLoadImage ? 'lazy' : 'eager'}
-                                                        sizes="auto"
-                                                        className="!w-full !aspect-square object-cover"
-                                                    />
-                                                    <div className='absolute bottom-0 py-4 px-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl'>
-                                                        <button className='border rounded-full w-full text-center px-1 py-2 hover:bg-white duration-500'>
-                                                            Add to Bag
-                                                        </button>
-                                                    </div>
+                                    <div className='flex flex-col gap-4 w-full h-full cursor-pointer group'>
+                                        {idx.featuredImage ? (
+                                            <div className='relative flex justify-center items-center'>
+                                                <Image
+                                                    data={idx.featuredImage}
+                                                    loading={lazyLoadImage ? 'lazy' : 'eager'}
+                                                    sizes="auto"
+                                                    className="!w-full !aspect-square object-cover"
+                                                />
+                                                <div className='absolute bottom-0 py-4 px-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl'>
+                                                    <Button variant="secondary" className='w-full'
+                                                        to={`/products/${idx.handle}`}>
+                                                        Select Options
+                                                    </Button>
                                                 </div>
-                                            ) : (
-                                                <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                                    <IconImageBlank
-                                                        viewBox="0 0 526 526"
-                                                        className="w-full h-full opacity-80"
-                                                    />
-                                                </div>)}
-                                            <div className="flex flex-col gap-2 px-2">
-                                                <p className='font-normal text-base'>By {idx.vendor}</p>
-                                                <h4 className='font-medium'>{idx.title}</h4>
-                                                <p className='font-normal text-base'>{`${idx.priceRange.maxVariantPrice.amount} ${idx.priceRange.maxVariantPrice.currencyCode}`}</p>
                                             </div>
+                                        ) : (
+                                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                                                <IconImageBlank
+                                                    viewBox="0 0 526 526"
+                                                    className="w-full h-full opacity-80"
+                                                />
+                                            </div>)}
+                                        <div className="flex flex-col gap-2 px-2">
+                                            <p className='font-normal text-base'>By {idx.vendor}</p>
+                                            <h4 className='font-medium'>{idx.title}</h4>
+                                            <p className='font-normal text-base'>{`${idx.priceRange.maxVariantPrice.amount} ${idx.priceRange.maxVariantPrice.currencyCode}`}</p>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))}
                             </div>
                         </>)}
                     {showViewAllLink && loaderData && loaderData.collection && (
-                        <Link to={`/collections/${loaderData.collection.handle}`} className='flex justify-center'>
-                            <h3 className='border rounded-full px-5 py-3'>View All</h3>
-                        </Link>
+                        <Button to={`/collections/${loaderData.collection.handle}`} variant="outline">
+                            <h3>View All</h3>
+                        </Button>
                     )}
                 </div>
             </section>
