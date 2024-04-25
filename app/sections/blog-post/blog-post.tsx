@@ -43,9 +43,9 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
               <h1 className="font-bold">{title}</h1>
             </div>
           </div>
-          <Section as="article" padding="all">
+          <Section as="div" padding="all">
             <div className="lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
-              <div dangerouslySetInnerHTML={{__html: contentHtml}} />
+              <article className='prose-lg' dangerouslySetInnerHTML={{__html: contentHtml}} />
               <p className="font-semibold opacity-45 text-foreground-subtle mt-9">{formattedDate}</p>
             </div>
           </Section>
