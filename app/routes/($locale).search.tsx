@@ -77,25 +77,25 @@ export default function Search() {
 
   return (
     <>
-      <PageHeader className='bg-background-subtle-1 items-center justify-center'>
-        <Heading as="h1" size="display" className='flex justify-center items-center'>
+      <div className='bg-background-subtle-1 relative gap-6 py-20 items-center justify-center flex flex-col'>
+        <h2 className='flex justify-center items-center font-medium text-5xl'>
           {searchTerm && `Search results for “${searchTerm}”`}
           {!searchTerm && 'Search our site'}
-        </Heading>
-        <Form method="get" className="relative flex justify-center items-center w-full">
-          <button type="submit" className='absolute left-0 ml-3 mt-2 cursor-pointer'>
-            <IconSearch className=" !w-8 !h-8 opacity-55" viewBox="0 0 24 24" />
+        </h2>
+        <Form method="get" className="relative flex justify-center box-border items-center w-fit">
+          <button type="submit" className='absolute left-0 ml-3 cursor-pointer'>
+            <IconSearch className="!w-6 !h-6 text-foreground" viewBox="0 0 24 24" />
           </button>
           <Input
             defaultValue={searchTerm}
             name="q"
             placeholder="What are you looking for?"
-            className='!w-[400px] !bg-inherit !rounded border-2 border-bar-subtle pl-11'
+            className='!w-[400px] !bg-inherit !rounded border-2 border-foreground-subtle pl-11'
             type="search"
             variant="search"
           />
         </Form>
-      </PageHeader>
+      </div>
       {!searchTerm || noResults ? (
         <NoResults
           noResults={noResults}
