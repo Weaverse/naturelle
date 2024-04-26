@@ -49,6 +49,12 @@ module.exports = {
           soldout: '#A8A79C',
         },
       },
+      height: {
+        screen: 'var(--screen-height, 100vh)',
+        'screen-no-nav':
+          'calc(var(--screen-height, 100vh) - var(--height-nav))',
+        'screen-dynamic': 'var(--screen-height-dynamic, 100vh)',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
