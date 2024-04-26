@@ -21,7 +21,7 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
         className={`w-fit mx-auto ${props.className}`}
         style={style}
       >
-        {variant === 'primary' ? (
+        {variant === 'decor' ? (
           <>
             <IconEllipse className='absolute inset-0 !w-[148px] !h-[61px] transform transition-transform duration-500 hover:rotate-[-11deg]'
               stroke={textColor ? textColor : 'rgb(var(--color-foreground))'}
@@ -57,6 +57,7 @@ export const schema: HydrogenComponentSchema = {
               { label: 'Outline', value: 'outline' },
               { label: 'Secondary', value: 'secondary' },
               { label: 'Primary', value: 'primary' },
+              { label: 'Decor', value: 'decor' },
             ],
           },
         },

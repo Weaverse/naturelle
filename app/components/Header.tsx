@@ -22,12 +22,9 @@ type Viewport = 'desktop' | 'mobile';
 
 export function Header({ header, isLoggedIn, cart }: HeaderProps) {
   const { shop, menu } = header;
-  const { pathname } = useLocation();
-  const isHomepage = pathname === '/';
   let [showMenu, setShowMenu] = useState(false);
-  let styleHeader = isHomepage ? 'absolute top-0 left-0 right-0' : 'bg-background-subtle-1';
   return (
-    <header className={clsx('grid grid-cols-3 h-screen-no-nav gap-3 items-center z-10 py-4 px-6 border-y border-foreground', styleHeader)}>
+    <header className='grid grid-cols-3 h-screen-no-nav gap-3 items-center z-10 py-4 px-6 border-b border-foreground bg-background-subtle-1'>
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
       <Drawer
@@ -224,7 +221,7 @@ function SearchToggle() {
         type="submit"
         className="relative flex items-center justify-center w-8 h-8 focus:ring-primary/5"
       >
-        <IconSearch className="w-6 h-6" />
+        <IconSearch className="w-6 h-6 !font-extralight" />
       </button>
     </Form>
   );
