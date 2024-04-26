@@ -10,12 +10,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar',
+        primary: 'bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar',
         secondary:
           'border border-bar bg-background hover:bg-primary hover:text-secondary',
         outline:
           'bg-background border border-bar text-secondary-foreground',
-        primary: 'relative',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
@@ -31,7 +30,7 @@ const buttonVariants = cva(
       }
     },
     defaultVariants: {
-      variant: 'default',
+      variant: 'primary',
       size: 'default',
     },
   },
@@ -62,8 +61,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const Component = props?.to ? Link : as;
-    if (loading) {
-    }
+
     return (
       <Component
         className={cn(
