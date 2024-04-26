@@ -10,6 +10,7 @@ import 'swiper/swiper-bundle.css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import clsx from 'clsx';
+import { IconImageBlank } from '~/components/Icon';
 
 type InstagramData = {
     instagramToken: string;
@@ -43,9 +44,69 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     let res = loaderData?.data;
     if (!res) {
         return (
-            <section ref={ref} {...rest} className={clsx('w-full h-full')} style={sectionStyle}>
-                <div className='sm:px-10 sm:py-20 flex justify-center items-center px-7 py-12 w-full h-full'>
-                    <p className='font-medium text-lg'>Loading...</p>
+            <section ref={ref} {...rest} className={clsx('w-full')} style={sectionStyle}>
+                <div className='sm:px-10 sm:py-20 flex flex-col justify-center items-center gap-12 px-7 py-12 w-full'>
+                    <div className='w-full h-full'>
+                        {children}
+                    </div>
+                    <Swiper
+                        loop={true}
+                        slidesPerView={1}
+                        spaceBetween={100}
+                        pagination={{
+                            clickable: true,
+                        }}
+                        modules={[Pagination]}
+                        className='w-full sm:hidden'
+                    >
+                        <SwiperSlide className='w-full'>
+                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                                <IconImageBlank
+                                    viewBox="0 0 526 526"
+                                    className="!w-full !h-full opacity-80"
+                                />
+                            </div>
+                            <div className='py-8 cursor-pointer'></div>
+                        </SwiperSlide>
+                        <SwiperSlide className='w-full'>
+                            <div className="bg-background-subtle-1 flex justify-center items-cente w-full aspect-square">
+                                <IconImageBlank
+                                    viewBox="0 0 526 526"
+                                    className="!w-full !h-full opacity-80"
+                                />
+                            </div>
+                            <div className='py-8 cursor-pointer'></div>
+                        </SwiperSlide>
+                        <SwiperSlide className='w-full'>
+                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                                <IconImageBlank
+                                    viewBox="0 0 526 526"
+                                    className="!w-full !h-full opacity-80"
+                                />
+                            </div>
+                            <div className='py-8 cursor-pointer'></div>
+                        </SwiperSlide>
+                    </Swiper>
+                    <div className='sm:flex justify-center items-center w-full gap-4 hidden'>
+                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                            <IconImageBlank
+                                viewBox="0 0 526 526"
+                                className="!w-full !h-full opacity-80"
+                            />
+                        </div>
+                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                            <IconImageBlank
+                                viewBox="0 0 526 526"
+                                className="!w-full !h-full opacity-80"
+                            />
+                        </div>
+                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                            <IconImageBlank
+                                viewBox="0 0 526 526"
+                                className="!w-full !h-full opacity-80"
+                            />
+                        </div>
+                    </div>
                 </div>
             </section>
         );
@@ -53,7 +114,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     let displayedImages = res?.slice(0, imagesPerRow);
 
     return (
-        <section ref={ref} {...rest} className={clsx( 'w-full h-full' ,!visibleOnMobile && 'hidden sm:block',)} style={sectionStyle}>
+        <section ref={ref} {...rest} className={clsx('w-full h-full', !visibleOnMobile && 'hidden sm:block',)} style={sectionStyle}>
             <div className='sm:px-10 sm:py-20 flex flex-col gap-12 px-7 py-12'>
                 <div className='w-full h-full'>
                     {children}
@@ -72,7 +133,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                     spaceBetween={100}
                                     pagination={{
                                         clickable: true,
-                                      }}
+                                    }}
                                     modules={[Pagination]}
                                     className='h-full sm:hidden'
                                 >

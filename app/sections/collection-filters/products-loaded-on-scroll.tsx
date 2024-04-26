@@ -30,6 +30,7 @@ export function ProductsLoadedOnScroll(props: ProductsLoadedOnScrollProps) {
     <Grid layout="products">
       {nodes.map((product: any, i: number) => (
         <ProductCard
+          quickAdd
           key={product.id}
           product={product}
           loading={getImageLoadingPriority(i)}

@@ -22,10 +22,10 @@ export function Text({
   }) {
     const colors: Record<string, string> = {
       default: 'inherit',
-      primary: 'text-body/90',
-      subtle: 'text-body/50',
+      primary: 'text-foreground/90',
+      subtle: 'text-foreground-subtle',
       notice: 'text-sale',
-      contrast: 'text-body/90',
+      contrast: 'text-foreground/90',
     };
   
     const sizes: Record<string, string> = {

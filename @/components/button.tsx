@@ -3,30 +3,34 @@ import {Link} from '@remix-run/react';
 import {cva, type VariantProps} from 'class-variance-authority';
 
 import {cn} from '@/lib/utils';
-import {IconSpinner} from '~/components/Icon';
+import { Spinner } from "./spinner";
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar',
+        primary: 'bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar',
         secondary:
           'border border-bar bg-background hover:bg-primary hover:text-secondary',
         outline:
           'bg-background border border-bar text-secondary-foreground',
-        primary: 'relative',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
+        default: 'h-[50px] px-5 py-3',
+        sm: 'h-10 px-3',
+        md: 'h-[46px] px-4',
+        lg: 'h-14 px-8',
         icon: 'h-10 w-10',
       },
+      shape: {
+        default: '',
+        round: 'rounded-md'
+      }
     },
     defaultVariants: {
-      variant: 'default',
+      variant: 'primary',
       size: 'default',
     },
   },
@@ -38,7 +42,7 @@ export interface ButtonProps
   loading?: boolean;
   asChild?: boolean;
   as?: React.ElementType;
-  [key: string]: any;
+  to?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -48,6 +52,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading,
       variant,
       size = 'default',
+      shape = 'round',
       asChild,
       as = 'button',
       children,
@@ -56,21 +61,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const Component = props?.to ? Link : as;
-    if (loading) {
-    }
+
     return (
       <Component
         className={cn(
-          buttonVariants({variant, size, className}),
+          buttonVariants({variant, size, shape, className}),
           loading && 'pointer-events-none relative',
         )}
         ref={ref}
         {...props}
       >
         {loading && (
-          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <IconSpinner />
-          </span>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Spinner size={20} />
+          </div>
         )}
         <span className={loading ? 'invisible' : ''}>{children}</span>
       </Component>

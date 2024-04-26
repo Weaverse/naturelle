@@ -1,4 +1,4 @@
-import { Button, type ButtonProps } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/button';
 import type { HydrogenComponentSchema } from '@weaverse/hydrogen';
 import { IconEllipse } from '~/components/Icon';
 import { forwardRef, CSSProperties } from 'react';
@@ -26,7 +26,7 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
             <IconEllipse className='absolute inset-0 !w-[148px] !h-[61px] transform transition-transform duration-500 hover:rotate-[-11deg]'
               stroke={textColor ? textColor : 'rgb(var(--color-foreground))'}
               viewBox="0 0 148 61" />
-            <div className='flex pl-4 pt-3'>{value}</div>
+            <div className='flex pl-5 pt-2'>{value}</div>
           </>
         ): (<>{value}</>)}
       </Button>

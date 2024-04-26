@@ -16,7 +16,6 @@ type BlogData = {
     heading: string;
     backgroundColor: string;
     articlePerRow: number;
-    showReadMoreButton: boolean;
     showSeperator: boolean;
 };
 
@@ -38,38 +37,20 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
         heading,
         backgroundColor,
         articlePerRow,
-        showReadMoreButton,
         showSeperator,
         loaderData,
         ...rest
     } = props;
 
-    function calculateHoverBackgroundColor(baseColor: string): string {
-        let hoverColor = '#';
-        const rgbValues = baseColor.match(/\w\w/g)?.map(component => parseInt(component, 16)) || [255, 255, 255];
-        const hoverRgbValues = rgbValues.map((value, index) => {
-            if (index === 2) {
-                return Math.min(255, value - 50);
-            }
-            return value;
-        });
-        hoverRgbValues.forEach(value => {
-            hoverColor += (value < 16 ? '0' : '') + value.toString(16);
-        });
-        return hoverColor;
-    }
-
-    const hoverBackgroundColor = calculateHoverBackgroundColor(backgroundColor);
 
     let sectionStyle: CSSProperties = {
         '--background-color': backgroundColor,
-        '--background-color-hover': hoverBackgroundColor,
     } as CSSProperties;
 
     if (loaderData === undefined) {
         return (
             <section ref={ref} {...rest} className="w-full h-full bg-[var(--background-color)]" style={sectionStyle}>
-                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20">
+                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20">
                     {heading && <div className="flex justify-center">
                         <h2 className="font-medium">{heading}</h2>
                     </div>}
@@ -126,10 +107,9 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     }
 
     let res = loaderData?.blog?.articles.nodes;
-
     return (
         <section ref={ref} {...rest} className="h-full w-full flex justify-center bg-[var(--background-color)]" style={sectionStyle}>
-            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20 max-w-[1440px]">
+            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20 max-w-[1440px]">
                 {heading && <div className="flex justify-center">
                     <h2 className="font-medium">{heading}</h2>
                 </div>}
@@ -140,7 +120,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                     {res?.map((idx: any) => (
                         <Link to={`/blogs/${blogs.handle}/${idx.handle}`} className={'group'}>
                             <div key={idx.id}
-                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-[var(--background-color-hover)] transition-colors duration-500 rounded cursor-pointer'
+                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-background-subtle-1 transition-colors duration-500 rounded cursor-pointer'
                             >
                                 {idx.image ? (
                                     <Image
@@ -156,8 +136,8 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                     </div>)}
                                 <div className="flex flex-col gap-4">
                                     <h3 className='group-hover:underline'>{idx.title}</h3>
-                                    {showSeperator && <div className="border-b-2 border-gray-300 w-full"></div>}
-                                    <p dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
+                                    {showSeperator && <div className="border-b-2 border-bar-subtle w-full"></div>}
+                                    <p className='line-clamp-3'>{idx.excerpt}</p>
                                 </div>
                             </div>
                         </Link>
@@ -219,12 +199,6 @@ export const schema: HydrogenComponentSchema = {
                         max: 4,
                         step: 1,
                     },
-                },
-                {
-                    type: 'switch',
-                    name: 'showReadMoreButton',
-                    label: 'Show “Read more” button',
-                    defaultValue: true,
                 },
                 {
                     type: 'switch',

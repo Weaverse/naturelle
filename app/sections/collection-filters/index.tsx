@@ -1,18 +1,18 @@
-import {useLoaderData} from '@remix-run/react';
-import {Pagination} from '@shopify/hydrogen';
-import type {Filter} from '@shopify/hydrogen/storefront-api-types';
+import { useLoaderData } from '@remix-run/react';
+import { Pagination } from '@shopify/hydrogen';
+import type { Filter } from '@shopify/hydrogen/storefront-api-types';
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import {forwardRef} from 'react';
-import {useInView} from 'react-intersection-observer';
-import type {CollectionDetailsQuery} from 'storefrontapi.generated';
-import {PageHeader, Section, Text} from '~/components/Text';
-import {SortFilter} from '~/components/SortFilter';
-import {Button} from '~/components/Button';
-import type {AppliedFilter} from '~/components/SortFilter';
-import {ProductsLoadedOnScroll} from './products-loaded-on-scroll';
+import { forwardRef } from 'react';
+import { useInView } from 'react-intersection-observer';
+import type { CollectionDetailsQuery } from 'storefrontapi.generated';
+import { Button } from '~/components/Button';
+import { Section } from '~/components/Text';
+import { ProductsLoadedOnScroll } from './products-loaded-on-scroll';
+import { DrawerFilter } from "~/components/DrawerFilter";
+import type { AppliedFilter } from "~/lib/filter";
 
 interface CollectionFiltersProps extends HydrogenComponentProps {
   showCollectionDescription: boolean;
@@ -27,28 +27,20 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
 
     let {ref, inView} = useInView();
     let {collection, collections, appliedFilters} = useLoaderData<
-      CollectionDetailsQuery & {
-        collections: Array<{handle: string; title: string}>;
-        appliedFilters: AppliedFilter[];
-      }
+    CollectionDetailsQuery & {
+      collections: Array<{handle: string; title: string}>;
+      appliedFilters: AppliedFilter[];
+    }
     >();
+
+    let productNumber = collection?.products.nodes.length
 
     if (collection?.products && collections) {
       return (
         <section ref={sectionRef} {...rest}>
-          <PageHeader heading={collection.title}>
-            {showCollectionDescription && collection?.description && (
-              <div className="flex items-baseline justify-between w-full">
-                <div>
-                  <Text format width="narrow" as="p" className="inline-block">
-                    {collection.description}
-                  </Text>
-                </div>
-              </div>
-            )}
-          </PageHeader>
-          <Section as="div">
-            <SortFilter
+          <Section as="div" className="container">
+            <DrawerFilter
+              productNumber={productNumber}
               filters={collection.products.filters as Filter[]}
               appliedFilters={appliedFilters}
               collections={collections}
@@ -93,7 +85,7 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
                   </>
                 )}
               </Pagination>
-            </SortFilter>
+            </DrawerFilter>
           </Section>
         </section>
       );

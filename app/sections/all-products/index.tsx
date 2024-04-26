@@ -10,7 +10,7 @@ import { PageHeader, Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
 import {Grid} from '~/components/Grid';
 import {getImageLoadingPriority} from '~/lib/const';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/button';
 
 interface AllProductsProps extends HydrogenComponentProps {
   heading: string;
