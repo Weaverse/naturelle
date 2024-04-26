@@ -7,7 +7,6 @@ import type {
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
 
-import {IconFacebook, IconPinterest} from '~/components/Icon';
 import {Section} from '~/components/Text';
 
 interface BlogPostProps extends HydrogenComponentProps {
@@ -24,41 +23,30 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
   let {title, image, contentHtml, author, tags} = article;
   if (article) {
     return (
-      <section ref={ref} {...rest}>
+      <section ref={ref} {...rest} className='h-fit'>
         <div
           style={{
             paddingTop: `${paddingTop}px`,
             paddingBottom: `${paddingBottom}px`,
           }}
+          className='flex flex-col h-fit'
         >
-          <div className="relative h-[520px]">
+          <div className="h-full flex flex-col">
             {image && (
               <Image
                 data={image}
-                className="w-full absolute inset-0 z-0 object-cover h-full"
-                sizes="90vw"
+                className="w-full h-[720px] object-cover"
               />
             )}
-            <div className="space-y-5 w-full h-full flex items-center justify-end py-16 flex-col relative z-10">
-              <span className="font-semibold">{formattedDate}</span>
-              <h1 className="font-bold text-2xl">{title}</h1>
-              <span className="uppercase">by {author?.name}</span>
+            <div className="w-full h-full flex items-center pt-16 flex-col gap-4">
+              <h5 className='py-1 px-4 bg-label-new text-white rounded'>Product guidelines</h5>
+              <h1 className="font-bold">{title}</h1>
             </div>
           </div>
-          <Section as="article" padding="all">
+          <Section as="div" padding="all">
             <div className="lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
-              <div dangerouslySetInnerHTML={{__html: contentHtml}} />
-              <div className="md:flex justify-between gap-2 space-y-2">
-                <div>
-                  <strong>Tags:</strong>
-                  <span className="ml-2">{tags.join(', ')}</span>
-                </div>
-                <div className="flex gap-4 items-center">
-                  <strong>Share:</strong>
-                  <IconPinterest viewBox="0 0 24 24" />
-                  <IconFacebook viewBox="0 0 24 24" />
-                </div>
-              </div>
+              <article className='prose-lg' dangerouslySetInnerHTML={{__html: contentHtml}} />
+              <p className="font-semibold opacity-45 text-foreground-subtle mt-9">{formattedDate}</p>
             </div>
           </Section>
         </div>

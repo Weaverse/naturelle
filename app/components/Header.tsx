@@ -13,15 +13,39 @@ import {CartLoading} from './CartLoading';
 import Cart from '~/routes/($locale).cart';
 import {CartMain} from './Cart';
 import { useCartFetchers } from "~/hooks/useCartFetchers";
+import clsx from 'clsx';
+
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
 
-export function Header({header, isLoggedIn, cart}: HeaderProps) {
-  const {shop, menu} = header;
+export function Header({ header, isLoggedIn, cart }: HeaderProps) {
+  const { shop, menu } = header;
+  const [isHomepage, setIsHomepage] = useState(true);
   let [showMenu, setShowMenu] = useState(false);
+  useEffect(() => {
+    const storedIsHomepage = localStorage.getItem('isHomepage');
+    if (storedIsHomepage !== null) {
+      setIsHomepage(storedIsHomepage === 'true');
+    }
+  }, []);
+  const handleNavClick = (url: string) => {
+    if (url === '/') {
+      setIsHomepage(true);
+    } else {
+      setIsHomepage(false);
+    }
+    setShowMenu(false);
+    localStorage.setItem('isHomepage', String(url === '/'));
+  };
+  let styleHeader = '';
+  if (isHomepage) {
+    styleHeader = 'absolute top-0 left-0 right-0';
+  } else {
+    styleHeader = 'bg-background-subtle-1';
+  }
   return (
-    <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
+    <header className={clsx('grid grid-cols-3 gap-3 items-center z-10 py-4 px-6 border-y border-foreground', styleHeader)}>
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
       <Drawer
@@ -36,6 +60,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
           primaryDomainUrl={header.shop.primaryDomain.url}
           showMenu={showMenu}
           onCloseMenu={() => setShowMenu(false)}
+          onNavClick={handleNavClick}
         />
       </Drawer>
 
@@ -50,26 +75,29 @@ export function HeaderMenu({
   viewport,
   showMenu,
   onCloseMenu,
+  onNavClick,
 }: {
   menu: HeaderProps['header']['menu'];
   primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
   viewport: Viewport;
   showMenu: boolean;
   onCloseMenu: () => void;
+  onNavClick: (url: string) => void;
 }) {
-  const {publicStoreDomain} = useRootLoaderData();
+  const { publicStoreDomain } = useRootLoaderData();
   // const className = `header-menu-${viewport}`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
-    if (viewport === 'mobile') {
+    if (viewport === 'desktop') {
       event.preventDefault();
       window.location.href = event.currentTarget.href;
     }
+    onCloseMenu();
   }
-
   return (
     <div className="w-full h-full bg-background-subtle-1 flex flex-col">
-      <div className="h-8 w-full border-b flex items-center justify-end p-8"></div>
+      <div className="h-8 w-full border-b border-foreground flex items-center justify-end p-8">
+      </div>
       <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
         <nav className="flex flex-col gap-4 p-8" role="navigation">
           {/* {viewport === 'mobile' && (
@@ -89,20 +117,25 @@ export function HeaderMenu({
             // if the url is internal, we strip the domain
             const url =
               item.url.includes('myshopify.com') ||
-              item.url.includes(publicStoreDomain) ||
-              item.url.includes(primaryDomainUrl)
+                item.url.includes(publicStoreDomain) ||
+                item.url.includes(primaryDomainUrl)
                 ? new URL(item.url).pathname
                 : item.url;
             return (
               <NavLink
-                className="font-heading text-4xl"
+                className="font-heading text-4xl text-foreground-subtle hover:text-foreground-basic transition-colors duration-300"
                 end
                 key={item.id}
-                onClick={closeAside}
+                onClick={(event) => {
+                  onNavClick(url);
+                  closeAside(event);
+                }}
                 prefetch="intent"
                 to={url}
               >
-                {item.title}
+                <h3 className=' font-medium'>
+                  {item.title}
+                </h3>
               </NavLink>
             );
           })}
@@ -175,7 +208,7 @@ function HeaderCtas({
   );
 }
 
-function AccountLink({className}: {className?: string}) {
+function AccountLink({ className }: { className?: string }) {
   const rootData = useRootLoaderData();
   const isLoggedIn = rootData?.isLoggedIn;
 
@@ -256,7 +289,7 @@ function Badge({
   const BadgeCounter = useMemo(
     () => (
       <>
-        <IconBag className="w-6 h-6" viewBox="0 0 24 24" />
+        <IconBag className="w-6 h-6" viewBox="0 0 24 24"  />
         <div className="bg-primary text-primary-foreground absolute top-0 right-0 text-[0.625rem] font-medium subpixel-antialiased h-4 w-4 flex items-center justify-center leading-none text-center rounded-full p-[0.125rem]">
           <span>{count || 0}</span>
         </div>
@@ -316,18 +349,18 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Blog',
+      title: 'Products',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/products',
       items: [],
     },
     {
-      id: 'gid://shopify/MenuItem/461609566264',
+      id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Policies',
+      title: 'Blog',
       type: 'HTTP',
-      url: '/policies',
+      url: '/blogs/journal',
       items: [],
     },
     {
