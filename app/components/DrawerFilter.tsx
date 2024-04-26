@@ -118,7 +118,6 @@ export function FiltersDrawer({
   appliedFilters = [],
 }: Omit<DrawerFilterProps, 'children'>) {
   const [params] = useSearchParams();
-
   const filterMarkup = (filter: Filter, option: Filter['values'][0]) => {
     switch (filter.type) {
       case 'PRICE_RANGE':

@@ -126,9 +126,8 @@ export function QuickView(props: {data: Jsonify<ProductData>}) {
                 quantity,
               },
             ]}
-            variant="primary"
             data-test="add-to-cart"
-            className="w-[360px]"
+            className="w-[361px]"
           >
             <span> {atcText}</span>
           </AddToCartButton>
