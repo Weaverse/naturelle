@@ -1,44 +1,110 @@
-import { Await, Form, useLoaderData } from '@remix-run/react';
-import { getPaginationVariables, Pagination } from '@shopify/hydrogen';
-import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { Suspense } from 'react';
+import {Button} from '@/components/button';
+import {Await, Form, useLoaderData} from '@remix-run/react';
+import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
+import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {DrawerFilter} from '~/components/DrawerFilter';
+import {Grid} from '~/components/Grid';
+import {IconSearch} from '~/components/Icon';
+import {Input} from '~/components/Input';
+import {ProductCard} from '~/components/ProductCard';
+import {Heading, PageHeader, Section, Text} from '~/components/Text';
+import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {
-  Heading,
-  PageHeader,
-  Section,
-  Text,
-} from '~/components/Text';
-import { ProductSwimlane } from '~/components/ProductSwimlane';
-import { ProductCard } from '~/components/ProductCard';
-import { Input } from '~/components/Input';
-import { Grid } from '~/components/Grid';
-import { FeaturedCollections } from '~/components/FeaturedCollections';
-import { PRODUCT_CARD_FRAGMENT } from '~/data/fragments';
-import { getImageLoadingPriority, PAGINATION_SIZE } from '~/lib/const';
-import { seoPayload } from '~/lib/seo.server';
+  FILTER_URL_PREFIX,
+  getImageLoadingPriority,
+  PAGINATION_SIZE,
+} from '~/lib/const';
+import {seoPayload} from '~/lib/seo.server';
+import {parseAsCurrency} from '~/lib/utils';
+import {Suspense} from 'react';
 import {
   getFeaturedData,
   type FeaturedData,
 } from './($locale).featured-products';
-import { IconSearch } from '~/components/Icon';
-import { Button } from '@/components/button';
 
-export async function loader({
-  request,
-  context: { storefront },
-}: LoaderFunctionArgs) {
+export async function loader({request, context}: LoaderFunctionArgs) {
+  const {storefront} = context;
   const searchParams = new URL(request.url).searchParams;
-  const searchTerm = searchParams.get('q')!;
-  const variables = getPaginationVariables(request, { pageBy: PAGINATION_SIZE });
+  const searchTerm = searchParams.get('q')! || '';
+  const variables = getPaginationVariables(request, {pageBy: PAGINATION_SIZE});
+  const {search} = await storefront.query(FILTER_QUERY, {
+    variables: {
+      query: '',
+    },
+  });
 
-  const { products } = await storefront.query(SEARCH_QUERY, {
+  const filters = [...searchParams.entries()].reduce(
+    (filters, [key, value]) => {
+      if (key.startsWith(FILTER_URL_PREFIX)) {
+        const filterKey = key.substring(FILTER_URL_PREFIX.length);
+        filters.push({
+          [filterKey]: JSON.parse(value),
+        });
+      }
+      return filters;
+    },
+    [] as ProductFilter[],
+  );
+
+  const {search: productSearch} = await storefront.query(SEARCH_QUERY, {
     variables: {
       searchTerm,
+      productFilters: filters,
       ...variables,
       country: storefront.i18n.country,
       language: storefront.i18n.language,
     },
   });
+  let products = productSearch;
+
+  const locale = context.storefront.i18n;
+  const allFilterValues = search.productFilters.flatMap(
+    (filter: any) => filter.values,
+  );
+  // todo merge into 1 function
+  const appliedFilters = filters
+    .map((filter) => {
+      const foundValue = allFilterValues.find((value: any) => {
+        const valueInput = JSON.parse(value.input as string) as ProductFilter;
+        // special case for price, the user can enter something freeform (still a number, though)
+        // that may not make sense for the locale/currency.
+        // Basically just check if the price filter is applied at all.
+        if (valueInput.price && filter.price) {
+          return true;
+        }
+        return (
+          // This comparison should be okay as long as we're not manipulating the input we
+          // get from the API before using it as a URL param.
+          JSON.stringify(valueInput) === JSON.stringify(filter)
+        );
+      });
+      if (!foundValue) {
+        // eslint-disable-next-line no-console
+        console.error('Could not find filter value for filter', filter);
+        return null;
+      }
+
+      if (foundValue.id === 'filter.v.price') {
+        // Special case for price, we want to show the min and max values as the label.
+        const input = JSON.parse(foundValue.input as string) as ProductFilter;
+        const min = parseAsCurrency(input.price?.min ?? 0, locale);
+        const max = input.price?.max
+          ? parseAsCurrency(input.price.max, locale)
+          : '';
+        const label = min && max ? `${min} - ${max}` : 'Price';
+
+        return {
+          filter,
+          label,
+        };
+      }
+      return {
+        filter,
+        label: foundValue.label,
+      };
+    })
+    .filter((filter): filter is NonNullable<typeof filter> => filter !== null);
 
   const shouldGetRecommendations = !searchTerm || products?.nodes?.length === 0;
 
@@ -61,6 +127,8 @@ export async function loader({
   });
 
   return defer({
+    productfilters: search?.productFilters,
+    appliedFilters,
     seo,
     searchTerm,
     products,
@@ -71,73 +139,88 @@ export async function loader({
 }
 
 export default function Search() {
-  const { searchTerm, products, noResultRecommendations } =
-    useLoaderData<typeof loader>();
+  const {
+    searchTerm,
+    products,
+    noResultRecommendations,
+    productfilters,
+    appliedFilters,
+  } = useLoaderData<typeof loader>();
   const noResults = products?.nodes?.length === 0;
 
   return (
     <>
-      <PageHeader className='bg-background-subtle-1 items-center justify-center'>
-        <Heading as="h1" size="display" className='flex justify-center items-center'>
+      <PageHeader className="items-center justify-center bg-background-subtle-1">
+        <Heading
+          as="h1"
+          size="display"
+          className="flex items-center justify-center"
+        >
           {searchTerm && `Search results for “${searchTerm}”`}
           {!searchTerm && 'Search our site'}
         </Heading>
-        <Form method="get" className="relative flex justify-center items-center w-full">
-          <button type="submit" className='absolute left-0 ml-3 mt-2 cursor-pointer'>
-            <IconSearch className=" !w-8 !h-8 opacity-55" viewBox="0 0 24 24" />
+        <Form
+          method="get"
+          className="relative flex w-full items-center justify-center"
+        >
+          <button
+            type="submit"
+            className="absolute left-0 ml-3 mt-2 cursor-pointer"
+          >
+            <IconSearch className=" !h-8 !w-8 opacity-55" viewBox="0 0 24 24" />
           </button>
           <Input
             defaultValue={searchTerm}
             name="q"
             placeholder="What are you looking for?"
-            className='!w-[400px] !bg-inherit !rounded border-2 border-bar-subtle pl-11'
+            className="!w-[400px] !rounded border-2 border-bar-subtle !bg-inherit pl-11"
             type="search"
             variant="search"
           />
         </Form>
       </PageHeader>
-      {!searchTerm || noResults ? (
-        <NoResults
-          noResults={noResults}
-          recommendations={noResultRecommendations}
-        />
-      ) : (
-        <Section>
-          <Pagination connection={products}>
-            {({ nodes, isLoading, NextLink, PreviousLink }) => {
-              const itemsMarkup = nodes.map((product: any, i: number) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  loading={getImageLoadingPriority(i)}
-                />
-              ));
+      <div className="container">
+        <DrawerFilter
+          appliedFilters={appliedFilters}
+          productNumber={products.nodes.length}
+          filters={productfilters}
+        >
+          {!searchTerm || noResults ? (
+            <NoResults
+              noResults={noResults}
+              recommendations={noResultRecommendations}
+            />
+          ) : (
+            <Pagination connection={products}>
+              {({nodes, isLoading, NextLink, PreviousLink}) => {
+                const itemsMarkup = nodes.map((product: any, i: number) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    loading={getImageLoadingPriority(i)}
+                  />
+                ));
 
-              return (
-                <>
-                  <div className="flex items-center justify-center mt-6">
-                    <Button
-                      as={PreviousLink}
-                      variant="secondary"
-                    >
-                      {isLoading ? 'Loading...' : 'Previous'}
-                    </Button>
-                  </div>
-                  <Grid data-test="product-grid">{itemsMarkup}</Grid>
-                  <div className="flex items-center justify-center mt-6">
-                    <Button
-                      as={NextLink}
-                      variant="secondary"
-                    >
-                      {isLoading ? 'Loading...' : 'Show more +'}
-                    </Button>
-                  </div>
-                </>
-              );
-            }}
-          </Pagination>
-        </Section>
-      )}
+                return (
+                  <>
+                    <div className="mt-6 flex items-center justify-center">
+                      <Button as={PreviousLink} variant="secondary">
+                        {isLoading ? 'Loading...' : 'Previous'}
+                      </Button>
+                    </div>
+                    <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                    <div className="mt-6 flex items-center justify-center">
+                      <Button as={NextLink} variant="secondary">
+                        {isLoading ? 'Loading...' : 'Show more +'}
+                      </Button>
+                    </div>
+                  </>
+                );
+              }}
+            </Pagination>
+          )}
+        </DrawerFilter>
+      </div>
     </>
   );
 }
@@ -149,8 +232,7 @@ function NoResults({
   noResults: boolean;
   recommendations: Promise<null | FeaturedData>;
 }) {
-  const { products } =
-    useLoaderData<typeof loader>();
+  const {products} = useLoaderData<typeof loader>();
   return (
     <>
       {noResults && (
@@ -181,31 +263,27 @@ function NoResults({
                 /> */}
                 <Section>
                   <Pagination connection={products}>
-                    {({ nodes, isLoading, NextLink, PreviousLink }) => {
-                      const itemsMarkup = nodes.map((product: any, i: number) => (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          loading={getImageLoadingPriority(i)}
-                        />
-                      ));
+                    {({nodes, isLoading, NextLink, PreviousLink}) => {
+                      const itemsMarkup = nodes.map(
+                        (product: any, i: number) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            loading={getImageLoadingPriority(i)}
+                          />
+                        ),
+                      );
 
                       return (
                         <>
-                          <div className="flex items-center justify-center mt-6">
-                            <Button
-                              as={PreviousLink}
-                              variant="secondary"
-                            >
+                          <div className="mt-6 flex items-center justify-center">
+                            <Button as={PreviousLink} variant="secondary">
                               {isLoading ? 'Loading...' : 'Previous'}
                             </Button>
                           </div>
                           <Grid data-test="product-grid">{itemsMarkup}</Grid>
-                          <div className="flex items-center justify-center mt-6">
-                            <Button
-                              as={NextLink}
-                              variant="secondary"
-                            >
+                          <div className="mt-6 flex items-center justify-center">
+                            <Button as={NextLink} variant="secondary">
                               {isLoading ? 'Loading...' : 'Show more +'}
                             </Button>
                           </div>
@@ -226,10 +304,10 @@ function NoResults({
 export function getNoResultRecommendations(
   storefront: LoaderFunctionArgs['context']['storefront'],
 ) {
-  return getFeaturedData(storefront, { pageBy: PAGINATION_SIZE });
+  return getFeaturedData(storefront, {pageBy: PAGINATION_SIZE});
 }
 
-const SEARCH_QUERY = `#graphql
+const SEARCH_QUERYOLD = `#graphql
   query PaginatedProductsSearch(
     $country: CountryCode
     $endCursor: String
@@ -261,3 +339,55 @@ const SEARCH_QUERY = `#graphql
 
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
+
+const SEARCH_QUERY = `#graphql
+  query PaginatedProductsSearch(
+    $endCursor: String
+    $first: Int
+    $last: Int
+    $searchTerm: String!
+    $productFilters: [ProductFilter!]
+    $startCursor: String
+  ) {
+    search(
+      first: $first,
+      last: $last,
+      before: $startCursor,
+      after: $endCursor,
+      sortKey: RELEVANCE,
+      query: $searchTerm
+      productFilters: $productFilters
+    ) {
+      nodes {
+        ...ProductCard
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+
+  ${PRODUCT_CARD_FRAGMENT}
+` as const;
+
+const FILTER_QUERY = `#graphql
+query SearchFilter($query: String!)
+{
+  search(first: 0, query: $query) {
+    productFilters {
+      id
+      label
+      type
+      values {
+        id
+        label
+        count
+        input
+      }
+    }
+  }
+}
+`;
