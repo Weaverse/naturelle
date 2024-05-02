@@ -97,7 +97,7 @@ Heading.defaultProps = {
     size: 'default',
     weight: 'bold',
     tracking: 'inherit',
-    alignment: 'center',
+    // alignment: 'center',
     content: 'Section heading',
     minSize: 16,
     maxSize: 72,
@@ -206,9 +206,9 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Letter spacing',
                     configs: {
                         options: [
-                            { value: 'tight', label: 'Tight', icon: 'ArrowsInLineHorizontal' },
-                            { value: 'inherit', label: 'Inherit', icon: 'Placeholder' },
-                            { value: 'wide', label: 'Wide', icon: 'ArrowsOutLineHorizontal' },
+                            { value: 'tight', label: 'Tight' },
+                            { value: 'inherit', label: 'Inherit' },
+                            { value: 'wide', label: 'Wide' },
                         ],
                     },
                     defaultValue: 'normal',
@@ -219,12 +219,12 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Alignment',
                     configs: {
                         options: [
-                            { value: 'left', label: 'Left', icon: 'AlignLeft' },
-                            { value: 'center', label: 'Center', icon: 'AlignCenterHorizontal' },
-                            { value: 'right', label: 'Right', icon: 'AlignRight' },
+                            { value: 'left', label: 'Left' },
+                            { value: 'center', label: 'Center' },
+                            { value: 'right', label: 'Right' },
                         ],
                     },
-                    defaultValue: 'center',
+                    // defaultValue: 'center',
                 },
             ],
         },

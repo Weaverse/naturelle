@@ -18,8 +18,8 @@ type DescriptionProps = HydrogenComponentProps & {
 type Width = 'full' | 'narrow';
 
 let widthClasses: Record<Width, string> = {
-  full: 'w-full lg:w-3/4 mx-auto',
-  narrow: 'w-full md:w-1/2 lg:w-3/4 max-w-4xl mx-auto',
+  full: 'w-full',
+  narrow: 'w-full max-w-4xl',
 };
 
 let alignmentClasses: Record<Alignment, string> = {
@@ -57,7 +57,7 @@ Description.defaultProps = {
   width: 'narrow',
   content:
     "Pair large text with an image or full-width video to showcase your brand's lifestyle to describe and showcase an important detail of your products that you can tag on your image.",
-  alignment: 'center',
+  // alignment: 'center',
 };
 
 export default Description;
@@ -102,11 +102,10 @@ export let schema: HydrogenComponentSchema = {
           label: 'Width',
           configs: {
             options: [
-              { value: 'full', label: 'Full', icon: 'ArrowsHorizontal' },
+              { value: 'full', label: 'Full' },
               {
                 value: 'narrow',
                 label: 'Narrow',
-                icon: 'ArrowsInLineHorizontal',
               },
             ],
           },
@@ -118,12 +117,12 @@ export let schema: HydrogenComponentSchema = {
           label: 'Alignment',
           configs: {
             options: [
-              { value: 'left', label: 'Left', icon: 'AlignLeft' },
-              { value: 'center', label: 'Center', icon: 'AlignCenterHorizontal' },
-              { value: 'right', label: 'Right', icon: 'AlignRight' },
+              { value: 'left', label: 'Left' },
+              { value: 'center', label: 'Center' },
+              { value: 'right', label: 'Right' },
             ],
           },
-          defaultValue: 'center',
+          // defaultValue: 'center',
         },
       ],
     },
