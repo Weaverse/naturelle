@@ -49,14 +49,16 @@ export function DrawerFilter({
   return (
     <>
       <div className="flex items-center justify-between w-full">
-        <span>{productNumber} products</span>
+        <h5 className="font-medium text-xl leading-[22px]">
+          {productNumber} products
+        </h5>
         <div className="flex gap-2">
           <SortMenu />
           <Drawer
             direction="left"
             trigger={
-              <Button shape="default" variant="secondary" size="md">
-                <span>Filter</span>
+              <Button className='rounded py-3 !h-fit' shape="default" variant="outline" size="md">
+                <h5 className='text-xl font-medium leading-[22px]'>Filter</h5>
               </Button>
             }
             open={isOpen}
@@ -297,24 +299,25 @@ export default function SortMenu() {
 
   return (
     <Menu as="div" className="relative z-40">
-      <Menu.Button className="flex items-center border p-3">
-        <span className="px-2 font-medium">Sort by</span>
+      <Menu.Button className="flex gap-[10px] items-center border border-foreground rounded py-3 px-4">
+        <h5 className="font-medium leading-[22px] text-xl">Sort by</h5>
         <IconCaret />
       </Menu.Button>
       <Menu.Items
         as="nav"
-        className="absolute top-14 right-0 flex flex-col p-4 rounded bg-background border w-48"
+        className="absolute top-14 right-0 flex flex-col gap-2 p-5 rounded bg-background border w-56 h-fit"
       >
         {items.map((item) => (
           <Menu.Item key={item.label}>
             {() => (
-              <Link
-                className={`block text-sm mb-2 ${
-                  activeItem?.key === item.key ? 'font-bold' : ''
-                }`}
-                to={getSortLink(item.key, params, location)}
-              >
-                {item.label}
+              <Link to={getSortLink(item.key, params, location)}>
+                <p
+                  className={`block text-base ${
+                    activeItem?.key === item.key ? 'font-bold' : 'font-normal'
+                  }`}
+                >
+                  {item.label}
+                </p>
               </Link>
             )}
           </Menu.Item>
