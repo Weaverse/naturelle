@@ -11,6 +11,14 @@ const variants = {
   error: 'border-red-500',
 };
 
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  className?: string;
+  type?: string;
+  variant?: 'default' | 'search' | 'minisearch' | 'error';
+  suffix?: React.ReactNode;
+  onClear?: () => void;
+}
+
 export function Input({
   className = '',
   type,
@@ -19,17 +27,13 @@ export function Input({
   suffix,
   onFocus,
   onBlur,
+  onClear,
   ...rest
-}: {
-  className?: string;
-  type?: string;
-  variant?: 'default' | 'search' | 'minisearch' | 'error';
-  [key: string]: any;
-}) {
+}: InputProps) {
   let [focused, setFocused] = useState(false);
   let commonClasses = clsx(
     'w-full rounded-sm border px-3 py-2.5',
-    focused ? 'border-bar/50' : 'border-bar/10',
+    focused ? 'border-bar' : 'border-bar-subtle',
     className,
   );
 
@@ -37,15 +41,16 @@ export function Input({
     e.preventDefault();
     e.stopPropagation();
     e.currentTarget.previousSibling.value = '';
+    if (onClear) onClear();
   };
   if (type === 'search') {
-    suffix = <IconClose onClick={handleClear} />;
+    suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
   }
   let hasChild = Boolean(prefix || suffix);
 
   let rawInput = (
     <input
-      type={type}
+      // type={type}
       className={clsx(
         'w-full focus-visible:outline-none !shadow-none focus:ring-0',
         hasChild ? 'grow border-none bg-transparent p-0' : commonClasses,
@@ -67,7 +72,7 @@ export function Input({
     <div
       className={clsx(
         commonClasses,
-        'flex gap-2 overflow-hidden items-center bg-primary p-2.5 border rounded-sm',
+        'flex gap-2 overflow-hidden items-center p-2.5 border rounded-sm',
       )}
     >
       {prefix}

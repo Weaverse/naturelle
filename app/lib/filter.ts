@@ -14,7 +14,8 @@ export type SortParam =
   | 'price-high-low'
   | 'best-selling'
   | 'newest'
-  | 'featured';
+  | 'featured'
+  | 'relevance';
 
 export function getAppliedFilterLink(
   filter: AppliedFilter,
