@@ -13,7 +13,6 @@ import clsx from 'clsx';
 
 type BlogData = {
     blogs: WeaverseBlog;
-    heading: string;
     backgroundColor: string;
     articlePerRow: number;
     showSeperator: boolean;
@@ -34,14 +33,33 @@ let articlesPerRowClasses: { [item: number]: string } = {
 const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     let {
         blogs,
-        heading,
         backgroundColor,
         articlePerRow,
         showSeperator,
         loaderData,
+        children,
         ...rest
     } = props;
 
+    const blogItemBlank = () => {
+        return (
+            <div
+                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-background-subtle-1 transition-colors duration-500 rounded cursor-pointer'
+            >
+                <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                    <IconImageBlank
+                        viewBox="0 0 526 526"
+                        className="w-full h-full opacity-80"
+                    />
+                </div>
+                <div className="flex flex-col gap-4">
+                    <h3 className='font-medium group-hover:underline'>Trendy items for this Winter Fall 2025 season</h3>
+                    <div className="border-b-2 border-gray-300 w-full"></div>
+                    <p className='font-normal line-clamp-3'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
+                </div>
+            </div>
+        );
+    }
 
     let sectionStyle: CSSProperties = {
         '--background-color': backgroundColor,
@@ -51,55 +69,13 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
         return (
             <section ref={ref} {...rest} className="w-full h-full bg-[var(--background-color)]" style={sectionStyle}>
                 <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20">
-                    {heading && <div className="flex justify-center">
-                        <h2 className="font-medium">{heading}</h2>
-                    </div>}
+                    {children}
                     <div className="flex flex-col sm:grid sm:justify-self-center gap-5 sm:gap-0 grid-cols-3">
-                        <div
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="w-full h-full opacity-80"
-                                />
+                        {Array.from({ length: 3 }).map((idx, i) => (
+                            <div key={i} className='w-full group'>
+                                {blogItemBlank()}
                             </div>
-                            <div className="flex flex-col gap-4">
-                                <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
-                                <div className="border-b-2 border-gray-300 w-full"></div>
-                                <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                            </div>
-                        </div>
-                        <div
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="w-full h-full opacity-80"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
-                                <div className="border-b-2 border-gray-300 w-full"></div>
-                                <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                            </div>
-                        </div>
-                        <div
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="w-full h-full opacity-80"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
-                                <div className="border-b-2 border-gray-300 w-full"></div>
-                                <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -110,9 +86,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     return (
         <section ref={ref} {...rest} className="h-full w-full flex justify-center bg-[var(--background-color)]" style={sectionStyle}>
             <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20 max-w-[1440px]">
-                {heading && <div className="flex justify-center">
-                    <h2 className="font-medium">{heading}</h2>
-                </div>}
+                {children}
                 <div className={clsx(
                     "flex flex-col sm:grid sm:justify-self-center gap-5 sm:gap-0",
                     articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)]
@@ -136,7 +110,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                     </div>)}
                                 <div className="flex flex-col gap-4">
                                     <h3 className='group-hover:underline'>{idx.title}</h3>
-                                    {showSeperator && <div className="border-b-2 border-bar-subtle w-full"></div>}
+                                    {showSeperator && <div className="border-b border-bar-subtle w-full"></div>}
                                     <p className='line-clamp-3'>{idx.excerpt}</p>
                                 </div>
                             </div>
@@ -177,13 +151,6 @@ export const schema: HydrogenComponentSchema = {
                     label: "Blog",
                 },
                 {
-                    type: 'text',
-                    name: 'heading',
-                    label: 'Heading',
-                    defaultValue: 'Blogs',
-                    placeholder: 'Heading text',
-                },
-                {
                     type: 'color',
                     label: 'Background color',
                     name: 'backgroundColor',
@@ -193,7 +160,7 @@ export const schema: HydrogenComponentSchema = {
                     type: 'range',
                     name: 'articlePerRow',
                     label: 'Articles per row',
-                    defaultValue: 2,
+                    defaultValue: 3,
                     configs: {
                         min: 1,
                         max: 4,
@@ -209,4 +176,13 @@ export const schema: HydrogenComponentSchema = {
             ],
         },
     ],
+    childTypes: ['heading'],
+    presets: {
+        children: [
+            {
+                type: 'heading',
+                content: 'Blogs',
+            }
+        ],
+    },
 };

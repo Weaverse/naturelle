@@ -47,12 +47,10 @@ export function IconAccount(props: IconProps) {
 
 export function IconSearch(props: IconProps) {
   return (
-    <Icon {...props}>
+    <Icon {...props} viewBox='0 0 24 24' fill='none'>
       <title>Search</title>
-      <path
-        fillRule="evenodd"
-        d="M13.3 8.52a4.77 4.77 0 1 1-9.55 0 4.77 4.77 0 0 1 9.55 0Zm-.98 4.68a6.02 6.02 0 1 1 .88-.88l4.3 4.3-.89.88-4.3-4.3Z"
-      />
+      <path d="M10.8751 18.75C15.2244 18.75 18.7501 15.2242 18.7501 10.875C18.7501 6.52576 15.2244 3 10.8751 3C6.52588 3 3.00012 6.52576 3.00012 10.875C3.00012 15.2242 6.52588 18.75 10.8751 18.75Z" stroke="#3D490B" />
+      <path d="M16.4438 16.4438L21.0001 21.0001" stroke="#3D490B" />
     </Icon>
   );
 }

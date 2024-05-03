@@ -178,7 +178,7 @@ export default function Search() {
             variant="search"
           />
         </Form>
-      </PageHeader>
+      </div>
       <div className="container">
         <DrawerFilter
           appliedFilters={appliedFilters}
