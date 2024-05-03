@@ -36,6 +36,7 @@ type DrawerFilterProps = {
   appliedFilters?: AppliedFilter[];
   children: React.ReactNode;
   collections?: Array<{handle: string; title: string}>;
+  showSearchSort?: boolean;
 };
 
 export function DrawerFilter({
@@ -43,6 +44,7 @@ export function DrawerFilter({
   appliedFilters = [],
   children,
   productNumber = 0,
+  showSearchSort = false
 }: DrawerFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export function DrawerFilter({
           {productNumber} products
         </h5>
         <div className="flex gap-2">
-          <SortMenu />
+          <SortMenu showSearchSort={showSearchSort}/>
           <Drawer
             direction="left"
             trigger={
@@ -272,8 +274,8 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
   );
 }
 
-export default function SortMenu() {
-  const items: {label: string; key: SortParam}[] = [
+export default function SortMenu({showSearchSort = false}: {showSearchSort?: boolean}) {
+  const productShortItems: {label: string; key: SortParam}[] = [
     {label: 'Featured', key: 'featured'},
     {
       label: 'Price: Low - High',
@@ -292,6 +294,22 @@ export default function SortMenu() {
       key: 'newest',
     },
   ];
+
+  const searchSortItems: {label: string; key: SortParam}[] = [
+    {
+      label: 'Price: Low - High',
+      key: 'price-low-high',
+    },
+    {
+      label: 'Price: High - Low',
+      key: 'price-high-low',
+    },
+    {
+      label: 'Relevance',
+      key: 'relevance',
+    },
+  ];
+  const items = showSearchSort ? searchSortItems : productShortItems;
   const [params] = useSearchParams();
   const location = useLocation();
   const activeItem =
