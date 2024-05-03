@@ -1418,7 +1418,7 @@ export type PaginatedSearchQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type PaginatedSearchQuery = {
-  search: {
+  search: Pick<StorefrontAPI.SearchResultItemConnection, 'totalCount'> & {
     nodes: Array<
       Pick<
         StorefrontAPI.Product,
@@ -1568,7 +1568,7 @@ interface GeneratedQueryTypes {
     return: PaginatedProductsSearchQuery;
     variables: PaginatedProductsSearchQueryVariables;
   };
-  '#graphql\n  query PaginatedSearch(\n    $endCursor: String\n    $first: Int\n    $last: Int\n    $searchTerm: String!\n    $sortKey: SearchSortKeys!\n    $reverse: Boolean\n    $productFilters: [ProductFilter!]\n    $startCursor: String\n  ) {\n    search(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      sortKey: $sortKey,\n      reverse: $reverse,\n      query: $searchTerm\n      productFilters: $productFilters\n    ) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    variants(first: 10) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        product {\n          handle\n          title\n        }\n        sku\n      }\n    }\n  }\n\n': {
+  '#graphql\n  query PaginatedSearch(\n    $endCursor: String\n    $first: Int\n    $last: Int\n    $searchTerm: String!\n    $sortKey: SearchSortKeys!\n    $reverse: Boolean\n    $productFilters: [ProductFilter!]\n    $startCursor: String\n  ) {\n    search(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      sortKey: $sortKey,\n      reverse: $reverse,\n      query: $searchTerm\n      types: [PRODUCT]\n      productFilters: $productFilters\n    ) {\n      nodes {\n        ...ProductCard\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasNextPage\n        hasPreviousPage\n      }\n      totalCount\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    variants(first: 10) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        product {\n          handle\n          title\n        }\n        sku\n      }\n    }\n  }\n\n': {
     return: PaginatedSearchQuery;
     variables: PaginatedSearchQueryVariables;
   };

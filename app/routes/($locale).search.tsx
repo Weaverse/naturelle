@@ -10,6 +10,7 @@ import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
 import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {DrawerFilter} from '~/components/DrawerFilter';
+import {FeaturedCollections} from '~/components/FeaturedCollections';
 import {Grid} from '~/components/Grid';
 import {IconSearch} from '~/components/Icon';
 import {Input} from '~/components/Input';
@@ -45,7 +46,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {sortKey, reverse} = getSortValuesFromParam(
     searchParams.get('sort') as SortParam,
   );
-  console.log('🚀 ~ sortKey:', sortKey, reverse);
 
   const filters = [...searchParams.entries()].reduce(
     (filters, [key, value]) => {
@@ -72,6 +72,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     },
   });
   let products = productSearch;
+  console.log('🚀 ~ productSearch:', productSearch);
 
   const locale = context.storefront.i18n;
   const allFilterValues = search.productFilters.flatMap(
@@ -161,103 +162,103 @@ export default function Search() {
     productfilters,
     appliedFilters,
   } = useLoaderData<typeof loader>();
-  const noResults = products?.nodes?.length === 0;
+  console.log('🚀 ~ products:', products);
+  const noResults = searchTerm && products?.nodes?.length === 0;
   let location = useLocation();
   let navigate = useNavigate();
-  console.log('🚀 ~ location:', location);
 
   return (
     <>
       <PageHeader className="items-center justify-center bg-background-subtle-1">
-        <Heading
-          as="h1"
-          size="display"
-          className="flex w-full items-center justify-center text-center"
-        >
+        <h1 className="w-full text-center text-5xl font-medium">
           {searchTerm
             ? `Search results for “${searchTerm}”`
             : 'Search our site'}
-        </Heading>
+        </h1>
         <Form
           method="get"
           className="relative flex w-full items-center justify-center"
         >
-          <button type="submit" className="absolute left-3 cursor-pointer">
-            <IconSearch className="h-6 w-6 opacity-55" viewBox="0 0 24 24" />
-          </button>
           <Input
             defaultValue={searchTerm}
             onClear={() => navigate(location.pathname)}
             name="q"
             placeholder="What are you looking for?"
-            className="!w-[400px] !rounded border-2 pl-11"
+            className="w-[400px] rounded border-2"
             type="search"
+            prefixElement={
+              <button type="submit" className="cursor-pointer">
+                <IconSearch
+                  className="h-6 w-6 opacity-55"
+                  viewBox="0 0 24 24"
+                />
+              </button>
+            }
             variant="search"
           />
         </Form>
       </PageHeader>
-      <div className="container py-4">
-        <DrawerFilter
-          showSearchSort
-          appliedFilters={appliedFilters}
-          productNumber={products.nodes.length}
-          filters={productfilters}
-        >
-          {!searchTerm || noResults ? (
-            <NoResults
-              noResults={noResults}
-              recommendations={noResultRecommendations}
-            />
-          ) : (
-            <Pagination connection={products}>
-              {({nodes, isLoading, NextLink, PreviousLink}) => {
-                const itemsMarkup = nodes.map((product: any, i: number) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    loading={getImageLoadingPriority(i)}
-                  />
-                ));
+      <DrawerFilter
+        showSearchSort
+        appliedFilters={appliedFilters}
+        productNumber={products.totalCount}
+        filters={productfilters}
+      />
+      <div className="container">
+        {noResults ? (
+          <NoResults
+            noResults={noResults}
+            recommendations={noResultRecommendations}
+          />
+        ) : (
+          <Pagination connection={products}>
+            {({nodes, isLoading, NextLink, PreviousLink}) => {
+              const itemsMarkup = nodes.map((product: any, i: number) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  loading={getImageLoadingPriority(i)}
+                />
+              ));
 
-                return (
-                  <>
-                    <div className="mt-6 flex items-center justify-center">
-                      <Button as={PreviousLink} variant="secondary">
-                        {isLoading ? 'Loading...' : 'Previous'}
-                      </Button>
-                    </div>
-                    <div className="mt-6 flex items-center justify-center">
-                      <Button as={NextLink} variant="secondary">
-                        {isLoading ? 'Loading...' : 'Show more +'}
-                      </Button>
-                    </div>
-                  </>
-                );
-              }}
-            </Pagination>
-          )}
-        </DrawerFilter>
+              return (
+                <>
+                  <div className="my-6 flex w-full items-center justify-center">
+                    <Button as={PreviousLink} variant="secondary">
+                      {isLoading ? 'Loading...' : 'Previous'}
+                    </Button>
+                  </div>
+                  <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                  <div className="my-6 flex w-full items-center justify-center">
+                    <Button as={NextLink} variant="secondary">
+                      {isLoading ? 'Loading...' : 'Show more +'}
+                    </Button>
+                  </div>
+                </>
+              );
+            }}
+          </Pagination>
+        )}
       </div>
     </>
   );
 }
 
-function NoResults({ 
+function NoResults({
   noResults,
   recommendations,
 }: {
   noResults: boolean;
   recommendations: Promise<null | FeaturedData>;
 }) {
-  const {products} = useLoaderData<typeof loader>();
   return (
     <>
       {noResults && (
-        <Section padding="x">
+        <div className="py-4">
           <Text className="opacity-50">
             No results, try a different search.
           </Text>
-        </Section>
+        </div>
       )}
       <Suspense>
         <Await
@@ -266,7 +267,7 @@ function NoResults({
         >
           {(result) => {
             if (!result) return null;
-            // const { featuredCollections, featuredProducts } = result;
+            const {featuredCollections, featuredProducts} = result;
 
             return (
               <>
@@ -274,33 +275,10 @@ function NoResults({
                   title="Trending Collections"
                   collections={featuredCollections}
                 /> */}
-                <Pagination connection={products}>
-                  {({nodes, isLoading, NextLink, PreviousLink}) => {
-                    const itemsMarkup = nodes.map((product: any, i: number) => (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        loading={getImageLoadingPriority(i)}
-                      />
-                    ));
-
-                    return (
-                      <>
-                        <div className="mt-6 flex items-center justify-center">
-                          <Button as={PreviousLink} variant="secondary">
-                            {isLoading ? 'Loading...' : 'Previous'}
-                          </Button>
-                        </div>
-                        <Grid data-test="product-grid">{itemsMarkup}</Grid>
-                        <div className="mt-6 flex items-center justify-center">
-                          <Button as={NextLink} variant="secondary">
-                            {isLoading ? 'Loading...' : 'Show more +'}
-                          </Button>
-                        </div>
-                      </>
-                    );
-                  }}
-                </Pagination>
+                <ProductSwimlane
+                  title="Trending Products"
+                  products={featuredProducts}
+                />
               </>
             );
           }}
@@ -368,6 +346,7 @@ const SEARCH_QUERY = `#graphql
       sortKey: $sortKey,
       reverse: $reverse,
       query: $searchTerm
+      types: [PRODUCT]
       productFilters: $productFilters
     ) {
       nodes {
@@ -379,6 +358,7 @@ const SEARCH_QUERY = `#graphql
         hasNextPage
         hasPreviousPage
       }
+      totalCount
     }
   }
 
