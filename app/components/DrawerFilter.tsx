@@ -47,13 +47,15 @@ export function DrawerFilter({
     <>
       <div className="border-y border-bar-subtle py-6 ">
         <div className="container flex w-full items-center justify-between">
-          <span>{productNumber} products</span>
+          <span className="text-xl tracking-tight font-medium">
+            {productNumber} Products
+          </span>
           <div className="flex gap-2">
             <SortMenu showSearchSort={showSearchSort} />
             <Button
               onClick={openDrawer}
               shape="default"
-              variant="secondary"
+              variant="outline"
               size="md"
             >
               <span>Filter</span>
@@ -315,24 +317,25 @@ export default function SortMenu({
 
   return (
     <Menu as="div" className="relative z-40">
-      <Menu.Button className="flex items-center rounded border p-3">
-        <span className="px-2 font-medium">Sort by</span>
+      <Menu.Button className="flex items-center gap-[10px] rounded border border-foreground px-4 py-3">
+        <h5 className="text-xl font-medium leading-[22px]">Sort by</h5>
         <IconCaret />
       </Menu.Button>
       <Menu.Items
         as="nav"
-        className="absolute right-0 top-14 flex w-48 flex-col rounded border bg-background p-4"
+        className="absolute right-0 top-14 flex h-fit w-56 flex-col gap-2 rounded border bg-background p-5"
       >
         {items.map((item) => (
           <Menu.Item key={item.label}>
             {() => (
-              <Link
-                className={`mb-2 block text-sm ${
-                  activeItem?.key === item.key ? 'font-bold' : ''
-                }`}
-                to={getSortLink(item.key, params, location)}
-              >
-                {item.label}
+              <Link to={getSortLink(item.key, params, location)}>
+                <p
+                  className={`block text-base ${
+                    activeItem?.key === item.key ? 'font-bold' : 'font-normal'
+                  }`}
+                >
+                  {item.label}
+                </p>
               </Link>
             )}
           </Menu.Item>
