@@ -1,5 +1,11 @@
 import {Button} from '@/components/button';
-import {Await, Form, useLoaderData} from '@remix-run/react';
+import {
+  Await,
+  Form,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from '@remix-run/react';
 import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
 import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -8,6 +14,7 @@ import {Grid} from '~/components/Grid';
 import {IconSearch} from '~/components/Icon';
 import {Input} from '~/components/Input';
 import {ProductCard} from '~/components/ProductCard';
+import {ProductSwimlane} from '~/components/ProductSwimlane';
 import {Heading, PageHeader, Section, Text} from '~/components/Text';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {
@@ -15,9 +22,11 @@ import {
   getImageLoadingPriority,
   PAGINATION_SIZE,
 } from '~/lib/const';
+import {SortParam} from '~/lib/filter';
 import {seoPayload} from '~/lib/seo.server';
 import {parseAsCurrency} from '~/lib/utils';
 import {Suspense} from 'react';
+import {getSortValuesFromParam} from './($locale).collections.$handle';
 import {
   getFeaturedData,
   type FeaturedData,
@@ -33,6 +42,10 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       query: '',
     },
   });
+  const {sortKey, reverse} = getSortValuesFromParam(
+    searchParams.get('sort') as SortParam,
+  );
+  console.log('🚀 ~ sortKey:', sortKey, reverse);
 
   const filters = [...searchParams.entries()].reduce(
     (filters, [key, value]) => {
@@ -51,6 +64,8 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     variables: {
       searchTerm,
       productFilters: filters,
+      sortKey,
+      reverse,
       ...variables,
       country: storefront.i18n.country,
       language: storefront.i18n.language,
@@ -147,6 +162,9 @@ export default function Search() {
     appliedFilters,
   } = useLoaderData<typeof loader>();
   const noResults = products?.nodes?.length === 0;
+  let location = useLocation();
+  let navigate = useNavigate();
+  console.log('🚀 ~ location:', location);
 
   return (
     <>
@@ -154,33 +172,33 @@ export default function Search() {
         <Heading
           as="h1"
           size="display"
-          className="flex items-center justify-center"
+          className="flex w-full items-center justify-center text-center"
         >
-          {searchTerm && `Search results for “${searchTerm}”`}
-          {!searchTerm && 'Search our site'}
+          {searchTerm
+            ? `Search results for “${searchTerm}”`
+            : 'Search our site'}
         </Heading>
         <Form
           method="get"
           className="relative flex w-full items-center justify-center"
         >
-          <button
-            type="submit"
-            className="absolute left-0 ml-3 mt-2 cursor-pointer"
-          >
-            <IconSearch className=" !h-8 !w-8 opacity-55" viewBox="0 0 24 24" />
+          <button type="submit" className="absolute left-3 cursor-pointer">
+            <IconSearch className="h-6 w-6 opacity-55" viewBox="0 0 24 24" />
           </button>
           <Input
             defaultValue={searchTerm}
+            onClear={() => navigate(location.pathname)}
             name="q"
             placeholder="What are you looking for?"
-            className="!w-[400px] !rounded border-2 border-bar-subtle !bg-inherit pl-11"
+            className="!w-[400px] !rounded border-2 pl-11"
             type="search"
             variant="search"
           />
         </Form>
-      </div>
-      <div className="container">
+      </PageHeader>
+      <div className="container py-4">
         <DrawerFilter
+          showSearchSort
           appliedFilters={appliedFilters}
           productNumber={products.nodes.length}
           filters={productfilters}
@@ -208,7 +226,6 @@ export default function Search() {
                         {isLoading ? 'Loading...' : 'Previous'}
                       </Button>
                     </div>
-                    <Grid data-test="product-grid">{itemsMarkup}</Grid>
                     <div className="mt-6 flex items-center justify-center">
                       <Button as={NextLink} variant="secondary">
                         {isLoading ? 'Loading...' : 'Show more +'}
@@ -225,7 +242,7 @@ export default function Search() {
   );
 }
 
-function NoResults({
+function NoResults({ 
   noResults,
   recommendations,
 }: {
@@ -257,41 +274,33 @@ function NoResults({
                   title="Trending Collections"
                   collections={featuredCollections}
                 /> */}
-                {/* <ProductSwimlane
-                  title="Trending Products"
-                  products={featuredProducts}
-                /> */}
-                <Section>
-                  <Pagination connection={products}>
-                    {({nodes, isLoading, NextLink, PreviousLink}) => {
-                      const itemsMarkup = nodes.map(
-                        (product: any, i: number) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            loading={getImageLoadingPriority(i)}
-                          />
-                        ),
-                      );
+                <Pagination connection={products}>
+                  {({nodes, isLoading, NextLink, PreviousLink}) => {
+                    const itemsMarkup = nodes.map((product: any, i: number) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        loading={getImageLoadingPriority(i)}
+                      />
+                    ));
 
-                      return (
-                        <>
-                          <div className="mt-6 flex items-center justify-center">
-                            <Button as={PreviousLink} variant="secondary">
-                              {isLoading ? 'Loading...' : 'Previous'}
-                            </Button>
-                          </div>
-                          <Grid data-test="product-grid">{itemsMarkup}</Grid>
-                          <div className="mt-6 flex items-center justify-center">
-                            <Button as={NextLink} variant="secondary">
-                              {isLoading ? 'Loading...' : 'Show more +'}
-                            </Button>
-                          </div>
-                        </>
-                      );
-                    }}
-                  </Pagination>
-                </Section>
+                    return (
+                      <>
+                        <div className="mt-6 flex items-center justify-center">
+                          <Button as={PreviousLink} variant="secondary">
+                            {isLoading ? 'Loading...' : 'Previous'}
+                          </Button>
+                        </div>
+                        <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                        <div className="mt-6 flex items-center justify-center">
+                          <Button as={NextLink} variant="secondary">
+                            {isLoading ? 'Loading...' : 'Show more +'}
+                          </Button>
+                        </div>
+                      </>
+                    );
+                  }}
+                </Pagination>
               </>
             );
           }}
@@ -341,11 +350,13 @@ const SEARCH_QUERYOLD = `#graphql
 ` as const;
 
 const SEARCH_QUERY = `#graphql
-  query PaginatedProductsSearch(
+  query PaginatedSearch(
     $endCursor: String
     $first: Int
     $last: Int
     $searchTerm: String!
+    $sortKey: SearchSortKeys!
+    $reverse: Boolean
     $productFilters: [ProductFilter!]
     $startCursor: String
   ) {
@@ -354,7 +365,8 @@ const SEARCH_QUERY = `#graphql
       last: $last,
       before: $startCursor,
       after: $endCursor,
-      sortKey: RELEVANCE,
+      sortKey: $sortKey,
+      reverse: $reverse,
       query: $searchTerm
       productFilters: $productFilters
     ) {
