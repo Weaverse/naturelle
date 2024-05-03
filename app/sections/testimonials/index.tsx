@@ -11,12 +11,9 @@ import { IconImageBlank } from '~/components/Icon';
 
 interface TestimonialsProps extends HydrogenComponentProps {
     backgroundImage?: WeaverseImage;
-    heading?: string;
     reviewsPosition: string;
     textColor?: string;
     borderColor?: string;
-    review?: number;
-    gap?: number;
     desktopContentPadding?: number;
 }
 
@@ -28,23 +25,18 @@ let reviewsPositionContent: { [reviewsPosition: string]: string } = {
 const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => {
     let {
         backgroundImage,
-        heading,
         reviewsPosition,
         textColor,
         borderColor,
-        review,
-        gap,
         desktopContentPadding,
         children,
         ...rest
     } = props;
 
-    let displayedChildren = children?.slice(0, review);
 
     let sectionStyle: CSSProperties = {
         '--text-color': textColor,
         '--border-color': borderColor,
-        '--gap': `${gap}px`,
         '--desktop-content-padding': `${desktopContentPadding}px`,
     } as CSSProperties;
     return (
@@ -77,11 +69,8 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
                 "flex h-fit z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl",
                 reviewsPosition === 'full' ? 'sm:w-full' : 'sm:w-1/2'
             )}>
-                <div className='flex flex-col gap-10 px-6 py-12 sm:py-16 sm:px-[var(--desktop-content-padding)]'>
-                    <h2 className='font-medium text-[var(--text-color)]'>{heading}</h2>
-                    <div className='flex flex-col gap-[var(--gap)]'>
-                        {displayedChildren}
-                    </div>
+                <div className='flex flex-col gap-10 px-6 py-12 sm:py-16 sm:px-[var(--desktop-content-padding)] text-[var(--text-color)]'>
+                    {children}
                 </div>
             </div>
         </section>
@@ -102,12 +91,6 @@ export let schema: HydrogenComponentSchema = {
                     type: 'image',
                     name: 'backgroundImage',
                     label: 'Background image',
-                },
-                {
-                    type: 'text',
-                    name: 'heading',
-                    label: 'Heading',
-                    defaultValue: 'Testimonials',
                 },
                 {
                     type: 'toggle-group',
@@ -135,59 +118,28 @@ export let schema: HydrogenComponentSchema = {
                 },
                 {
                     type: 'range',
-                    name: 'review',
-                    label: 'Reviews',
-                    defaultValue: 3,
-                    configs: {
-                        min: 1,
-                        max: 4,
-                        step: 1,
-                    },
-                },
-                {
-                    type: 'range',
-                    label: 'Gap',
-                    name: 'gap',
-                    configs: {
-                        min: 16,
-                        max: 40,
-                        step: 4,
-                        unit: 'px',
-                    },
-                    defaultValue: 20,
-                },
-                {
-                    type: 'range',
                     label: 'Desktop content padding',
                     name: 'desktopContentPadding',
                     configs: {
-                        min: 30,
-                        max: 100,
-                        step: 5,
-                        unit: 'px',
+                      min: 30,
+                      max: 100,
+                      step: 5,
+                      unit: 'px',
                     },
                     defaultValue: 30,
-                },
+                  },
             ],
         },
     ],
-    childTypes: ['reviews'],
+    childTypes: ['heading', 'content-reviews--review'],
     presets: {
         children: [
             {
-                type: 'reviews',
-                name: 'Debbie',
-                content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+                type: 'heading',
+                content: "Testimonials",
             },
             {
-                type: 'reviews',
-                name: 'Emmanuelle',
-                content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-            },
-            {
-                type: 'reviews',
-                name: 'Veronica',
-                content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+                type: 'content-reviews--review',
             },
         ],
     },

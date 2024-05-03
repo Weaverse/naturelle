@@ -4,9 +4,11 @@ import * as StyleGuide from '~/sections/style-guide';
 import * as VideoBanner from '~/sections/video-banner';
 import * as Highlights from '~/sections/hightlight/index';
 import * as HightlightItem from '~/sections/hightlight/item';
+import * as HighlightContent from '~/sections/hightlight/content-item';
 import * as ImageWithText from '~/sections/image-with-text/index';
 import * as ScrollingText from '~/sections/scrolling-text/index';
 import * as Testimonials from '~/sections/testimonials/index';
+import * as ContentReview from '~/sections/testimonials/content-item';
 import * as Review from '~/sections/testimonials/review';
 import * as Slides from '~/sections/slides/index';
 import * as Slide from '~/sections/slides/slide';
@@ -32,9 +34,11 @@ export const components: HydrogenComponent[] = [
     VideoBanner,
     Highlights,
     HightlightItem,
+    HighlightContent,
     ImageWithText,
     ScrollingText,
     Testimonials,
+    ContentReview,
     Review,
     Slides,
     Slide,

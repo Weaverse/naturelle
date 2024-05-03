@@ -74,6 +74,7 @@ export const schema: HydrogenComponentSchema = {
               { label: 'Icon', value: 'icon' },
             ],
           },
+          condition: `variant.ne.decor`,
         },
         {
           type: 'text',
