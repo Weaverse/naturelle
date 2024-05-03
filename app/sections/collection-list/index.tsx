@@ -1,70 +1,73 @@
 import { useLoaderData } from '@remix-run/react';
 import { Pagination } from '@shopify/hydrogen';
-import type { Collection } from '@shopify/hydrogen/storefront-api-types';
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
 import { forwardRef, CSSProperties } from 'react';
-import type { CollectionsQuery } from 'storefrontapi.generated';
+import type { StoreCollectionsQuery } from 'storefrontapi.generated';
 import { Section } from '~/components/Text';
-import { Grid } from '~/components/Grid';
-import { getImageLoadingPriority } from '~/lib/const';
-import { CollectionCard } from './collection-card';
 import { Button } from '@/components/button';
+import { CollectionsLoadedOnScroll } from './collection-loader-on-scroll';
+import { useInView } from 'react-intersection-observer';
+import clsx from 'clsx';
 
+type Alignment = 'left' | 'center' | 'right';
 interface CollectionListProps extends HydrogenComponentProps {
   textColor: string;
-  heading: string;
-  contentAlignment: string;
-  imageAspectRatio: string;
+  contentAlignment: Alignment;
   collectionsPerRow: number;
   topPadding: number;
   bottomPadding: number;
   lazyLoadImage: boolean;
 }
 
+let alignmentClasses: Record<Alignment, string> = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+};
+
 let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
-  (props, ref) => {
-    let { collections } = useLoaderData<CollectionsQuery>();
-    let { textColor, heading, contentAlignment, collectionsPerRow, topPadding, bottomPadding, lazyLoadImage, imageAspectRatio, ...rest } =
+  (props, sectionRef) => {
+    let {ref, inView} = useInView();
+    let { collections } = useLoaderData<StoreCollectionsQuery>();
+    let { textColor, contentAlignment, collectionsPerRow, topPadding, bottomPadding, lazyLoadImage, children, ...rest } =
       props;
     let contentStyle: CSSProperties = {
-      textAlign: contentAlignment,
       '--top-padding': `${topPadding}px`,
       '--bottom-padding': `${bottomPadding}px`,
       color: textColor,
     } as CSSProperties;
     return (
-      <section ref={ref} {...rest} style={contentStyle} className='w-full flex justify-center items-center'>
+      <section ref={sectionRef} {...rest} style={contentStyle} 
+        className={clsx('w-full flex justify-center items-center',
+          alignmentClasses[contentAlignment!],
+        )}>
         <div className='max-w-[1440px] pt-[var(--top-padding)] pb-[var(--bottom-padding)]'>
-          {heading && <div className='px-6 md:px-8 lg:px-12'>
-            <h2 className='font-medium pt-10'>{heading}</h2>
-          </div>}
+          <div className='p-6 md:p-8 lg:p-12'>
+            {children}
+          </div>
           <Section as="div">
             <Pagination connection={collections}>
-              {({ nodes, isLoading, PreviousLink, NextLink }) => (
+              {({ nodes, isLoading, PreviousLink, NextLink, nextPageUrl, hasNextPage, state, }) => (
                 <>
                   <div className="flex items-center justify-center mb-6">
                     <Button as={PreviousLink} variant="outline">
                       {isLoading ? 'Loading...' : 'Previous collections'}
                     </Button>
                   </div>
-                  <Grid
-                    items={collectionsPerRow}
-                    data-test="collection-grid"
-                  >
-                    {nodes.map((collection, i) => (
-                      <CollectionCard
-                        key={collection.id}
-                        collection={collection as Collection}
-                        imageAspectRatio={imageAspectRatio}
-                        loading={lazyLoadImage ? getImageLoadingPriority(i, 2) : undefined}
-                      />
-                    ))}
-                  </Grid>
+                  <CollectionsLoadedOnScroll
+                      nodes={nodes}
+                      collectionsPerRow={collectionsPerRow}
+                      lazyLoadImage={lazyLoadImage}
+                      inView={inView}
+                      nextPageUrl={nextPageUrl}
+                      hasNextPage={hasNextPage}
+                      state={state}
+                    />
                   <div className="flex items-center justify-center mt-6">
-                    <Button as={NextLink} variant="outline">
+                    <Button ref={ref} as={NextLink} variant="outline">
                       {isLoading ? 'Loading...' : 'Next collections'}
                     </Button>
                   </div>
@@ -96,13 +99,6 @@ export let schema: HydrogenComponentSchema = {
           type: 'color',
           name: 'textColor',
           label: 'Text color',
-        },
-        {
-          type: 'text',
-          name: 'heading',
-          label: 'Heading',
-          defaultValue: 'Collections',
-          placeholder: 'Collections',
         },
         {
           type: 'toggle-group',
@@ -158,25 +154,14 @@ export let schema: HydrogenComponentSchema = {
         },
       ],
     },
-    {
-      group: 'Collection card',
-      inputs: [
-        {
-          type: 'select',
-          label: 'Image aspect ratio',
-          name: 'imageAspectRatio',
-          configs: {
-            options: [
-              { value: 'auto', label: 'Adapt to image' },
-              { value: '1/1', label: '1/1' },
-              { value: '3/4', label: '3/4' },
-              { value: '4/3', label: '4/3' },
-              { value: '6/4', label: '6/4' },
-            ],
-          },
-          defaultValue: 'auto',
-        },
-      ],
-    },
   ],
+  childTypes: ['heading'],
+  presets: {
+      children: [
+           {
+              type: 'heading',
+              content: "Collections",
+          },
+      ],
+  },
 };
