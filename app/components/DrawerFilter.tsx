@@ -1,5 +1,7 @@
+import {Button} from '@/components/button';
+import {Checkbox} from '@/components/checkbox';
+import {Input} from '@/components/input';
 import {Disclosure, Menu} from '@headlessui/react';
-
 import {
   Link,
   useLocation,
@@ -10,31 +12,26 @@ import type {
   Filter,
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
-import type {SyntheticEvent} from 'react';
-import {useMemo, useState} from 'react';
-import {useDebounce} from 'react-use';
-
-import {Button} from '@/components/button';
-import {Checkbox} from '@/components/checkbox';
-import {Input} from '@/components/input';
 import {IconCaret, IconXMark} from '~/components/Icon';
 import {Heading, Text} from '~/components/Text';
 import {FILTER_URL_PREFIX} from '~/lib/const';
 import {
-  SortParam,
   filterInputToParams,
   getAppliedFilterLink,
   getFilterLink,
   getSortLink,
+  SortParam,
   type AppliedFilter,
 } from '~/lib/filter';
-import {Drawer} from './Drawer';
+import type {SyntheticEvent} from 'react';
+import {useMemo, useState} from 'react';
+import {useDebounce} from 'react-use';
+import {Drawer, useDrawer} from './Drawer';
 
 type DrawerFilterProps = {
   productNumber?: number;
   filters: Filter[];
   appliedFilters?: AppliedFilter[];
-  children: React.ReactNode;
   collections?: Array<{handle: string; title: string}>;
   showSearchSort?: boolean;
 };
@@ -42,41 +39,43 @@ type DrawerFilterProps = {
 export function DrawerFilter({
   filters,
   appliedFilters = [],
-  children,
   productNumber = 0,
-  showSearchSort = false
+  showSearchSort = false,
 }: DrawerFilterProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
+  const {openDrawer, isOpen, closeDrawer} = useDrawer();
   return (
     <>
-      <div className="flex items-center justify-between w-full">
-        <h5 className="font-medium text-xl leading-[22px]">
-          {productNumber} products
-        </h5>
-        <div className="flex gap-2">
-          <SortMenu showSearchSort={showSearchSort}/>
-          <Drawer
-            direction="left"
-            trigger={
-              <Button className='rounded py-3 !h-fit' shape="default" variant="outline" size="md">
-                <h5 className='text-xl font-medium leading-[22px]'>Filter</h5>
-              </Button>
-            }
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            className="bg-white h-full w-fit fixed top-0"
-          >
-            <div className="w-96 p-6">
-              <FiltersDrawer
-                filters={filters}
-                appliedFilters={appliedFilters}
-              />
-            </div>
-          </Drawer>
+      <div className="border-y border-bar-subtle py-6 ">
+        <div className="container flex w-full items-center justify-between">
+          <span className="text-xl tracking-tight font-medium">
+            {productNumber} Products
+          </span>
+          <div className="flex gap-2">
+            <SortMenu showSearchSort={showSearchSort} />
+            <Button
+              onClick={openDrawer}
+              shape="default"
+              variant="outline"
+              size="md"
+            >
+              <span>Filter</span>
+            </Button>
+            <Drawer
+              open={isOpen}
+              onClose={closeDrawer}
+              openFrom="left"
+              heading="Filter"
+            >
+              <div className="w-96 px-6">
+                <FiltersDrawer
+                  filters={filters}
+                  appliedFilters={appliedFilters}
+                />
+              </div>
+            </Drawer>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col flex-wrap md:flex-row">{children}</div>
     </>
   );
 }
@@ -142,15 +141,12 @@ export function FiltersDrawer({
 
   return (
     <nav className="">
-      <Heading as="h4" size="heading" className="pb-3">
-        Filter
-      </Heading>
       <div className="divide-y">
         {filters.map((filter: Filter) => (
-          <Disclosure as="div" key={filter.id} className="w-full pt-5 pb-6">
+          <Disclosure as="div" key={filter.id} className="w-full pb-6 pt-5">
             {({open}) => (
               <>
-                <Disclosure.Button className="flex justify-between w-full">
+                <Disclosure.Button className="flex w-full justify-between">
                   <Text size="lead">{filter.label}</Text>
                   <IconCaret direction={open ? 'down' : 'left'} />
                 </Disclosure.Button>
@@ -185,7 +181,7 @@ function AppliedFilters({filters = []}: {filters: AppliedFilter[]}) {
           return (
             <Link
               to={getAppliedFilterLink(filter, params, location)}
-              className="flex px-2 border rounded-full gap"
+              className="gap flex rounded-full border px-2"
               key={`${filter.label}-${JSON.stringify(filter.filter)}`}
             >
               <span className="flex-grow">{filter.label}</span>
@@ -250,7 +246,7 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
 
   return (
     <div className="flex gap-6">
-      <label className="flex gap-1 items-center">
+      <label className="flex items-center gap-1">
         <span>$</span>
         <Input
           name="minPrice"
@@ -260,7 +256,7 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
           onChange={onChangeMin}
         />
       </label>
-      <label className="flex gap-1 items-center">
+      <label className="flex items-center gap-1">
         <span>$</span>
         <Input
           name="maxPrice"
@@ -274,7 +270,11 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
   );
 }
 
-export default function SortMenu({showSearchSort = false}: {showSearchSort?: boolean}) {
+export default function SortMenu({
+  showSearchSort = false,
+}: {
+  showSearchSort?: boolean;
+}) {
   const productShortItems: {label: string; key: SortParam}[] = [
     {label: 'Featured', key: 'featured'},
     {
@@ -317,13 +317,13 @@ export default function SortMenu({showSearchSort = false}: {showSearchSort?: boo
 
   return (
     <Menu as="div" className="relative z-40">
-      <Menu.Button className="flex gap-[10px] items-center border border-foreground rounded py-3 px-4">
-        <h5 className="font-medium leading-[22px] text-xl">Sort by</h5>
+      <Menu.Button className="flex items-center gap-[10px] rounded border border-foreground px-4 py-3">
+        <h5 className="text-xl font-medium leading-[22px]">Sort by</h5>
         <IconCaret />
       </Menu.Button>
       <Menu.Items
         as="nav"
-        className="absolute top-14 right-0 flex flex-col gap-2 p-5 rounded bg-background border w-56 h-fit"
+        className="absolute right-0 top-14 flex h-fit w-56 flex-col gap-2 rounded border bg-background p-5"
       >
         {items.map((item) => (
           <Menu.Item key={item.label}>

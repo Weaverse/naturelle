@@ -1,18 +1,18 @@
-import { useLoaderData } from '@remix-run/react';
-import { Pagination } from '@shopify/hydrogen';
-import type { Filter } from '@shopify/hydrogen/storefront-api-types';
+import {useLoaderData} from '@remix-run/react';
+import {Pagination} from '@shopify/hydrogen';
+import type {Filter} from '@shopify/hydrogen/storefront-api-types';
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import { forwardRef } from 'react';
-import { useInView } from 'react-intersection-observer';
-import type { CollectionDetailsQuery } from 'storefrontapi.generated';
-import { Button } from '~/components/Button';
-import { Section } from '~/components/Text';
-import { ProductsLoadedOnScroll } from './products-loaded-on-scroll';
-import { DrawerFilter } from "~/components/DrawerFilter";
-import type { AppliedFilter } from "~/lib/filter";
+import {Button} from '~/components/Button';
+import {DrawerFilter} from '~/components/DrawerFilter';
+import {Section} from '~/components/Text';
+import type {AppliedFilter} from '~/lib/filter';
+import {forwardRef} from 'react';
+import {useInView} from 'react-intersection-observer';
+import type {CollectionDetailsQuery} from 'storefrontapi.generated';
+import {ProductsLoadedOnScroll} from './products-loaded-on-scroll';
 
 interface CollectionFiltersProps extends HydrogenComponentProps {
   showCollectionDescription: boolean;
@@ -27,13 +27,13 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
 
     let {ref, inView} = useInView();
     let {collection, collections, appliedFilters} = useLoaderData<
-    CollectionDetailsQuery & {
-      collections: Array<{handle: string; title: string}>;
-      appliedFilters: AppliedFilter[];
-    }
+      CollectionDetailsQuery & {
+        collections: Array<{handle: string; title: string}>;
+        appliedFilters: AppliedFilter[];
+      }
     >();
 
-    let productNumber = collection?.products.nodes.length
+    let productNumber = collection?.products.nodes.length;
 
     if (collection?.products && collections) {
       return (
@@ -44,48 +44,43 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
               filters={collection.products.filters as Filter[]}
               appliedFilters={appliedFilters}
               collections={collections}
-            >
-              <Pagination connection={collection.products}>
-                {({
-                  nodes,
-                  isLoading,
-                  PreviousLink,
-                  NextLink,
-                  nextPageUrl,
-                  hasNextPage,
-                  state,
-                }) => (
-                  <>
-                    <div className="flex items-center justify-center mb-6">
-                      <Button
-                        as={PreviousLink}
-                        variant="secondary"
-                        width="full"
-                      >
-                        {isLoading ? 'Loading...' : loadPrevText}
-                      </Button>
-                    </div>
-                    <ProductsLoadedOnScroll
-                      nodes={nodes}
-                      inView={inView}
-                      nextPageUrl={nextPageUrl}
-                      hasNextPage={hasNextPage}
-                      state={state}
-                    />
-                    <div className="flex items-center justify-center mt-6">
-                      <Button
-                        ref={ref}
-                        as={NextLink}
-                        variant="secondary"
-                        width="full"
-                      >
-                        {isLoading ? 'Loading...' : loadMoreText}
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </Pagination>
-            </DrawerFilter>
+            />
+            <Pagination connection={collection.products}>
+              {({
+                nodes,
+                isLoading,
+                PreviousLink,
+                NextLink,
+                nextPageUrl,
+                hasNextPage,
+                state,
+              }) => (
+                <>
+                  <div className="mb-6 flex items-center justify-center">
+                    <Button as={PreviousLink} variant="secondary" width="full">
+                      {isLoading ? 'Loading...' : loadPrevText}
+                    </Button>
+                  </div>
+                  <ProductsLoadedOnScroll
+                    nodes={nodes}
+                    inView={inView}
+                    nextPageUrl={nextPageUrl}
+                    hasNextPage={hasNextPage}
+                    state={state}
+                  />
+                  <div className="mt-6 flex items-center justify-center">
+                    <Button
+                      ref={ref}
+                      as={NextLink}
+                      variant="secondary"
+                      width="full"
+                    >
+                      {isLoading ? 'Loading...' : loadMoreText}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Pagination>
           </Section>
         </section>
       );

@@ -1,3 +1,4 @@
+import {cn} from '@/lib/utils';
 import clsx from 'clsx';
 import {useState} from 'react';
 import {IconClose} from './Icon';
@@ -12,10 +13,9 @@ const variants = {
 };
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string;
-  type?: string;
   variant?: 'default' | 'search' | 'minisearch' | 'error';
   suffix?: React.ReactNode;
+  prefixElement?: React.ReactNode;
   onClear?: () => void;
 }
 
@@ -23,7 +23,7 @@ export function Input({
   className = '',
   type,
   variant = 'default',
-  prefix,
+  prefixElement,
   suffix,
   onFocus,
   onBlur,
@@ -31,7 +31,7 @@ export function Input({
   ...rest
 }: InputProps) {
   let [focused, setFocused] = useState(false);
-  let commonClasses = clsx(
+  let commonClasses = cn(
     'w-full rounded-sm border px-3 py-2.5',
     focused ? 'border-bar' : 'border-bar-subtle',
     className,
@@ -46,14 +46,16 @@ export function Input({
   if (type === 'search') {
     suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
   }
-  let hasChild = Boolean(prefix || suffix);
+  let hasChild = Boolean(prefixElement || suffix);
 
   let rawInput = (
     <input
       // type={type}
       className={clsx(
-        'w-full focus-visible:outline-none !shadow-none focus:ring-0',
-        hasChild ? 'grow border-none bg-transparent p-0' : commonClasses,
+        'w-full !shadow-none focus:ring-0 focus-visible:outline-none',
+        hasChild
+          ? 'relatvie grow border-none bg-transparent p-0'
+          : commonClasses,
         variants[variant],
       )}
       onFocus={(e) => {
@@ -72,10 +74,10 @@ export function Input({
     <div
       className={clsx(
         commonClasses,
-        'flex gap-2 overflow-hidden items-center p-2.5 border rounded-sm',
+        'flex items-center gap-2 overflow-hidden border p-2.5',
       )}
     >
-      {prefix}
+      {prefixElement}
       {rawInput}
       {suffix}
     </div>
