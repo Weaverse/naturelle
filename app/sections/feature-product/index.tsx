@@ -18,12 +18,12 @@ import { Button } from '@/components/button';
 import { ProductCard } from '~/components/ProductCard';
 import { getImageLoadingPriority } from '~/lib/const';
 
-
+type Alignment = 'left' | 'center' | 'right';
 type FeaturedProductsData = {
     products: WeaverseCollection;
     textColor: string;
     heading: string;
-    contentAlignment: string;
+    contentAlignment: Alignment;
     totalProduct: number;
     productsPerRow: number;
     showViewAllLink: boolean;
@@ -41,9 +41,15 @@ let productPerRowClasses: { [item: number]: string } = {
     4: 'sm:grid-cols-4',
 };
 
+let alignmentClasses: Record<Alignment, string> = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+};
+
 const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
     (props, ref) => {
-        let { products, textColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, ...rest } = props;
+        let { products, textColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
 
         let sectionStyle: CSSProperties = {
             color: textColor,
@@ -52,7 +58,6 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
             '--top-padding-mobile': `${topPadding > 20 ? topPadding - 20 : topPadding}px`,
             '--bottom-padding-mobile': `${bottomPadding > 20 ? bottomPadding - 20 : bottomPadding}px`,
             '--swiper-theme-color': '#3D490B',
-            textAlign: contentAlignment,
         } as CSSProperties;
         let res = loaderData?.collection?.products?.nodes;
         let displayedProducts = res?.slice(0, totalProduct);
@@ -74,11 +79,12 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
             );
         }
         return (
-            <section ref={ref} {...rest} className='w-full h-full flex justify-center' style={sectionStyle}>
-                <div className='px-4 w-full flex flex-col gap-12 max-w-[1440px] items-center sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
-                    <div className='flex justify-center'>
-                        {heading && <h2 className='font-medium'>{heading}</h2>}
-                    </div>
+            <section ref={ref} {...rest} className='w-full h-full' style={sectionStyle}>
+                <div className={clsx(
+                    alignmentClasses[contentAlignment],
+                    'px-4 w-full flex flex-col gap-12 max-w-[1440px] sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]',
+                )}>
+                    {children}
                     {loaderData === null ? (
                         <>
                             <Swiper
@@ -148,9 +154,11 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                             </div>
                         </>)}
                     {showViewAllLink && loaderData && loaderData.collection && (
-                        <Button to={`/collections/${loaderData.collection.handle}`} variant="outline">
-                            <h5>View All</h5>
-                        </Button>
+                        <div className='flex justify-center'>
+                            <Button to={`/collections/${loaderData.collection.handle}`} variant="outline">
+                                <h5>View All</h5>
+                            </Button>
+                        </div>
                     )}
                 </div>
             </section>
@@ -201,12 +209,6 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Background color',
                 },
                 {
-                    type: 'text',
-                    name: 'heading',
-                    label: 'Heading',
-                    defaultValue: 'Best Sellers',
-                },
-                {
                     type: 'toggle-group',
                     label: 'Content alignment',
                     name: 'contentAlignment',
@@ -217,7 +219,7 @@ export let schema: HydrogenComponentSchema = {
                             { label: 'Right', value: 'right' },
                         ],
                     },
-                    defaultValue: 'left',
+                    defaultValue: 'center',
                 },
                 {
                     type: 'range',
@@ -279,4 +281,13 @@ export let schema: HydrogenComponentSchema = {
         },
     ],
     toolbar: ['general-settings', ['duplicate', 'delete']],
+    childTypes: ['heading'],
+    presets: {
+        children: [
+            {
+                type: 'heading',
+                content: 'Best Sellers',
+            }
+        ],
+    },
 };

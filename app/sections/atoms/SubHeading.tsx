@@ -72,7 +72,7 @@ SubHeading.defaultProps = {
     as: 'p',
     size: 'base',
     weight: 'normal',
-    alignment: 'center',
+    // alignment: 'center',
     content: 'Section subheading',
 };
 
@@ -143,12 +143,12 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Alignment',
                     configs: {
                         options: [
-                            { value: 'left', label: 'Left', icon: 'AlignLeft' },
-                            { value: 'center', label: 'Center', icon: 'AlignCenterHorizontal' },
-                            { value: 'right', label: 'Right', icon: 'AlignRight' },
+                            { value: 'left', label: 'Left' },
+                            { value: 'center', label: 'Center' },
+                            { value: 'right', label: 'Right' },
                         ],
                     },
-                    defaultValue: 'center',
+                    // defaultValue: 'center',
                 },
             ],
         },
