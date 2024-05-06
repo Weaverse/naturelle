@@ -22,6 +22,7 @@ type Alignment = 'left' | 'center' | 'right';
 type FeaturedProductsData = {
     products: WeaverseCollection;
     textColor: string;
+    BackgroundColor: string;
     heading: string;
     contentAlignment: Alignment;
     totalProduct: number;
@@ -49,10 +50,11 @@ let alignmentClasses: Record<Alignment, string> = {
 
 const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
     (props, ref) => {
-        let { products, textColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
+        let { products, textColor, BackgroundColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
 
         let sectionStyle: CSSProperties = {
             color: textColor,
+            '--background-color': BackgroundColor,
             '--top-padding-desktop': `${topPadding}px`,
             '--bottom-padding-desktop': `${bottomPadding}px`,
             '--top-padding-mobile': `${topPadding > 20 ? topPadding - 20 : topPadding}px`,
@@ -79,7 +81,7 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
             );
         }
         return (
-            <section ref={ref} {...rest} className='w-full h-full' style={sectionStyle}>
+            <section ref={ref} {...rest} className='w-full h-full flex justify-center bg-[var(--background-color)]' style={sectionStyle}>
                 <div className={clsx(
                     alignmentClasses[contentAlignment],
                     'px-4 w-full flex flex-col gap-12 max-w-[1440px] sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]',
@@ -142,10 +144,11 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                                     );
                                 })}
                             </Swiper>
-                            <div className={clsx('sm:grid justify-self-center gap-4 hidden h-fit',
+                            <div className={clsx('sm:grid justify-self-center gap-4 gap-y-10 hidden h-fit',
                                 productPerRowClasses[Math.min(productsPerRow, displayedProducts?.length || 1)]).concat(' justify-items-center')}>
                                 {displayedProducts?.map((idx: any, i: any) => (
                                     <ProductCard
+                                        quickAdd
                                         key={idx.id}
                                         product={idx}
                                         loading={getImageLoadingPriority(i)}
@@ -156,7 +159,7 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                     {showViewAllLink && loaderData && loaderData.collection && (
                         <div className='flex justify-center'>
                             <Button to={`/collections/${loaderData.collection.handle}`} variant="outline">
-                                <h5>View All</h5>
+                                <span className='font-[Cormorant] text-xl'>View all</span>
                             </Button>
                         </div>
                     )}
@@ -205,8 +208,9 @@ export let schema: HydrogenComponentSchema = {
                 },
                 {
                     type: 'color',
-                    name: 'textColor',
+                    name: 'BackgroundColor',
                     label: 'Background color',
+                    defaultValue: '#F8F8F0',
                 },
                 {
                     type: 'toggle-group',
