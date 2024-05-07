@@ -20,7 +20,7 @@ type Alignment = 'left' | 'center' | 'right';
 type FeaturedProductsData = {
     products: WeaverseCollection;
     textColor: string;
-    BackgroundColor: string;
+    backgroundColor: string;
     heading: string;
     contentAlignment: Alignment;
     totalProduct: number;
@@ -48,11 +48,11 @@ let alignmentClasses: Record<Alignment, string> = {
 
 const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
     (props, ref) => {
-        let { products, textColor, BackgroundColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
+        let { products, textColor, backgroundColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
 
         let sectionStyle: CSSProperties = {
             color: textColor,
-            '--background-color': BackgroundColor,
+            '--background-color': backgroundColor,
             '--top-padding-desktop': `${topPadding}px`,
             '--bottom-padding-desktop': `${bottomPadding}px`,
             '--top-padding-mobile': `${topPadding > 20 ? topPadding - 20 : topPadding}px`,
