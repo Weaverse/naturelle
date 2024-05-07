@@ -206,7 +206,7 @@ export let schema: HydrogenComponentSchema = {
                 },
                 {
                     type: 'color',
-                    name: 'BackgroundColor',
+                    name: 'backgroundColor',
                     label: 'Background color',
                     defaultValue: '#F8F8F0',
                 },
