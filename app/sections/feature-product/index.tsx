@@ -6,13 +6,11 @@ import type {
 } from '@weaverse/hydrogen';
 import { forwardRef, CSSProperties } from 'react';
 import { FEATURED_PRODUCTS_QUERY } from '~/data/queries';
-import { Image } from '@shopify/hydrogen';
 import { IconImageBlank } from '~/components/Icon';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
-import { Link } from '~/components/Link';
 import clsx from 'clsx';
 import { Button } from '@/components/button';
 import { ProductCard } from '~/components/ProductCard';

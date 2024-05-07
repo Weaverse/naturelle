@@ -2,7 +2,7 @@ import type {
     HydrogenComponentProps,
     HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import { forwardRef, CSSProperties } from 'react';
+import { forwardRef } from 'react';
 import React from 'react';
 import clsx from 'clsx';
 import { useParentInstance } from '@weaverse/hydrogen';
