@@ -10,13 +10,12 @@ import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
 import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {DrawerFilter} from '~/components/DrawerFilter';
-import {FeaturedCollections} from '~/components/FeaturedCollections';
 import {Grid} from '~/components/Grid';
 import {IconSearch} from '~/components/Icon';
 import {Input} from '~/components/Input';
 import {ProductCard} from '~/components/ProductCard';
 import {ProductSwimlane} from '~/components/ProductSwimlane';
-import {Heading, PageHeader, Section, Text} from '~/components/Text';
+import {PageHeader, Text} from '~/components/Text';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {
   FILTER_URL_PREFIX,
@@ -162,7 +161,6 @@ export default function Search() {
     productfilters,
     appliedFilters,
   } = useLoaderData<typeof loader>();
-  console.log('🚀 ~ products:', products);
   const noResults = searchTerm && products?.nodes?.length === 0;
   let location = useLocation();
   let navigate = useNavigate();

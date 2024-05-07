@@ -47,7 +47,7 @@ export function DrawerFilter({
     <>
       <div className="border-y border-bar-subtle py-6 ">
         <div className="container flex w-full items-center justify-between">
-          <span className="text-xl tracking-tight font-medium">
+          <span className="text-xl tracking-tight font-medium font-heading">
             {productNumber} Products
           </span>
           <div className="flex gap-2">
@@ -56,7 +56,6 @@ export function DrawerFilter({
               onClick={openDrawer}
               shape="default"
               variant="outline"
-              size="md"
             >
               <span>Filter</span>
             </Button>
@@ -317,8 +316,8 @@ export default function SortMenu({
 
   return (
     <Menu as="div" className="relative z-40">
-      <Menu.Button className="flex items-center gap-[10px] rounded border border-foreground px-4 py-3">
-        <h5 className="text-xl font-medium leading-[22px]">Sort by</h5>
+      <Menu.Button className="flex items-center gap-[10px] rounded border border-foreground px-4 py-3 h-[50px]">
+        <span className="text-xl font-heading font-medium">Sort by</span>
         <IconCaret />
       </Menu.Button>
       <Menu.Items

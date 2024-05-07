@@ -12,6 +12,10 @@ module.exports = {
         '2xl': '1440px',
       },
     },
+    fontFamily: {
+      body: ["Open Sans Variable", "ui-sans-serif", "system-ui", "sans-serif"],
+      heading: ["Cormorant Variable", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+    },
     extend: {
       colors: {
         background: {
