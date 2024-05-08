@@ -4,8 +4,8 @@ import type {
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
-import type {PageQuery} from 'storefrontapi.generated';
-import {PageHeader} from '~/components/Text';
+import type {PageDetailsQuery} from 'storefrontapi.generated';
+import {PageHeader, Section} from '~/components/Text';
 
 interface PageProps extends HydrogenComponentProps {
   paddingTop: number;
@@ -13,7 +13,7 @@ interface PageProps extends HydrogenComponentProps {
 }
 
 let Page = forwardRef<HTMLElement, PageProps>((props, ref) => {
-  let {page} = useLoaderData<PageQuery>();
+  let {page} = useLoaderData<PageDetailsQuery>();
   let {paddingTop, paddingBottom, ...rest} = props;
 
   if (page) {
@@ -26,12 +26,12 @@ let Page = forwardRef<HTMLElement, PageProps>((props, ref) => {
             paddingBottom: `${paddingBottom}px`,
           }}
         >
-          <PageHeader heading={page.title}>
-            <div
-              dangerouslySetInnerHTML={{__html: page.body}}
-              className="prose dark:prose-invert"
-            />
-          </PageHeader>
+          <PageHeader heading={page.title}/>
+          <Section as="div" padding="all">
+            <div className="lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
+              <article className='prose-lg' dangerouslySetInnerHTML={{__html: page.body}} />
+            </div>
+          </Section>
         </div>
       </section>
     );

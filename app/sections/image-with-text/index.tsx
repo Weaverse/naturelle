@@ -21,14 +21,14 @@ interface ImageWithTextProps extends HydrogenComponentProps {
 }
 
 let AlignImageClasses: Record<AlignImage, string> = {
-    left: 'sm:flex-row-reverse',
-    right: 'sm:flex-row',
+    left: 'sm:flex-row',
+    right: 'sm:flex-row-reverse',
 };
 
-let alignmentTextClasses: Record<Alignment, string> = {
-    left: 'items-start',
-    center: 'items-center',
-    right: 'items-end',
+let alignmentClasses: Record<Alignment, string> = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
 };
 
 const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) => {
@@ -41,9 +41,10 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
     } as CSSProperties;
 
     return (
-        <section ref={ref} {...rest} style={styleSection} className='group sm:h-[var(--section-height)] h-auto mt-[var(--margin-top)] mb-[var(--margin-bottom)]'>
-            <div className='h-full w-full sm:px-0'>
-                <div className={clsx('flex flex-col-reverse justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
+        <section ref={ref} {...rest} style={styleSection} className='h-auto'>
+            <div className='pt-[var(--margin-top)]'/>
+            <div className='h-full w-full group sm:px-0 sm:h-[var(--section-height)]'>
+                <div className={clsx('flex flex-col justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
                     <div
                         className="w-full h-1/2 sm:h-full flex flex-1 items-center justify-center sm:w-1/2 aspect-square overflow-hidden"
                     >
@@ -62,13 +63,15 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
                             </div>
                         )}
                     </div>
-                    <div className={clsx(alignmentTextClasses[textAlignment!],
-                        'flex flex-col justify-center px-6 py-12 gap-4 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'
+                    <div className={clsx(
+                        'flex flex-col justify-center px-6 py-12 gap-4 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20',
+                        alignmentClasses[textAlignment!],
                     )}>
                         {children}
                     </div>
                 </div>
             </div>
+            <div className='pb-[var(--margin-bottom)]'/>
         </section>
     );
 });
@@ -94,8 +97,8 @@ export let schema: HydrogenComponentSchema = {
                     name: 'imageAlignment',
                     configs: {
                         options: [
-                            { label: 'Right', value: 'right', icon: 'AlignRight' },
-                            { label: 'Left', value: 'left', icon: 'AlignLeft' },
+                            { label: 'Left', value: 'left' },
+                            { label: 'Right', value: 'right' },
                         ],
                     },
                     defaultValue: 'left',

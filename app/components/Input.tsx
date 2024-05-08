@@ -1,3 +1,4 @@
+import {cn} from '@/lib/utils';
 import clsx from 'clsx';
 import {useState} from 'react';
 import {IconClose} from './Icon';
@@ -5,31 +6,34 @@ import {IconClose} from './Icon';
 const variants = {
   default: '',
   search:
-    'px-0 py-2 text-sm w-full focus:ring-0 border-x-0 border-t-0 transition border-b-2 border-bar/10 focus:border-bar/50',
+    'px-0 py-2 text-sm placeholder-foreground w-full focus:ring-0 border-x-0 border-t-0 transition border-b-2 border-bar/10 focus:border-bar/50',
   minisearch:
     'hidden md:inline-block text-left lg:text-right border-b transition border-transparent -mb-px border-x-0 border-t-0 appearance-none px-0 py-1 focus:ring-transparent placeholder:opacity-20 placeholder:text-inherit focus:border-bar/50',
   error: 'border-red-500',
 };
 
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  variant?: 'default' | 'search' | 'minisearch' | 'error';
+  suffix?: React.ReactNode;
+  prefixElement?: React.ReactNode;
+  onClear?: () => void;
+}
+
 export function Input({
   className = '',
   type,
   variant = 'default',
-  prefix,
+  prefixElement,
   suffix,
   onFocus,
   onBlur,
+  onClear,
   ...rest
-}: {
-  className?: string;
-  type?: string;
-  variant?: 'default' | 'search' | 'minisearch' | 'error';
-  [key: string]: any;
-}) {
+}: InputProps) {
   let [focused, setFocused] = useState(false);
-  let commonClasses = clsx(
+  let commonClasses = cn(
     'w-full rounded-sm border px-3 py-2.5',
-    focused ? 'border-bar/50' : 'border-bar/10',
+    focused ? 'border-bar' : 'border-bar-subtle',
     className,
   );
 
@@ -37,18 +41,21 @@ export function Input({
     e.preventDefault();
     e.stopPropagation();
     e.currentTarget.previousSibling.value = '';
+    if (onClear) onClear();
   };
   if (type === 'search') {
-    suffix = <IconClose onClick={handleClear} />;
+    suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
   }
-  let hasChild = Boolean(prefix || suffix);
+  let hasChild = Boolean(prefixElement || suffix);
 
   let rawInput = (
     <input
-      type={type}
+      // type={type}
       className={clsx(
-        'w-full focus-visible:outline-none !shadow-none focus:ring-0',
-        hasChild ? 'grow border-none bg-transparent p-0' : commonClasses,
+        'w-full !shadow-none focus:ring-0 focus-visible:outline-none',
+        hasChild
+          ? 'relatvie grow border-none bg-transparent p-0'
+          : commonClasses,
         variants[variant],
       )}
       onFocus={(e) => {
@@ -67,10 +74,10 @@ export function Input({
     <div
       className={clsx(
         commonClasses,
-        'flex gap-2 overflow-hidden items-center bg-primary p-2.5 border rounded-sm',
+        'flex items-center gap-2 overflow-hidden border p-2.5',
       )}
     >
-      {prefix}
+      {prefixElement}
       {rawInput}
       {suffix}
     </div>

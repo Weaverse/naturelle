@@ -41,12 +41,23 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
         '--swiper-theme-color': '#3D490B',
     } as CSSProperties;
 
+    const imageItemBlank = () => {
+        return (
+            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                <IconImageBlank
+                    viewBox="0 0 526 526"
+                    className="!w-full !h-full opacity-80"
+                />
+            </div>
+        );
+    }
+
     let res = loaderData?.data;
     if (!res) {
         return (
             <section ref={ref} {...rest} className={clsx('w-full')} style={sectionStyle}>
                 <div className='sm:px-10 sm:py-20 flex flex-col justify-center items-center gap-12 px-7 py-12 w-full'>
-                    <div className='w-full h-full'>
+                    <div className='w-full h-full text-center'>
                         {children}
                     </div>
                     <Swiper
@@ -59,67 +70,53 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                         modules={[Pagination]}
                         className='w-full sm:hidden'
                     >
-                        <SwiperSlide className='w-full'>
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="!w-full !h-full opacity-80"
-                                />
-                            </div>
-                            <div className='py-8 cursor-pointer'></div>
-                        </SwiperSlide>
-                        <SwiperSlide className='w-full'>
-                            <div className="bg-background-subtle-1 flex justify-center items-cente w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="!w-full !h-full opacity-80"
-                                />
-                            </div>
-                            <div className='py-8 cursor-pointer'></div>
-                        </SwiperSlide>
-                        <SwiperSlide className='w-full'>
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="!w-full !h-full opacity-80"
-                                />
-                            </div>
-                            <div className='py-8 cursor-pointer'></div>
-                        </SwiperSlide>
+                        {Array.from({ length: 3 }).map((idx, i) => {
+                            return (
+                                <SwiperSlide key={i}>
+                                    <div key={i} className='w-full'>
+                                        {imageItemBlank()}
+                                    </div>
+                                    <div className='py-8 cursor-pointer'></div>
+                                </SwiperSlide>
+                            );
+                        })}
                     </Swiper>
                     <div className='sm:flex justify-center items-center w-full gap-4 hidden'>
-                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                            <IconImageBlank
-                                viewBox="0 0 526 526"
-                                className="!w-full !h-full opacity-80"
-                            />
-                        </div>
-                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                            <IconImageBlank
-                                viewBox="0 0 526 526"
-                                className="!w-full !h-full opacity-80"
-                            />
-                        </div>
-                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                            <IconImageBlank
-                                viewBox="0 0 526 526"
-                                className="!w-full !h-full opacity-80"
-                            />
-                        </div>
+                        {Array.from({ length: 3 }).map((idx, i) => (
+                            <div key={i} className='w-full'>
+                                {imageItemBlank()}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
         );
     }
     let displayedImages = res?.slice(0, imagesPerRow);
+    const imageItemRender = () => {
+        return (
+            <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
+                style={{ animationDuration: `var(--speed)` }}>
+                {displayedImages.map((item, index) => {
+                    return (
+                        <Image
+                            key={index}
+                            src={item.media_url}
+                            className="min-w-80 object-cover aspect-square"
+                        />
+                    );
+                })}
+            </div>
+        );
+    };
 
     return (
         <section ref={ref} {...rest} className={clsx('w-full h-full', !visibleOnMobile && 'hidden sm:block',)} style={sectionStyle}>
             <div className='sm:px-10 sm:py-20 flex flex-col gap-12 px-7 py-12'>
-                <div className='w-full h-full'>
+                <div className='w-full h-full text-center'>
                     {children}
                 </div>
-                <div className='flex gap-4 overflow-hidden'>
+                <div className='flex gap-0 sm:gap-4 overflow-hidden'>
                     {
                         res.length === 0 ? (
                             <div className='flex justify-center items-center gap-4 w-full h-full'>
@@ -135,7 +132,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                         clickable: true,
                                     }}
                                     modules={[Pagination]}
-                                    className='h-full sm:hidden'
+                                    className='w-full sm:hidden'
                                 >
                                     {displayedImages.map((item, index) => {
                                         return (
@@ -150,138 +147,11 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                         );
                                     })}
                                 </Swiper>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
+                                {Array.from({ length: 11 }).map((idx, i) => (
+                                    <div key={i}>
+                                        {imageItemRender()}
+                                    </div>
+                                ))}
                             </>
                         )
                     }

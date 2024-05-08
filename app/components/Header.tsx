@@ -1,47 +1,41 @@
 import {Await, Form, NavLink} from '@remix-run/react';
-import {Suspense, useEffect, useMemo, useState} from 'react';
-import type {HeaderQuery} from 'storefrontapi.generated';
-import {useRootLoaderData} from '~/root';
-import type {LayoutProps} from './Layout';
-import {Logo} from './Logo';
-import {Link} from './Link';
-import {IconAccount, IconBag, IconClose, IconLogin, IconSearch} from './Icon';
 import {CartForm, Image} from '@shopify/hydrogen';
-import {Drawer} from './Drawer';
-import {CartDrawer, useCartDrawer} from './CartDrawer';
-import {CartLoading} from './CartLoading';
-import Cart from '~/routes/($locale).cart';
+import {useCartFetchers} from '~/hooks/useCartFetchers';
+import {useRootLoaderData} from '~/root';
+import {Suspense, useMemo} from 'react';
+import type {HeaderQuery} from 'storefrontapi.generated';
 import {CartMain} from './Cart';
-import { useCartFetchers } from "~/hooks/useCartFetchers";
-import clsx from 'clsx';
-import { useLocation } from 'react-router-dom';
+import {CartLoading} from './CartLoading';
+import {Drawer, useDrawer} from './Drawer';
+import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
+import type {LayoutProps} from './Layout';
+import {Link} from './Link';
+import {Logo} from './Logo';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
 
-export function Header({ header, isLoggedIn, cart }: HeaderProps) {
-  const { shop, menu } = header;
-  const { pathname } = useLocation();
-  const isHomepage = pathname === '/';
-  let [showMenu, setShowMenu] = useState(false);
-  let styleHeader = isHomepage ? 'absolute top-0 left-0 right-0' : 'bg-background-subtle-1';
+export function Header({header, isLoggedIn, cart}: HeaderProps) {
+  const {shop, menu} = header;
+  let {isOpen: showMenu, openDrawer, closeDrawer} = useDrawer();
   return (
-    <header className={clsx('grid grid-cols-3 h-screen-no-nav gap-3 items-center z-10 py-4 px-6 border-y border-foreground', styleHeader)}>
+    <header className="z-10 grid h-screen-no-nav grid-cols-3 items-center gap-3 border-b border-foreground bg-background-subtle-1 px-6 py-4">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
+      <button onClick={openDrawer}>MENU</button>
       <Drawer
-        trigger={<button>MENU</button>}
         open={showMenu}
-        onOpenChange={setShowMenu}
-        className="bg-white flex flex-col h-fit w-full fixed top-0"
+        onClose={closeDrawer}
+        openFrom="top"
+        // className="fixed top-0 flex h-fit w-full flex-col bg-white"
       >
         <HeaderMenu
           menu={menu}
           viewport="desktop"
           primaryDomainUrl={header.shop.primaryDomain.url}
           showMenu={showMenu}
-          onCloseMenu={() => setShowMenu(false)}
+          onCloseMenu={closeDrawer}
         />
       </Drawer>
 
@@ -63,7 +57,7 @@ export function HeaderMenu({
   showMenu: boolean;
   onCloseMenu: () => void;
 }) {
-  const { publicStoreDomain } = useRootLoaderData();
+  const {publicStoreDomain} = useRootLoaderData();
   // const className = `header-menu-${viewport}`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
@@ -74,10 +68,8 @@ export function HeaderMenu({
     onCloseMenu();
   }
   return (
-    <div className="w-full h-full bg-background-subtle-1 flex flex-col">
-      <div className="w-full h-[76px] border-b border-foreground flex items-center justify-end p-8">
-      </div>
-      <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
+    <div className="flex h-full w-full flex-col border-t border-bar-subtle bg-background-subtle-1">
+      <div className="container grid h-full grid-cols-1 duration-500  md:grid-cols-2">
         <nav className="flex flex-col gap-4 p-8" role="navigation">
           {/* {viewport === 'mobile' && (
         <NavLink
@@ -96,13 +88,13 @@ export function HeaderMenu({
             // if the url is internal, we strip the domain
             const url =
               item.url.includes('myshopify.com') ||
-                item.url.includes(publicStoreDomain) ||
-                item.url.includes(primaryDomainUrl)
+              item.url.includes(publicStoreDomain) ||
+              item.url.includes(primaryDomainUrl)
                 ? new URL(item.url).pathname
                 : item.url;
             return (
               <NavLink
-                className="font-heading text-4xl text-foreground-subtle hover:text-foreground-basic transition-colors duration-300"
+                className="font-heading text-4xl text-foreground-subtle transition-colors duration-300 hover:text-foreground-basic"
                 end
                 key={item.id}
                 onClick={(event) => {
@@ -111,9 +103,7 @@ export function HeaderMenu({
                 prefetch="intent"
                 to={url}
               >
-                <h3 className=' font-medium'>
-                  {item.title}
-                </h3>
+                <h3 className=" font-medium">{item.title}</h3>
               </NavLink>
             );
           })}
@@ -133,7 +123,7 @@ export function HeaderMenu({
               // height: 1002,
             }}
             loading="eager"
-            className="object-cover aspect-auto lg:aspect-[2/1]"
+            className="aspect-auto object-cover lg:aspect-[2/1]"
             sizes="auto"
           />
         </div>
@@ -150,19 +140,19 @@ function HeaderCtas({
     isOpen: isCartOpen,
     openDrawer: openCart,
     closeDrawer: closeCart,
-  } = useCartDrawer();
+  } = useDrawer();
   useCartFetchers(CartForm.ACTIONS.LinesAdd, openCart);
 
   return (
     <nav
-      className="header-ctas justify-end items-center flex gap-2"
+      className="header-ctas flex items-center justify-end gap-2"
       role="navigation"
     >
       {/* <HeaderMenuMobileToggle /> */}
       <SearchToggle />
       <AccountLink />
       <CartCount isHome={false} openCart={openCart} />
-      <CartDrawer
+      <Drawer
         open={isCartOpen}
         onClose={closeCart}
         openFrom="right"
@@ -181,12 +171,12 @@ function HeaderCtas({
             </Await>
           </Suspense>
         </div>
-      </CartDrawer>
+      </Drawer>
     </nav>
   );
 }
 
-function AccountLink({ className }: { className?: string }) {
+function AccountLink({className}: {className?: string}) {
   const rootData = useRootLoaderData();
   const isLoggedIn = rootData?.isLoggedIn;
 
@@ -200,7 +190,7 @@ function AccountLink({ className }: { className?: string }) {
             </Link>
           ) : (
             <Link to="/account/login" className={className}>
-              <IconLogin className="w-6 h-6" />
+              <IconLogin className="h-6 w-6" />
             </Link>
           );
         }}
@@ -222,9 +212,9 @@ function SearchToggle() {
     <Form method="get" action="/search" className="flex items-center gap-2">
       <button
         type="submit"
-        className="relative flex items-center justify-center w-8 h-8 focus:ring-primary/5"
+        className="relative flex h-8 w-8 items-center justify-center focus:ring-primary/5"
       >
-        <IconSearch className="w-6 h-6" />
+        <IconSearch className="h-6 w-6 !font-extralight" />
       </button>
     </Form>
   );
@@ -267,8 +257,8 @@ function Badge({
   const BadgeCounter = useMemo(
     () => (
       <>
-        <IconBag className="w-6 h-6" viewBox="0 0 24 24"  />
-        <div className="bg-primary text-primary-foreground absolute top-0 right-0 text-[0.625rem] font-medium subpixel-antialiased h-4 w-4 flex items-center justify-center leading-none text-center rounded-full p-[0.125rem]">
+        <IconBag className="h-6 w-6" viewBox="0 0 24 24" />
+        <div className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-primary p-[0.125rem] text-center text-[0.625rem] font-medium leading-none text-primary-foreground subpixel-antialiased">
           <span>{count || 0}</span>
         </div>
       </>
@@ -280,14 +270,14 @@ function Badge({
   return isHydrated ? (
     <button
       onClick={openCart}
-      className="relative flex items-center justify-center w-8 h-8 focus:ring-border"
+      className="focus:ring-border relative flex h-8 w-8 items-center justify-center"
     >
       {BadgeCounter}
     </button>
   ) : (
     <Link
       to="/cart"
-      className="relative flex items-center justify-center w-8 h-8 focus:ring-border"
+      className="focus:ring-border relative flex h-8 w-8 items-center justify-center"
     >
       {BadgeCounter}
     </Link>
