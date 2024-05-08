@@ -434,3 +434,13 @@ export function IconNewsletter(props: IconProps) {
     </Icon>
   );
 }
+
+export function IconInstagram(props: IconProps) {
+  return (
+    <Icon {...props} fill='none' stroke={props.stroke || 'currentColor'}>
+      <path d="M12.5 16.25C14.5711 16.25 16.25 14.5711 16.25 12.5C16.25 10.4289 14.5711 8.75 12.5 8.75C10.4289 8.75 8.75 10.4289 8.75 12.5C8.75 14.5711 10.4289 16.25 12.5 16.25Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16.625 3.875H8.375C5.88972 3.875 3.875 5.88972 3.875 8.375V16.625C3.875 19.1103 5.88972 21.125 8.375 21.125H16.625C19.1103 21.125 21.125 19.1103 21.125 16.625V8.375C21.125 5.88972 19.1103 3.875 16.625 3.875Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M17.375 8.5625C17.8928 8.5625 18.3125 8.14277 18.3125 7.625C18.3125 7.10723 17.8928 6.6875 17.375 6.6875C16.8572 6.6875 16.4375 7.10723 16.4375 7.625C16.4375 8.14277 16.8572 8.5625 17.375 8.5625Z" fill="white"/>
+    </Icon>
+  );
+}

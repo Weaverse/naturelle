@@ -10,7 +10,7 @@ import 'swiper/swiper-bundle.css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import clsx from 'clsx';
-import { IconImageBlank } from '~/components/Icon';
+import { IconImageBlank, IconInstagram } from '~/components/Icon';
 
 type InstagramData = {
     instagramToken: string;
@@ -21,8 +21,8 @@ type InstagramData = {
     loaderData: {
         data: {
             id: string;
-            caption: string;
             media_url: string;
+            username: string;
         }[];
     };
 };
@@ -40,7 +40,6 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
         '--speed': `${speed}s`,
         '--swiper-theme-color': '#3D490B',
     } as CSSProperties;
-
     const imageItemBlank = () => {
         return (
             <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
@@ -99,11 +98,20 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                 style={{ animationDuration: `var(--speed)` }}>
                 {displayedImages.map((item, index) => {
                     return (
-                        <Image
-                            key={index}
-                            src={item.media_url}
-                            className="min-w-80 object-cover aspect-square"
-                        />
+                        <div className='relative cursor-pointer min-w-80 group'>
+                            <Image
+                                key={index}
+                                src={item.media_url}
+                                className="object-cover w-full aspect-square"
+                            />
+                            <div className='absolute inset-0 justify-center items-center z-10 hidden group-hover:flex'>
+                                <a href={`https://www.instagram.com/${item.username}/`} target="_blank" className="flex gap-2 justify-center items-center">
+                                    <IconInstagram className="w-8 h-8" viewBox="0 0 24 24" />
+                                    <span className='text-white font-heading text-xl font-medium'>@{item.username}</span>
+                                </a>
+                            </div>
+                            <div className="absolute inset-0 group-hover:bg-[#554612] opacity-0 group-hover:opacity-50 transition-colors duration-500"/>
+                        </div>
                     );
                 })}
             </div>
@@ -167,7 +175,7 @@ export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
     let { weaverse, data } = args;
     let { fetchWithCache } = weaverse
     if (data.instagramToken) {
-        let API = `https://graph.instagram.com/me/media?fields=id,caption,media_url&access_token=${data.instagramToken}`
+        let API = `https://graph.instagram.com/me/media?fields=id,media_url,username&access_token=${data.instagramToken}`
         let res = await fetchWithCache(API)
         return res;
     }
