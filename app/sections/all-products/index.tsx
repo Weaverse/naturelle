@@ -6,7 +6,7 @@ import type {
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
 import type {AllProductsQuery} from 'storefrontapi.generated';
-import { PageHeader, Section} from '~/components/Text';
+import { Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
 import {Grid} from '~/components/Grid';
 import {getImageLoadingPriority} from '~/lib/const';
@@ -46,6 +46,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
             {({nodes, isLoading, NextLink, PreviousLink}) => {
               let itemsMarkup = nodes.map((product, i) => (
                 <ProductCard
+                  quickAdd
                   key={product.id}
                   product={product}
                   loading={getImageLoadingPriority(i)}
@@ -58,7 +59,6 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
                     <Button
                         as={PreviousLink}
                         variant="secondary"
-                        width="full"
                       >
                         {isLoading ? 'Loading...' : prevPageText}
                       </Button>
@@ -68,7 +68,6 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
                     <Button
                         as={NextLink}
                         variant="secondary"
-                        width="full"
                       >
                         {isLoading ? 'Loading...' : nextPageText}
                       </Button>

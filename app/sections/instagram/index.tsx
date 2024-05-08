@@ -116,7 +116,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                 <div className='w-full h-full text-center'>
                     {children}
                 </div>
-                <div className='flex gap-4 overflow-hidden'>
+                <div className='flex gap-0 sm:gap-4 overflow-hidden'>
                     {
                         res.length === 0 ? (
                             <div className='flex justify-center items-center gap-4 w-full h-full'>
@@ -132,7 +132,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                         clickable: true,
                                     }}
                                     modules={[Pagination]}
-                                    className='h-full sm:hidden'
+                                    className='w-full sm:hidden'
                                 >
                                     {displayedImages.map((item, index) => {
                                         return (
