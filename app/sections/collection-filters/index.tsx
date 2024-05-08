@@ -38,13 +38,13 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
     if (collection?.products && collections) {
       return (
         <section ref={sectionRef} {...rest}>
-          <Section as="div" className="container">
-            <DrawerFilter
-              productNumber={productNumber}
-              filters={collection.products.filters as Filter[]}
-              appliedFilters={appliedFilters}
-              collections={collections}
-            />
+          <DrawerFilter
+            productNumber={productNumber}
+            filters={collection.products.filters as Filter[]}
+            appliedFilters={appliedFilters}
+            collections={collections}
+          />
+          <div className="container">
             <Pagination connection={collection.products}>
               {({
                 nodes,
@@ -56,9 +56,9 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
                 state,
               }) => (
                 <>
-                  <div className="mb-6 flex items-center justify-center">
-                    <Button as={PreviousLink} variant="secondary" width="full">
-                      {isLoading ? 'Loading...' : loadPrevText}
+                  <div className="my-6 flex w-full items-center justify-center">
+                    <Button as={PreviousLink} variant="secondary">
+                      {isLoading ? 'Loading...' : 'Previous'}
                     </Button>
                   </div>
                   <ProductsLoadedOnScroll
@@ -68,20 +68,15 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
                     hasNextPage={hasNextPage}
                     state={state}
                   />
-                  <div className="mt-6 flex items-center justify-center">
-                    <Button
-                      ref={ref}
-                      as={NextLink}
-                      variant="secondary"
-                      width="full"
-                    >
+                  <div className="my-6 flex w-full items-center justify-center">
+                    <Button as={NextLink} variant="secondary">
                       {isLoading ? 'Loading...' : loadMoreText}
                     </Button>
                   </div>
                 </>
               )}
             </Pagination>
-          </Section>
+          </div>
         </section>
       );
     }
