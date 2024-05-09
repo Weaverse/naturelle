@@ -16,6 +16,7 @@ interface SlideProps extends HydrogenComponentProps {
     backgroundColor: string;
     imageAlignment?: AlignImage;
     textAlignment?: Alignment;
+    enableImageAnimation?: boolean;
 }
 
 let alignmentClasses: Record<Alignment, string> = {
@@ -35,6 +36,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
         imageAlignment,
         backgroundColor,
         textAlignment,
+        enableImageAnimation,
         children,
         ...rest
     } = props;
@@ -56,7 +58,9 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                             <Image
                                 data={backgroundImage}
                                 sizes="auto"
-                                className="!w-full !h-full object-cover group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
+                                className={clsx("!w-full !h-full object-cover",
+                                enableImageAnimation ? 'group-hover:ease-in-out group-hover:scale-125 transition duration-1000' : ''
+                                )}
                             />
                         ) : (
                             <div className="flex justify-center items-center bg-background-subtle-1 w-full h-full">
@@ -131,7 +135,12 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Background color',
                     defaultValue: '#f8f8f0',
                 },
-
+                {
+                    type: 'switch',
+                    name: 'enableImageAnimation',
+                    label: 'Enable image animation',
+                    defaultValue: true,
+                }
             ],
         },
     ],

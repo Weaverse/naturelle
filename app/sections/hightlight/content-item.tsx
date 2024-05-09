@@ -27,7 +27,7 @@ const HighlightContent = forwardRef<HTMLDivElement, ContentProps>(
     return (
       <div ref={ref} {...rest}
         className={clsx(
-          'flex flex-col sm:grid gap-[var(--item-gap)]',
+          'flex flex-col sm:grid gap-[var(--item-gap)] w-full',
           itemsPerRowClasses[actualItemPerRow],
         )}
         style={style}

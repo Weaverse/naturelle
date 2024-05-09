@@ -78,7 +78,7 @@ export let schema: HydrogenComponentSchema = {
     toolbar: ['general-settings', ['duplicate', 'delete']],
     inspector: [
         {
-            group: 'testimonials',
+            group: 'Scrolling Text',
             inputs: [
                 {
                     type: 'textarea',
