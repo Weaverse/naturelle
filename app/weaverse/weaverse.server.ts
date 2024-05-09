@@ -54,5 +54,6 @@ export function getWeaverseCsp(request: Request) {
       ...localDirectives,
       ...weaverseHosts,
     ],
+    fontSrc: ['*'],
   };
 }
