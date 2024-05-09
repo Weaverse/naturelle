@@ -26,7 +26,7 @@ const Highlights = forwardRef<
 
     return (
         <section ref={ref} {...rest} className="w-full h-full flex justify-center" style={sectionStyle}>
-            <div className="px-10 py-20 flex flex-col gap-12 max-w-[1440px] text-center">
+            <div className="px-6 py-12 sm:py-20 sm:px-10 flex flex-col gap-12 container text-center">
                 {children}
             </div>
         </section>

@@ -32,6 +32,9 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
   } = props;
   let {products} = useLoaderData<AllProductsQuery>();
 
+  console.log(children?.length);
+  
+
   return (
     <section ref={ref} {...rest}>
       <div
@@ -39,8 +42,12 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
         }}
+        className='container'
       >
-        <div className='p-6 md:p-8 lg:p-12'>{children}</div>
+        {children?.length !== undefined && (
+            <div className='p-6 md:p-8 lg:p-12'>
+              {children}
+            </div>)}
         <Section>
           <Pagination connection={products}>
             {({nodes, isLoading, NextLink, PreviousLink}) => {

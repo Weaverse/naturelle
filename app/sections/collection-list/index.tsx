@@ -45,9 +45,10 @@ let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
           alignmentClasses[contentAlignment!],
         )}>
         <div className='max-w-[1440px] pt-[var(--top-padding)] pb-[var(--bottom-padding)]'>
-          <div className='p-6 md:p-8 lg:p-12'>
-            {children}
-          </div>
+          {children?.length !== undefined && (
+            <div className='p-6 md:p-8 lg:p-12'>
+              {children}
+            </div>)}
           <Section as="div">
             <Pagination connection={collections}>
               {({ nodes, isLoading, PreviousLink, NextLink, nextPageUrl, hasNextPage, state, }) => (

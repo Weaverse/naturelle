@@ -226,7 +226,7 @@ export default function Search() {
                       {isLoading ? 'Loading...' : 'Previous'}
                     </Button>
                   </div>
-                  <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                  <Grid data-test="product-grid" className='!gap-y-10'>{itemsMarkup}</Grid>
                   <div className="my-6 flex w-full items-center justify-center">
                     <Button as={NextLink} variant="secondary">
                       {isLoading ? 'Loading...' : 'Show more +'}

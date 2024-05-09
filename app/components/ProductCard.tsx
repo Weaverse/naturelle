@@ -81,8 +81,8 @@ export function ProductCard({
           )}
           <Text
             as="h6"
-            size="fine"
-            className="absolute top-0 right-0 text-right text-notice bg-label-sale text-secondary p-3 empty:hidden"
+            size="copy"
+            className="absolute top-2 right-2 font-body text-right text-notice bg-label-sale text-secondary py-2 px-3 empty:hidden"
           >
             {cardLabel}
           </Text>

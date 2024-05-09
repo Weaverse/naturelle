@@ -26,7 +26,7 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
             <IconEllipse className='absolute inset-0 !w-[148px] !h-[61px] transform transition-transform duration-500 hover:rotate-[-11deg]'
               stroke={textColor ? textColor : 'rgb(var(--color-foreground))'}
               viewBox="0 0 148 61" />
-            <div className='flex pl-5 pt-2'>{value}</div>
+            <div className='flex pl-4 pt-2'>{value}</div>
           </>
         ): (<>{value}</>)}
       </Button>

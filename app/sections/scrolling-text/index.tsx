@@ -46,21 +46,17 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
             !visibleOnMobile && 'hidden sm:block',
         )}>
             <div className='overflow-hidden flex'>
-                <h3 className='font-medium sm:whitespace-nowrap inline-block sm:hidden sm:animate-scrollText text-[var(--text-color)]'
-                    style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}>
-                    {content}
-                </h3>
-                <h3 className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
+                <h3 className='font-medium whitespace-nowrap animate-scrollText text-[var(--text-color)] '
                     style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
                 </h3>
-                <h3 className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
+                <h3 className='font-medium whitespace-nowrap animate-scrollText text-[var(--text-color)] '
                     style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
                 </h3>
-                <h3 className='font-medium sm:whitespace-nowrap sm:animate-scrollText text-[var(--text-color)] hidden sm:inline-block'
+                <h3 className='font-medium whitespace-nowrap animate-scrollText text-[var(--text-color)] '
                     style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
@@ -132,7 +128,7 @@ export let schema: HydrogenComponentSchema = {
                     type: 'range',
                     name: 'verticalMargin',
                     label: 'Vertical margin',
-                    defaultValue: 10,
+                    defaultValue: 0,
                     configs: {
                         min: 0,
                         max: 30,
