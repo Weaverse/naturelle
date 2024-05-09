@@ -1,47 +1,46 @@
-# Hydrogen v2
+<h1 align="center">Naturelle - Shopify Hydrogen Theme</h1>
 
-This directory is a brief example of a [Hydrogen v2](https://shopify.dev/custom-storefronts/hydrogen) storefront that can be deployed to Vercel with zero configuration.
+_Naturelle is a state-of-the-art Shopify theme, crafted specifically for beauty brands. Leveraging Hydrogen's robust architecture and integrated with Remix and Weaverse, it provides a foundation for building ultra-fast, high-performing online storefronts. Our theme makes it effortless to deliver a seamless shopping experience._
 
-## Deploy Your Own
+## Demo
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/hydrogen-2&template=hydrogen-2)
+Explore Naturelle in action:
+- [Live store demo](https://weaverse-naturelle.vercel.app)
+- Experiment with customizations on the [Weaverse Playground](https://studio.weaverse.io/demo?theme=naturelle)
 
+![Naturelle demo](https://cdn.shopify.com/s/files/1/0838/0052/3057/files/beauty_preview_desktop.png)
 
-You can also deploy using the [Vercel CLI](https://vercel.com/cli):
+## Features
 
-```sh
-npm i -g vercel
-vercel
-```
+What you get with Naturelle:
+- **Core Technologies**: Hydrogen, Remix, and Oxygen for unmatched performance.
+- **Development Tools**: Shopify CLI, ESLint, and Prettier.
+- **Programming**: Support for both TypeScript and JavaScript.
+- **Styling**: Tailwind CSS implemented via PostCSS.
+- **Rich Components**: A comprehensive set of pre-designed components and routes.
+- **Customization**: Fully adaptable through [Weaverse](https://weaverse.io).
 
-Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dovetail with [Remix](https://remix.run/), Shopify’s full stack web framework. This template contains a **minimal setup** of components, queries and tooling to get started with Hydrogen.
+## Deployment
 
-[Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
-[Get familiar with Remix](https://remix.run/docs/en/v1)
+Efficient deployment options:
+- [Deploy directly to Shopify Oxygen](https://weaverse.io/docs/deployment/oxygen)
+- [Deploy using Vercel](https://wvse.cc/deploy-pilot-to-vercel)
 
-## What's included
+## Getting Started
 
-- Remix
-- Hydrogen
-- Oxygen
-- Shopify CLI
-- ESLint
-- Prettier
-- GraphQL generator
-- TypeScript and JavaScript flavors
-- Minimal setup of components and routes
+**Prerequisites:**
+- Ensure you have Node.js version 18.0.0 or higher installed.
 
-## Environment Variables
+**Setup Instructions:**
+1. Download [Weaverse Hydrogen](https://apps.shopify.com/weaverse) from the Shopify App Store.
+2. Launch a new Hydrogen storefront within Weaverse.
+3. Use the `@weaverse/cli` to initialize the project and start a local development server as guided in the Weaverse editor.
+   ![Init Weaverse Storefront](https://cdn.shopify.com/s/files/1/0838/0052/3057/files/New_storefront.png?v=1699244454)
+4. Dive into the Weaverse editor to personalize and enhance your storefront to meet your brand needs.
 
-Using Hydrogen requires a few [environment variables](https://shopify.dev/docs/custom-storefronts/hydrogen/environment-variables) to be set in order to properly connect to Shopify. For this template, the minimal set of environment variables are defined in the `vercel.json` file, which will be applied to the deployment when deployed to Vercel. However, you should migrate these default environment variables to your Project's Environment Variables configuration in the Vercel dashboard (or using the `vc env` commands), and update them according to your needs (also change the `SESSION_SECRET` to your own value). Once that is done, delete the `vercel.json` file from your project to prevent the environment variables defined there from taking precedence.
+## Documentation and Resources
 
-## Local development
-
-Rename the `.env.example` file to `.env` in order for the Shopify dev server to use those environment variables during local development. If you defined/modified additional environment variables based on the section above, be sure to apply those changes in your `.env` file as well.
-
-Then run the following commands:
-
-```bash
-npm install
-npm run dev
-```
+For more detailed guidance:
+- [Weaverse Documentation](https://weaverse.io/docs)
+- [Hydrogen Documentation](https://shopify.dev/custom-storefronts/hydrogen)
+- [Learn more about Remix](https://remix.run/)
