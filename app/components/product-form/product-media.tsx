@@ -117,7 +117,7 @@ export function ProductMedia(props: ProductMediaProps) {
                   key={med.id}
                   className={clsx(
                     'keen-slider__slide border-2 cursor-pointer rounded',
-                    i === activeInd ? 'border-bar' : '',
+                    i === activeInd ? 'border-bar' : 'border-bar-subtle',
                   )}
                   onClick={() => handleClickThumbnail(i)}
                 >

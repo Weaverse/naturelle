@@ -16,13 +16,10 @@ import { Button } from '@/components/button';
 import { ProductCard } from '~/components/ProductCard';
 import { getImageLoadingPriority } from '~/lib/const';
 
-type Alignment = 'left' | 'center' | 'right';
 type FeaturedProductsData = {
     products: WeaverseCollection;
     textColor: string;
     backgroundColor: string;
-    heading: string;
-    contentAlignment: Alignment;
     totalProduct: number;
     productsPerRow: number;
     showViewAllLink: boolean;
@@ -40,15 +37,9 @@ let productPerRowClasses: { [item: number]: string } = {
     4: 'sm:grid-cols-4',
 };
 
-let alignmentClasses: Record<Alignment, string> = {
-    left: 'text-left',
-    center: 'text-center',
-    right: 'text-right',
-};
-
 const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
     (props, ref) => {
-        let { products, textColor, backgroundColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
+        let { products, textColor, backgroundColor, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
 
         let sectionStyle: CSSProperties = {
             color: textColor,
@@ -81,11 +72,10 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
         return (
             <section ref={ref} {...rest} className='w-full h-full flex justify-center bg-[var(--background-color)]' style={sectionStyle}>
                 <div className={clsx(
-                    alignmentClasses[contentAlignment],
                     'px-4 w-full flex flex-col gap-12 max-w-[1440px] sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]',
                 )}>
                     {children}
-                    {loaderData === null ? (
+                    {loaderData === undefined || null ? (
                         <>
                             <Swiper
                                 loop={true}
@@ -209,19 +199,6 @@ export let schema: HydrogenComponentSchema = {
                     name: 'backgroundColor',
                     label: 'Background color',
                     defaultValue: '#F8F8F0',
-                },
-                {
-                    type: 'toggle-group',
-                    label: 'Content alignment',
-                    name: 'contentAlignment',
-                    configs: {
-                        options: [
-                            { label: 'Left', value: 'left' },
-                            { label: 'Center', value: 'center' },
-                            { label: 'Right', value: 'right' },
-                        ],
-                    },
-                    defaultValue: 'center',
                 },
                 {
                     type: 'range',
