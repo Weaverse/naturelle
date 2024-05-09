@@ -9,11 +9,10 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import invariant from 'tiny-invariant';
-import type { SortParam } from '~/components/SortFilter';
-import { FILTER_URL_PREFIX } from '~/components/SortFilter';
 import { routeHeaders } from '~/data/cache';
 import { COLLECTION_QUERY } from '~/data/queries';
-import { PAGINATION_SIZE } from '~/lib/const';
+import { FILTER_URL_PREFIX, PAGINATION_SIZE } from '~/lib/const';
+import { SortParam } from "~/lib/filter";
 import { seoPayload } from '~/lib/seo.server';
 import { parseAsCurrency } from '~/lib/utils';
 import { WeaverseContent } from '~/weaverse';

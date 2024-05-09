@@ -18,7 +18,6 @@ export function usePageAnalytics({hasUserConsent}: {hasUserConsent: boolean}) {
         const selectedLocale =
           (eventData['selectedLocale'] as typeof DEFAULT_LOCALE) ||
           DEFAULT_LOCALE;
-          console.log('selected', selectedLocale);
 
         Object.assign(data, {
           currency: selectedLocale.currency,

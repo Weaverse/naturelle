@@ -1,72 +1,81 @@
 import { useLoaderData } from '@remix-run/react';
 import { Pagination } from '@shopify/hydrogen';
-import type { Collection } from '@shopify/hydrogen/storefront-api-types';
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
 import { forwardRef, CSSProperties } from 'react';
-import type { CollectionsQuery } from 'storefrontapi.generated';
-import { PageHeader, Section } from '~/components/Text';
-import { Grid } from '~/components/Grid';
-import { getImageLoadingPriority } from '~/lib/const';
-import { CollectionCard } from './collection-card';
-import { Button } from '@/components/ui/button';
+import type { StoreCollectionsQuery } from 'storefrontapi.generated';
+import { Section } from '~/components/Text';
+import { Button } from '@/components/button';
+import { CollectionsLoadedOnScroll } from './collection-loader-on-scroll';
+import { useInView } from 'react-intersection-observer';
+import clsx from 'clsx';
 
+type Alignment = 'left' | 'center' | 'right';
 interface CollectionListProps extends HydrogenComponentProps {
   textColor: string;
-  heading: string;
-  contentAlignment: string;
-  prevButtonText: string;
-  nextButtonText: string;
-  imageAspectRatio: string;
+  contentAlignment: Alignment;
+  collectionsPerRow: number;
+  topPadding: number;
+  bottomPadding: number;
+  lazyLoadImage: boolean;
 }
 
+let alignmentClasses: Record<Alignment, string> = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+};
+
 let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
-  (props, ref) => {
-    let { collections } = useLoaderData<CollectionsQuery>();
-    let { textColor, heading, contentAlignment, prevButtonText, nextButtonText, imageAspectRatio, ...rest } =
+  (props, sectionRef) => {
+    let {ref, inView} = useInView();
+    let { collections } = useLoaderData<StoreCollectionsQuery>();
+    let { textColor, contentAlignment, collectionsPerRow, topPadding, bottomPadding, lazyLoadImage, children, ...rest } =
       props;
     let contentStyle: CSSProperties = {
-      textAlign: contentAlignment,
+      '--top-padding': `${topPadding}px`,
+      '--bottom-padding': `${bottomPadding}px`,
       color: textColor,
     } as CSSProperties;
     return (
-      <section ref={ref} {...rest} style={contentStyle}>
-        <div className='px-6 md:px-8 lg:px-12'>
-          <h2 className='font-medium pt-10'>{heading}</h2>
-        </div>
-        <Section as="div">
-          <Pagination connection={collections}>
-            {({ nodes, isLoading, PreviousLink, NextLink }) => (
-              <>
-                <div className="flex items-center justify-center mb-6">
-                  <Button as={PreviousLink} variant="outline">
-                    {isLoading ? 'Loading...' : prevButtonText}
-                  </Button>
-                </div>
-                <Grid
-                  items={nodes.length === 3 ? 3 : 2}
-                  data-test="collection-grid"
-                >
-                  {nodes.map((collection, i) => (
-                    <CollectionCard
-                      key={collection.id}
-                      collection={collection as Collection}
-                      imageAspectRatio={imageAspectRatio}
-                      loading={getImageLoadingPriority(i, 2)}
+      <section ref={sectionRef} {...rest} style={contentStyle} 
+        className={clsx('w-full flex justify-center items-center',
+          alignmentClasses[contentAlignment!],
+        )}>
+        <div className='max-w-[1440px] pt-[var(--top-padding)] pb-[var(--bottom-padding)]'>
+          <div className='p-6 md:p-8 lg:p-12'>
+            {children}
+          </div>
+          <Section as="div">
+            <Pagination connection={collections}>
+              {({ nodes, isLoading, PreviousLink, NextLink, nextPageUrl, hasNextPage, state, }) => (
+                <>
+                  <div className="flex items-center justify-center mb-6">
+                    <Button as={PreviousLink} variant="outline">
+                      {isLoading ? 'Loading...' : 'Previous collections'}
+                    </Button>
+                  </div>
+                  <CollectionsLoadedOnScroll
+                      nodes={nodes}
+                      collectionsPerRow={collectionsPerRow}
+                      lazyLoadImage={lazyLoadImage}
+                      inView={inView}
+                      nextPageUrl={nextPageUrl}
+                      hasNextPage={hasNextPage}
+                      state={state}
                     />
-                  ))}
-                </Grid>
-                <div className="flex items-center justify-center mt-6">
-                  <Button as={NextLink} variant="outline">
-                    {isLoading ? 'Loading...' : nextButtonText}
-                  </Button>
-                </div>
-              </>
-            )}
-          </Pagination>
-        </Section>
+                  <div className="flex items-center justify-center mt-6">
+                    <Button ref={ref} as={NextLink} variant="outline">
+                      {isLoading ? 'Loading...' : 'Next collections'}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Pagination>
+          </Section>
+        </div>
       </section>
     );
   },
@@ -92,13 +101,6 @@ export let schema: HydrogenComponentSchema = {
           label: 'Text color',
         },
         {
-          type: 'text',
-          name: 'heading',
-          label: 'Heading',
-          defaultValue: 'Collections',
-          placeholder: 'Collections',
-        },
-        {
           type: 'toggle-group',
           label: 'Content alignment',
           name: 'contentAlignment',
@@ -112,40 +114,54 @@ export let schema: HydrogenComponentSchema = {
           defaultValue: 'left',
         },
         {
-          type: 'text',
-          name: 'prevButtonText',
-          label: 'Previous collections text',
-          defaultValue: 'Previous collections',
-          placeholder: 'Previous collections',
-        },
-        {
-          type: 'text',
-          name: 'nextButtonText',
-          label: 'Next collections text',
-          defaultValue: 'Next collections',
-          placeholder: 'Next collections',
-        },
-      ],
-    },
-    {
-      group: 'Collection card',
-      inputs: [
-        {
-          type: 'select',
-          label: 'Image aspect ratio',
-          name: 'imageAspectRatio',
+          type: 'range',
+          name: 'collectionsPerRow',
+          label: 'Collections per row',
+          defaultValue: 3,
           configs: {
-            options: [
-              { value: 'auto', label: 'Adapt to image' },
-              { value: '1/1', label: '1/1' },
-              { value: '3/4', label: '3/4' },
-              { value: '4/3', label: '4/3' },
-              { value: '6/4', label: '6/4' },
-            ],
+            min: 1,
+            max: 4,
+            step: 1,
           },
-          defaultValue: 'auto',
+        },
+        {
+          type: 'range',
+          name: 'topPadding',
+          label: 'Top padding',
+          defaultValue: 0,
+          configs: {
+            min: 0,
+            max: 100,
+            step: 1,
+          },
+        },
+        {
+          type: 'range',
+          name: 'bottomPadding',
+          label: 'Bottom padding',
+          defaultValue: 0,
+          configs: {
+            min: 0,
+            max: 100,
+            step: 1,
+          },
+        },
+        {
+          type: 'switch',
+          name: 'lazyLoadImage',
+          label: 'Lazy load image',
+          defaultValue: true,
         },
       ],
     },
   ],
+  childTypes: ['heading'],
+  presets: {
+      children: [
+           {
+              type: 'heading',
+              content: "Collections",
+          },
+      ],
+  },
 };

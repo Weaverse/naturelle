@@ -9,7 +9,7 @@ import {
 import type { FetcherWithComponents } from '@remix-run/react';
 import { useEffect } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/button';
 import { usePageAnalytics } from '~/hooks/usePageAnalytics';
 
 export function AddToCartButton({
@@ -25,7 +25,7 @@ export function AddToCartButton({
   children: React.ReactNode;
   lines: CartLineInput[];
   className?: string;
-  variant?: 'primary' | 'secondary' | 'inline';
+  variant?: 'primary' | 'secondary' | 'outline';
   width?: 'auto' | 'full';
   disabled?: boolean;
   analytics?: unknown;
@@ -53,6 +53,8 @@ export function AddToCartButton({
               size="lg"
               className={className}
               disabled={disabled ?? fetcher.state !== 'idle'}
+              loading={fetcher.state === 'submitting'}
+              variant={variant}
               {...props}
             >
               {children}

@@ -1,4 +1,4 @@
-import { Button, type ButtonProps } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/button';
 import type { HydrogenComponentSchema } from '@weaverse/hydrogen';
 import { IconEllipse } from '~/components/Icon';
 import { forwardRef, CSSProperties } from 'react';
@@ -21,12 +21,12 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
         className={`w-fit mx-auto ${props.className}`}
         style={style}
       >
-        {variant === 'primary' ? (
+        {variant === 'decor' ? (
           <>
             <IconEllipse className='absolute inset-0 !w-[148px] !h-[61px] transform transition-transform duration-500 hover:rotate-[-11deg]'
               stroke={textColor ? textColor : 'rgb(var(--color-foreground))'}
               viewBox="0 0 148 61" />
-            <div className='flex pl-4 pt-3'>{value}</div>
+            <div className='flex pl-5 pt-2'>{value}</div>
           </>
         ): (<>{value}</>)}
       </Button>
@@ -57,6 +57,7 @@ export const schema: HydrogenComponentSchema = {
               { label: 'Outline', value: 'outline' },
               { label: 'Secondary', value: 'secondary' },
               { label: 'Primary', value: 'primary' },
+              { label: 'Decor', value: 'decor' },
             ],
           },
         },
@@ -73,6 +74,7 @@ export const schema: HydrogenComponentSchema = {
               { label: 'Icon', value: 'icon' },
             ],
           },
+          condition: `variant.ne.decor`,
         },
         {
           type: 'text',

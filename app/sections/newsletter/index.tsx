@@ -7,10 +7,11 @@ import { forwardRef, CSSProperties, useRef } from 'react';
 import { IconNewsletter } from '~/components/Icon';
 import { Image } from '@shopify/hydrogen';
 import { Input } from '@/components/input';
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import { useFetcher } from '@remix-run/react';
 import clsx from 'clsx';
 
+type VariantStyle = "primary" | "outline" | "secondary" | "link" | "decor" | null | undefined;
 interface NewsletterProps extends HydrogenComponentProps {
     verticalPadding: number;
     sectionHeight: number;
@@ -20,7 +21,7 @@ interface NewsletterProps extends HydrogenComponentProps {
     iconImageSize: number;
     placeholder: string;
     buttonLabel: string;
-    buttonStyle: string;
+    buttonStyle: VariantStyle;
 }
 
 const Newsletter = forwardRef<
@@ -178,12 +179,12 @@ export let schema: HydrogenComponentSchema = {
                     name: 'buttonStyle',
                     configs: {
                         options: [
-                            { label: 'Default', value: 'default' },
+                            { label: 'Primary', value: 'primary' },
                             { label: 'Outline', value: 'outline' },
                             { label: 'Secondary', value: 'secondary' },
                         ],
                     },
-                    defaultValue: 'Default',
+                    defaultValue: 'primary',
                 },
             ],
         },

@@ -1,8 +1,7 @@
-import {Dialog, Transition} from '@headlessui/react';
 import {Fragment, useState} from 'react';
-import {IconClose} from './Icon';
+import {Dialog, Transition} from '@headlessui/react';
 import {Heading} from './Text';
-import { cn } from "@/lib/utils";
+import {IconClose} from './Icon';
 
 /**
  * Drawer component that opens on user click.
@@ -12,7 +11,7 @@ import { cn } from "@/lib/utils";
  * @param openFrom - right, left
  * @param children - react children node.
  */
-export function Drawer({
+export function CartDrawer({
   heading,
   open,
   onClose,
@@ -22,13 +21,12 @@ export function Drawer({
   heading?: string;
   open: boolean;
   onClose: () => void;
-  openFrom: 'right' | 'left' | 'top';
+  openFrom: 'right' | 'left';
   children: React.ReactNode;
 }) {
   const offScreen = {
     right: 'translate-x-full',
     left: '-translate-x-full',
-    top: '-translate-y-full'
   };
 
   return (
@@ -43,7 +41,7 @@ export function Drawer({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="text-body fixed inset-0 bg-opacity-25" />
+          <div className="fixed inset-0 bg-opacity-25 text-body" />
         </Transition.Child>
 
         <div className="fixed inset-0">
@@ -62,9 +60,9 @@ export function Drawer({
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className={cn("transform bg-background-subtle-1 text-left align-middle shadow-xl transition-all", openFrom === 'top' ? 'w-screen h-fit' : 'max-w-96 h-screen-dynamic w-screen')}>
+                <Dialog.Panel className="w-screen max-w-96 text-left align-middle transition-all transform shadow-xl h-screen-dynamic bg-background">
                   <header
-                    className={`h-nav sticky top-0 flex items-center p-6 ${
+                    className={`sticky top-0 flex items-center p-6 h-nav ${
                       heading ? 'justify-between' : 'justify-end'
                     }`}
                   >
@@ -77,7 +75,7 @@ export function Drawer({
                     )}
                     <button
                       type="button"
-                      className="text-body hover:text-body/50 -m-4 p-4 transition"
+                      className="p-4 -m-4 transition text-body hover:text-body/50"
                       onClick={onClose}
                       data-test="close-cart"
                     >
@@ -96,9 +94,9 @@ export function Drawer({
 }
 
 /* Use for associating arialabelledby with the title*/
-Drawer.Title = Dialog.Title;
+CartDrawer.Title = Dialog.Title;
 
-export function useDrawer(openDefault = false) {
+export function useCartDrawer(openDefault = false) {
   const [isOpen, setIsOpen] = useState(openDefault);
 
   function openDrawer() {

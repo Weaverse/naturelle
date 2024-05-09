@@ -1,6 +1,5 @@
 import { Image } from '@shopify/hydrogen';
 import type { Collection } from '@shopify/hydrogen/storefront-api-types';
-import { Heading } from '~/components/Text';
 import { Link } from '~/components/Link';
 
 export function CollectionCard({
@@ -13,8 +12,8 @@ export function CollectionCard({
   loading?: HTMLImageElement['loading'];
 }) {
   return (
-    <Link to={`/collections/${collection.handle}`} className="grid gap-4">
-      <div className='w-full h-full relative flex justify-center items-center'>
+    <Link to={`/collections/${collection.handle}`} className="grid gap-4 group relative">
+      <div className='w-full h-full flex justify-center items-center'>
         <div className="card-image bg-primary/5 w-full h-full">
           {collection?.image && (
             <Image
@@ -28,10 +27,8 @@ export function CollectionCard({
             />
           )}
         </div>
-        <Heading as="h3" className='font-medium absolute' size="copy">
-          {collection.title}
-        </Heading>
       </div>
+      <div className='absolute inset-0 group-hover:bg-foreground group-hover:opacity-30 opacity-0 transition-colors duration-300'/>
     </Link>
   );
 }

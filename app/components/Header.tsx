@@ -1,31 +1,41 @@
 import {Await, Form, NavLink} from '@remix-run/react';
-import {Suspense, useMemo, useState} from 'react';
-import type {HeaderQuery} from 'storefrontapi.generated';
+import {CartForm, Image} from '@shopify/hydrogen';
+import {useCartFetchers} from '~/hooks/useCartFetchers';
 import {useRootLoaderData} from '~/root';
+import {Suspense, useMemo} from 'react';
+import type {HeaderQuery} from 'storefrontapi.generated';
+import {CartMain} from './Cart';
+import {CartLoading} from './CartLoading';
+import {Drawer, useDrawer} from './Drawer';
+import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
 import type {LayoutProps} from './Layout';
-import {Logo} from './Logo';
 import {Link} from './Link';
-import {IconAccount, IconBag, IconClose, IconLogin, IconSearch} from './Icon';
-import {Image} from '@shopify/hydrogen';
-import {Drawer} from './Drawer';
+import {Logo} from './Logo';
+
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
 type Viewport = 'desktop' | 'mobile';
 
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
-  let [showMenu, setShowMenu] = useState(false);
+  let {isOpen: showMenu, openDrawer, closeDrawer} = useDrawer();
   return (
-    <header className="grid grid-cols-3 gap-4 items-center py-4 px-6 bg-background-subtle-1">
+    <header className="z-10 grid h-screen-no-nav grid-cols-3 items-center gap-3 border-b border-foreground bg-background-subtle-1 px-6 py-4">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
-      <Drawer open={showMenu} onOpenChange={setShowMenu}>
+      <button onClick={openDrawer}>MENU</button>
+      <Drawer
+        open={showMenu}
+        onClose={closeDrawer}
+        openFrom="top"
+        // className="fixed top-0 flex h-fit w-full flex-col bg-white"
+      >
         <HeaderMenu
           menu={menu}
           viewport="desktop"
           primaryDomainUrl={header.shop.primaryDomain.url}
           showMenu={showMenu}
-          onCloseMenu={() => setShowMenu(false)}
+          onCloseMenu={closeDrawer}
         />
       </Drawer>
 
@@ -51,20 +61,15 @@ export function HeaderMenu({
   // const className = `header-menu-${viewport}`;
 
   function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
-    if (viewport === 'mobile') {
+    if (viewport === 'desktop') {
       event.preventDefault();
       window.location.href = event.currentTarget.href;
     }
+    onCloseMenu();
   }
-
   return (
-    <div className="w-full h-full bg-background-subtle-1 flex flex-col">
-      <div className="h-8 w-full border-b flex items-center justify-end p-8">
-        <button onClick={onCloseMenu}>
-          <IconClose />
-        </button>
-      </div>
-      <div className="h-full grid grid-cols-1 md:grid-cols-2 duration-500  container">
+    <div className="flex h-full w-full flex-col border-t border-bar-subtle bg-background-subtle-1">
+      <div className="container grid h-full grid-cols-1 duration-500  md:grid-cols-2">
         <nav className="flex flex-col gap-4 p-8" role="navigation">
           {/* {viewport === 'mobile' && (
         <NavLink
@@ -89,14 +94,16 @@ export function HeaderMenu({
                 : item.url;
             return (
               <NavLink
-                className="font-heading text-4xl"
+                className="font-heading text-4xl text-foreground-subtle transition-colors duration-300 hover:text-foreground-basic"
                 end
                 key={item.id}
-                onClick={closeAside}
+                onClick={(event) => {
+                  closeAside(event);
+                }}
                 prefetch="intent"
                 to={url}
               >
-                {item.title}
+                <h3 className=" font-medium">{item.title}</h3>
               </NavLink>
             );
           })}
@@ -116,7 +123,7 @@ export function HeaderMenu({
               // height: 1002,
             }}
             loading="eager"
-            className="object-cover aspect-auto lg:aspect-[2/1]"
+            className="aspect-auto object-cover lg:aspect-[2/1]"
             sizes="auto"
           />
         </div>
@@ -129,20 +136,42 @@ function HeaderCtas({
   isLoggedIn,
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
+  const {
+    isOpen: isCartOpen,
+    openDrawer: openCart,
+    closeDrawer: closeCart,
+  } = useDrawer();
+  useCartFetchers(CartForm.ACTIONS.LinesAdd, openCart);
+
   return (
     <nav
-      className="header-ctas justify-end items-center flex gap-2"
+      className="header-ctas flex items-center justify-end gap-2"
       role="navigation"
     >
       {/* <HeaderMenuMobileToggle /> */}
       <SearchToggle />
       <AccountLink />
-      <CartCount
-        isHome={false}
-        openCart={() => {
-          window.location.href = '/cart';
-        }}
-      />
+      <CartCount isHome={false} openCart={openCart} />
+      <Drawer
+        open={isCartOpen}
+        onClose={closeCart}
+        openFrom="right"
+        heading="Cart"
+      >
+        <div>
+          <Suspense fallback={<CartLoading />}>
+            <Await resolve={cart}>
+              {(cart) => (
+                <CartMain
+                  layout="aside"
+                  // onClose={onClose}
+                  cart={cart}
+                />
+              )}
+            </Await>
+          </Suspense>
+        </div>
+      </Drawer>
     </nav>
   );
 }
@@ -161,7 +190,7 @@ function AccountLink({className}: {className?: string}) {
             </Link>
           ) : (
             <Link to="/account/login" className={className}>
-              <IconLogin className="w-6 h-6" />
+              <IconLogin className="h-6 w-6" />
             </Link>
           );
         }}
@@ -183,9 +212,9 @@ function SearchToggle() {
     <Form method="get" action="/search" className="flex items-center gap-2">
       <button
         type="submit"
-        className="relative flex items-center justify-center w-8 h-8 focus:ring-primary/5"
+        className="relative flex h-8 w-8 items-center justify-center focus:ring-primary/5"
       >
-        <IconSearch className="w-6 h-6" />
+        <IconSearch className="h-6 w-6 !font-extralight" />
       </button>
     </Form>
   );
@@ -228,8 +257,8 @@ function Badge({
   const BadgeCounter = useMemo(
     () => (
       <>
-        <IconBag className="w-6 h-6" viewBox="0 0 24 24"/>
-        <div className="bg-primary text-primary-foreground absolute top-0 right-0 text-[0.625rem] font-medium subpixel-antialiased h-4 w-4 flex items-center justify-center leading-none text-center rounded-full p-[0.125rem]">
+        <IconBag className="h-6 w-6" viewBox="0 0 24 24" />
+        <div className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-primary p-[0.125rem] text-center text-[0.625rem] font-medium leading-none text-primary-foreground subpixel-antialiased">
           <span>{count || 0}</span>
         </div>
       </>
@@ -241,14 +270,14 @@ function Badge({
   return isHydrated ? (
     <button
       onClick={openCart}
-      className="relative flex items-center justify-center w-8 h-8 focus:ring-border"
+      className="focus:ring-border relative flex h-8 w-8 items-center justify-center"
     >
       {BadgeCounter}
     </button>
   ) : (
     <Link
       to="/cart"
-      className="relative flex items-center justify-center w-8 h-8 focus:ring-border"
+      className="focus:ring-border relative flex h-8 w-8 items-center justify-center"
     >
       {BadgeCounter}
     </Link>
@@ -288,18 +317,18 @@ const FALLBACK_HEADER_MENU = {
       id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Blog',
+      title: 'Products',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/products',
       items: [],
     },
     {
-      id: 'gid://shopify/MenuItem/461609566264',
+      id: 'gid://shopify/MenuItem/461609533496',
       resourceId: null,
       tags: [],
-      title: 'Policies',
+      title: 'Blog',
       type: 'HTTP',
-      url: '/policies',
+      url: '/blogs/journal',
       items: [],
     },
     {

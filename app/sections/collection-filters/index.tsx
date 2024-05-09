@@ -5,13 +5,13 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
+import {Button} from '~/components/Button';
+import {DrawerFilter} from '~/components/DrawerFilter';
+import {Section} from '~/components/Text';
+import type {AppliedFilter} from '~/lib/filter';
 import {forwardRef} from 'react';
 import {useInView} from 'react-intersection-observer';
 import type {CollectionDetailsQuery} from 'storefrontapi.generated';
-import {PageHeader, Section, Text} from '~/components/Text';
-import {SortFilter} from '~/components/SortFilter';
-import {Button} from '~/components/Button';
-import type {AppliedFilter} from '~/components/SortFilter';
 import {ProductsLoadedOnScroll} from './products-loaded-on-scroll';
 
 interface CollectionFiltersProps extends HydrogenComponentProps {
@@ -33,68 +33,50 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
       }
     >();
 
+    let productNumber = collection?.products.nodes.length;
+
     if (collection?.products && collections) {
       return (
         <section ref={sectionRef} {...rest}>
-          <PageHeader heading={collection.title}>
-            {showCollectionDescription && collection?.description && (
-              <div className="flex items-baseline justify-between w-full">
-                <div>
-                  <Text format width="narrow" as="p" className="inline-block">
-                    {collection.description}
-                  </Text>
-                </div>
-              </div>
-            )}
-          </PageHeader>
-          <Section as="div">
-            <SortFilter
-              filters={collection.products.filters as Filter[]}
-              appliedFilters={appliedFilters}
-              collections={collections}
-            >
-              <Pagination connection={collection.products}>
-                {({
-                  nodes,
-                  isLoading,
-                  PreviousLink,
-                  NextLink,
-                  nextPageUrl,
-                  hasNextPage,
-                  state,
-                }) => (
-                  <>
-                    <div className="flex items-center justify-center mb-6">
-                      <Button
-                        as={PreviousLink}
-                        variant="secondary"
-                        width="full"
-                      >
-                        {isLoading ? 'Loading...' : loadPrevText}
-                      </Button>
-                    </div>
-                    <ProductsLoadedOnScroll
-                      nodes={nodes}
-                      inView={inView}
-                      nextPageUrl={nextPageUrl}
-                      hasNextPage={hasNextPage}
-                      state={state}
-                    />
-                    <div className="flex items-center justify-center mt-6">
-                      <Button
-                        ref={ref}
-                        as={NextLink}
-                        variant="secondary"
-                        width="full"
-                      >
-                        {isLoading ? 'Loading...' : loadMoreText}
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </Pagination>
-            </SortFilter>
-          </Section>
+          <DrawerFilter
+            productNumber={productNumber}
+            filters={collection.products.filters as Filter[]}
+            appliedFilters={appliedFilters}
+            collections={collections}
+          />
+          <div className="container">
+            <Pagination connection={collection.products}>
+              {({
+                nodes,
+                isLoading,
+                PreviousLink,
+                NextLink,
+                nextPageUrl,
+                hasNextPage,
+                state,
+              }) => (
+                <>
+                  <div className="my-6 flex w-full items-center justify-center">
+                    <Button as={PreviousLink} variant="secondary">
+                      {isLoading ? 'Loading...' : 'Previous'}
+                    </Button>
+                  </div>
+                  <ProductsLoadedOnScroll
+                    nodes={nodes}
+                    inView={inView}
+                    nextPageUrl={nextPageUrl}
+                    hasNextPage={hasNextPage}
+                    state={state}
+                  />
+                  <div className="my-6 flex w-full items-center justify-center">
+                    <Button as={NextLink} variant="secondary">
+                      {isLoading ? 'Loading...' : loadMoreText}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Pagination>
+          </div>
         </section>
       );
     }

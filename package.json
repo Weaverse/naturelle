@@ -11,11 +11,21 @@
     "typecheck": "tsc --noEmit",
     "codegen": "shopify hydrogen codegen"
   },
-  "prettier": "@shopify/prettier-config",
+  "prettier": {
+    "arrowParens": "always",
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "trailingComma": "all",
+    "plugins": [
+      "@ianvs/prettier-plugin-sort-imports",
+      "prettier-plugin-tailwindcss"
+    ]
+  },
   "dependencies": {
     "@fontsource-variable/cormorant": "^5.0.13",
     "@fontsource-variable/open-sans": "^5.0.26",
     "@headlessui/react": "^1.7.18",
+    "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-slot": "^1.0.2",
     "@remix-run/css-bundle": "^2.8.1",
     "@remix-run/react": "^2.8.1",
@@ -42,14 +52,13 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "tiny-invariant": "^1.3.3",
-    "typographic-base": "^1.0.4",
-    "vaul": "^0.9.0"
+    "typographic-base": "^1.0.4"
   },
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@remix-run/dev": "^2.8.1",
     "@remix-run/eslint-config": "^2.8.1",
     "@shopify/oxygen-workers-types": "^4.0.0",
-    "@shopify/prettier-config": "^1.1.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@total-typescript/ts-reset": "^0.5.1",
@@ -62,6 +71,7 @@
     "postcss-import": "^16.0.1",
     "postcss-preset-env": "^9.5.0",
     "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.2"
   },

@@ -10,15 +10,24 @@ import { useSwiper } from 'swiper/react';
 import clsx from 'clsx';
 
 type AlignImage = 'left' | 'right';
+type Alignment = 'left' | 'center' | 'right';
 interface SlideProps extends HydrogenComponentProps {
     backgroundImage?: WeaverseImage;
     backgroundColor: string;
     imageAlignment?: AlignImage;
+    textAlignment?: Alignment;
+    enableImageAnimation?: boolean;
 }
 
+let alignmentClasses: Record<Alignment, string> = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+};
+
 let AlignImageClasses: Record<AlignImage, string> = {
-    left: 'sm:flex-row-reverse',
-    right: 'sm:flex-row',
+    left: 'sm:flex-row',
+    right: 'sm:flex-row-reverse',
 };
 
 const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
@@ -26,6 +35,8 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
         backgroundImage,
         imageAlignment,
         backgroundColor,
+        textAlignment,
+        enableImageAnimation,
         children,
         ...rest
     } = props;
@@ -47,7 +58,9 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                             <Image
                                 data={backgroundImage}
                                 sizes="auto"
-                                className="!w-full !h-full object-cover group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
+                                className={clsx("!w-full !h-full object-cover",
+                                enableImageAnimation ? 'group-hover:ease-in-out group-hover:scale-125 transition duration-1000' : ''
+                                )}
                             />
                         ) : (
                             <div className="flex justify-center items-center bg-background-subtle-1 w-full h-full">
@@ -59,7 +72,10 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                         )}
                     </div>
                     <div className='relative flex items-center px-6 py-12 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'>
-                        <div className='flex flex-col justify-center gap-4'>
+                        <div className={clsx(
+                            'flex flex-col justify-center gap-4',
+                            alignmentClasses[textAlignment!],
+                        )}>
                             {children}
                         </div>
                         <div className='flex gap-4 justify-center absolute bottom-12 left-1/2 -translate-x-1/2'>
@@ -94,11 +110,24 @@ export let schema: HydrogenComponentSchema = {
                     name: 'imageAlignment',
                     configs: {
                         options: [
-                            { label: 'Right', value: 'right', icon: 'AlignRight' },
-                            { label: 'Left', value: 'left', icon: 'AlignLeft' },
+                            { label: 'Left', value: 'left' },
+                            { label: 'Right', value: 'right' },
                         ],
                     },
                     defaultValue: 'left',
+                },
+                {
+                    type: 'toggle-group',
+                    label: 'Text alignment',
+                    name: 'textAlignment',
+                    configs: {
+                        options: [
+                            { label: 'Left', value: 'left' },
+                            { label: 'Center', value: 'center' },
+                            { label: 'Right', value: 'right' },
+                        ],
+                    },
+                    defaultValue: 'center',
                 },
                 {
                     type: 'color',
@@ -106,7 +135,12 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Background color',
                     defaultValue: '#f8f8f0',
                 },
-
+                {
+                    type: 'switch',
+                    name: 'enableImageAnimation',
+                    label: 'Enable image animation',
+                    defaultValue: true,
+                }
             ],
         },
     ],

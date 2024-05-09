@@ -6,21 +6,20 @@ import type {
 } from '@weaverse/hydrogen';
 import { forwardRef, CSSProperties } from 'react';
 import { FEATURED_PRODUCTS_QUERY } from '~/data/queries';
-import { Image } from '@shopify/hydrogen';
 import { IconImageBlank } from '~/components/Icon';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
-import { Link } from '~/components/Link';
 import clsx from 'clsx';
-
+import { Button } from '@/components/button';
+import { ProductCard } from '~/components/ProductCard';
+import { getImageLoadingPriority } from '~/lib/const';
 
 type FeaturedProductsData = {
     products: WeaverseCollection;
     textColor: string;
-    heading: string;
-    contentAlignment: string;
+    backgroundColor: string;
     totalProduct: number;
     productsPerRow: number;
     showViewAllLink: boolean;
@@ -40,94 +39,72 @@ let productPerRowClasses: { [item: number]: string } = {
 
 const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
     (props, ref) => {
-        let { products, textColor, heading, contentAlignment, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, ...rest } = props;
+        let { products, textColor, backgroundColor, totalProduct, productsPerRow, showViewAllLink, topPadding, bottomPadding, lazyLoadImage, loaderData, children, ...rest } = props;
 
         let sectionStyle: CSSProperties = {
             color: textColor,
+            '--background-color': backgroundColor,
             '--top-padding-desktop': `${topPadding}px`,
             '--bottom-padding-desktop': `${bottomPadding}px`,
             '--top-padding-mobile': `${topPadding > 20 ? topPadding - 20 : topPadding}px`,
             '--bottom-padding-mobile': `${bottomPadding > 20 ? bottomPadding - 20 : bottomPadding}px`,
             '--swiper-theme-color': '#3D490B',
-            textAlign: contentAlignment,
         } as CSSProperties;
         let res = loaderData?.collection?.products?.nodes;
         let displayedProducts = res?.slice(0, totalProduct);
-        return (
-            <section ref={ref} {...rest} className='w-full h-full flex justify-center' style={sectionStyle}>
-                <div className='px-4 flex flex-col max-w-[1440px] items-center gap-6 sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
-                    <div className='flex justify-center'>
-                        {heading && <h2 className='font-medium'>{heading}</h2>}
+        const productItemBlank = () => {
+            return (
+                <div className='flex flex-col gap-4 w-full cursor-pointer'>
+                    <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                        <IconImageBlank
+                            viewBox="0 0 526 526"
+                            className="w-full h-full opacity-80"
+                        />
                     </div>
-                    {loaderData === null ? (
+                    <div className="flex flex-col gap-2 px-2">
+                        <p className='font-normal text-base'>By vendor</p>
+                        <h4 className='font-medium'>Product title</h4>
+                        <p className='font-normal text-base'>Price</p>
+                    </div>
+                </div>
+            );
+        }
+        return (
+            <section ref={ref} {...rest} className='w-full h-full flex justify-center bg-[var(--background-color)]' style={sectionStyle}>
+                <div className={clsx(
+                    'px-4 w-full flex flex-col gap-12 max-w-[1440px] sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]',
+                )}>
+                    {children}
+                    {loaderData === undefined || null ? (
                         <>
-                            <div className='flex flex-col sm:hidden gap-4 w-full cursor-pointer'>
-                                <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                    <IconImageBlank
-                                        viewBox="0 0 526 526"
-                                        className="w-full h-full opacity-80"
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-2 px-2">
-                                    <p className='font-normal text-base'>By vendor</p>
-                                    <h4 className='font-medium'>Product title</h4>
-                                    <p className='font-normal text-base'>Price</p>
-                                </div>
-                            </div>
+                            <Swiper
+                                loop={true}
+                                slidesPerView={1}
+                                spaceBetween={100}
+                                pagination={{
+                                    clickable: true,
+                                }}
+                                modules={[Pagination]}
+                                className='sm:hidden w-full'
+                            >
+                                {Array.from({ length: 4 }).map((idx, i) => {
+                                    return (
+                                        <SwiperSlide key={i}>
+                                            <div key={i} className='w-full'>
+                                                {productItemBlank()}
+                                            </div>
+                                            <div className='py-8 cursor-pointer'></div>
+                                        </SwiperSlide>
+                                    );
+                                })}
+                            </Swiper>
                             <div className={clsx('sm:grid justify-self-center gap-4 hidden grid-cols-4',
                             )}>
-                                <div className='flex flex-col gap-4 w-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
-                                    <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                        <IconImageBlank
-                                            viewBox="0 0 526 526"
-                                            className="w-full h-full opacity-80"
-                                        />
+                                {Array.from({ length: 4 }).map((idx, i) => (
+                                    <div key={i} className='w-full'>
+                                        {productItemBlank()}
                                     </div>
-                                    <div className="flex flex-col gap-2 px-2">
-                                        <p className='font-normal text-base'>By vendor</p>
-                                        <h4 className='font-medium'>Product title</h4>
-                                        <p className='font-normal text-base'>Price</p>
-                                    </div>
-                                </div>
-                                <div className='flex flex-col gap-4 w-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
-                                    <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                        <IconImageBlank
-                                            viewBox="0 0 526 526"
-                                            className="w-full h-full opacity-80"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-2 px-2">
-                                        <p className='font-normal text-base'>By vendor</p>
-                                        <h4 className='font-medium'>Product title</h4>
-                                        <p className='font-normal text-base'>Price</p>
-                                    </div>
-                                </div>
-                                <div className='flex flex-col gap-4 w-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
-                                    <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                        <IconImageBlank
-                                            viewBox="0 0 526 526"
-                                            className="w-full h-full opacity-80"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-2 px-2">
-                                        <p className='font-normal text-base'>By vendor</p>
-                                        <h4 className='font-medium'>Product title</h4>
-                                        <p className='font-normal text-base'>Price</p>
-                                    </div>
-                                </div>
-                                <div className='flex flex-col gap-4 w-full cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow'>
-                                    <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                        <IconImageBlank
-                                            viewBox="0 0 526 526"
-                                            className="w-full h-full opacity-80"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-2 px-2">
-                                        <p className='font-normal text-base'>By vendor</p>
-                                        <h4 className='font-medium'>Product title</h4>
-                                        <p className='font-normal text-base'>Price</p>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </>
                     ) : (
@@ -142,76 +119,37 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
                                 modules={[Pagination]}
                                 className='sm:hidden w-full'
                             >
-                                {displayedProducts?.map((index: any) => {
+                                {displayedProducts?.map((index: any, i: any) => {
                                     return (
                                         <SwiperSlide key={index}>
-                                            <Link to={`/products/${index.handle}`}>
-                                                <div className='flex flex-col gap-4 w-full cursor-pointer'>
-                                                    {index.featuredImage ? (
-                                                        <Image
-                                                            data={index.featuredImage}
-                                                            loading={lazyLoadImage ? 'lazy' : 'eager'}
-                                                            sizes="auto"
-                                                            className="!w-full !aspect-square object-cover"
-                                                        />) : (
-                                                        <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                                            <IconImageBlank
-                                                                viewBox="0 0 526 526"
-                                                                className="w-full h-full opacity-80"
-                                                            />
-                                                        </div>)}
-                                                    <div className="flex flex-col gap-4">
-                                                        <p className='font-normal text-base'>By {index.vendor}</p>
-                                                        <h4 className='font-medium'>{index.title}</h4>
-                                                        <p className='font-normal text-base'>{`${index.priceRange.maxVariantPrice.amount} ${index.priceRange.maxVariantPrice.currencyCode}`}</p>
-                                                    </div>
-                                                </div>
-                                            </Link>
+                                            <ProductCard
+                                                key={index.id}
+                                                product={index}
+                                                loading={getImageLoadingPriority(i)}
+                                            />
                                             <div className='py-8 cursor-pointer'></div>
                                         </SwiperSlide>
                                     );
                                 })}
                             </Swiper>
-                            <div className={clsx('sm:grid justify-self-center gap-4 hidden h-fit',
+                            <div className={clsx('sm:grid justify-self-center gap-4 gap-y-10 hidden h-fit',
                                 productPerRowClasses[Math.min(productsPerRow, displayedProducts?.length || 1)]).concat(' justify-items-center')}>
-                                {displayedProducts?.map((idx: any) => (
-                                    <Link key={idx.id} to={`/products/${idx.handle}`}>
-                                        <div className='flex flex-col gap-4 w-full h-full cursor-pointer group'>
-                                            {idx.featuredImage ? (
-                                                <div className='relative flex justify-center items-center'>
-                                                    <Image
-                                                        data={idx.featuredImage}
-                                                        loading={lazyLoadImage ? 'lazy' : 'eager'}
-                                                        sizes="auto"
-                                                        className="!w-full !aspect-square object-cover"
-                                                    />
-                                                    <div className='absolute bottom-0 py-4 px-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl'>
-                                                        <button className='border rounded-full w-full text-center px-1 py-2 hover:bg-white duration-500'>
-                                                            Add to Bag
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                                    <IconImageBlank
-                                                        viewBox="0 0 526 526"
-                                                        className="w-full h-full opacity-80"
-                                                    />
-                                                </div>)}
-                                            <div className="flex flex-col gap-2 px-2">
-                                                <p className='font-normal text-base'>By {idx.vendor}</p>
-                                                <h4 className='font-medium'>{idx.title}</h4>
-                                                <p className='font-normal text-base'>{`${idx.priceRange.maxVariantPrice.amount} ${idx.priceRange.maxVariantPrice.currencyCode}`}</p>
-                                            </div>
-                                        </div>
-                                    </Link>
+                                {displayedProducts?.map((idx: any, i: any) => (
+                                    <ProductCard
+                                        quickAdd
+                                        key={idx.id}
+                                        product={idx}
+                                        loading={getImageLoadingPriority(i)}
+                                    />
                                 ))}
                             </div>
                         </>)}
                     {showViewAllLink && loaderData && loaderData.collection && (
-                        <Link to={`/collections/${loaderData.collection.handle}`} className='flex justify-center'>
-                            <h3 className='border rounded-full px-5 py-3'>View All</h3>
-                        </Link>
+                        <div className='flex justify-center'>
+                            <Button to={`/collections/${loaderData.collection.handle}`} variant="outline">
+                                <span className='font-[Cormorant] text-xl'>View all</span>
+                            </Button>
+                        </div>
                     )}
                 </div>
             </section>
@@ -257,23 +195,10 @@ export let schema: HydrogenComponentSchema = {
                     label: 'Text color',
                 },
                 {
-                    type: 'text',
-                    name: 'heading',
-                    label: 'Heading',
-                    defaultValue: 'Best Sellers',
-                },
-                {
-                    type: 'toggle-group',
-                    label: 'Content alignment',
-                    name: 'contentAlignment',
-                    configs: {
-                        options: [
-                            { label: 'Left', value: 'left' },
-                            { label: 'Center', value: 'center' },
-                            { label: 'Right', value: 'right' },
-                        ],
-                    },
-                    defaultValue: 'left',
+                    type: 'color',
+                    name: 'backgroundColor',
+                    label: 'Background color',
+                    defaultValue: '#F8F8F0',
                 },
                 {
                     type: 'range',
@@ -335,4 +260,13 @@ export let schema: HydrogenComponentSchema = {
         },
     ],
     toolbar: ['general-settings', ['duplicate', 'delete']],
+    childTypes: ['heading'],
+    presets: {
+        children: [
+            {
+                type: 'heading',
+                content: 'Best Sellers',
+            }
+        ],
+    },
 };

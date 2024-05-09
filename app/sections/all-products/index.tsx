@@ -6,11 +6,11 @@ import type {
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
 import type {AllProductsQuery} from 'storefrontapi.generated';
-import { PageHeader, Section} from '~/components/Text';
+import { Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
 import {Grid} from '~/components/Grid';
 import {getImageLoadingPriority} from '~/lib/const';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/button';
 
 interface AllProductsProps extends HydrogenComponentProps {
   heading: string;
@@ -27,6 +27,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
     nextPageText,
     paddingTop,
     paddingBottom,
+    children,
     ...rest
   } = props;
   let {products} = useLoaderData<AllProductsQuery>();
@@ -39,12 +40,13 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
           paddingBottom: `${paddingBottom}px`,
         }}
       >
-        <PageHeader heading={heading} variant="allCollections" />
+        <div className='p-6 md:p-8 lg:p-12'>{children}</div>
         <Section>
           <Pagination connection={products}>
             {({nodes, isLoading, NextLink, PreviousLink}) => {
               let itemsMarkup = nodes.map((product, i) => (
                 <ProductCard
+                  quickAdd
                   key={product.id}
                   product={product}
                   loading={getImageLoadingPriority(i)}
@@ -57,17 +59,15 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
                     <Button
                         as={PreviousLink}
                         variant="secondary"
-                        width="full"
                       >
                         {isLoading ? 'Loading...' : prevPageText}
                       </Button>
                   </div>
-                  <Grid data-test="product-grid">{itemsMarkup}</Grid>
+                  <Grid className='!gap-y-10' data-test="product-grid">{itemsMarkup}</Grid>
                   <div className="flex items-center justify-center mt-6">
                     <Button
                         as={NextLink}
                         variant="secondary"
-                        width="full"
                       >
                         {isLoading ? 'Loading...' : nextPageText}
                       </Button>
@@ -96,13 +96,6 @@ export let schema: HydrogenComponentSchema = {
     {
       group: 'All products',
       inputs: [
-        {
-          type: 'text',
-          name: 'heading',
-          label: 'Heading',
-          defaultValue: 'All Products',
-          placeholder: 'All Products',
-        },
         {
           type: 'text',
           name: 'prevPageText',
@@ -144,4 +137,13 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
+  childTypes: ['heading'],
+    presets: {
+        children: [
+            {
+                type: 'heading',
+                content: "All products",
+            },
+        ],
+    },
 };

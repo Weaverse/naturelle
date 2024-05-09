@@ -13,10 +13,8 @@ import clsx from 'clsx';
 
 type BlogData = {
     blogs: WeaverseBlog;
-    heading: string;
     backgroundColor: string;
     articlePerRow: number;
-    showReadMoreButton: boolean;
     showSeperator: boolean;
 };
 
@@ -35,90 +33,49 @@ let articlesPerRowClasses: { [item: number]: string } = {
 const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     let {
         blogs,
-        heading,
         backgroundColor,
         articlePerRow,
-        showReadMoreButton,
         showSeperator,
         loaderData,
+        children,
         ...rest
     } = props;
 
-    function calculateHoverBackgroundColor(baseColor: string): string {
-        let hoverColor = '#';
-        const rgbValues = baseColor.match(/\w\w/g)?.map(component => parseInt(component, 16)) || [255, 255, 255];
-        const hoverRgbValues = rgbValues.map((value, index) => {
-            if (index === 2) {
-                return Math.min(255, value - 50);
-            }
-            return value;
-        });
-        hoverRgbValues.forEach(value => {
-            hoverColor += (value < 16 ? '0' : '') + value.toString(16);
-        });
-        return hoverColor;
+    const blogItemBlank = () => {
+        return (
+            <div
+                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-background-subtle-1 transition-colors duration-500 rounded cursor-pointer'
+            >
+                <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                    <IconImageBlank
+                        viewBox="0 0 526 526"
+                        className="w-full h-full opacity-80"
+                    />
+                </div>
+                <div className="flex flex-col gap-4">
+                    <h3 className='font-medium group-hover:underline'>Trendy items for this Winter Fall 2025 season</h3>
+                    <div className="border-b-2 border-gray-300 w-full"></div>
+                    <p className='font-normal line-clamp-3'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
+                </div>
+            </div>
+        );
     }
-
-    const hoverBackgroundColor = calculateHoverBackgroundColor(backgroundColor);
 
     let sectionStyle: CSSProperties = {
         '--background-color': backgroundColor,
-        '--background-color-hover': hoverBackgroundColor,
     } as CSSProperties;
 
     if (loaderData === undefined) {
         return (
             <section ref={ref} {...rest} className="w-full h-full bg-[var(--background-color)]" style={sectionStyle}>
-                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20">
-                    {heading && <div className="flex justify-center">
-                        <h2 className="font-medium">{heading}</h2>
-                    </div>}
+                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20">
+                    {children}
                     <div className="flex flex-col sm:grid sm:justify-self-center gap-5 sm:gap-0 grid-cols-3">
-                        <div
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="w-full h-full opacity-80"
-                                />
+                        {Array.from({ length: 3 }).map((idx, i) => (
+                            <div key={i} className='w-full group'>
+                                {blogItemBlank()}
                             </div>
-                            <div className="flex flex-col gap-4">
-                                <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
-                                <div className="border-b-2 border-gray-300 w-full"></div>
-                                <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                            </div>
-                        </div>
-                        <div
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="w-full h-full opacity-80"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
-                                <div className="border-b-2 border-gray-300 w-full"></div>
-                                <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                            </div>
-                        </div>
-                        <div
-                            className='flex flex-col gap-4 items-center w-full p-0 sm:p-6'
-                        >
-                            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
-                                <IconImageBlank
-                                    viewBox="0 0 526 526"
-                                    className="w-full h-full opacity-80"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-4">
-                                <h3 className='font-medium'>Trendy items for this Winter Fall 2025 season</h3>
-                                <div className="border-b-2 border-gray-300 w-full"></div>
-                                <p className='font-normal'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -126,13 +83,10 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     }
 
     let res = loaderData?.blog?.articles.nodes;
-
     return (
         <section ref={ref} {...rest} className="h-full w-full flex justify-center bg-[var(--background-color)]" style={sectionStyle}>
-            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:pt-20 max-w-[1440px]">
-                {heading && <div className="flex justify-center">
-                    <h2 className="font-medium">{heading}</h2>
-                </div>}
+            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20 max-w-[1440px]">
+                {children}
                 <div className={clsx(
                     "flex flex-col sm:grid sm:justify-self-center gap-5 sm:gap-0",
                     articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)]
@@ -140,7 +94,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                     {res?.map((idx: any) => (
                         <Link to={`/blogs/${blogs.handle}/${idx.handle}`} className={'group'}>
                             <div key={idx.id}
-                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-[var(--background-color-hover)] transition-colors duration-500 rounded cursor-pointer'
+                                className='flex flex-col gap-4 items-center w-full p-0 sm:p-6 group-hover:bg-background-subtle-1 transition-colors duration-500 rounded cursor-pointer'
                             >
                                 {idx.image ? (
                                     <Image
@@ -156,8 +110,8 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                                     </div>)}
                                 <div className="flex flex-col gap-4">
                                     <h3 className='group-hover:underline'>{idx.title}</h3>
-                                    {showSeperator && <div className="border-b-2 border-gray-300 w-full"></div>}
-                                    <p dangerouslySetInnerHTML={{ __html: idx.contentHtml }}></p>
+                                    {showSeperator && <div className="border-b border-bar-subtle w-full"></div>}
+                                    <p className='line-clamp-3'>{idx.excerpt}</p>
                                 </div>
                             </div>
                         </Link>
@@ -197,13 +151,6 @@ export const schema: HydrogenComponentSchema = {
                     label: "Blog",
                 },
                 {
-                    type: 'text',
-                    name: 'heading',
-                    label: 'Heading',
-                    defaultValue: 'Blogs',
-                    placeholder: 'Heading text',
-                },
-                {
                     type: 'color',
                     label: 'Background color',
                     name: 'backgroundColor',
@@ -213,18 +160,12 @@ export const schema: HydrogenComponentSchema = {
                     type: 'range',
                     name: 'articlePerRow',
                     label: 'Articles per row',
-                    defaultValue: 2,
+                    defaultValue: 3,
                     configs: {
                         min: 1,
                         max: 4,
                         step: 1,
                     },
-                },
-                {
-                    type: 'switch',
-                    name: 'showReadMoreButton',
-                    label: 'Show “Read more” button',
-                    defaultValue: true,
                 },
                 {
                     type: 'switch',
@@ -235,4 +176,13 @@ export const schema: HydrogenComponentSchema = {
             ],
         },
     ],
+    childTypes: ['heading'],
+    presets: {
+        children: [
+            {
+                type: 'heading',
+                content: 'Blogs',
+            }
+        ],
+    },
 };

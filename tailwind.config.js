@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import typographyPlugin from '@tailwindcss/typography';
 module.exports = {
   darkMode: ['class'],
   content: ['./@/**/*.{ts,tsx}', './app/**/*.{ts,tsx}'],
@@ -10,6 +11,10 @@ module.exports = {
       screens: {
         '2xl': '1440px',
       },
+    },
+    fontFamily: {
+      body: ["Open Sans Variable", "ui-sans-serif", "system-ui", "sans-serif"],
+      heading: ["Cormorant Variable", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
     },
     extend: {
       colors: {
@@ -48,10 +53,23 @@ module.exports = {
           soldout: '#A8A79C',
         },
       },
+      height: {
+        screen: 'var(--screen-height, 100vh)',
+        'screen-no-nav':
+          'calc(var(--screen-height, 100vh) - var(--height-nav))',
+        'screen-dynamic': 'var(--screen-height-dynamic, 100vh)',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      height: {
+        screen: 'var(--screen-height, 100vh)',
+        'screen-no-nav':
+          'calc(var(--screen-height, 100vh) - var(--height-nav))',
+        'screen-in-drawer': 'calc(var(--screen-height, 100vh) - 90px)',
+        'screen-dynamic': 'var(--screen-height-dynamic, 100vh)',
       },
       keyframes: {
         'accordion-down': {
@@ -79,5 +97,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    typographyPlugin
+  ],
 };

@@ -51,6 +51,7 @@ export function getWeaverseCsp(request: Request) {
     connectSrc: [
       "'self'",
       'https://monorail-edge.shopifysvc.com',
+      'https://www.instagram.com/',
       ...localDirectives,
       ...weaverseHosts,
     ],

@@ -10,6 +10,7 @@ import 'swiper/swiper-bundle.css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import clsx from 'clsx';
+import { IconImageBlank, IconInstagram } from '~/components/Icon';
 
 type InstagramData = {
     instagramToken: string;
@@ -20,8 +21,8 @@ type InstagramData = {
     loaderData: {
         data: {
             id: string;
-            caption: string;
             media_url: string;
+            username: string;
         }[];
     };
 };
@@ -39,26 +40,91 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
         '--speed': `${speed}s`,
         '--swiper-theme-color': '#3D490B',
     } as CSSProperties;
+    const imageItemBlank = () => {
+        return (
+            <div className="bg-background-subtle-1 flex justify-center items-center w-full aspect-square">
+                <IconImageBlank
+                    viewBox="0 0 526 526"
+                    className="!w-full !h-full opacity-80"
+                />
+            </div>
+        );
+    }
 
     let res = loaderData?.data;
     if (!res) {
         return (
-            <section ref={ref} {...rest} className={clsx('w-full h-full')} style={sectionStyle}>
-                <div className='sm:px-10 sm:py-20 flex justify-center items-center px-7 py-12 w-full h-full'>
-                    <p className='font-medium text-lg'>Loading...</p>
+            <section ref={ref} {...rest} className={clsx('w-full')} style={sectionStyle}>
+                <div className='sm:px-10 sm:py-20 flex flex-col justify-center items-center gap-12 px-7 py-12 w-full'>
+                    <div className='w-full h-full text-center'>
+                        {children}
+                    </div>
+                    <Swiper
+                        loop={true}
+                        slidesPerView={1}
+                        spaceBetween={100}
+                        pagination={{
+                            clickable: true,
+                        }}
+                        modules={[Pagination]}
+                        className='w-full sm:hidden'
+                    >
+                        {Array.from({ length: 3 }).map((idx, i) => {
+                            return (
+                                <SwiperSlide key={i}>
+                                    <div key={i} className='w-full'>
+                                        {imageItemBlank()}
+                                    </div>
+                                    <div className='py-8 cursor-pointer'></div>
+                                </SwiperSlide>
+                            );
+                        })}
+                    </Swiper>
+                    <div className='sm:flex justify-center items-center w-full gap-4 hidden'>
+                        {Array.from({ length: 3 }).map((idx, i) => (
+                            <div key={i} className='w-full'>
+                                {imageItemBlank()}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </section>
         );
     }
     let displayedImages = res?.slice(0, imagesPerRow);
+    const imageItemRender = () => {
+        return (
+            <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
+                style={{ animationDuration: `var(--speed)` }}>
+                {displayedImages.map((item, index) => {
+                    return (
+                        <div className='relative cursor-pointer min-w-80 group'>
+                            <Image
+                                key={index}
+                                src={item.media_url}
+                                className="object-cover w-full aspect-square"
+                            />
+                            <div className='absolute inset-0 justify-center items-center z-10 hidden group-hover:flex'>
+                                <a href={`https://www.instagram.com/${item.username}/`} target="_blank" className="flex gap-2 justify-center items-center">
+                                    <IconInstagram className="w-8 h-8" viewBox="0 0 24 24" />
+                                    <span className='text-white font-heading text-xl font-medium'>@{item.username}</span>
+                                </a>
+                            </div>
+                            <div className="absolute inset-0 group-hover:bg-[#554612] opacity-0 group-hover:opacity-50 transition-colors duration-500"/>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
 
     return (
-        <section ref={ref} {...rest} className={clsx( 'w-full h-full' ,!visibleOnMobile && 'hidden sm:block',)} style={sectionStyle}>
+        <section ref={ref} {...rest} className={clsx('w-full h-full', !visibleOnMobile && 'hidden sm:block',)} style={sectionStyle}>
             <div className='sm:px-10 sm:py-20 flex flex-col gap-12 px-7 py-12'>
-                <div className='w-full h-full'>
+                <div className='w-full h-full text-center'>
                     {children}
                 </div>
-                <div className='flex gap-4 overflow-hidden'>
+                <div className='flex gap-0 sm:gap-4 overflow-hidden'>
                     {
                         res.length === 0 ? (
                             <div className='flex justify-center items-center gap-4 w-full h-full'>
@@ -72,9 +138,9 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                     spaceBetween={100}
                                     pagination={{
                                         clickable: true,
-                                      }}
+                                    }}
                                     modules={[Pagination]}
-                                    className='h-full sm:hidden'
+                                    className='w-full sm:hidden'
                                 >
                                     {displayedImages.map((item, index) => {
                                         return (
@@ -89,138 +155,11 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                         );
                                     })}
                                 </Swiper>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className='sm:flex justify-center items-center gap-4 sm:animate-scrollImage hidden'
-                                    style={{ animationDuration: `var(--speed)` }}>
-                                    {displayedImages.map((item, index) => {
-                                        return (
-                                            <Image
-                                                key={index}
-                                                src={item.media_url}
-                                                className="min-w-80 object-cover aspect-square"
-                                            />
-                                        );
-                                    })}
-                                </div>
+                                {Array.from({ length: 11 }).map((idx, i) => (
+                                    <div key={i}>
+                                        {imageItemRender()}
+                                    </div>
+                                ))}
                             </>
                         )
                     }
@@ -236,7 +175,7 @@ export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
     let { weaverse, data } = args;
     let { fetchWithCache } = weaverse
     if (data.instagramToken) {
-        let API = `https://graph.instagram.com/me/media?fields=id,caption,media_url&access_token=${data.instagramToken}`
+        let API = `https://graph.instagram.com/me/media?fields=id,media_url,username&access_token=${data.instagramToken}`
         let res = await fetchWithCache(API)
         return res;
     }

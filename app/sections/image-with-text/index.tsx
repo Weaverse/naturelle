@@ -9,29 +9,42 @@ import { IconImageBlank } from '~/components/Icon';
 import clsx from 'clsx';
 
 type AlignImage = 'left' | 'right';
+type Alignment = 'left' | 'center' | 'right';
 interface ImageWithTextProps extends HydrogenComponentProps {
     backgroundImage?: WeaverseImage;
     sectionHeight: number;
     backgroundColor: string;
     imageAlignment?: AlignImage;
+    textAlignment: Alignment;
+    marginTop?: number;
+    marginBottom?: number;
 }
 
 let AlignImageClasses: Record<AlignImage, string> = {
-    left: 'sm:flex-row-reverse',
-    right: 'sm:flex-row',
+    left: 'sm:flex-row',
+    right: 'sm:flex-row-reverse',
+};
+
+let alignmentClasses: Record<Alignment, string> = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
 };
 
 const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) => {
-    let { backgroundImage, imageAlignment, sectionHeight, backgroundColor, children, ...rest } = props;
+    let { backgroundImage, imageAlignment, marginTop, marginBottom, sectionHeight, backgroundColor, textAlignment, children, ...rest } = props;
     let styleSection: CSSProperties = {
         '--section-height': `${sectionHeight}px`,
+        '--margin-top': `${marginTop}px`,
+        '--margin-bottom': `${marginBottom}px`,
         '--background-color': backgroundColor,
     } as CSSProperties;
 
     return (
-        <section ref={ref} {...rest} style={styleSection} className='group sm:h-[var(--section-height)] h-auto'>
-            <div className='h-full w-full sm:px-0'>
-                <div className={clsx('flex flex-col-reverse justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
+        <section ref={ref} {...rest} style={styleSection} className='h-auto'>
+            <div className='pt-[var(--margin-top)]'/>
+            <div className='h-full w-full group sm:px-0 sm:h-[var(--section-height)]'>
+                <div className={clsx('flex flex-col justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
                     <div
                         className="w-full h-1/2 sm:h-full flex flex-1 items-center justify-center sm:w-1/2 aspect-square overflow-hidden"
                     >
@@ -50,11 +63,15 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
                             </div>
                         )}
                     </div>
-                    <div className='flex flex-col px-6 py-12 gap-4 justify-center bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20'>
+                    <div className={clsx(
+                        'flex flex-col justify-center px-6 py-12 gap-4 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20',
+                        alignmentClasses[textAlignment!],
+                    )}>
                         {children}
                     </div>
                 </div>
             </div>
+            <div className='pb-[var(--margin-bottom)]'/>
         </section>
     );
 });
@@ -80,11 +97,24 @@ export let schema: HydrogenComponentSchema = {
                     name: 'imageAlignment',
                     configs: {
                         options: [
-                            { label: 'Right', value: 'right', icon: 'AlignRight' },
-                            { label: 'Left', value: 'left', icon: 'AlignLeft' },
+                            { label: 'Left', value: 'left' },
+                            { label: 'Right', value: 'right' },
                         ],
                     },
                     defaultValue: 'left',
+                },
+                {
+                    type: 'toggle-group',
+                    label: 'Text alignment',
+                    name: 'textAlignment',
+                    configs: {
+                        options: [
+                            { label: 'Left', value: 'left' },
+                            { label: 'Center', value: 'center'},
+                            { label: 'Right', value: 'right' },
+                        ],
+                    },
+                    defaultValue: 'center',
                 },
                 {
                     type: 'color',
@@ -101,6 +131,30 @@ export let schema: HydrogenComponentSchema = {
                         min: 400,
                         max: 700,
                         step: 10,
+                        unit: 'px',
+                    },
+                },
+                {
+                    type: 'range',
+                    name: 'marginTop',
+                    label: 'Margin top',
+                    defaultValue: 0,
+                    configs: {
+                        min: 0,
+                        max: 100,
+                        step: 1,
+                        unit: 'px',
+                    },
+                },
+                {
+                    type: 'range',
+                    name: 'marginBottom',
+                    label: 'Margin bottom',
+                    defaultValue: 0,
+                    configs: {
+                        min: 0,
+                        max: 100,
+                        step: 1,
                         unit: 'px',
                     },
                 },

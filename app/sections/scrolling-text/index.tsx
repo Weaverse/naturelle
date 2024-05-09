@@ -78,7 +78,7 @@ export let schema: HydrogenComponentSchema = {
     toolbar: ['general-settings', ['duplicate', 'delete']],
     inspector: [
         {
-            group: 'testimonials',
+            group: 'Scrolling Text',
             inputs: [
                 {
                     type: 'textarea',
@@ -92,9 +92,9 @@ export let schema: HydrogenComponentSchema = {
                     name: 'textSize',
                     configs: {
                         options: [
-                            { label: 'S', value: '14' },
-                            { label: 'M', value: '16' },
-                            { label: 'L', value: '18' },
+                            { label: 'S', value: '16' },
+                            { label: 'M', value: '18' },
+                            { label: 'L', value: '20' },
                         ],
                     },
                     defaultValue: '16',
@@ -147,8 +147,8 @@ export let schema: HydrogenComponentSchema = {
                     defaultValue: 70,
                     configs: {
                         min: 10,
-                        max: 100,
-                        step: 5,
+                        max: 200,
+                        step: 1,
                         unit: 's',
                     },
                 },
