@@ -32,9 +32,6 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
   } = props;
   let {products} = useLoaderData<AllProductsQuery>();
 
-  console.log(children?.length);
-  
-
   return (
     <section ref={ref} {...rest}>
       <div
