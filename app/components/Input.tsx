@@ -1,6 +1,6 @@
 import {cn} from '@/lib/utils';
 import clsx from 'clsx';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {IconClose} from './Icon';
 
 const variants = {
@@ -16,72 +16,75 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: 'default' | 'search' | 'minisearch' | 'error';
   suffix?: React.ReactNode;
   prefixElement?: React.ReactNode;
-  onClear?: () => void;
+  onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function Input({
-  className = '',
-  type,
-  variant = 'default',
-  prefixElement,
-  suffix,
-  onFocus,
-  onBlur,
-  onClear,
-  ...rest
-}: InputProps) {
-  let [focused, setFocused] = useState(false);
-  let commonClasses = cn(
-    'w-full rounded-sm border px-3 py-2.5',
-    focused ? 'border-bar' : 'border-bar-subtle',
-    className,
-  );
+export let Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({
+    className = '',
+    type,
+    variant = 'default',
+    prefixElement,
+    suffix,
+    onFocus,
+    onBlur,
+    onClear,
+    ...rest
+  }, ref) => {
+    let [focused, setFocused] = useState(false);
+    let commonClasses = cn(
+      'w-full rounded-sm border px-3 py-2.5',
+      focused ? 'border-bar' : 'border-bar-subtle',
+      className,
+    );
 
-  let handleClear = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.previousSibling.value = '';
-    if (onClear) onClear();
-  };
-  if (type === 'search') {
-    suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
-  }
-  let hasChild = Boolean(prefixElement || suffix);
+    let handleClear = (e: any) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.currentTarget.previousSibling.value = '';
+      if (onClear) onClear(e);
+    };
+    if (type === 'search') {
+      suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
+    }
+    let hasChild = Boolean(prefixElement || suffix);
 
-  let rawInput = (
-    <input
-      // type={type}
-      className={clsx(
-        'w-full !shadow-none focus:ring-0 focus-visible:outline-none',
-        hasChild
-          ? 'relatvie grow border-none bg-transparent p-0'
-          : commonClasses,
-        variants[variant],
-      )}
-      onFocus={(e) => {
-        setFocused(true);
-        if (onFocus) onFocus(e);
-      }}
-      onBlur={(e) => {
-        setFocused(false);
-        if (onBlur) onBlur(e);
-      }}
-      {...rest}
-    />
-  );
+    let rawInput = (
+      <input
+        // type={type}
+        ref={ref}
+        className={clsx(
+          'w-full !shadow-none focus:ring-0 focus-visible:outline-none',
+          hasChild
+            ? 'relatvie grow border-none bg-transparent p-0'
+            : commonClasses,
+          variants[variant],
+        )}
+        onFocus={(e) => {
+          setFocused(true);
+          if (onFocus) onFocus(e);
+        }}
+        onBlur={(e) => {
+          setFocused(false);
+          if (onBlur) onBlur(e);
+        }}
+        {...rest}
+      />
+    );
 
-  return hasChild ? (
-    <div
-      className={clsx(
-        commonClasses,
-        'flex items-center gap-2 overflow-hidden border p-2.5',
-      )}
-    >
-      {prefixElement}
-      {rawInput}
-      {suffix}
-    </div>
-  ) : (
-    rawInput
-  );
-}
+    return hasChild ? (
+      <div
+        className={clsx(
+          commonClasses,
+          'flex items-center gap-2 overflow-hidden border p-2.5',
+        )}
+      >
+        {prefixElement}
+        {rawInput}
+        {suffix}
+      </div>
+    ) : (
+      rawInput
+    );
+  },
+);
