@@ -1,6 +1,5 @@
 import {Link} from '@remix-run/react';
 import {PredictiveSearchResult} from './PredictiveSearchResult';
-import {NoPredictiveSearchResults} from './Search';
 import {usePredictiveSearch} from './usePredictiveSearch';
 
 export function PredictiveSearchResults() {
@@ -81,5 +80,20 @@ export function PredictiveSearchResults() {
         )}
       </div>
     </div>
+  );
+}
+
+function NoPredictiveSearchResults({
+  searchTerm,
+}: {
+  searchTerm: React.MutableRefObject<string>;
+}) {
+  if (!searchTerm.current) {
+    return null;
+  }
+  return (
+    <p className="w-[640px] border bg-background-subtle-1 p-6">
+      No results found for <q>{searchTerm.current}</q>
+    </p>
   );
 }
