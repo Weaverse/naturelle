@@ -31,8 +31,6 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
     ...rest
   } = props;
   let {products} = useLoaderData<AllProductsQuery>();
-  console.log(Children.count(children));
-  
 
   return (
     <section ref={ref} {...rest}>
@@ -43,7 +41,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
         }}
         className='container'
       >
-          {Children.count(children) === 1 && (
+          {!!Children.count(children) && (
             <div className='p-6 md:p-8 lg:p-12'>
               {children}
             </div>

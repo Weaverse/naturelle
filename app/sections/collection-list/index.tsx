@@ -45,7 +45,7 @@ let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
           alignmentClasses[contentAlignment!],
         )}>
         <div className='max-w-[1440px] pt-[var(--top-padding)] pb-[var(--bottom-padding)]'>
-        {Children.count(children) === 1 && (
+        {!!Children.count(children) && (
             <div className='p-6 md:p-8 lg:p-12'>
               {children}
             </div>
