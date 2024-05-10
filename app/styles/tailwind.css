@@ -79,6 +79,9 @@
     {
         @apply font-heading;
     }
+    mark {
+        @apply bg-transparent font-semibold;
+    }
 }
 
 @layer components {

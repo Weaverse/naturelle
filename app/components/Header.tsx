@@ -11,6 +11,7 @@ import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
 import type {LayoutProps} from './Layout';
 import {Link} from './Link';
 import {Logo} from './Logo';
+import {PredictiveSearch} from './predictive-search/PredictiveSearch';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -208,15 +209,19 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
+  const {isOpen, closeDrawer, openDrawer} = useDrawer();
   return (
-    <Form method="get" action="/search" className="flex items-center gap-2">
+    <>
       <button
-        type="submit"
+        onClick={openDrawer}
         className="relative flex h-8 w-8 items-center justify-center focus:ring-primary/5"
       >
         <IconSearch className="h-6 w-6 !font-extralight" />
       </button>
-    </Form>
+      <Drawer open={isOpen} onClose={closeDrawer} openFrom="top" heading="">
+        <PredictiveSearch isOpen={isOpen} />
+      </Drawer>
+    </>
   );
 }
 
