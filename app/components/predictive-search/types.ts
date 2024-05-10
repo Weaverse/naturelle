@@ -1,3 +1,4 @@
+import { FormProps, useFetcher } from "@remix-run/react";
 import type {
   PredictiveArticleFragment,
   PredictiveCollectionFragment,
@@ -52,4 +53,18 @@ export type SearchResultTypeProps = {
 
 export type SearchResultItemProps = Pick<SearchResultTypeProps, 'goToSearchResult'> & {
   item: NormalizedPredictiveSearchResultItem;
+};
+
+type ChildrenRenderProps = {
+  fetchResults: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  fetcher: ReturnType<typeof useFetcher<NormalizedPredictiveSearchResults>>;
+  inputRef: React.MutableRefObject<HTMLInputElement | null>;
+};
+
+export type SearchFromProps = {
+  action?: FormProps['action'];
+  method?: FormProps['method'];
+  className?: string;
+  children: (passedProps: ChildrenRenderProps) => React.ReactNode;
+  [key: string]: unknown;
 };

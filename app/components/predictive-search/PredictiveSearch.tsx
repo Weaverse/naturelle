@@ -1,7 +1,7 @@
 import {IconSearch} from '../Icon';
 import {Input} from '../Input';
 import {PredictiveSearchResults} from './PredictiveSearchResults';
-import {PredictiveSearchForm} from './Search';
+import {PredictiveSearchForm} from './SearchForm';
 
 interface PredictiveSearchProps {
   // Predictive search props
@@ -31,7 +31,6 @@ export function PredictiveSearch(props: PredictiveSearchProps) {
                   />
                 </button>
               }
-              type="search"
               autoFocus={true}
             />
           </div>
