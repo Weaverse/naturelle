@@ -4,7 +4,7 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import {forwardRef} from 'react';
+import {Children, forwardRef} from 'react';
 import type {AllProductsQuery} from 'storefrontapi.generated';
 import { Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
@@ -31,6 +31,8 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
     ...rest
   } = props;
   let {products} = useLoaderData<AllProductsQuery>();
+  console.log(Children.count(children));
+  
 
   return (
     <section ref={ref} {...rest}>
@@ -41,10 +43,11 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
         }}
         className='container'
       >
-        {children?.length !== undefined && (
+          {Children.count(children) === 1 && (
             <div className='p-6 md:p-8 lg:p-12'>
               {children}
-            </div>)}
+            </div>
+          )}
         <Section>
           <Pagination connection={products}>
             {({nodes, isLoading, NextLink, PreviousLink}) => {
