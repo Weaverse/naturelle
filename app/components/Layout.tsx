@@ -11,8 +11,8 @@ import {Header, HeaderMenu} from '~/components/Header';
 import {CartMain} from '~/components/Cart';
 import {
   PredictiveSearchForm,
-  PredictiveSearchResults,
-} from '~/components/Search';
+} from '~/components/predictive-search/Search';
+import { PredictiveSearchResults } from "./predictive-search/PredictiveSearchResults";
 
 export type LayoutProps = {
   cart: Promise<CartApiQueryFragment | null>;
