@@ -72,7 +72,7 @@ const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsProps>(
         return (
             <section ref={ref} {...rest} className='w-full h-full flex justify-center bg-[var(--background-color)]' style={sectionStyle}>
                 <div className={clsx(
-                    'px-4 w-full flex flex-col gap-12 max-w-[1440px] sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]',
+                    'px-4 w-full flex flex-col gap-12 container sm:px-6 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]',
                 )}>
                     {children}
                     {loaderData === undefined || null ? (

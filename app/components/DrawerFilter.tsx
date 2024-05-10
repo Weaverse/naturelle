@@ -45,7 +45,7 @@ export function DrawerFilter({
   const {openDrawer, isOpen, closeDrawer} = useDrawer();
   return (
     <>
-      <div className="border-y border-bar-subtle py-6 ">
+      <div className="border-y border-bar-subtle py-4 ">
         <div className="container flex w-full items-center justify-between">
           <span className="text-xl tracking-tight font-medium font-heading">
             {productNumber} Products

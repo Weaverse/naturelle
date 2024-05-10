@@ -32,8 +32,8 @@ let sizes: Record<Size, string> = {
     default: '',
     lead: 'text-lg leading-snug',
     heading: 'text-lg sm:text-2xl',
-    display: 'text-xl sm:text-4xl',
-    jumbo: 'text-2xl sm:text-5xl tracking-tight',
+    display: 'text-xl sm:text-3xl',
+    jumbo: 'text-2xl sm:text-4xl tracking-tight',
     scale: 'text-scale leading-normal',
 };
 
