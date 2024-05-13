@@ -24,7 +24,7 @@ const Checkbox = React.forwardRef<
         <CheckboxPrimitive.Indicator
           className={cn('flex items-center justify-center text-current')}
         >
-          <Check className="h-5 w-5" />
+          <Check className="h-4 w-4" />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
       {label ? <span>{label}</span> : null}
