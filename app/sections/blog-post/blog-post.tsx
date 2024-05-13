@@ -7,8 +7,6 @@ import type {
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
 
-import {Section} from '~/components/Text';
-
 interface BlogPostProps extends HydrogenComponentProps {
   paddingTop: number;
   paddingBottom: number;
@@ -35,20 +33,18 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
             {image && (
               <Image
                 data={image}
-                className="w-full h-[720px] object-cover"
+                className="w-full h-[330px] sm:h-[720px] object-cover"
               />
             )}
-            <div className="w-full h-full flex items-center pt-16 flex-col gap-4">
+            <div className="h-full flex items-center lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm pt-16 pb-6 flex-col gap-4 mx-auto px-4 md:px-6 lg:px-0">
               <h5 className='py-1 px-4 bg-label-new text-white rounded'>Product guidelines</h5>
-              <h1 className="font-bold">{title}</h1>
+              <h1 className="font-bold text-center">{title}</h1>
             </div>
           </div>
-          <Section as="div" padding="all">
-            <div className="lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
+            <div className="lg:max-w-screen-lg lg:pb-10 md:pb-8 pb-6 md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
               <article className='prose-lg' dangerouslySetInnerHTML={{__html: contentHtml}} />
               <p className="font-semibold opacity-45 text-foreground-subtle mt-9">{formattedDate}</p>
             </div>
-          </Section>
         </div>
       </section>
     );
