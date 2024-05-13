@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import clsx from 'clsx';
 
 type IconProps = JSX.IntrinsicElements['svg'] & {
@@ -18,7 +19,7 @@ function Icon({
       {...props}
       fill={fill}
       stroke={stroke}
-      className={clsx('w-5 h-5', className)}
+      className={cn('w-5 h-5', className)}
     >
       {children}
     </svg>
@@ -315,16 +316,16 @@ export function IconCaret({
 
   switch (direction) {
     case 'down':
-      rotate = 'rotate-0';
+      rotate = 'rotate-90';
       break;
     case 'up':
-      rotate = 'rotate-180';
-      break;
-    case 'left':
       rotate = '-rotate-90';
       break;
+    case 'left':
+      rotate = 'rotate-180';
+      break;
     case 'right':
-      rotate = 'rotate-90';
+      rotate = 'rotate-0';
       break;
     default:
       rotate = 'rotate-0';
@@ -333,12 +334,13 @@ export function IconCaret({
   return (
     <Icon
       {...props}
-      className={`w-5 h-5 transition ${rotate}`}
+      className={`w-4 h-4 transition ${rotate}`}
+      viewBox="0 0 16 16"
       fill="transparent"
       stroke={stroke}
     >
       <title>Caret</title>
-      <path d="M14 8L10 12L6 8" strokeWidth="1.25" />
+      <path d="M6 3L11 8L6 13" strokeWidth="1.25"/>
     </Icon>
   );
 }

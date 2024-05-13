@@ -7,6 +7,7 @@ import {IconRemove} from './Icon';
 import {Button} from '@/components/button';
 import {Input} from '@/components/input';
 import {cn} from '@/lib/utils';
+import clsx from "clsx";
 
 type CartLine = CartApiQueryFragment['lines']['nodes'][0];
 
@@ -104,7 +105,7 @@ function CartLineItem({
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   let styles = {
     page: 'grid md:table-row gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]',
-    aside: 'grid gap-3 grid-rows-2 grid-cols-[100px_1fr_64px]',
+    aside: 'grid gap-3 grid-rows-[1fr_auto] grid-cols-[100px_1fr_64px] pb-4',
   };
 
   const cellStyles = {
@@ -276,11 +277,15 @@ export function CartSummary({
     page: 'bg-white p-6 space-y-6',
     aside: 'space-y-6 border-t border-bar-subtle pt-4',
   };
+  const totalStyles = {
+    page: 'text-2xl font-heading',
+    aside: 'font-semibold',
+  };
   return (
     <div aria-labelledby="cart-summary" className={styles[layout]}>
-      <div className="flex items-center justify-between font-medium text-2xl">
-        <h4>Totals</h4>
-        <div>
+      <div className={clsx("flex items-center justify-between font-medium", totalStyles[layout])}>
+        <span>Total</span>
+        <div className={layout === 'page' ? "text-3xl" : ""}>
           {cost?.subtotalAmount?.amount ? (
             <Money data={cost?.subtotalAmount} />
           ) : (
