@@ -62,7 +62,7 @@ export function Drawer({
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className={cn("transform bg-background-subtle-1 text-left align-middle shadow-xl transition-all", openFrom === 'top' ? 'w-screen h-fit' : 'max-w-96 h-screen-dynamic w-screen')}>
+                <Dialog.Panel className={cn("transform text-left align-middle shadow-xl transition-all", openFrom === 'top' ? 'w-screen h-fit bg-background-subtle-1' : 'max-w-96 h-screen-dynamic w-screen bg-background-basic')}>
                   <header
                     className={`h-nav sticky top-0 flex items-center p-6 ${
                       heading ? 'justify-between' : 'justify-end'
