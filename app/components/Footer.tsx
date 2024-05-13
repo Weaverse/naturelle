@@ -13,8 +13,8 @@ export function Footer({
   let isError = fetcher.state ==='idle' && fetcher.data?.errors 
   return (
     <footer className="footer bg-background-subtle-2">
-      <div className="container grid grid-cols-1 md:grid-cols-2 md:divide-x">
-        <div className="space-y-4 p-6 md:p-16 md:pb-24">
+      <div className="grid lg:container grid-cols-1 px-4 pt-6 pb-10 md:px-6 md:pt-0 md:pb-0 gap-y-6 md:grid-cols-2 md:divide-x">
+        <div className="space-y-4 md:pt-10 md:pb-16 md:pr-6 lg:px-10 lg:pt-16 lg:pb-24">
           <h3>Newsletter</h3>
           <p>Sign up for 15% off and updates straight to your inbox.</p>
           <fetcher.Form method="POST" action="/api/customer" className="flex gap-2">
@@ -29,7 +29,7 @@ export function Footer({
           </fetcher.Form>
           {isError && <p className="!mt-1 text-xs text-red-700">{fetcher.data.errors[0].message}</p>}
         </div>
-        <div className="space-y-6 p-6 md:p-16 md:pb-24">
+        <div className="space-y-6 md:p-16 md:pb-24">
           <h3>Quick links</h3>
           {menu && shop?.primaryDomain?.url && (
             <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
