@@ -21,7 +21,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   let {isOpen: showMenu, openDrawer, closeDrawer} = useDrawer();
   return (
-    <header className="z-10 grid h-screen-no-nav grid-cols-3 items-center gap-3 border-b border-foreground bg-background-subtle-1 px-6 py-4">
+    <header className="z-10 grid sm:h-screen-no-nav grid-cols-3 items-center gap-3 border-b border-foreground bg-background-subtle-1 px-6 py-4">
       <Logo />
       {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
       <button onClick={openDrawer}>MENU</button>
@@ -70,8 +70,8 @@ export function HeaderMenu({
   }
   return (
     <div className="flex h-full w-full flex-col border-t border-bar-subtle bg-background-subtle-1">
-      <div className="container grid h-full grid-cols-1 duration-500  md:grid-cols-2">
-        <nav className="flex flex-col gap-4 p-8" role="navigation">
+      <div className="sm:container grid h-full grid-cols-1 duration-500  md:grid-cols-2">
+        <nav className="flex flex-col gap-4 md:gap-5 lg:gap-6 pl-6 pt-8 pb-8 pr-8 md:pl-12 lg:pl-20 lg:pb-16" role="navigation">
           {/* {viewport === 'mobile' && (
         <NavLink
           end
@@ -124,7 +124,7 @@ export function HeaderMenu({
               // height: 1002,
             }}
             loading="eager"
-            className="aspect-auto object-cover lg:aspect-[2/1]"
+            className="object-cover aspect-square lg:aspect-[2/1]"
             sizes="auto"
           />
         </div>

@@ -167,8 +167,8 @@ export default function Search() {
 
   return (
     <>
-      <PageHeader className="items-center justify-center bg-background-subtle-1">
-        <h1 className="w-full text-center text-5xl font-medium">
+      <PageHeader variant='search' className="bg-background-subtle-1">
+        <h1 className="w-full text-center text-3xl md:text-4xl lg:text-5xl font-medium">
           {searchTerm
             ? `Search results for “${searchTerm}”`
             : 'Search our site'}
@@ -182,7 +182,7 @@ export default function Search() {
             onClear={() => navigate(location.pathname)}
             name="q"
             placeholder="What are you looking for?"
-            className="w-[400px] rounded border-2"
+            className="rounded w-full md:w-96 lg:w-[400px] border-2"
             type="search"
             prefixElement={
               <button type="submit" className="cursor-pointer">
@@ -202,7 +202,7 @@ export default function Search() {
         productNumber={products.totalCount}
         filters={productfilters}
       />
-      <div className="container">
+      <div className="px-4 md:px-6 lg:container">
         {noResults ? (
           <NoResults
             noResults={noResults}
@@ -226,7 +226,7 @@ export default function Search() {
                       {isLoading ? 'Loading...' : 'Previous'}
                     </Button>
                   </div>
-                  <Grid data-test="product-grid" className='!gap-y-10'>{itemsMarkup}</Grid>
+                  <Grid data-test="product-grid" layout='products' className='!gap-y-10'>{itemsMarkup}</Grid>
                   <div className="my-6 flex w-full items-center justify-center">
                     <Button as={NextLink} variant="secondary">
                       {isLoading ? 'Loading...' : 'Show more +'}

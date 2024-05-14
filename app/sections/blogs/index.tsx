@@ -68,7 +68,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     if (loaderData === undefined) {
         return (
             <section ref={ref} {...rest} className="w-full h-full bg-[var(--background-color)]" style={sectionStyle}>
-                <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20">
+                <div className="px-4 py-12 flex flex-col gap-6 sm:px-6 sm:py-20">
                     {children}
                     <div className="flex flex-col sm:grid sm:justify-self-center gap-5 sm:gap-0 grid-cols-3">
                         {Array.from({ length: 3 }).map((idx, i) => (
@@ -85,7 +85,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     let res = loaderData?.blog?.articles.nodes;
     return (
         <section ref={ref} {...rest} className="h-full w-full flex justify-center bg-[var(--background-color)]" style={sectionStyle}>
-            <div className="px-4 pt-12 flex flex-col gap-6 sm:px-6 sm:py-20 container">
+            <div className="px-4 py-12 flex flex-col gap-6 sm:px-6 sm:py-20 container">
                 {children}
                 <div className={clsx(
                     "flex flex-col sm:grid sm:justify-self-center gap-9 sm:gap-0",
