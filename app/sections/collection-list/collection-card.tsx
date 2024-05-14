@@ -28,7 +28,10 @@ export function CollectionCard({
           )}
         </div>
       </div>
-      <div className='absolute inset-0 group-hover:bg-foreground group-hover:opacity-30 opacity-0 transition-colors duration-300'/>
+      <div className='absolute inset-0 justify-center items-center z-10 flex'>
+        <h3 className='group-hover:underline text-white font-medium'>{collection.title}</h3>
+      </div>
+      <div className='absolute inset-0 group-hover:bg-foreground group-hover:opacity-50 opacity-30 bg-foreground transition-opacity duration-500'/>
     </Link>
   );
 }

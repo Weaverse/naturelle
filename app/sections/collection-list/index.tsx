@@ -4,7 +4,7 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import { forwardRef, CSSProperties } from 'react';
+import { forwardRef, CSSProperties, Children } from 'react';
 import type { StoreCollectionsQuery } from 'storefrontapi.generated';
 import { Section } from '~/components/Text';
 import { Button } from '@/components/button';
@@ -45,9 +45,11 @@ let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
           alignmentClasses[contentAlignment!],
         )}>
         <div className='max-w-[1440px] pt-[var(--top-padding)] pb-[var(--bottom-padding)]'>
-          <div className='p-6 md:p-8 lg:p-12'>
-            {children}
-          </div>
+        {!!Children.count(children) && (
+            <div className='p-6 md:p-8 lg:p-12'>
+              {children}
+            </div>
+          )}
           <Section as="div">
             <Pagination connection={collections}>
               {({ nodes, isLoading, PreviousLink, NextLink, nextPageUrl, hasNextPage, state, }) => (

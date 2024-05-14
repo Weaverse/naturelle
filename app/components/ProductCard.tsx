@@ -81,8 +81,8 @@ export function ProductCard({
           )}
           <Text
             as="h6"
-            size="fine"
-            className="absolute top-0 right-0 text-right text-notice bg-label-sale text-secondary p-3 empty:hidden"
+            size="copy"
+            className="absolute top-2 right-2 font-body text-right text-notice bg-label-sale text-secondary py-2 px-3 empty:hidden"
           >
             {cardLabel}
           </Text>
@@ -92,7 +92,7 @@ export function ProductCard({
           {quickAdd &&
             variants.length === 1 &&
             firstVariant.availableForSale && (
-              <div className="absolute bottom-0 py-5 px-3 w-full hidden group-hover:block opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
+              <div className="absolute bottom-0 py-5 px-3 w-full hidden lg:group-hover:block opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
                 <AddToCartButton
                   className="w-full"
                   lines={[

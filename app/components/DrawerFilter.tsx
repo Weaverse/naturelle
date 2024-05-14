@@ -45,7 +45,7 @@ export function DrawerFilter({
   const {openDrawer, isOpen, closeDrawer} = useDrawer();
   return (
     <>
-      <div className="border-y border-bar-subtle py-6 ">
+      <div className="border-y border-bar-subtle py-4 ">
         <div className="container flex w-full items-center justify-between">
           <span className="text-xl tracking-tight font-medium font-heading">
             {productNumber} Products
@@ -140,14 +140,14 @@ export function FiltersDrawer({
 
   return (
     <nav className="">
-      <div className="divide-y">
+      <div className="divide-y divide-bar-subtle">
         {filters.map((filter: Filter) => (
           <Disclosure as="div" key={filter.id} className="w-full pb-6 pt-5">
             {({open}) => (
               <>
-                <Disclosure.Button className="flex w-full justify-between">
-                  <Text size="lead">{filter.label}</Text>
-                  <IconCaret direction={open ? 'down' : 'left'} />
+                <Disclosure.Button className="flex w-full justify-between items-center">
+                  <span className="font-heading text-xl font-medium">{filter.label}</span>
+                  <IconCaret direction={open ? 'down' : 'right'}/>
                 </Disclosure.Button>
                 <Disclosure.Panel key={filter.id}>
                   <ul key={filter.id} className="space-y-4 pt-4">

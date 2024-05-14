@@ -4,7 +4,7 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import {forwardRef} from 'react';
+import {Children, forwardRef} from 'react';
 import type {AllProductsQuery} from 'storefrontapi.generated';
 import { Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
@@ -39,9 +39,13 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
         }}
+        className='px-4 md:px-6 lg:container'
       >
-        <div className='p-6 md:p-8 lg:p-12'>{children}</div>
-        <Section>
+          {!!Children.count(children) && (
+            <div className='p-6 md:p-8 lg:p-12'>
+              {children}
+            </div>
+          )}
           <Pagination connection={products}>
             {({nodes, isLoading, NextLink, PreviousLink}) => {
               let itemsMarkup = nodes.map((product, i) => (
@@ -63,7 +67,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
                         {isLoading ? 'Loading...' : prevPageText}
                       </Button>
                   </div>
-                  <Grid className='!gap-y-10' data-test="product-grid">{itemsMarkup}</Grid>
+                  <Grid className='!gap-y-10' layout='products' data-test="product-grid">{itemsMarkup}</Grid>
                   <div className="flex items-center justify-center mt-6">
                     <Button
                         as={NextLink}
@@ -76,7 +80,6 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
               );
             }}
           </Pagination>
-        </Section>
       </div>
     </section>
   );

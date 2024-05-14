@@ -1,9 +1,4 @@
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {
-  NormalizedPredictiveSearch,
-  NormalizedPredictiveSearchResults,
-} from '~/components/Search';
-import {NO_PREDICTIVE_SEARCH_RESULTS} from '~/components/Search';
 
 import type {
   PredictiveArticleFragment,
@@ -13,6 +8,8 @@ import type {
   PredictiveQueryFragment,
   PredictiveSearchQuery,
 } from 'storefrontapi.generated';
+import { NormalizedPredictiveSearch, NormalizedPredictiveSearchResults } from "~/components/predictive-search/types";
+import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/components/predictive-search/usePredictiveSearch";
 
 type PredictiveSearchResultItem =
   | PredictiveArticleFragment
@@ -22,15 +19,14 @@ type PredictiveSearchResultItem =
 
 type PredictiveSearchTypes =
   | 'ARTICLE'
-  | 'COLLECTION'
   | 'PAGE'
   | 'PRODUCT'
   | 'QUERY';
 
 const DEFAULT_SEARCH_TYPES: PredictiveSearchTypes[] = [
   'ARTICLE',
-  'COLLECTION',
-  'PAGE',
+  // 'COLLECTION',
+  // 'PAGE',
   'PRODUCT',
   'QUERY',
 ];
@@ -156,7 +152,7 @@ export function normalizePredictiveSearchResults(
           image: undefined,
           title: query.text,
           styledTitle: query.styledText,
-          url: `${localePrefix}/search${trackingParams}`,
+          // url: `${localePrefix}/search${trackingParams}`,
         };
       }),
     });
@@ -173,10 +169,12 @@ export function normalizePredictiveSearchResults(
             __typename: product.__typename,
             handle: product.handle,
             id: product.id,
-            image: product.variants?.nodes?.[0]?.image,
+            image: product.featuredImage,
             title: product.title,
+            vendor: product.vendor,
             url: `${localePrefix}/products/${product.handle}${trackingParams}`,
             price: product.variants.nodes[0].price,
+            compareAtPrice: product.variants.nodes[0].compareAtPrice,
           };
         },
       ),
@@ -234,7 +232,7 @@ export function normalizePredictiveSearchResults(
             id: article.id,
             image: article.image,
             title: article.title,
-            url: `${localePrefix}/blog/${article.handle}${trackingParams}`,
+            url: `${localePrefix}/blogs/${article.blog.handle}/${article.handle}${trackingParams}`,
           };
         },
       ),
@@ -250,6 +248,9 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
     id
     title
     handle
+    blog {
+      handle
+    }
     image {
       url
       altText
@@ -284,16 +285,21 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
     title
     handle
     trackingParameters
+    vendor
+    featuredImage {
+      url
+      altText
+      width
+      height
+    }
     variants(first: 1) {
       nodes {
         id
-        image {
-          url
-          altText
-          width
-          height
-        }
         price {
+          amount
+          currencyCode
+        }
+        compareAtPrice {
           amount
           currencyCode
         }

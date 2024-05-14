@@ -98,7 +98,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                 style={{ animationDuration: `var(--speed)` }}>
                 {displayedImages.map((item, index) => {
                     return (
-                        <div className='relative cursor-pointer min-w-80 group'>
+                        <div className='relative cursor-pointer min-w-80 group aspect-square'>
                             <Image
                                 key={index}
                                 src={item.media_url}
@@ -106,8 +106,8 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                             />
                             <div className='absolute inset-0 justify-center items-center z-10 hidden group-hover:flex'>
                                 <a href={`https://www.instagram.com/${item.username}/`} target="_blank" className="flex gap-2 justify-center items-center">
-                                    <IconInstagram className="w-8 h-8" viewBox="0 0 24 24" />
-                                    <span className='text-white font-heading text-xl font-medium'>@{item.username}</span>
+                                    <IconInstagram className="w-7 h-7" viewBox="0 0 24 24" />
+                                    <span className='text-white font-heading text-xl font-medium'>{item.username}</span>
                                 </a>
                             </div>
                             <div className="absolute inset-0 group-hover:bg-[#554612] opacity-0 group-hover:opacity-50 transition-colors duration-500"/>
@@ -145,11 +145,20 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                     {displayedImages.map((item, index) => {
                                         return (
                                             <SwiperSlide key={index}>
-                                                <Image
-                                                    src={item.media_url}
-                                                    sizes="auto"
-                                                    className="w-80 h-80 object-cover aspect-square"
-                                                />
+                                                <div className='relative group min-w-80 aspect-square'>
+                                                    <Image
+                                                        src={item.media_url}
+                                                        sizes="auto"
+                                                        className="object-cover w-full aspect-square"
+                                                    />
+                                                    <div className='absolute inset-0 justify-center items-center z-10 w-full hidden group-hover:flex'>
+                                                        <a href={`https://www.instagram.com/${item.username}/`} target="_blank" className="flex gap-2 justify-center items-center">
+                                                            <IconInstagram className="w-7 h-7" viewBox="0 0 24 24" />
+                                                            <span className='text-white font-heading text-xl font-medium'>{item.username}</span>
+                                                        </a>
+                                                    </div>
+                                                    <div className="absolute inset-0 group-hover:bg-[#554612] opacity-0 group-hover:opacity-50 transition-opacity duration-300"/>
+                                                </div>
                                                 <div className='py-8 cursor-pointer'></div>
                                             </SwiperSlide>
                                         );
