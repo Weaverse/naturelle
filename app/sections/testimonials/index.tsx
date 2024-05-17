@@ -43,10 +43,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
         <section
             ref={ref}
             {...rest}
-            className={clsx(
-                'flex w-full relative gap-3 items-center bg-secondary overflow-hidden',
-                reviewsPositionContent[reviewsPosition]
-            )}
+            className='relative bg-secondary overflow-hidden'
             style={sectionStyle}
         >
             <div className="absolute inset-0">
@@ -66,11 +63,16 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
                 )}
             </div>
             <div className={clsx(
-                "flex h-fit z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl",
-                reviewsPosition === 'full' ? 'sm:w-full' : 'sm:w-1/2'
+                'lg:container w-full flex gap-3 items-center',
+                reviewsPositionContent[reviewsPosition],
             )}>
-                <div className='flex flex-col gap-10 px-6 py-12 sm:py-16 sm:px-[var(--desktop-content-padding)] text-[var(--text-color)]'>
-                    {children}
+                <div className={clsx(
+                    "flex h-fit z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl",
+                    reviewsPosition === 'full' ? 'sm:w-full' : 'sm:w-1/2'
+                )}>
+                    <div className='flex flex-col gap-10 px-6 py-12 sm:py-16 sm:px-[var(--desktop-content-padding)] text-[var(--text-color)]'>
+                        {children}
+                    </div>
                 </div>
             </div>
         </section>

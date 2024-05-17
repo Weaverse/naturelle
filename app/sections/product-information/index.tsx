@@ -128,7 +128,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                       <Text className={'opacity-50 font-medium'}>{vendor}</Text>
                     )}
                   </div>
-                  <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3">
+                  <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
                     {selectedVariant && selectedVariant.compareAtPrice && (
                       <Money
                         withoutTrailingZeros
@@ -176,6 +176,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                 </AddToCartButton>
                 {selectedVariant?.availableForSale && (
                   <ShopPayButton
+                    className='w-[360px]'
                     width="100%"
                     variantIdsAndQuantities={[
                       {
@@ -187,7 +188,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   />
                 )}
                 <p
-                  className="max-w-[600px] leading-relaxed"
+                  className="max-w-[600px] leading-relaxed pt-6"
                   dangerouslySetInnerHTML={{
                     __html: descriptionHtml,
                   }}
