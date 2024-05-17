@@ -83,10 +83,11 @@ export const schema: HydrogenComponentSchema = {
           defaultValue: 'Button',
         },
         {
-          type: 'text',
-          name: 'href',
-          label: 'Link',
-          defaultValue: '',
+          type: "url",
+          name: "href",
+          label: "Link to",
+          defaultValue: "/products",
+          placeholder: "/products",
         },
         {
           type: 'select',
