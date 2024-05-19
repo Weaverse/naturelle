@@ -52,7 +52,7 @@ export function ProductCard({
   } else if (isNewArrival(product.publishedAt)) {
     cardLabel = 'New Arrival';
     labelClass = 'bg-label-new';
-  } else if (true) {
+  } else if (!product.variants.nodes[0].availableForSale) {
     cardLabel = 'Out of Stock';
     labelClass = 'bg-label-soldout';
   }
