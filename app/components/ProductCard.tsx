@@ -1,15 +1,14 @@
+import {Button} from '@/components/button';
 import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
 import {flattenConnection, Image, Money, useMoney} from '@shopify/hydrogen';
 import type {MoneyV2, Product} from '@shopify/hydrogen/storefront-api-types';
-import clsx from 'clsx';
-
-import {Button} from '@/components/button';
-import type {ProductCardFragment} from 'storefrontapi.generated';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {Link} from '~/components/Link';
 import {Text} from '~/components/Text';
 import {getProductPlaceholder} from '~/lib/placeholders';
 import {isDiscounted, isNewArrival} from '~/lib/utils';
+import clsx from 'clsx';
+import type {ProductCardFragment} from 'storefrontapi.generated';
 import {QuickViewTrigger} from './QuickView';
 
 export function ProductCard({
@@ -27,7 +26,7 @@ export function ProductCard({
   onClick?: () => void;
   quickAdd?: boolean;
 }) {
-  let cardLabel;
+  let cardLabel, labelClass;
   const cardProduct: Product = product?.variants
     ? (product as Product)
     : getProductPlaceholder();
@@ -41,9 +40,21 @@ export function ProductCard({
   if (label) {
     cardLabel = label;
   } else if (isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2)) {
-    cardLabel = 'Sale';
+    if (compareAtPrice?.amount) {
+      let discount =
+        100 -
+        Math.round(
+          (parseFloat(price.amount) / parseFloat(compareAtPrice?.amount)) * 100,
+        );
+      cardLabel = `Save ${discount}%`;
+      labelClass = 'bg-label-sale';
+    }
   } else if (isNewArrival(product.publishedAt)) {
-    cardLabel = 'New';
+    cardLabel = 'New Arrival';
+    labelClass = 'bg-label-new';
+  } else if (true) {
+    cardLabel = 'Out of Stock';
+    labelClass = 'bg-label-soldout';
   }
 
   const productAnalytics: ShopifyAnalyticsProduct = {
@@ -59,7 +70,7 @@ export function ProductCard({
   return (
     <div className="flex flex-col gap-2">
       <div className={clsx('grid gap-4', className)}>
-        <div className="card-image relative aspect-[4/5] bg-primary/5 group">
+        <div className="card-image group relative aspect-[4/5] bg-primary/5">
           {image && (
             <Link
               onClick={onClick}
@@ -70,7 +81,7 @@ export function ProductCard({
               }}
             >
               <Image
-                className="object-cover w-full fadeIn"
+                className="fadeIn w-full object-cover"
                 sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                 aspectRatio="4/5"
                 data={image}
@@ -82,7 +93,10 @@ export function ProductCard({
           <Text
             as="h6"
             size="copy"
-            className="absolute top-2 right-2 font-body text-right text-notice bg-label-sale text-secondary py-2 px-3 empty:hidden"
+            className={clsx(
+              'text-notice absolute right-2 top-2 px-3 py-2 text-right font-body text-secondary empty:hidden',
+              labelClass,
+            )}
           >
             {cardLabel}
           </Text>
@@ -92,7 +106,7 @@ export function ProductCard({
           {quickAdd &&
             variants.length === 1 &&
             firstVariant.availableForSale && (
-              <div className="absolute bottom-0 py-5 px-3 w-full hidden lg:group-hover:block opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
+              <div className="absolute bottom-0 hidden w-full bg-[rgba(238,239,234,0.10)] px-3 py-5 opacity-100 backdrop-blur-2xl lg:group-hover:block">
                 <AddToCartButton
                   className="w-full"
                   lines={[
@@ -119,7 +133,7 @@ export function ProductCard({
         </div>
         <div className="grid gap-2">
           <p className="text-foreground-subtle">{product.vendor}</p>
-          <h4 className="w-full overflow-hidden whitespace-nowrap text-ellipsis space-x-1 text-xl font-medium">
+          <h4 className="w-full space-x-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-medium">
             <Link
               onClick={onClick}
               to={`/products/${product.handle}`}
@@ -154,7 +168,7 @@ export function ProductCard({
             },
           ]}
           variant="secondary"
-          className="mt-4 lg:hidden w-full"
+          className="mt-4 w-full lg:hidden"
           analytics={{
             products: [productAnalytics],
             totalValue: parseFloat(productAnalytics.price),
