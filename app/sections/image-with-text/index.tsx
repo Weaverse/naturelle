@@ -18,6 +18,7 @@ interface ImageWithTextProps extends HydrogenComponentProps {
     textAlignment: Alignment;
     marginTop?: number;
     marginBottom?: number;
+    displayMaxWidthContent?: boolean;
 }
 
 let AlignImageClasses: Record<AlignImage, string> = {
@@ -32,7 +33,7 @@ let alignmentClasses: Record<Alignment, string> = {
 };
 
 const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) => {
-    let { backgroundImage, imageAlignment, marginTop, marginBottom, sectionHeight, backgroundColor, textAlignment, children, ...rest } = props;
+    let { backgroundImage, imageAlignment, marginTop, marginBottom, sectionHeight, backgroundColor, textAlignment, displayMaxWidthContent, children, ...rest } = props;
     let styleSection: CSSProperties = {
         '--section-height': `${sectionHeight}px`,
         '--margin-top': `${marginTop}px`,
@@ -41,10 +42,13 @@ const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) =
     } as CSSProperties;
 
     return (
-        <section ref={ref} {...rest} style={styleSection} className='h-auto'>
+        <section ref={ref} {...rest} style={styleSection} className='h-auto bg-secondary'>
             <div className='pt-[var(--margin-top)]'/>
             <div className='h-full w-full group sm:px-0 sm:h-[var(--section-height)]'>
-                <div className={clsx('flex flex-col justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
+                <div className={clsx('flex flex-col justify-center items-center h-full w-full', 
+                    AlignImageClasses[imageAlignment!],
+                    displayMaxWidthContent ? 'lg:container' : ''
+                )}>
                     <div
                         className="w-full h-1/2 sm:h-full flex flex-1 items-center justify-center sm:w-1/2 aspect-square overflow-hidden"
                     >
@@ -158,6 +162,12 @@ export let schema: HydrogenComponentSchema = {
                         unit: 'px',
                     },
                 },
+                {
+                    type: 'switch',
+                    name: 'displayMaxWidthContent',
+                    label: 'Display max width content',
+                    defaultValue: false,
+                }
             ],
         },
     ],

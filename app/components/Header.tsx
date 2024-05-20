@@ -21,26 +21,28 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   let {isOpen: showMenu, openDrawer, closeDrawer} = useDrawer();
   return (
-    <header className="z-10 grid sm:h-screen-no-nav grid-cols-3 items-center gap-3 border-b border-foreground bg-background-subtle-1 px-6 py-4">
-      <Logo />
-      {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
-      <button onClick={openDrawer}>MENU</button>
-      <Drawer
-        open={showMenu}
-        onClose={closeDrawer}
-        openFrom="top"
-        // className="fixed top-0 flex h-fit w-full flex-col bg-white"
-      >
-        <HeaderMenu
-          menu={menu}
-          viewport="desktop"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          showMenu={showMenu}
-          onCloseMenu={closeDrawer}
-        />
-      </Drawer>
+    <header className="z-10 border-b border-foreground bg-background-subtle-1">
+      <div className='grid sm:h-screen-no-nav grid-cols-3 items-center gap-3 px-6 py-4 lg:container'>
+        <Logo />
+        {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
+        <button onClick={openDrawer}>MENU</button>
+        <Drawer
+          open={showMenu}
+          onClose={closeDrawer}
+          openFrom="top"
+          // className="fixed top-0 flex h-fit w-full flex-col bg-white"
+        >
+          <HeaderMenu
+            menu={menu}
+            viewport="desktop"
+            primaryDomainUrl={header.shop.primaryDomain.url}
+            showMenu={showMenu}
+            onCloseMenu={closeDrawer}
+          />
+        </Drawer>
 
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </div>
     </header>
   );
 }
@@ -115,7 +117,7 @@ export function HeaderMenu({
               'url(https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle-menu-bg.jpg?v=1706411874)',
           }}
         ></div> */}
-        <div className="h-auto w-full">
+        <div className="h-full w-full">
           <Image
             data={{
               url: 'https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle-menu-bg.jpg?v=1706411874',
@@ -124,7 +126,7 @@ export function HeaderMenu({
               // height: 1002,
             }}
             loading="eager"
-            className="object-cover aspect-square lg:aspect-[2/1]"
+            className="object-cover h-full aspect-square lg:aspect-[2/1]"
             sizes="auto"
           />
         </div>

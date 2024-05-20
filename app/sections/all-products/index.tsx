@@ -59,7 +59,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
 
               return (
                 <>
-                  <div className="flex items-center justify-center mt-6">
+                  <div className="flex items-center justify-center mt-5 mb-10">
                     <Button
                         as={PreviousLink}
                         variant="secondary"
@@ -68,7 +68,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
                       </Button>
                   </div>
                   <Grid className='!gap-y-10' layout='products' data-test="product-grid">{itemsMarkup}</Grid>
-                  <div className="flex items-center justify-center mt-6">
+                  <div className="flex items-center justify-center mt-10 mb-5">
                     <Button
                         as={NextLink}
                         variant="secondary"
