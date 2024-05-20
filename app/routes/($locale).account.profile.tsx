@@ -105,7 +105,6 @@ export default function AccountProfile() {
   const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
-  console.log('🚀 ~ customer:', customer);
 
   return (
     <div className="account-profile container">

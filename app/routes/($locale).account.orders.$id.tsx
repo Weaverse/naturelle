@@ -29,7 +29,7 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
-  const fulfillmentStatus = flattenConnection(order.fulfillments)[0].status;
+  const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
 
   const firstDiscount = discountApplications[0]?.value;
 
