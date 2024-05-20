@@ -39,7 +39,7 @@ export default function AccountLayout() {
     <div className="account container p-6 space-y-3">
       <h1>{heading}</h1>
       <Logout />
-      <AccountMenu />
+      {/* <AccountMenu /> */}
       <Outlet context={{customer}} />
     </div>
   );
