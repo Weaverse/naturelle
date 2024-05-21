@@ -333,7 +333,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
           <span>&#8722; </span>
         </button>
       </CartLineUpdateButton>
-      <div className="px-2 text-center">{quantity}</div>
+      <div className="px-2 w-8 text-center">{quantity}</div>
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
           className="w-10 h-10 transition "
