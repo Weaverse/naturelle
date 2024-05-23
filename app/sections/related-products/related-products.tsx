@@ -21,7 +21,7 @@ let RelatedProducts = forwardRef<HTMLElement, RelatedProductsProps>(
     let {heading, productsCount, ...rest} = props;
     if (recommended) {
       return (
-        <section ref={ref} {...rest}>
+        <section ref={ref} {...rest} className='container'>
           <Suspense fallback={<Skeleton className="h-32" />}>
             <Await
               errorElement="There was a problem loading related products"
