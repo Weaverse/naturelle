@@ -80,7 +80,7 @@ export const schema: HydrogenComponentSchema = {
           type: 'text',
           name: 'value',
           label: 'Text',
-          defaultValue: 'Button',
+          defaultValue: 'Shop now',
         },
         {
           type: "url",
