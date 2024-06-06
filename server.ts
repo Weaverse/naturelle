@@ -1,5 +1,5 @@
-// @ts-ignore
 // Virtual entry point for the app
+import * as remixBuild from '@remix-run/dev/server-build';
 import {
   cartGetIdDefault,
   cartSetIdDefault,
@@ -11,12 +11,10 @@ import {
 import {
   createRequestHandler,
   getStorefrontHeaders,
-  type AppLoadContext,
 } from '@shopify/remix-oxygen';
 import {AppSession} from '~/lib/session';
 import {getLocaleFromRequest} from '~/lib/utils';
 import {createWeaverseClient} from '~/weaverse/weaverse.server';
-import * as remixBuild from 'virtual:remix/server-build';
 
 /**
  * Export a fetch handler in module format.
@@ -27,9 +25,6 @@ export default {
     env: Env,
     executionContext: ExecutionContext,
   ): Promise<Response> {
-    // https://github.com/Shopify/hydrogen/issues/1998#issuecomment-2062161714
-    // globalThis.__H2O_LOG_EVENT = undefined;
-    globalThis.__remix_devServerHooks = undefined;
     try {
       /**
        * Open a cache instance in the worker and a custom session instance.
@@ -83,13 +78,13 @@ export default {
       const handleRequest = createRequestHandler({
         build: remixBuild,
         mode: process.env.NODE_ENV,
-        getLoadContext: (): AppLoadContext => ({
+        getLoadContext: () => ({
           session,
+          waitUntil,
           storefront,
           customerAccount,
           cart,
           env,
-          waitUntil,
           weaverse: createWeaverseClient({
             storefront,
             request,
