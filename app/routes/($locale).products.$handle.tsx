@@ -1,30 +1,38 @@
-import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
-import {AnalyticsPageType} from '@shopify/hydrogen';
+import {
+  useLoaderData,
+  useSearchParams,
+  type MetaFunction,
+} from '@remix-run/react';
+import {
+  AnalyticsPageType,
+  getSeoMeta,
+  ShopifyAnalyticsProduct,
+  type SeoConfig,
+} from '@shopify/hydrogen';
+import type {SelectedOptionInput} from '@shopify/hydrogen/storefront-api-types';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {defer} from '@shopify/remix-oxygen';
-import type {ProductRecommendationsQuery} from 'storefrontapi.generated';
-import invariant from 'tiny-invariant';
+import {getSelectedProductOptions} from '@weaverse/hydrogen';
 import {routeHeaders} from '~/data/cache';
 import {
   PRODUCT_QUERY,
   RECOMMENDED_PRODUCTS_QUERY,
   VARIANTS_QUERY,
 } from '~/data/queries';
+import {getJudgemeReviews} from '~/lib/judgeme';
 import {seoPayload} from '~/lib/seo.server';
 import type {Storefront} from '~/lib/type';
 import {WeaverseContent} from '~/weaverse';
-import {useLoaderData, useSearchParams} from '@remix-run/react';
-import type {SelectedOptionInput} from '@shopify/hydrogen/storefront-api-types';
 import {useEffect} from 'react';
-import {getJudgemeReviews} from '~/lib/judgeme';
-import {getSelectedProductOptions} from '@weaverse/hydrogen';
+import type {ProductRecommendationsQuery} from 'storefrontapi.generated';
+import invariant from 'tiny-invariant';
 
 export const headers = routeHeaders;
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
   console.log('productHandle', handle);
-  
+
   invariant(handle, 'Missing productHandle param, check route filename');
 
   const selectedOptions = getSelectedProductOptions(request);
@@ -109,12 +117,15 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     seo,
     weaverseData: await context.weaverse.loadPage({
       type: 'PRODUCT',
-      handle: handle
+      handle: handle,
     }),
     judgemeReviews,
   });
 }
 
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return getSeoMeta(data!.seo as SeoConfig);
+};
 // function redirectToFirstVariant({
 //   product,
 //   request,

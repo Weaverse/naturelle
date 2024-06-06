@@ -1,12 +1,12 @@
+// @ts-ignore
 // Virtual entry point for the app
-import * as remixBuild from '@remix-run/dev/server-build';
 import {
   cartGetIdDefault,
   cartSetIdDefault,
   createCartHandler,
+  createCustomerAccountClient,
   createStorefrontClient,
   storefrontRedirect,
-  createCustomerAccountClient,
 } from '@shopify/hydrogen';
 import {
   createRequestHandler,
@@ -14,9 +14,9 @@ import {
   type AppLoadContext,
 } from '@shopify/remix-oxygen';
 import {AppSession} from '~/lib/session';
-import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
-import { createWeaverseClient } from '~/weaverse/weaverse.server';
-import { getLocaleFromRequest } from "~/lib/utils";
+import {getLocaleFromRequest} from '~/lib/utils';
+import {createWeaverseClient} from '~/weaverse/weaverse.server';
+import * as remixBuild from 'virtual:remix/server-build';
 
 /**
  * Export a fetch handler in module format.
@@ -27,6 +27,9 @@ export default {
     env: Env,
     executionContext: ExecutionContext,
   ): Promise<Response> {
+    // https://github.com/Shopify/hydrogen/issues/1998#issuecomment-2062161714
+    // globalThis.__H2O_LOG_EVENT = undefined;
+    globalThis.__remix_devServerHooks = undefined;
     try {
       /**
        * Open a cache instance in the worker and a custom session instance.
@@ -66,15 +69,11 @@ export default {
         customerAccountUrl: env.PUBLIC_CUSTOMER_ACCOUNT_API_URL,
       });
 
-      /*
-       * Create a cart handler that will be used to
-       * create and update the cart in the session.
-       */
       const cart = createCartHandler({
         storefront,
+        customerAccount,
         getCartId: cartGetIdDefault(request.headers),
         setCartId: cartSetIdDefault(),
-        cartQueryFragment: CART_QUERY_FRAGMENT,
       });
 
       /**

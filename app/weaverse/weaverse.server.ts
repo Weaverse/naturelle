@@ -1,7 +1,8 @@
+import type {AppLoadContext} from '@shopify/remix-oxygen';
+import type {CreateWeaverseClientArgs} from '@weaverse/hydrogen';
 import {WeaverseClient} from '@weaverse/hydrogen';
 import {components} from '~/weaverse/components';
 import {themeSchema} from '~/weaverse/schema';
-import type {CreateWeaverseClientArgs} from '@weaverse/hydrogen';
 
 export function createWeaverseClient(args: CreateWeaverseClientArgs) {
   return new WeaverseClient({
@@ -11,50 +12,48 @@ export function createWeaverseClient(args: CreateWeaverseClientArgs) {
   });
 }
 
-export function getWeaverseCsp(request: Request) {
-  const url = new URL(request.url);
+export function getWeaverseCsp(request: Request, context: AppLoadContext) {
+  let url = new URL(request.url);
   // Get weaverse host from query params
-  const localDirectives =
-    process.env.NODE_ENV === 'development'
-      ? ['localhost:*', 'ws://localhost:*', 'ws://127.0.0.1:*']
-      : [];
-  const weaverseHost = url.searchParams.get('weaverseHost');
-  const weaverseHosts = ['weaverse.io', '*.weaverse.io'];
+  let weaverseHost =
+    url.searchParams.get('weaverseHost') || context.env.WEAVERSE_HOST;
+  let isDesignMode = url.searchParams.get('weaverseHost');
+  let weaverseHosts = ['*.weaverse.io', '*.shopify.com', '*.myshopify.com'];
   if (weaverseHost) {
     weaverseHosts.push(weaverseHost);
   }
-  return {
-    frameAncestors: weaverseHosts,
+  let updatedCsp: {
+    [x: string]: string[] | string | boolean;
+  } = {
     defaultSrc: [
-      "'self'",
-      'cdn.shopify.com',
-      '*.youtube.com',
-      'shopify.com',
-      ...localDirectives,
-      ...weaverseHosts,
-    ],
-    imgSrc: [
       "'self'",
       'data:',
       'cdn.shopify.com',
+      '*.youtube.com',
+      'shopify.com',
       '*.cdninstagram.com',
-      ...localDirectives,
+      '*.googletagmanager.com',
+      '*.google-analytics.com',
       ...weaverseHosts,
     ],
     styleSrc: [
       "'self'",
       "'unsafe-inline'",
       'cdn.shopify.com',
-      ...localDirectives,
       ...weaverseHosts,
     ],
     connectSrc: [
       "'self'",
-      'https://monorail-edge.shopifysvc.com',
-      'https://www.instagram.com/',
-      ...localDirectives,
+      '*.instagram.com',
+      '*.google-analytics.com',
+      '*.analytics.google.com',
+      '*.googletagmanager.com',
       ...weaverseHosts,
     ],
-    fontSrc: ['*'],
   };
+
+  if (isDesignMode) {
+    updatedCsp.frameAncestors = ['*'];
+  }
+  return updatedCsp;
 }

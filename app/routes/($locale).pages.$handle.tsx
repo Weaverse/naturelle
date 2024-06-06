@@ -1,10 +1,11 @@
+import type {MetaFunction} from '@remix-run/react';
+import {getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {type RouteLoaderArgs} from '@weaverse/hydrogen';
-import invariant from 'tiny-invariant';
-
 import {routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
+import invariant from 'tiny-invariant';
 
 export const headers = routeHeaders;
 
@@ -34,6 +35,9 @@ export async function loader({request, params, context}: RouteLoaderArgs) {
   });
 }
 
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return getSeoMeta(data!.seo as SeoConfig);
+};
 export default function Page() {
   return <WeaverseContent />;
 }

@@ -1,32 +1,36 @@
-import {useNonce} from '@shopify/hydrogen';
 import {
-  defer,
-  type SerializeFrom,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {
+  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
-  LiveReload,
+  ScrollRestoration,
+  useLoaderData,
   useMatches,
   useRouteError,
-  useLoaderData,
-  ScrollRestoration,
-  isRouteErrorResponse,
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
-import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
-import favicon from '../public/favicon.svg';
-import tailwind from './styles/tailwind.css';
-import {Layout} from '~/components/Layout';
+import {
+  Analytics,
+  getSeoMeta,
+  getShopAnalytics,
+  useNonce,
+  type SeoConfig,
+} from '@shopify/hydrogen';
+import {
+  defer,
+  type LoaderFunctionArgs,
+  type MetaArgs,
+  type SerializeFrom,
+} from '@shopify/remix-oxygen';
 import {withWeaverse} from '@weaverse/hydrogen';
+import {Layout} from '~/components/Layout';
+import tailwind from './styles/tailwind.css?url';
 import {GlobalStyle} from './weaverse/style';
-
-import {cssBundleHref} from '@remix-run/css-bundle';
-import '@fontsource-variable/cormorant/wght.css';
-import '@fontsource-variable/open-sans/wght.css';
+import '@fontsource-variable/cormorant/wght.css?url';
+import '@fontsource-variable/open-sans/wght.css?url';
+import {CustomAnalytics} from '~/components/Analytics';
+import {seoPayload} from '~/lib/seo.server';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -51,7 +55,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
-    ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
     {rel: 'stylesheet', href: tailwind},
     {
       rel: 'preconnect',
@@ -61,7 +64,7 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
   ];
 }
 
@@ -73,14 +76,11 @@ export const useRootLoaderData = () => {
   return root?.data as SerializeFrom<typeof loader>;
 };
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront, customerAccount, cart} = context;
+export async function loader({context, request}: LoaderFunctionArgs) {
+  const {storefront, customerAccount, cart, env} = context;
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
   const isLoggedInPromise = customerAccount.isLoggedIn();
-
-  // defer the cart query by not awaiting it
-  const cartPromise = cart.get();
 
   // defer the footer query (below the fold)
   const footerPromise = storefront.query(FOOTER_QUERY, {
@@ -91,18 +91,28 @@ export async function loader({context}: LoaderFunctionArgs) {
   });
 
   // await the header query (above the fold)
-  const headerPromise = storefront.query(HEADER_QUERY, {
+  const header = await storefront.query(HEADER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
       headerMenuHandle: 'main-menu', // Adjust to your header menu handle
     },
   });
 
+  const seo = seoPayload.root({shop: header.shop, url: request.url});
   return defer(
     {
-      cart: cartPromise,
+      cart: cart.get(),
+      shop: getShopAnalytics({
+        storefront: context.storefront,
+        publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
+      }),
+      consent: {
+        checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN,
+        storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+      },
       footer: footerPromise,
-      header: await headerPromise,
+      header,
+      seo,
       selectedLocale: storefront.i18n,
       isLoggedIn: isLoggedInPromise,
       publicStoreDomain,
@@ -116,10 +126,12 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
 }
 
+export const meta = ({data}: MetaArgs<typeof loader>) => {
+  return getSeoMeta(data!.seo as SeoConfig);
+};
 function App() {
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
-
   return (
     <html lang="en">
       <head>
@@ -130,20 +142,25 @@ function App() {
         <GlobalStyle />
       </head>
       <body>
-        <Layout {...data}>
-          <Outlet />
-        </Layout>
+        <Analytics.Provider
+          cart={data.cart}
+          shop={data.shop}
+          consent={data.consent}
+        >
+          <Layout {...data}>
+            <Outlet />
+          </Layout>
+          <CustomAnalytics />
+        </Analytics.Provider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
-        <LiveReload nonce={nonce} />
       </body>
     </html>
   );
 }
 
 export default withWeaverse(App);
-
-export function ErrorBoundary() {
+function ErrorBoundaryComponent() {
   const error = useRouteError();
   const rootData = useRootLoaderData();
   const nonce = useNonce();
@@ -179,11 +196,12 @@ export function ErrorBoundary() {
         </Layout>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
-        <LiveReload nonce={nonce} />
       </body>
     </html>
   );
 }
+
+export let ErrorBoundary = withWeaverse(ErrorBoundaryComponent);
 
 const MENU_FRAGMENT = `#graphql
   fragment MenuItem on MenuItem {

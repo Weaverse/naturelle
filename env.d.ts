@@ -1,18 +1,17 @@
-/// <reference types="@remix-run/dev" />
+/// <reference types="vite/client" />
 /// <reference types="@shopify/remix-oxygen" />
 /// <reference types="@shopify/oxygen-workers-types" />
 
 // Enhance TypeScript's built-in typings.
 import '@total-typescript/ts-reset';
-
 import type {CustomerClient, HydrogenCart} from '@shopify/hydrogen';
 import type {
-  LanguageCode,
   CountryCode,
+  LanguageCode,
 } from '@shopify/hydrogen/storefront-api-types';
-import type {Storefront, CustomerAccount} from '~/lib/type';
-import type {AppSession} from '~/lib/session';
 import type {WeaverseClient} from '@weaverse/hydrogen';
+import type {AppSession} from '~/lib/session';
+import type {Storefront} from '~/lib/type';
 
 declare global {
   /**
@@ -31,7 +30,7 @@ declare global {
     PUBLIC_STOREFRONT_ID: string;
     PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: string;
     PUBLIC_CUSTOMER_ACCOUNT_API_URL: string;
-
+    PUBLIC_CHECKOUT_DOMAIN: string;
 
     WEAVERSE_PROJECT_ID: string;
     WEAVERSE_HOST: string;

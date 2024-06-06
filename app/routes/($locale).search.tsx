@@ -5,8 +5,14 @@ import {
   useLoaderData,
   useLocation,
   useNavigate,
+  type MetaFunction,
 } from '@remix-run/react';
-import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
+import {
+  getPaginationVariables,
+  getSeoMeta,
+  Pagination,
+  type SeoConfig,
+} from '@shopify/hydrogen';
 import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {DrawerFilter} from '~/components/DrawerFilter';
@@ -153,6 +159,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   });
 }
 
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return getSeoMeta(data!.seo as SeoConfig);
+};
 export default function Search() {
   const {
     searchTerm,
@@ -167,8 +176,8 @@ export default function Search() {
 
   return (
     <>
-      <PageHeader variant='search' className="bg-background-subtle-1">
-        <h1 className="w-full text-center text-3xl md:text-4xl lg:text-5xl font-medium">
+      <PageHeader variant="search" className="bg-background-subtle-1">
+        <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
           {searchTerm
             ? `Search results for “${searchTerm}”`
             : 'Search our site'}
@@ -182,7 +191,7 @@ export default function Search() {
             onClear={() => navigate(location.pathname)}
             name="q"
             placeholder="What are you looking for?"
-            className="rounded w-full md:w-96 lg:w-[400px] border-2"
+            className="w-full rounded border-2 md:w-96 lg:w-[400px]"
             type="search"
             prefixElement={
               <button type="submit" className="cursor-pointer">
@@ -202,7 +211,7 @@ export default function Search() {
         productNumber={products.totalCount}
         filters={productfilters}
       />
-      <div className="px-4 md:px-6 lg:container">
+      <div className="px-4 lg:container md:px-6">
         {noResults ? (
           <NoResults
             noResults={noResults}
@@ -226,7 +235,13 @@ export default function Search() {
                       {isLoading ? 'Loading...' : 'Previous'}
                     </Button>
                   </div>
-                  <Grid data-test="product-grid" layout='products' className='!gap-y-10'>{itemsMarkup}</Grid>
+                  <Grid
+                    data-test="product-grid"
+                    layout="products"
+                    className="!gap-y-10"
+                  >
+                    {itemsMarkup}
+                  </Grid>
                   <div className="my-6 flex w-full items-center justify-center">
                     <Button as={NextLink} variant="secondary">
                       {isLoading ? 'Loading...' : 'Show more +'}

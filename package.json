@@ -2,9 +2,9 @@
   "name": "naturelle",
   "private": true,
   "sideEffects": false,
-  "version": "1.2.0",
+  "version": "2.0.0",
   "scripts": {
-    "build": "shopify hydrogen build",
+    "build": "shopify hydrogen build --codegen",
     "dev": "shopify hydrogen dev --port 3456 --codegen",
     "preview": "npm run build && shopify hydrogen preview",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
@@ -27,10 +27,9 @@
     "@headlessui/react": "^2.0.4",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-slot": "^1.0.2",
-    "@remix-run/css-bundle": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/server-runtime": "^2.9.2",
-    "@shopify/cli": "^3.60.0",
+    "@shopify/cli": "^3.61.0",
     "@shopify/cli-hydrogen": "^8.1.0",
     "@shopify/hydrogen": "^2024.4.3",
     "@shopify/remix-oxygen": "^2.0.4",
@@ -39,7 +38,7 @@
     "clsx": "^2.1.1",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
-    "isbot": "4.4.0",
+    "isbot": "^5.1.9",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.383.0",
     "react": "^18.3.1",
@@ -68,7 +67,7 @@
     "@types/eslint": "^8.56.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "eslint": "^9.4.0",
+    "eslint": "^8.57.0",
     "eslint-plugin-hydrogen": "0.12.2",
     "postcss": "^8.4.38",
     "postcss-import": "^16.1.0",
@@ -76,12 +75,15 @@
     "prettier": "^3.3.1",
     "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.4",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "type": "module"
 }
