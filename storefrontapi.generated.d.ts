@@ -1,7 +1,7 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
-import * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
+import type * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
 type Media_ExternalVideo_Fragment = {__typename: 'ExternalVideo'} & Pick<
   StorefrontAPI.ExternalVideo,
@@ -92,6 +92,17 @@ export type CollectionContentFragment = Pick<
               Pick<StorefrontAPI.Image, 'url'>
             >;
           })
+      | ({__typename: 'Model3d'} & Pick<
+          StorefrontAPI.Model3d,
+          'id' | 'mediaContentType' | 'alt'
+        > & {
+            sources: Array<
+              Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
+            >;
+            previewImage?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'url'>
+            >;
+          })
       | ({__typename: 'Video'} & Pick<
           StorefrontAPI.Video,
           'id' | 'mediaContentType' | 'alt'
@@ -111,6 +122,17 @@ export type CollectionContentFragment = Pick<
         > & {
             image?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
+            >;
+            previewImage?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'url'>
+            >;
+          })
+      | ({__typename: 'Model3d'} & Pick<
+          StorefrontAPI.Model3d,
+          'id' | 'mediaContentType' | 'alt'
+        > & {
+            sources: Array<
+              Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
             >;
             previewImage?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.Image, 'url'>
