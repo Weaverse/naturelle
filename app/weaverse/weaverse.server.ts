@@ -36,12 +36,7 @@ export function getWeaverseCsp(request: Request, context: AppLoadContext) {
       '*.google-analytics.com',
       ...weaverseHosts,
     ],
-    styleSrc: [
-      "'self'",
-      "'unsafe-inline'",
-      'cdn.shopify.com',
-      ...weaverseHosts,
-    ],
+    styleSrc: weaverseHosts,
     connectSrc: [
       "'self'",
       '*.instagram.com',
