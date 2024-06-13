@@ -3,6 +3,7 @@ import type { MoneyV2 } from '@shopify/hydrogen/storefront-api-types';
 import {countries} from '~/data/countries';
 import {useRootLoaderData} from '~/root';
 import type {I18nLocale} from './type';
+import type { WeaverseImage } from '@weaverse/hydrogen';
 
 
 export function missingClass(string?: string, prefix?: string) {
@@ -84,4 +85,19 @@ export function getLocaleFromRequest(request: Request): I18nLocale {
         ...countries['default'],
         pathPrefix: '',
       };
+}
+
+export function getImageAspectRatio(
+  image: Partial<WeaverseImage>,
+  aspectRatio: string,
+) {
+  let aspRt: string | undefined;
+  if (aspectRatio === "adapt") {
+    if (image?.width && image?.height) {
+      aspRt = `${image.width}/${image.height}`;
+    }
+  } else {
+    aspRt = aspectRatio;
+  }
+  return aspRt;
 }
