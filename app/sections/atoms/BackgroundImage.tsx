@@ -1,29 +1,49 @@
 import { Image } from "@shopify/hydrogen";
-import type {
-  InspectorGroup,
-  PositionInputValue,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
-import type { CSSProperties } from "react";
+import type { InspectorGroup, WeaverseImage } from "@weaverse/hydrogen";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 
-export type BackgroundImageProps = {
-  backgroundImage?: WeaverseImage;
-  backgroundFit?: CSSProperties["objectFit"];
-  backgroundPosition?: PositionInputValue;
+let variants = cva("absolute inset-0 w-full h-full z-[-1]", {
+  variants: {
+    backgroundFit: {
+      fill: "object-fill",
+      cover: "object-cover",
+      contain: "object-contain",
+    },
+    backgroundPosition: {
+      "top left": "object-[top_left]",
+      "top center": "object-[top_center]",
+      "top right": "object-[top_right]",
+      "center left": "object-[center_left]",
+      "center center": "object-[center_center]",
+      "center right": "object-[center_right]",
+      "bottom left": "object-[bottom_left]",
+      "bottom center": "object-[bottom_center]",
+      "bottom right": "object-[bottom_right]",
+    },
+  },
+  defaultVariants: {
+    backgroundFit: "cover",
+    backgroundPosition: "center center",
+  },
+});
+
+export type BackgroundImageProps = VariantProps<typeof variants> & {
+  backgroundImage: WeaverseImage | string;
 };
 
 export function BackgroundImage(props: BackgroundImageProps) {
   let { backgroundImage, backgroundFit, backgroundPosition } = props;
   if (backgroundImage) {
+    let data =
+      typeof backgroundImage === "string"
+        ? { url: backgroundImage, altText: "Section background" }
+        : backgroundImage;
     return (
       <Image
-        className="absolute inset-0 w-full h-full z-[-1]"
-        data={backgroundImage}
+        className={variants({ backgroundFit, backgroundPosition })}
+        data={data}
         sizes="auto"
-        style={{
-          objectFit: backgroundFit,
-          objectPosition: backgroundPosition,
-        }}
       />
     );
   }
@@ -31,10 +51,6 @@ export function BackgroundImage(props: BackgroundImageProps) {
 }
 
 export let backgroundInputs: InspectorGroup["inputs"] = [
-  {
-    type: "heading",
-    label: "Background",
-  },
   {
     type: "select",
     name: "backgroundFor",
@@ -76,7 +92,7 @@ export let backgroundInputs: InspectorGroup["inputs"] = [
     type: "position",
     name: "backgroundPosition",
     label: "Background position",
-    defaultValue: "center",
+    defaultValue: "center center",
     condition: "backgroundImage.ne.nil",
   },
 ];

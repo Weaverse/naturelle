@@ -1,131 +1,132 @@
-import {
-  type HydrogenComponentProps,
-  type HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import { clsx } from 'clsx';
-import { forwardRef, CSSProperties } from 'react';
+import type {
+  HydrogenComponentProps,
+  HydrogenComponentSchema,
+} from "@weaverse/hydrogen";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import { clsx } from "clsx";
+import { forwardRef } from "react";
 
-type Alignment = 'left' | 'center' | 'right';
-type DescriptionProps = HydrogenComponentProps & {
+export interface ParagraphProps
+  extends VariantProps<typeof variants>,
+    Partial<HydrogenComponentProps> {
+  as?: "p" | "div";
   content: string;
-  textColor?: string;
-  as?: 'p' | 'div';
-  width?: Width;
-  alignment?: Alignment;
-  className?: string;
-};
+  color?: string;
+}
 
-type Width = 'full' | 'narrow';
-
-let widthClasses: Record<Width, string> = {
-  full: 'w-full',
-  narrow: 'w-full max-w-4xl',
-};
-
-let alignmentClasses: Record<Alignment, string> = {
-  left: 'text-left',
-  center: 'text-center',
-  right: 'text-right',
-};
+let variants = cva("paragraph", {
+  variants: {
+    width: {
+      full: "w-full mx-auto",
+      narrow: "w-full md:w-1/2 lg:w-3/4 max-w-4xl mx-auto",
+    },
+    alignment: {
+      left: "text-left",
+      center: "text-center",
+      right: "text-right",
+    },
+  },
+  defaultVariants: {
+    width: "full",
+  },
+});
 
 let Description = forwardRef<
   HTMLParagraphElement | HTMLDivElement,
-  DescriptionProps
+  ParagraphProps
 >((props, ref) => {
-  let { as: Tag = 'p', width, content, alignment, className, textColor, ...rest } = props;
-  let style = {
-    color: textColor,
-  } as CSSProperties;
+  let {
+    as: Tag = "p",
+    width,
+    content,
+    color,
+    alignment,
+    className,
+    ...rest
+  } = props;
   return (
     <Tag
       ref={ref}
       {...rest}
-      style={style}
-      className={clsx(
-        widthClasses[width!],
-        alignmentClasses[alignment!],
-        className,
-      )}
+      style={{ color }}
+      className={clsx(variants({ width, alignment, className }))}
+      suppressHydrationWarning
       dangerouslySetInnerHTML={{ __html: content }}
-    >      
-    </Tag>
+    />
   );
 });
-
-Description.defaultProps = {
-  as: 'p',
-  width: 'narrow',
-  content:
-    "Pair large text with an image or full-width video to showcase your brand's lifestyle to describe and showcase an important detail of your products that you can tag on your image.",
-  // alignment: 'center',
-};
 
 export default Description;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'description',
-  title: 'Description',
+  type: "description",
+  title: "Description",
   inspector: [
     {
-      group: 'Description',
+      group: "Description",
       inputs: [
         {
-          type: 'color',
-          label: 'Text color',
-          name: 'textColor',
-          defaultValue: '#33333',
-        },
-        {
-          type: 'select',
-          name: 'as',
-          label: 'Tag name',
+          type: "select",
+          name: "as",
+          label: "HTML tag",
           configs: {
             options: [
-              { value: 'p', label: 'Paragraph' },
-              { value: 'div', label: 'Div' },
+              { value: "p", label: "Paragraph" },
+              { value: "div", label: "Div" },
             ],
           },
-          defaultValue: 'p',
+          defaultValue: "p",
         },
         {
-          type: 'richtext',
-          name: 'content',
-          label: 'Content',
+          type: "richtext",
+          name: "content",
+          label: "Content",
           defaultValue:
             "Pair large text with an image or full-width video to showcase your brand's lifestyle to describe and showcase an important detail of your products that you can tag on your image.",
           placeholder:
             "Pair large text with an image or full-width video to showcase your brand's lifestyle to describe and showcase an important detail of your products that you can tag on your image.",
         },
         {
-          type: 'toggle-group',
-          name: 'width',
-          label: 'Width',
+          type: "color",
+          name: "color",
+          label: "Text color",
+        },
+        {
+          type: "toggle-group",
+          name: "width",
+          label: "Width",
           configs: {
             options: [
-              { value: 'full', label: 'Full' },
+              { value: "full", label: "Full", icon: "move-horizontal" },
               {
-                value: 'narrow',
-                label: 'Narrow',
+                value: "narrow",
+                label: "Narrow",
+                icon: "fold-horizontal",
               },
             ],
           },
-          defaultValue: 'full',
+          defaultValue: "full",
         },
         {
-          type: 'toggle-group',
-          name: 'alignment',
-          label: 'Alignment',
+          type: "toggle-group",
+          name: "alignment",
+          label: "Alignment",
           configs: {
             options: [
-              { value: 'left', label: 'Left' },
-              { value: 'center', label: 'Center' },
-              { value: 'right', label: 'Right' },
+              { value: "left", label: "Left", icon: "align-start-vertical" },
+              {
+                value: "center",
+                label: "Center",
+                icon: "align-center-vertical",
+              },
+              { value: "right", label: "Right", icon: "align-end-vertical" },
             ],
           },
-          // defaultValue: 'center',
+          // defaultValue: "center",
         },
       ],
     },
   ],
-  toolbar: ['general-settings', ['duplicate', 'delete']],
+  toolbar: ["general-settings", ["duplicate", "delete"]],
 };
