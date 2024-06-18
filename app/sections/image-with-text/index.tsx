@@ -27,9 +27,9 @@ let AlignImageClasses: Record<AlignImage, string> = {
 };
 
 let alignmentClasses: Record<Alignment, string> = {
-    left: 'text-left',
-    center: 'text-center',
-    right: 'text-right',
+    left: 'text-left items-start',
+    center: 'text-center items-center',
+    right: 'text-right items-end',
 };
 
 const ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>((props, ref) => {
