@@ -11,7 +11,7 @@ interface PredictiveSearchProps {
 export function PredictiveSearch(props: PredictiveSearchProps) {
   let {isOpen} = props;
   return (
-    <div className="relative border-t border-bar-subtle">
+    <div className="border-t border-bar-subtle">
       <PredictiveSearchForm>
         {({fetchResults, inputRef}) => (
           <div className="mx-auto w-full max-w-[560px] p-6">

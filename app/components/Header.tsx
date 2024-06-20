@@ -160,6 +160,7 @@ function HeaderCtas({
         onClose={closeCart}
         openFrom="right"
         heading="Cart"
+        isForm='cart'
       >
         <div>
           <Suspense fallback={<CartLoading />}>
@@ -220,7 +221,7 @@ function SearchToggle() {
       >
         <IconSearch className="h-6 w-6 !font-extralight" />
       </button>
-      <Drawer open={isOpen} onClose={closeDrawer} openFrom="top" heading="">
+      <Drawer open={isOpen} onClose={closeDrawer} openFrom="right" heading="Search" isForm='search'>
         <PredictiveSearch isOpen={isOpen} />
       </Drawer>
     </>

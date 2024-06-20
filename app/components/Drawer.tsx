@@ -1,8 +1,8 @@
+import {cn} from '@/lib/utils';
 import {Dialog, Transition} from '@headlessui/react';
 import {Fragment, useState} from 'react';
 import {IconClose} from './Icon';
 import {Heading} from './Text';
-import { cn } from "@/lib/utils";
 
 /**
  * Drawer component that opens on user click.
@@ -17,6 +17,7 @@ export function Drawer({
   open,
   onClose,
   openFrom = 'right',
+  isForm,
   children,
 }: {
   heading?: string;
@@ -24,11 +25,12 @@ export function Drawer({
   onClose: () => void;
   openFrom: 'right' | 'left' | 'top';
   children: React.ReactNode;
+  isForm?: 'cart' | 'search' | 'menu';
 }) {
   const offScreen = {
     right: 'translate-x-full',
     left: '-translate-x-full',
-    top: '-translate-y-full'
+    top: '-translate-y-full',
   };
 
   return (
@@ -62,19 +64,22 @@ export function Drawer({
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className={cn("transform text-left align-middle shadow-xl transition-all", openFrom === 'top' ? 'w-screen h-fit bg-background-subtle-1' : 'max-w-96 h-screen-dynamic w-screen bg-background-basic')}>
+                <Dialog.Panel
+                  className={cn(
+                    'transform text-left align-middle shadow-xl transition-all',
+                    openFrom === 'top'
+                      ? 'h-fit w-screen bg-background-subtle-1'
+                      : 'h-screen-dynamic w-screen max-w-96',
+                    isForm === 'cart'
+                      ? 'bg-background-basic'
+                      : 'bg-background-subtle-1',
+                  )}
+                >
                   <header
                     className={`h-nav sticky top-0 flex items-center p-6 ${
                       heading ? 'justify-between' : 'justify-end'
                     }`}
                   >
-                    {heading !== null && (
-                      <Dialog.Title>
-                        <Heading as="span" size="heading" id="cart-contents">
-                          {heading}
-                        </Heading>
-                      </Dialog.Title>
-                    )}
                     <button
                       type="button"
                       className="text-body hover:text-body/50 -m-4 p-4 transition"
@@ -83,6 +88,14 @@ export function Drawer({
                     >
                       <IconClose aria-label="Close panel" />
                     </button>
+                    {heading !== null && (
+                      <Dialog.Title>
+                        <Heading as="span" size="heading" id="cart-contents">
+                          {heading}
+                        </Heading>
+                      </Dialog.Title>
+                    )}
+                    <div className="p-0" />
                   </header>
                   {children}
                 </Dialog.Panel>
