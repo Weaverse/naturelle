@@ -1,7 +1,7 @@
 import {cn} from '@/lib/utils';
 import {Dialog, Transition} from '@headlessui/react';
 import {Fragment, useState} from 'react';
-import {IconClose} from './Icon';
+import {IconArrowLeft, IconClose} from './Icon';
 import {Heading} from './Text';
 
 /**
@@ -18,6 +18,7 @@ export function Drawer({
   onClose,
   openFrom = 'right',
   isForm,
+  isBackMenu = false,
   children,
 }: {
   heading?: string;
@@ -26,6 +27,7 @@ export function Drawer({
   openFrom: 'right' | 'left' | 'top';
   children: React.ReactNode;
   isForm?: 'cart' | 'search' | 'menu';
+  isBackMenu?: boolean;
 }) {
   const offScreen = {
     right: 'translate-x-full',
@@ -67,8 +69,8 @@ export function Drawer({
                 <Dialog.Panel
                   className={cn(
                     'transform text-left align-middle shadow-xl transition-all',
-                    openFrom === 'top'
-                      ? 'h-fit w-screen bg-background-subtle-1'
+                    openFrom === 'left'
+                      ? 'h-screen-dynamic w-screen max-w-96 bg-background-subtle-1'
                       : 'h-screen-dynamic w-screen max-w-96',
                     isForm === 'cart'
                       ? 'bg-background-basic'
@@ -76,18 +78,36 @@ export function Drawer({
                   )}
                 >
                   <header
-                    className={`h-nav sticky top-0 flex items-center p-6 ${
-                      heading ? 'justify-between' : 'justify-end'
-                    }`}
+                    className={cn(
+                      'h-nav sticky top-0 flex items-center px-6 py-5',
+                      heading ? 'justify-between' : 'justify-end',
+                      openFrom === 'left' && !isBackMenu ? 'flex-row-reverse' : ''
+                    )}
                   >
-                    <button
-                      type="button"
-                      className="text-body hover:text-body/50 -m-4 p-4 transition"
-                      onClick={onClose}
-                      data-test="close-cart"
-                    >
-                      <IconClose aria-label="Close panel" />
-                    </button>
+                    {isBackMenu && (
+                      <button
+                        type="button"
+                        className="text-body hover:text-body/50 -m-4 p-2 transition"
+                        onClick={onClose}
+                        data-test="close-cart"
+                      >
+                        <IconArrowLeft
+                          viewBox='0 0 32 32'
+                          className="h-8 w-8 opacity-50"
+                          aria-label="Close panel"
+                        />
+                      </button>
+                    )}
+                    {!isBackMenu && (
+                      <button
+                        type="button"
+                        className="text-body hover:text-body/50 -m-4 p-4 transition"
+                        onClick={onClose}
+                        data-test="close-cart"
+                      >
+                        <IconClose aria-label="Close panel" />
+                      </button>
+                    )}
                     {heading !== null && (
                       <Dialog.Title>
                         <Heading as="span" size="heading" id="cart-contents">

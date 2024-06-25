@@ -14,11 +14,11 @@ export function Logo() {
   }
 
   return (
-    <div className="max-w-[120px]" role="button" onClick={redirectToHomepage}>
+    <div className="w-full flex justify-center" role="button" onClick={redirectToHomepage}>
       <Image
         data={logoData}
         sizes="auto"
-        className="w-full h-full object-contain"
+        className="max-w-[120px] h-full object-contain"
       />
     </div>
   );

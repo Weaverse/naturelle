@@ -35,7 +35,7 @@ export function PredictiveSearchResults() {
   }
   return (
     <div className="flex items-center justify-center border-t bg-background-subtle-1">
-      <div className="grid max-h-[80vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
+      <div className="grid max-h-[78vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
         <div className="space-y-8">
           {queries && (
             <div className="flex flex-col gap-4 divide-y divide-bar-subtle">

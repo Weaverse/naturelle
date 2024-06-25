@@ -7,11 +7,12 @@ import type {HeaderQuery} from 'storefrontapi.generated';
 import {CartMain} from './Cart';
 import {CartLoading} from './CartLoading';
 import {Drawer, useDrawer} from './Drawer';
-import {IconAccount, IconBag, IconLogin, IconSearch} from './Icon';
+import {IconAccount, IconBag, IconListMenu, IconLogin, IconSearch} from './Icon';
 import type {LayoutProps} from './Layout';
 import {Link} from './Link';
 import {Logo} from './Logo';
 import {PredictiveSearch} from './predictive-search/PredictiveSearch';
+import { DrawerMenu } from './menu/DrawerMenu';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -23,22 +24,24 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   return (
     <header className="z-10 border-b border-foreground bg-background-subtle-1">
       <div className='grid sm:h-screen-no-nav grid-cols-3 items-center gap-3 px-6 py-4 lg:container'>
+        <button className='text-left' onClick={openDrawer}><span><IconListMenu/></span></button>
         <Logo />
         {/* <button className="text-center" onClick={() => setShowMenu(true)}> */}
-        <button onClick={openDrawer}>MENU</button>
         <Drawer
           open={showMenu}
           onClose={closeDrawer}
-          openFrom="top"
+          openFrom="left"
           // className="fixed top-0 flex h-fit w-full flex-col bg-white"
+          heading='MENU'
         >
-          <HeaderMenu
+          {/* <HeaderMenu
             menu={menu}
             viewport="desktop"
             primaryDomainUrl={header.shop.primaryDomain.url}
             showMenu={showMenu}
             onCloseMenu={closeDrawer}
-          />
+          /> */}
+          <DrawerMenu />
         </Drawer>
 
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
