@@ -8,3 +8,4 @@ node_modules
 .shopify
 .vercel
 .vscode
+.DS_Store
