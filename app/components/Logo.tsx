@@ -1,11 +1,12 @@
 import {useNavigate} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
+import clsx from 'clsx';
 
-export function Logo() {
+export function Logo({className, showTransparent} : {className?: string, showTransparent?: boolean}) {
   let settings = useThemeSettings();
   let navigate = useNavigate();
-  let {logoData} = settings || {};
+  let {logoData, transparentLogoData} = settings || {};
   let redirectToHomepage = () => {
     navigate('/');
   };
@@ -14,9 +15,9 @@ export function Logo() {
   }
 
   return (
-    <div className="w-full flex justify-center" role="button" onClick={redirectToHomepage}>
+    <div className={clsx(className)} role="button" onClick={redirectToHomepage}>
       <Image
-        data={logoData}
+        data={showTransparent ? transparentLogoData : logoData}
         sizes="auto"
         className="max-w-[120px] h-full object-contain"
       />
