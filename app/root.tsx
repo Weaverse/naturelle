@@ -189,6 +189,26 @@ const MENU_FRAGMENT = `#graphql
   fragment MenuItem on MenuItem {
     id
     resourceId
+    resource {
+      ... on Collection {
+        image {
+          altText
+          height
+          id
+          url
+          width
+        }
+      }
+      ... on Product {
+        image: featuredImage {
+          altText
+          height
+          id
+          url
+          width
+        }
+      }
+    }
     tags
     title
     type
@@ -197,10 +217,16 @@ const MENU_FRAGMENT = `#graphql
   fragment ChildMenuItem on MenuItem {
     ...MenuItem
   }
-  fragment ParentMenuItem on MenuItem {
+  fragment ParentMenuItem2 on MenuItem {
     ...MenuItem
     items {
       ...ChildMenuItem
+    }
+  }
+  fragment ParentMenuItem on MenuItem {
+    ...MenuItem
+    items {
+      ...ParentMenuItem2
     }
   }
   fragment Menu on Menu {

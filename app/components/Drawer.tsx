@@ -1,8 +1,9 @@
 import {cn} from '@/lib/utils';
 import {Dialog, Transition} from '@headlessui/react';
-import {Fragment, useState} from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import {IconArrowLeft, IconClose} from './Icon';
 import {Heading} from './Text';
+import { useLocation } from '@remix-run/react';
 
 /**
  * Drawer component that opens on user click.
@@ -133,6 +134,12 @@ Drawer.Title = Dialog.Title;
 
 export function useDrawer(openDefault = false) {
   const [isOpen, setIsOpen] = useState(openDefault);
+  let { pathname } = useLocation();
+  useEffect(() => {
+    if (isOpen) {
+      closeDrawer();
+    }
+  }, [pathname]);
 
   function openDrawer() {
     setIsOpen(true);
