@@ -48,20 +48,20 @@ export function IconAccount(props: IconProps) {
 
 export function IconSearch(props: IconProps) {
   return (
-    <Icon {...props} viewBox='0 0 24 24' fill='none'>
+    <Icon {...props} viewBox='0 0 24 24' fill="none" stroke={props.stroke || 'currentColor'}>
       <title>Search</title>
-      <path d="M10.8751 18.75C15.2244 18.75 18.7501 15.2242 18.7501 10.875C18.7501 6.52576 15.2244 3 10.8751 3C6.52588 3 3.00012 6.52576 3.00012 10.875C3.00012 15.2242 6.52588 18.75 10.8751 18.75Z" stroke="#3D490B" />
-      <path d="M16.4438 16.4438L21.0001 21.0001" stroke="#3D490B" />
+      <path d="M10.8751 18.75C15.2244 18.75 18.7501 15.2242 18.7501 10.875C18.7501 6.52576 15.2244 3 10.8751 3C6.52588 3 3.00012 6.52576 3.00012 10.875C3.00012 15.2242 6.52588 18.75 10.8751 18.75Z" />
+      <path d="M16.4438 16.4438L21.0001 21.0001" />
     </Icon>
   );
 }
 
 export function IconLogin(props: IconProps) {
   return (
-    <Icon {...props} viewBox="0 0 24 24" fill="none">
+    <Icon {...props} viewBox="0 0 24 24" fill="none" stroke={props.stroke || 'currentColor'}>
       <title>Login</title>
-      <path d="M12 15C15.3137 15 18 12.3137 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 12.3137 8.68629 15 12 15Z" stroke="#3D490B" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2.90625 20.2501C3.82775 18.6537 5.15328 17.328 6.74958 16.4062C8.34588 15.4845 10.1567 14.9993 12 14.9993C13.8433 14.9993 15.6541 15.4845 17.2504 16.4062C18.8467 17.328 20.1722 18.6537 21.0938 20.2501" stroke="#3D490B" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 15C15.3137 15 18 12.3137 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 12.3137 8.68629 15 12 15Z" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.90625 20.2501C3.82775 18.6537 5.15328 17.328 6.74958 16.4062C8.34588 15.4845 10.1567 14.9993 12 14.9993C13.8433 14.9993 15.6541 15.4845 17.2504 16.4062C18.8467 17.328 20.1722 18.6537 21.0938 20.2501" strokeLinecap="round" strokeLinejoin="round" />
 
     </Icon>
   );
