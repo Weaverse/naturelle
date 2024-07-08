@@ -1,19 +1,15 @@
+import type {MetaFunction} from '@remix-run/react';
+import {getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {type RouteLoaderArgs} from '@weaverse/hydrogen';
-import type {ArticleDetailsQuery} from 'storefrontapi.generated';
-import invariant from 'tiny-invariant';
 import {routeHeaders} from '~/data/cache';
 import {ARTICLE_QUERY} from '~/data/queries';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
-
-// import styles from '../styles/custom-font.css';
+import type {ArticleDetailsQuery} from 'storefrontapi.generated';
+import invariant from 'tiny-invariant';
 
 export const headers = routeHeaders;
-
-// export const links: LinksFunction = () => {
-//   return [{rel: 'stylesheet', href: styles}];
-// };
 
 export async function loader(args: RouteLoaderArgs) {
   let {request, params, context} = args;
@@ -65,6 +61,9 @@ export async function loader(args: RouteLoaderArgs) {
   });
 }
 
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return getSeoMeta(data!.seo as SeoConfig);
+};
 export default function Article() {
   return <WeaverseContent />;
 }

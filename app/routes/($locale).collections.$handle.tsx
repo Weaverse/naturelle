@@ -1,21 +1,24 @@
+import type {MetaFunction} from '@remix-run/react';
 import {
   AnalyticsPageType,
   flattenConnection,
   getPaginationVariables,
+  getSeoMeta,
+  type SeoConfig,
 } from '@shopify/hydrogen';
 import type {
   ProductCollectionSortKeys,
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
-import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {routeHeaders} from '~/data/cache';
+import {COLLECTION_QUERY} from '~/data/queries';
+import {FILTER_URL_PREFIX, PAGINATION_SIZE} from '~/lib/const';
+import {SortParam} from '~/lib/filter';
+import {seoPayload} from '~/lib/seo.server';
+import {parseAsCurrency} from '~/lib/utils';
+import {WeaverseContent} from '~/weaverse';
 import invariant from 'tiny-invariant';
-import { routeHeaders } from '~/data/cache';
-import { COLLECTION_QUERY } from '~/data/queries';
-import { FILTER_URL_PREFIX, PAGINATION_SIZE } from '~/lib/const';
-import { SortParam } from "~/lib/filter";
-import { seoPayload } from '~/lib/seo.server';
-import { parseAsCurrency } from '~/lib/utils';
-import { WeaverseContent } from '~/weaverse';
 
 export const headers = routeHeaders;
 
@@ -131,6 +134,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   });
 }
 
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return getSeoMeta(data!.seo as SeoConfig);
+};
 export default function Collection() {
   return <WeaverseContent />;
 }

@@ -13,7 +13,7 @@ import type {
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
 import {IconCaret, IconXMark} from '~/components/Icon';
-import {Heading, Text} from '~/components/Text';
+import {Heading} from '~/components/Text';
 import {FILTER_URL_PREFIX} from '~/lib/const';
 import {
   filterInputToParams,
@@ -25,7 +25,7 @@ import {
 } from '~/lib/filter';
 import type {SyntheticEvent} from 'react';
 import {useMemo, useState} from 'react';
-import {useDebounce} from 'react-use';
+import useDebounce from 'react-use/esm/useDebounce';
 import {Drawer, useDrawer} from './Drawer';
 
 type DrawerFilterProps = {
@@ -45,18 +45,14 @@ export function DrawerFilter({
   const {openDrawer, isOpen, closeDrawer} = useDrawer();
   return (
     <>
-      <div className="border-y border-bar-subtle py-4 ">
+      <div className="border-y border-bar-subtle py-4">
         <div className="container flex w-full items-center justify-between">
-          <span className="text-xl tracking-tight font-medium font-heading">
+          <span className="font-heading text-xl font-medium tracking-tight">
             {productNumber} Products
           </span>
           <div className="flex gap-2">
             <SortMenu showSearchSort={showSearchSort} />
-            <Button
-              onClick={openDrawer}
-              shape="default"
-              variant="outline"
-            >
+            <Button onClick={openDrawer} shape="default" variant="outline">
               <span>Filter</span>
             </Button>
             <Drawer
@@ -145,9 +141,11 @@ export function FiltersDrawer({
           <Disclosure as="div" key={filter.id} className="w-full pb-6 pt-5">
             {({open}) => (
               <>
-                <Disclosure.Button className="flex w-full justify-between items-center">
-                  <span className="font-heading text-xl font-medium">{filter.label}</span>
-                  <IconCaret direction={open ? 'down' : 'right'}/>
+                <Disclosure.Button className="flex w-full items-center justify-between">
+                  <span className="font-heading text-xl font-medium">
+                    {filter.label}
+                  </span>
+                  <IconCaret direction={open ? 'down' : 'right'} />
                 </Disclosure.Button>
                 <Disclosure.Panel key={filter.id}>
                   <ul key={filter.id} className="space-y-4 pt-4">
@@ -316,8 +314,8 @@ export default function SortMenu({
 
   return (
     <Menu as="div" className="relative z-40">
-      <Menu.Button className="flex items-center gap-[10px] rounded border border-foreground px-4 py-3 h-[50px]">
-        <span className="text-xl font-heading font-medium">Sort by</span>
+      <Menu.Button className="flex h-[50px] items-center gap-[10px] rounded border border-foreground px-4 py-3">
+        <span className="font-heading text-xl font-medium">Sort by</span>
         <IconCaret />
       </Menu.Button>
       <Menu.Items

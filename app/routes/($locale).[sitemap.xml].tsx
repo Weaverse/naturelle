@@ -1,23 +1,20 @@
 import {flattenConnection} from '@shopify/hydrogen';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {SitemapQuery} from 'storefrontapi.generated';
+import type {SitemapsQuery} from 'storefrontapi.generated';
+import invariant from 'tiny-invariant';
 
-/**
- * the google limit is 50K, however, the storefront API
- * allows querying only 250 resources per pagination page
- */
-const MAX_URLS = 250;
+const MAX_URLS = 250; // the google limit is 50K, however, SF API only allow querying for 250 resources each time
 
-type Entry = {
+interface ProductEntry {
   url: string;
-  lastMod?: string;
-  changeFreq?: string;
+  lastMod: string;
+  changeFreq: string;
   image?: {
     url: string;
     title?: string;
     caption?: string;
   };
-};
+}
 
 export async function loader({
   request,
@@ -30,61 +27,54 @@ export async function loader({
     },
   });
 
-  if (!data) {
-    throw new Response('No data found', {status: 404});
-  }
+  invariant(data, 'Sitemap data is missing');
 
-  const sitemap = generateSitemap({data, baseUrl: new URL(request.url).origin});
-
-  return new Response(sitemap, {
-    headers: {
-      'Content-Type': 'application/xml',
-
-      'Cache-Control': `max-age=${60 * 60 * 24}`,
+  return new Response(
+    shopSitemap({data, baseUrl: new URL(request.url).origin}),
+    {
+      headers: {
+        'content-type': 'application/xml',
+        // Cache for 24 hours
+        'cache-control': `max-age=${60 * 60 * 24}`,
+      },
     },
-  });
+  );
 }
 
 function xmlEncode(string: string) {
   return string.replace(/[&<>'"]/g, (char) => `&#${char.charCodeAt(0)};`);
 }
 
-function generateSitemap({
-  data,
-  baseUrl,
-}: {
-  data: SitemapQuery;
-  baseUrl: string;
-}) {
-  const products = flattenConnection(data.products)
+function shopSitemap({data, baseUrl}: {data: SitemapsQuery; baseUrl: string}) {
+  const productsData = flattenConnection(data.products)
     .filter((product) => product.onlineStoreUrl)
     .map((product) => {
       const url = `${baseUrl}/products/${xmlEncode(product.handle)}`;
 
-      const productEntry: Entry = {
+      const finalObject: ProductEntry = {
         url,
         lastMod: product.updatedAt,
         changeFreq: 'daily',
       };
 
       if (product.featuredImage?.url) {
-        productEntry.image = {
+        finalObject.image = {
           url: xmlEncode(product.featuredImage.url),
         };
 
         if (product.title) {
-          productEntry.image.title = xmlEncode(product.title);
+          finalObject.image.title = xmlEncode(product.title);
         }
 
         if (product.featuredImage.altText) {
-          productEntry.image.caption = xmlEncode(product.featuredImage.altText);
+          finalObject.image.caption = xmlEncode(product.featuredImage.altText);
         }
       }
 
-      return productEntry;
+      return finalObject;
     });
 
-  const collections = flattenConnection(data.collections)
+  const collectionsData = flattenConnection(data.collections)
     .filter((collection) => collection.onlineStoreUrl)
     .map((collection) => {
       const url = `${baseUrl}/collections/${collection.handle}`;
@@ -96,7 +86,7 @@ function generateSitemap({
       };
     });
 
-  const pages = flattenConnection(data.pages)
+  const pagesData = flattenConnection(data.pages)
     .filter((page) => page.onlineStoreUrl)
     .map((page) => {
       const url = `${baseUrl}/pages/${page.handle}`;
@@ -108,38 +98,54 @@ function generateSitemap({
       };
     });
 
-  const urls = [...products, ...collections, ...pages];
+  const urlsDatas = [...productsData, ...collectionsData, ...pagesData];
 
   return `
     <urlset
       xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
       xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
     >
-      ${urls.map(renderUrlTag).join('')}
+      ${urlsDatas.map((url) => renderUrlTag(url)).join('')}
     </urlset>`;
 }
 
-function renderUrlTag({url, lastMod, changeFreq, image}: Entry) {
-  const imageTag = image
-    ? `<image:image>
-        <image:loc>${image.url}</image:loc>
-        <image:title>${image.title ?? ''}</image:title>
-        <image:caption>${image.caption ?? ''}</image:caption>
-      </image:image>`.trim()
-    : '';
-
+function renderUrlTag({
+  url,
+  lastMod,
+  changeFreq,
+  image,
+}: {
+  url: string;
+  lastMod?: string;
+  changeFreq?: string;
+  image?: {
+    url: string;
+    title?: string;
+    caption?: string;
+  };
+}) {
   return `
     <url>
       <loc>${url}</loc>
       <lastmod>${lastMod}</lastmod>
       <changefreq>${changeFreq}</changefreq>
-      ${imageTag}
+      ${
+        image
+          ? `
+        <image:image>
+          <image:loc>${image.url}</image:loc>
+          <image:title>${image.title ?? ''}</image:title>
+          <image:caption>${image.caption ?? ''}</image:caption>
+        </image:image>`
+          : ''
+      }
+
     </url>
-  `.trim();
+  `;
 }
 
 const SITEMAP_QUERY = `#graphql
-  query Sitemap($urlLimits: Int, $language: LanguageCode)
+  query sitemaps($urlLimits: Int, $language: LanguageCode)
   @inContext(language: $language) {
     products(
       first: $urlLimits
@@ -174,4 +180,4 @@ const SITEMAP_QUERY = `#graphql
       }
     }
   }
-` as const;
+`;
