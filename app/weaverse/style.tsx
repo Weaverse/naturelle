@@ -116,6 +116,8 @@ export function GlobalStyle() {
 
               /* Button */
               --radius: ${radius}rem;
+
+              /* Layout */
               --height-nav: ${settings.navHeightMobile}rem;
             }
 
