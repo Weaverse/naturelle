@@ -2,7 +2,7 @@ import {Await, useLocation} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
-import {EnhancedMenu} from '~/lib/utils';
+import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
 import {Suspense, useState} from 'react';
@@ -29,7 +29,7 @@ export function UseMenuMegaHeader({
   cart: Promise<CartApiQueryFragment | null>;
   className?: string;
 }) {
-  let { pathname } = useLocation();
+  const isHome  = useIsHomePath();
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
@@ -38,8 +38,9 @@ export function UseMenuMegaHeader({
   let onHover = () => setHovered(true);
   let onLeave = () => setHovered(false);
 
-  let enableTransparent = settings?.enableTransparentHeader && pathname === '/';
+  let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
+  let headerMenuPosition = settings?.headerMenuPosition;
   const {
     isOpen: isCartOpen,
     openDrawer: openCart,
@@ -52,7 +53,7 @@ export function UseMenuMegaHeader({
       className={clsx(
         enableTransparent ? 'fixed' : 'sticky',
         isTransparent
-          ? 'backdrop-blur-lg text-white'
+          ? 'text-white'
           : 'shadow-header',
         'top-0 z-40 w-full border-b border-foreground',
         className,
@@ -60,11 +61,11 @@ export function UseMenuMegaHeader({
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="z-40 flex h-nav items-center justify-between gap-3 lg:container">
+      <div className="z-40 flex h-nav transition-all duration-300 items-center justify-between gap-3 lg:container">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',
-            'transition-all duration-300 ease-in-out',
+            'transition-all duration-500 ease-in-out',
             isTransparent
               ? 'opacity-0'
               : 'opacity-100',
@@ -132,7 +133,7 @@ function SearchToggle() {
     <>
       <button
         onClick={openDrawer}
-        className="relative flex h-8 w-8 items-center justify-center focus:ring-primary/5"
+        className="relative flex h-6 w-6 items-center justify-center focus:ring-primary/5"
       >
         <IconSearch className="h-6 w-6 !font-extralight" />
       </button>

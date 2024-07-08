@@ -179,7 +179,7 @@ function ImageMenu({
                 <div className="group/item relative aspect-square overflow-hidden rounded">
                   <Image
                     data={item?.resource?.image}
-                    className="h-full w-full rounded z-30 object-cover"
+                    className="z-30 h-full w-full rounded object-cover"
                     sizes="auto"
                   />
                   <h4 className="absolute inset-0 z-40 flex w-full cursor-pointer items-center justify-center p-2 text-center font-medium text-white transition-all duration-300 group-hover/item:underline">
