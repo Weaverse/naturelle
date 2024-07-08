@@ -1,32 +1,35 @@
-import {useNonce} from '@shopify/hydrogen';
+import {cssBundleHref} from '@remix-run/css-bundle';
 import {
-  defer,
-  type SerializeFrom,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-import {
+  isRouteErrorResponse,
   Links,
+  LiveReload,
   Meta,
   Outlet,
   Scripts,
-  LiveReload,
+  ScrollRestoration,
+  useLoaderData,
   useMatches,
   useRouteError,
-  useLoaderData,
-  ScrollRestoration,
-  isRouteErrorResponse,
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
+import {useNonce} from '@shopify/hydrogen';
 import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
+import {
+  defer,
+  type LoaderFunctionArgs,
+  type SerializeFrom,
+} from '@shopify/remix-oxygen';
+import {withWeaverse} from '@weaverse/hydrogen';
+import {Layout} from '~/components/Layout';
 import favicon from '../public/favicon.svg';
 import tailwind from './styles/tailwind.css';
-import {Layout} from '~/components/Layout';
-import {withWeaverse} from '@weaverse/hydrogen';
 import {GlobalStyle} from './weaverse/style';
-
-import {cssBundleHref} from '@remix-run/css-bundle';
 import '@fontsource-variable/cormorant/wght.css';
 import '@fontsource-variable/open-sans/wght.css';
+import {Button} from '@/components/button';
+import {Image} from '@shopify/hydrogen';
+import {Link} from './components/Link';
+import {getErrorMessage} from './lib/defineMessageError';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -107,6 +110,7 @@ export async function loader({context}: LoaderFunctionArgs) {
       isLoggedIn: isLoggedInPromise,
       publicStoreDomain,
       weaverseTheme: await context.weaverse.loadThemeSettings(),
+      env: context.env,
     },
     {
       headers: {
@@ -144,17 +148,16 @@ function App() {
 export default withWeaverse(App);
 
 export function ErrorBoundary() {
-  const error = useRouteError();
+  const routeError = useRouteError();
   const rootData = useRootLoaderData();
   const nonce = useNonce();
-  let errorMessage = 'Unknown error';
-  let errorStatus = 500;
-
-  if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
-    errorStatus = error.status;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
+  let errorMessage = '';
+  let errorStatus = 0;
+  if (isRouteErrorResponse(routeError)) {
+    errorMessage = getErrorMessage(routeError.status);
+    errorStatus = routeError.status;
+  } else if (routeError instanceof Error) {
+    errorMessage = routeError.message;
   }
 
   return (
@@ -164,17 +167,32 @@ export function ErrorBoundary() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <GlobalStyle />
       </head>
       <body>
         <Layout {...rootData}>
           <div className="route-error">
-            <h1>Oops</h1>
-            <h2>{errorStatus}</h2>
-            {errorMessage && (
-              <fieldset>
-                <pre>{errorMessage}</pre>
-              </fieldset>
-            )}
+            <div className="relative flex h-[720px] w-full items-center justify-center">
+              <div className="absolute inset-0 h-full w-full">
+                <Image
+                  src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
+                  loading="lazy"
+                  className="h-full object-cover"
+                  sizes="auto"
+                />
+              </div>
+              <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
+                <h2 className=" text-7xl font-medium text-white">{errorStatus}</h2>
+                {errorMessage && (
+                  <span className=" font-body font-normal text-white">{errorMessage}</span>
+                )}
+                <Button variant={'primary'} to='/'>
+                  <span className="font-heading text-xl font-medium">
+                    Back to Homepage
+                  </span>
+                </Button>
+              </div>
+            </div>
           </div>
         </Layout>
         <ScrollRestoration nonce={nonce} />
