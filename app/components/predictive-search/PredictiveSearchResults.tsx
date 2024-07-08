@@ -9,6 +9,8 @@ export function PredictiveSearchResults() {
   let queries = results?.find((result) => result.type === 'queries');
   let articles = results?.find((result) => result.type === 'articles');
   let products = results?.find((result) => result.type === 'products');
+  let pages = results?.find((result) => result.type === 'pages');
+  let totalResultsCount = totalResults || 0;
   function goToSearchResult(event: React.MouseEvent<HTMLAnchorElement>) {
     let type = event.currentTarget.dataset.type;
     if (!searchInputRef.current) return;
@@ -26,14 +28,14 @@ export function PredictiveSearchResults() {
 
   if (!totalResults) {
     return (
-      <div className="absolute top-20 z-10 flex w-full items-center justify-center">
+      <div className="flex w-full items-center justify-center border-t border-bar-subtle">
         <NoPredictiveSearchResults searchTerm={searchTerm} />
       </div>
     );
   }
   return (
-    <div className="absolute left-1/2 top-20 z-10 flex w-fit -translate-x-1/2 items-center justify-center">
-      <div className="grid w-screen min-w-[430px] max-w-[720px] grid-cols-1 gap-6 border bg-background-subtle-1 p-6 lg:grid-cols-[1fr_2fr]  max-h-[80vh] overflow-y-auto">
+    <div className="flex items-center justify-center border-t bg-background-subtle-1">
+      <div className="grid max-h-[78vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
         <div className="space-y-8">
           {queries && (
             <div className="flex flex-col gap-4 divide-y divide-bar-subtle">
@@ -68,16 +70,29 @@ export function PredictiveSearchResults() {
               type={products.type}
             />
             {/* view all results /search?q=term */}
-            {searchTerm.current && (
-              <Link
-                onClick={goToSearchResult}
-                to={`/search?q=${searchTerm.current}`}
-              >
-                <p className="mt-6 underline">View all products</p>
-              </Link>
-            )}
+            
           </div>
         )}
+        {pages && (
+            <div>
+              <PredictiveSearchResult
+                goToSearchResult={goToSearchResult}
+                items={pages.items}
+                key={pages.type}
+                searchTerm={searchTerm}
+                type={pages.type}
+              />
+            </div>
+          )}
+        {searchTerm.current && (
+            <Link
+              onClick={goToSearchResult}
+              to={`/search?q=${searchTerm.current}`}
+              className='flex justify-center'
+            >
+              <p className="inline-flex items-center font-normal justify-center rounded-md h-[50px] px-5 py-3 bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar">Show All Results ({totalResultsCount})</p>
+            </Link>
+          )}
       </div>
     </div>
   );
@@ -92,8 +107,13 @@ function NoPredictiveSearchResults({
     return null;
   }
   return (
-    <p className="w-[640px] border bg-background-subtle-1 p-6">
-      No results found for <q>{searchTerm.current}</q>
-    </p>
+    <div className="w-full p-6">
+      <p className='border-b border-bar-subtle pb-3'>
+        NO RESULTS
+      </p>
+      <p className='pt-5'>
+        No results found for <q>{searchTerm.current}</q>
+      </p>
+    </div>
   );
 }
