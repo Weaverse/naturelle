@@ -172,7 +172,7 @@ export function ErrorBoundary() {
       <body>
         <Layout {...rootData}>
           <div className="route-error">
-            <div className="relative flex h-[720px] w-full items-center justify-center">
+            <div className="relative flex lg:h-[720px] md:h-[500px] h-80 w-full items-center justify-center">
               <div className="absolute inset-0 h-full w-full">
                 <Image
                   src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
