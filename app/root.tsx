@@ -31,6 +31,9 @@ import '@fontsource-variable/cormorant/wght.css?url';
 import '@fontsource-variable/open-sans/wght.css?url';
 import {CustomAnalytics} from '~/components/Analytics';
 import {seoPayload} from '~/lib/seo.server';
+import {Button} from '@/components/button';
+import {Image} from '@shopify/hydrogen';
+import {getErrorMessage} from './lib/defineMessageError';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -117,6 +120,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
       isLoggedIn: isLoggedInPromise,
       publicStoreDomain,
       weaverseTheme: await context.weaverse.loadThemeSettings(),
+      env: context.env,
     },
     {
       headers: {
@@ -161,17 +165,17 @@ function App() {
 
 export default withWeaverse(App);
 function ErrorBoundaryComponent() {
-  const error = useRouteError();
+  const routeError = useRouteError();
   const rootData = useRootLoaderData();
   const nonce = useNonce();
-  let errorMessage = 'Unknown error';
-  let errorStatus = 500;
 
-  if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
-    errorStatus = error.status;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
+  let errorMessage = '';
+  let errorStatus = 0;
+  if (isRouteErrorResponse(routeError)) {
+    errorMessage = getErrorMessage(routeError.status);
+    errorStatus = routeError.status;
+  } else if (routeError instanceof Error) {
+    errorMessage = routeError.message;
   }
 
   return (
@@ -181,18 +185,31 @@ function ErrorBoundaryComponent() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <GlobalStyle />
       </head>
       <body>
         <Layout {...rootData}>
-          <div className="route-error">
-            <h1>Oops</h1>
-            <h2>{errorStatus}</h2>
-            {errorMessage && (
-              <fieldset>
-                <pre>{errorMessage}</pre>
-              </fieldset>
-            )}
-          </div>
+        <div className="relative flex lg:h-[720px] md:h-[500px] h-80 w-full items-center justify-center">
+              <div className="absolute inset-0 h-full w-full">
+                <Image
+                  src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
+                  loading="lazy"
+                  className="h-full object-cover"
+                  sizes="auto"
+                />
+              </div>
+              <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
+                <h2 className=" text-7xl font-medium text-white">{errorStatus}</h2>
+                {errorMessage && (
+                  <span className=" font-body font-normal text-white">{errorMessage}</span>
+                )}
+                <Button variant={'primary'} to='/'>
+                  <span className="font-heading text-xl font-medium">
+                    Back to Homepage
+                  </span>
+                </Button>
+              </div>
+            </div>
         </Layout>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
