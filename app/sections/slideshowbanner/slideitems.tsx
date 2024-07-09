@@ -42,7 +42,7 @@ let variants = cva("flex flex-col [&_.paragraph]:mx-[unset]", {
   },
 });
 
-let HeaderImage = forwardRef<HTMLElement, SlideShowBannerItemProps & SectionProps>(
+let SlideShowBannerItem = forwardRef<HTMLElement, SlideShowBannerItemProps & SectionProps>(
   (props, ref) => {
     let { children, height, contentPosition, ...rest } = props;
     return (
@@ -57,15 +57,15 @@ let HeaderImage = forwardRef<HTMLElement, SlideShowBannerItemProps & SectionProp
   },
 );
 
-export default HeaderImage;
+export default SlideShowBannerItem;
 
 export let schema: HydrogenComponentSchema = {
-  type: "image-banner",
-  title: "Image banner",
+  type: "slide-show-banner--item",
+  title: "Slide show item",
   toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
-      group: "Image",
+      group: "Slide",
       inputs: [
         {
           type: "select",

@@ -37,6 +37,7 @@ export default defineConfig({
        * @see https://vitejs.dev/config/dep-optimization-options
        */
       include: [
+        'react-use/lib/useWindowScroll',
         'screenfull',
         'nano-css/addon/vcssom/cssToTree',
         'nano-css/addon/vcssom',
