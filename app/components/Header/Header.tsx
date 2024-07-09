@@ -26,7 +26,7 @@ export function Header({header, isLoggedIn, cart, env}: HeaderProps) {
           header={headerMenu}
           isLoggedIn={isLoggedIn}
           cart={cart}
-          className="hidden lg:flex"
+          className="hidden xl:flex"
         />
       )}
       {typeMenu === 'drawer' ? (
@@ -40,7 +40,7 @@ export function Header({header, isLoggedIn, cart, env}: HeaderProps) {
           header={headerMenu}
           isLoggedIn={isLoggedIn}
           cart={cart}
-          className="block lg:hidden"
+          className="block xl:hidden"
         />
       )}
     </>

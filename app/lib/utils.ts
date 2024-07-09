@@ -5,6 +5,7 @@ import {useRootLoaderData} from '~/root';
 import type {I18nLocale} from './type';
 import type { WeaverseImage } from '@weaverse/hydrogen';
 import { ChildMenuItemFragment, MenuFragment, ParentMenuItemFragment } from 'storefrontapi.generated';
+import { useLocation } from '@remix-run/react';
 
 
 type EnhancedMenuItemProps = {
@@ -191,6 +192,14 @@ function parseItem(primaryDomain: string, env: Env, customPrefixes = {}) {
       return parsedItem as EnhancedMenu["items"][number]["items"][number];
     }
   };
+}
+
+export function useIsHomePath() {
+  const { pathname } = useLocation();
+  const rootData = useRootLoaderData();
+  const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
+  const strippedPathname = pathname.replace(selectedLocale.pathPrefix, "");
+  return strippedPathname === "/";
 }
 
 function resolveToFromType(
