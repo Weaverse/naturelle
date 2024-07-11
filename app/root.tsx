@@ -31,6 +31,10 @@ import '@fontsource-variable/cormorant/wght.css?url';
 import '@fontsource-variable/open-sans/wght.css?url';
 import {CustomAnalytics} from '~/components/Analytics';
 import {seoPayload} from '~/lib/seo.server';
+import {Button} from '@/components/button';
+import {Image} from '@shopify/hydrogen';
+import {getErrorMessage} from './lib/defineMessageError';
+import { parseMenu } from './lib/utils';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -83,7 +87,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   const isLoggedInPromise = customerAccount.isLoggedIn();
 
   // defer the footer query (below the fold)
-  const footerPromise = storefront.query(FOOTER_QUERY, {
+  const footer = await storefront.query(FOOTER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
       footerMenuHandle: 'footer', // Adjust to your footer menu handle
@@ -98,6 +102,13 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     },
   });
 
+  const headerMenu = header?.menu
+    ? parseMenu(header.menu, header.shop.primaryDomain.url, env)
+    : undefined;
+    const footerMenu = footer?.menu
+    ? parseMenu(footer.menu, footer.shop.primaryDomain.url, env)
+    : undefined;
+
   const seo = seoPayload.root({shop: header.shop, url: request.url});
   return defer(
     {
@@ -110,8 +121,8 @@ export async function loader({context, request}: LoaderFunctionArgs) {
         checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN,
         storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       },
-      footer: footerPromise,
-      header,
+      footerMenu,
+      headerMenu,
       seo,
       selectedLocale: storefront.i18n,
       isLoggedIn: isLoggedInPromise,
@@ -161,17 +172,17 @@ function App() {
 
 export default withWeaverse(App);
 function ErrorBoundaryComponent() {
-  const error = useRouteError();
+  const routeError = useRouteError();
   const rootData = useRootLoaderData();
   const nonce = useNonce();
-  let errorMessage = 'Unknown error';
-  let errorStatus = 500;
 
-  if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
-    errorStatus = error.status;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
+  let errorMessage = '';
+  let errorStatus = 0;
+  if (isRouteErrorResponse(routeError)) {
+    errorMessage = getErrorMessage(routeError.status);
+    errorStatus = routeError.status;
+  } else if (routeError instanceof Error) {
+    errorMessage = routeError.message;
   }
 
   return (
@@ -181,18 +192,31 @@ function ErrorBoundaryComponent() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <GlobalStyle />
       </head>
       <body>
         <Layout {...rootData}>
-          <div className="route-error">
-            <h1>Oops</h1>
-            <h2>{errorStatus}</h2>
-            {errorMessage && (
-              <fieldset>
-                <pre>{errorMessage}</pre>
-              </fieldset>
-            )}
-          </div>
+        <div className="relative flex lg:h-[720px] md:h-[500px] h-80 w-full items-center justify-center">
+              <div className="absolute inset-0 h-full w-full">
+                <Image
+                  src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
+                  loading="lazy"
+                  className="h-full object-cover"
+                  sizes="auto"
+                />
+              </div>
+              <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
+                <h2 className=" text-7xl font-medium text-white">{errorStatus}</h2>
+                {errorMessage && (
+                  <span className=" font-body font-normal text-white">{errorMessage}</span>
+                )}
+                <Button variant={'primary'} to='/'>
+                  <span className="font-heading text-xl font-medium">
+                    Back to Homepage
+                  </span>
+                </Button>
+              </div>
+            </div>
         </Layout>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
@@ -287,11 +311,29 @@ const HEADER_QUERY = `#graphql
 ` as const;
 
 const FOOTER_QUERY = `#graphql
+fragment Shop on Shop {
+    id
+    name
+    description
+    primaryDomain {
+      url
+    }
+    brand {
+      logo {
+        image {
+          url
+        }
+      }
+    }
+  }
   query Footer(
     $country: CountryCode
     $footerMenuHandle: String!
     $language: LanguageCode
   ) @inContext(language: $language, country: $country) {
+    shop {
+      ...Shop
+    }
     menu(handle: $footerMenuHandle) {
       ...Menu
     }

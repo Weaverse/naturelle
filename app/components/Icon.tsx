@@ -636,3 +636,12 @@ export function IconListMenu(props: IconProps){
     </Icon>
   );
 }
+
+export function IconPlusLinkFooter(props: IconProps) {
+  return (
+    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'} viewBox="0 0 20 21">
+      <path d="M3.125 10.3301H16.875" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 3.45508V17.2051" stroke-linecap="round" stroke-linejoin="round"/>
+    </Icon>
+  );
+}
