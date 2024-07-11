@@ -1,85 +1,195 @@
+import {Button} from '@/components/button';
 import {Input} from '@/components/input';
-import { Button } from "@/components/button";
+import {Disclosure} from '@headlessui/react';
 import {NavLink, useFetcher} from '@remix-run/react';
-import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
-import {useRootLoaderData} from '~/root';
-import { IconSpinner } from "./Icon";
+import {getMaxDepth} from '~/lib/menu';
+import {SingleMenuItem} from '~/lib/type';
+import {EnhancedMenu} from '~/lib/utils';
+import React from 'react';
+import { IconPlusLinkFooter} from './Icon';
+import {LayoutProps} from './Layout';
 
-export function Footer({
-  menu,
-  shop,
-}: FooterQuery & {shop: HeaderQuery['shop']}) {
-  let fetcher = useFetcher<any>()
-  let isError = fetcher.state ==='idle' && fetcher.data?.errors 
+type FooterProps = Pick<LayoutProps, 'footerMenu'>;
+export function Footer({footerMenu}: FooterProps) {
+  let fetcher = useFetcher<any>();
+  let isError = fetcher.state === 'idle' && fetcher.data?.errors;
   return (
-    <footer className="footer bg-background-subtle-2">
-      <div className="grid lg:container grid-cols-1 px-4 pt-6 pb-10 md:px-6 md:pt-0 md:pb-0 gap-y-6 md:grid-cols-2 md:divide-x">
-        <div className="space-y-4 md:pt-10 md:pb-16 md:pr-6 lg:px-10 lg:pt-16 lg:pb-24">
+    <footer className="footer w-full bg-background-subtle-2">
+      <div className="flex h-fit flex-col justify-center gap-4 px-4 pb-10 pt-6 lg:container md:flex-row md:gap-4 md:px-6 md:py-10 lg:gap-10 lg:px-10 lg:py-16">
+        <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:border-none md:pb-0">
           <h3>Newsletter</h3>
-          <p>Sign up for 15% off and updates straight to your inbox.</p>
-          <fetcher.Form method="POST" action="/api/customer" className="flex gap-2">
-            <Input
-              className="bg-transparent"
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-            />
-            <Button loading={fetcher.state === 'submitting'} type="submit">Subscribe</Button>
-          </fetcher.Form>
-          {isError && <p className="!mt-1 text-xs text-red-700">{fetcher.data.errors[0].message}</p>}
+          <div className="flex w-fit flex-col gap-4">
+            <p>Sign up for 15% off and updates straight to your inbox.</p>
+            <fetcher.Form
+              method="POST"
+              action="/api/customer"
+              className="flex gap-2"
+            >
+              <Input
+                className="bg-transparent"
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+              <Button loading={fetcher.state === 'submitting'} type="submit">
+                Subscribe
+              </Button>
+            </fetcher.Form>
+            {isError && (
+              <p className="!mt-1 text-xs text-red-700">
+                {fetcher.data.errors[0].message}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="space-y-6 md:p-16 md:pb-24">
-          <h3>Quick links</h3>
-          {menu && shop?.primaryDomain?.url && (
-            <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
-          )}
-        </div>
+        {footerMenu && <FooterMenu menu={footerMenu} />}
       </div>
     </footer>
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
-}) {
-  const {publicStoreDomain} = useRootLoaderData();
-
+function FooterMenu({menu}: {menu: EnhancedMenu | undefined | null}) {
+  let items = menu?.items as unknown as SingleMenuItem[];
+  if (!items) return null;
+  console.log('🚀 ~ items:', items);
   return (
-    <nav className="flex flex-col gap-4" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            // style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+    <div className="w-full">
+      <nav
+        className="flex flex-col justify-between gap-4 md:flex-row md:gap-0"
+        role="navigation"
+      >
+        {items.map((item, id) => {
+          let {title, ...rest} = item;
+          let level = getMaxDepth(item);
+          let Comp: React.FC<SingleMenuItem>;
+          if (level === 2) {
+            Comp = MenuLink;
+          } else if (level === 1) {
+            Comp = HeaderText;
+          } else {
+            return null;
+          }
+          return <Comp key={id} {...rest} title={title} />;
+        })}
+      </nav>
+    </div>
   );
 }
+
+function MenuLink(props: SingleMenuItem) {
+  let {title, items, to} = props;
+  return (
+    <>
+      <div className="hidden flex-col gap-6 md:flex">
+        <h4 className="font-medium uppercase">
+          <NavLink to={to} prefetch="intent">
+            <span className="text-animation">{title}</span>
+          </NavLink>
+        </h4>
+        <ul className="space-y-1.5">
+          {items.map((subItem, ind) => (
+            <li key={ind} className="leading-6">
+              <NavLink to={subItem.to} prefetch="intent">
+                <span className="text-animation font-body font-normal">
+                  {subItem.title}
+                </span>
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="block md:hidden border-b border-foreground pb-4">
+        <Disclosure>
+          {({open}) => (
+            <>
+              <Disclosure.Button className="w-full text-left">
+                <h4 className="flex justify-between font-medium uppercase">
+                  {title}
+                  <span>
+                    <IconPlusLinkFooter className={`h-5 w-5 trasition-transform duration-300 ${open ? 'rotate-180' : 'rotate-0'}`} />
+                  </span>
+                </h4>
+              </Disclosure.Button>
+              <div
+                className={`${
+                  open ? `h-fit max-h-48` : `max-h-0`
+                } overflow-hidden transition-all duration-300`}
+              >
+                <Disclosure.Panel static>
+                  <ul className="space-y-3 pb-3 pt-2">
+                    {items.map((subItem, ind) => (
+                      <li key={ind} className="leading-6">
+                        <NavLink
+                          key={ind}
+                          to={subItem.to}
+                          prefetch="intent"
+                        >
+                          <span className="font-body font-normal">
+                            {subItem.title}
+                          </span>
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                </Disclosure.Panel>
+              </div>
+            </>
+          )}
+        </Disclosure>
+      </div>
+    </>
+  );
+}
+
+function HeaderText({title, to}: {title: string; to: string}) {
+  return (
+    <NavLink to={to} className="border-b border-foreground pb-4 md:border-none md:pb-0">
+      <h4 className="text-animation font-medium uppercase">{title}</h4>
+    </NavLink>
+  );
+}
+
+// function FooterMenu({
+//   menu,
+//   primaryDomainUrl,
+// }: {
+//   menu: FooterQuery['menu'];
+//   primaryDomainUrl: FooterQuery['shop']['primaryDomain']['url'];
+// }) {
+//   const {publicStoreDomain} = useRootLoaderData();
+
+//   return (
+//     <nav className="flex flex-col gap-4" role="navigation">
+//       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
+//         if (!item.url) return null;
+//         // if the url is internal, we strip the domain
+//         const url =
+//           item.url.includes('myshopify.com') ||
+//           item.url.includes(publicStoreDomain) ||
+//           item.url.includes(primaryDomainUrl)
+//             ? new URL(item.url).pathname
+//             : item.url;
+//         const isExternal = !url.startsWith('/');
+//         return isExternal ? (
+//           <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
+//             {item.title}
+//           </a>
+//         ) : (
+//           <NavLink
+//             end
+//             key={item.id}
+//             prefetch="intent"
+//             // style={activeLinkStyle}
+//             to={url}
+//           >
+//             {item.title}
+//           </NavLink>
+//         );
+//       })}
+//     </nav>
+//   );
+// }
 
 const FALLBACK_FOOTER_MENU = {
   id: 'gid://shopify/Menu/199655620664',
