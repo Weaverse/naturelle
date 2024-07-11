@@ -2,42 +2,37 @@ import {Await} from '@remix-run/react';
 import {Suspense} from 'react';
 import type {
   CartApiQueryFragment,
-  FooterQuery,
-  HeaderQuery,
 } from 'storefrontapi.generated';
-import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
-import {Header, HeaderMenu} from '~/components/Header/Header';
-import {CartMain} from '~/components/Cart';
-import { AppLoadContext } from '@shopify/remix-oxygen';
+import {Header} from '~/components/Header/Header';
+import { EnhancedMenu } from '~/lib/utils';
 
 export type LayoutProps = {
   cart: Promise<CartApiQueryFragment | null>;
   children?: React.ReactNode;
-  footer: Promise<FooterQuery>;
-  header: HeaderQuery;
+  footerMenu: EnhancedMenu | undefined | null;
+  headerMenu: EnhancedMenu | undefined | null;
   isLoggedIn: Promise<boolean>;
-  env: AppLoadContext['env'];
 };
 
 export function Layout({
   cart,
   children = null,
-  footer,
-  header,
+  footerMenu,
+  headerMenu,
   isLoggedIn,
-  env,
 }: LayoutProps) {
+
   return (
     <>
       {/* <CartAside cart={cart} /> */}
       {/* <SearchAside /> */}
       {/* <MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
-      {header && <Header header={header} cart={cart} isLoggedIn={isLoggedIn} env={env} />}
+      {headerMenu && <Header headerMenu={headerMenu} cart={cart} isLoggedIn={isLoggedIn} />}
       <main>{children}</main>
       <Suspense>
-        <Await resolve={footer}>
-          {(footer) => <Footer menu={footer?.menu} shop={header?.shop} />}
+        <Await resolve={footerMenu}>
+          {(footer) => <Footer footerMenu={footerMenu} />}
         </Await>
       </Suspense>
     </>

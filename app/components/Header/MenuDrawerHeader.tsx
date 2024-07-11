@@ -2,7 +2,7 @@ import {Await, useLocation} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
-import {EnhancedMenu} from '~/lib/utils';
+import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
 import {Suspense, useState} from 'react';
@@ -29,7 +29,7 @@ export function UseMenuDrawerHeader({
   cart: Promise<CartApiQueryFragment | null>;
   className?: string;
 }) {
-  let { pathname } = useLocation();
+  const isHome  = useIsHomePath();
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
@@ -38,7 +38,7 @@ export function UseMenuDrawerHeader({
   let onHover = () => setHovered(true);
   let onLeave = () => setHovered(false);
 
-  let enableTransparent = settings?.enableTransparentHeader && pathname === '/';
+  let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
   const {
     isOpen: isCartOpen,
@@ -51,14 +51,14 @@ export function UseMenuDrawerHeader({
       role="banner"
       className={clsx(
         enableTransparent ? 'fixed' : 'sticky',
-        isTransparent ? 'text-white backdrop-blur-lg' : 'shadow-header',
+        isTransparent ? 'text-white' : 'shadow-header',
         'z-40 w-full border-b border-foreground top-0',
         className,
       )}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className=" z-40 flex h-nav items-center justify-between gap-3 px-6 py-4 lg:container">
+      <div className=" z-40 flex transition-all duration-300 h-nav items-center justify-between gap-3 px-6 py-4 lg:container">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',
@@ -162,7 +162,7 @@ function SearchToggle() {
     <>
       <button
         onClick={openDrawer}
-        className="relative flex h-8 w-8 items-center justify-center focus:ring-primary/5"
+        className="relative flex h-6 w-6 items-center justify-center focus:ring-primary/5"
       >
         <IconSearch className="h-6 w-6 !font-extralight" />
       </button>
