@@ -34,6 +34,7 @@ import {seoPayload} from '~/lib/seo.server';
 import {Button} from '@/components/button';
 import {Image} from '@shopify/hydrogen';
 import {getErrorMessage} from './lib/defineMessageError';
+import { parseMenu } from './lib/utils';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -86,7 +87,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   const isLoggedInPromise = customerAccount.isLoggedIn();
 
   // defer the footer query (below the fold)
-  const footerPromise = storefront.query(FOOTER_QUERY, {
+  const footer = await storefront.query(FOOTER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
       footerMenuHandle: 'footer', // Adjust to your footer menu handle
@@ -101,6 +102,13 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     },
   });
 
+  const headerMenu = header?.menu
+    ? parseMenu(header.menu, header.shop.primaryDomain.url, env)
+    : undefined;
+    const footerMenu = footer?.menu
+    ? parseMenu(footer.menu, footer.shop.primaryDomain.url, env)
+    : undefined;
+
   const seo = seoPayload.root({shop: header.shop, url: request.url});
   return defer(
     {
@@ -113,14 +121,13 @@ export async function loader({context, request}: LoaderFunctionArgs) {
         checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN,
         storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       },
-      footer: footerPromise,
-      header,
+      footerMenu,
+      headerMenu,
       seo,
       selectedLocale: storefront.i18n,
       isLoggedIn: isLoggedInPromise,
       publicStoreDomain,
       weaverseTheme: await context.weaverse.loadThemeSettings(),
-      env: context.env,
     },
     {
       headers: {
@@ -304,11 +311,29 @@ const HEADER_QUERY = `#graphql
 ` as const;
 
 const FOOTER_QUERY = `#graphql
+fragment Shop on Shop {
+    id
+    name
+    description
+    primaryDomain {
+      url
+    }
+    brand {
+      logo {
+        image {
+          url
+        }
+      }
+    }
+  }
   query Footer(
     $country: CountryCode
     $footerMenuHandle: String!
     $language: LanguageCode
   ) @inContext(language: $language, country: $country) {
+    shop {
+      ...Shop
+    }
     menu(handle: $footerMenuHandle) {
       ...Menu
     }
