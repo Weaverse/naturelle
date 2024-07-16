@@ -637,11 +637,26 @@ export function IconListMenu(props: IconProps){
   );
 }
 
-export function IconPlusLinkFooter(props: IconProps) {
+export function IconPlusLinkFooter({open, ...props}: IconProps & {open?: boolean}) {
   return (
     <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'} viewBox="0 0 20 21">
-      <path d="M3.125 10.3301H16.875" stroke-linecap="round" stroke-linejoin="round"/>
+      {!open && <path d="M3.125 10.3301H16.875" stroke-linecap="round" stroke-linejoin="round"/>}
       <path d="M10 3.45508V17.2051" stroke-linecap="round" stroke-linejoin="round"/>
+    </Icon>
+  );
+}
+
+export function IconCheck(props: IconProps) {
+  return (
+    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+      <title>Check</title>
+      <circle cx="10" cy="10" r="7.25" strokeWidth="1.25" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="m7.04 10.37 2.42 2.41 3.5-5.56"
+      />
     </Icon>
   );
 }
