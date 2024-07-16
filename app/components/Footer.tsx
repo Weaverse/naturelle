@@ -6,7 +6,8 @@ import {getMaxDepth} from '~/lib/menu';
 import {SingleMenuItem} from '~/lib/type';
 import {EnhancedMenu} from '~/lib/utils';
 import React from 'react';
-import { IconPlusLinkFooter} from './Icon';
+import {CountrySelector} from './CountrySelector';
+import {IconPlusLinkFooter} from './Icon';
 import {LayoutProps} from './Layout';
 
 type FooterProps = Pick<LayoutProps, 'footerMenu'>;
@@ -15,35 +16,38 @@ export function Footer({footerMenu}: FooterProps) {
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
   return (
     <footer className="footer w-full bg-background-subtle-2">
-      <div className="flex h-fit flex-col justify-center gap-4 px-4 pb-10 pt-6 lg:container md:flex-row md:gap-4 md:px-6 md:py-10 lg:gap-10 lg:px-10 lg:py-16">
-        <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:border-none md:pb-0">
-          <h3>Newsletter</h3>
-          <div className="flex w-fit flex-col gap-4">
-            <p>Sign up for 15% off and updates straight to your inbox.</p>
-            <fetcher.Form
-              method="POST"
-              action="/api/customer"
-              className="flex gap-2"
-            >
-              <Input
-                className="bg-transparent"
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                required
-              />
-              <Button loading={fetcher.state === 'submitting'} type="submit">
-                Subscribe
-              </Button>
-            </fetcher.Form>
-            {isError && (
-              <p className="!mt-1 text-xs text-red-700">
-                {fetcher.data.errors[0].message}
-              </p>
-            )}
+      <div className='flex flex-col gap-6 md:gap-10 lg:gap-8 lg:container px-4 pb-10 lg:px-10 lg:py-16 md:px-6 md:py-10 pt-6 h-fit'>
+        <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
+          <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
+            <h3>Newsletter</h3>
+            <div className="flex w-fit flex-col gap-4 md:h-fit">
+              <p>Sign up for 15% off and updates straight to your inbox.</p>
+              <fetcher.Form
+                method="POST"
+                action="/api/customer"
+                className="flex gap-2"
+              >
+                <Input
+                  className="bg-transparent"
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                />
+                <Button loading={fetcher.state === 'submitting'} type="submit">
+                  Subscribe
+                </Button>
+              </fetcher.Form>
+              {isError && (
+                <p className="!mt-1 text-xs text-red-700">
+                  {fetcher.data.errors[0].message}
+                </p>
+              )}
+            </div>
           </div>
+          {footerMenu && <FooterMenu menu={footerMenu} />}
         </div>
-        {footerMenu && <FooterMenu menu={footerMenu} />}
+        <CountrySelector />
       </div>
     </footer>
   );
@@ -52,7 +56,6 @@ export function Footer({footerMenu}: FooterProps) {
 function FooterMenu({menu}: {menu: EnhancedMenu | undefined | null}) {
   let items = menu?.items as unknown as SingleMenuItem[];
   if (!items) return null;
-  console.log('🚀 ~ items:', items);
   return (
     <div className="w-full">
       <nav
@@ -99,7 +102,7 @@ function MenuLink(props: SingleMenuItem) {
           ))}
         </ul>
       </div>
-      <div className="block md:hidden border-b border-foreground pb-4">
+      <div className="block border-b border-foreground pb-4 md:hidden">
         <Disclosure>
           {({open}) => (
             <>
@@ -107,7 +110,10 @@ function MenuLink(props: SingleMenuItem) {
                 <h4 className="flex justify-between font-medium uppercase">
                   {title}
                   <span>
-                    <IconPlusLinkFooter className={`h-5 w-5 trasition-transform duration-300 ${open ? 'rotate-180' : 'rotate-0'}`} />
+                    <IconPlusLinkFooter
+                      open={open}
+                      className={`trasition-transform h-5 w-5 duration-300 ${open ? 'rotate-90' : 'rotate-0'}`}
+                    />
                   </span>
                 </h4>
               </Disclosure.Button>
@@ -120,11 +126,7 @@ function MenuLink(props: SingleMenuItem) {
                   <ul className="space-y-3 pb-3 pt-2">
                     {items.map((subItem, ind) => (
                       <li key={ind} className="leading-6">
-                        <NavLink
-                          key={ind}
-                          to={subItem.to}
-                          prefetch="intent"
-                        >
+                        <NavLink key={ind} to={subItem.to} prefetch="intent">
                           <span className="font-body font-normal">
                             {subItem.title}
                           </span>
@@ -144,7 +146,10 @@ function MenuLink(props: SingleMenuItem) {
 
 function HeaderText({title, to}: {title: string; to: string}) {
   return (
-    <NavLink to={to} className="border-b border-foreground pb-4 md:border-none md:pb-0">
+    <NavLink
+      to={to}
+      className="border-b border-foreground pb-4 md:border-none md:pb-0"
+    >
       <h4 className="text-animation font-medium uppercase">{title}</h4>
     </NavLink>
   );
