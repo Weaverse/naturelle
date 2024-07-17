@@ -1,4 +1,4 @@
-import {Await, useLocation} from '@remix-run/react';
+import {Await} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
@@ -15,8 +15,8 @@ import {IconAccount, IconLogin, IconSearch} from '../Icon';
 import {Link} from '../Link';
 import {Logo} from '../Logo';
 import {MegaMenu} from './menu/MegaMenu';
-import {PredictiveSearch} from '../predictive-search/PredictiveSearch';
 import {CartCount} from './CartCount';
+import { SearchToggle } from './SearchToggle';
 
 export function UseMenuMegaHeader({
   header,
@@ -126,25 +126,3 @@ function AccountLink({className}: {className?: string}) {
   );
 }
 
-function SearchToggle() {
-  const {isOpen, closeDrawer, openDrawer} = useDrawer();
-  return (
-    <>
-      <button
-        onClick={openDrawer}
-        className="relative flex h-6 w-6 items-center justify-center focus:ring-primary/5"
-      >
-        <IconSearch className="h-6 w-6 !font-extralight" />
-      </button>
-      <Drawer
-        open={isOpen}
-        onClose={closeDrawer}
-        openFrom="right"
-        heading="Search"
-        isForm="search"
-      >
-        <PredictiveSearch isOpen={isOpen} />
-      </Drawer>
-    </>
-  );
-}
