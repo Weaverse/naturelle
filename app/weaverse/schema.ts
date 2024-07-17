@@ -33,7 +33,7 @@ export const themeSchema: HydrogenThemeSchema = {
       inputs: [
         {
           type: "toggle-group",
-          label: "Header menu type",
+          label: "Header menu type for desktop",
           name: "typeMenuHeader",
           configs: {
             options: [
@@ -70,6 +70,18 @@ export const themeSchema: HydrogenThemeSchema = {
             width: 320,
             height: 116,
           },
+        },
+        {
+          type: "toggle-group",
+          label: "Search type for desktop",
+          name: "searchType",
+          configs: {
+            options: [
+              { value: "headerSearch", label: "Header search" },
+              { value: "drawerSearch", label: "Drawer search" },
+            ]
+          },
+          defaultValue: "headerSearch"
         },
       ],
     },
