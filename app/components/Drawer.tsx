@@ -1,9 +1,9 @@
 import {cn} from '@/lib/utils';
 import {Dialog, Transition} from '@headlessui/react';
+import {useLocation} from '@remix-run/react';
 import {Fragment, useEffect, useState} from 'react';
 import {IconArrowLeft, IconClose} from './Icon';
 import {Heading} from './Text';
-import { useLocation } from '@remix-run/react';
 
 /**
  * Drawer component that opens on user click.
@@ -72,7 +72,9 @@ export function Drawer({
                     'transform text-left align-middle shadow-xl transition-all',
                     openFrom === 'left'
                       ? 'h-screen-dynamic w-screen max-w-96 bg-background-subtle-1'
-                      : 'h-screen-dynamic w-screen max-w-96',
+                      : openFrom === 'top'
+                        ? 'h-fit w-screen bg-background-subtle-1'
+                        : 'h-screen-dynamic w-screen max-w-96',
                     isForm === 'cart'
                       ? 'bg-background-basic'
                       : 'bg-background-subtle-1',
@@ -80,9 +82,11 @@ export function Drawer({
                 >
                   <header
                     className={cn(
-                      'h-nav sticky top-0 flex items-center px-6 py-5',
+                      'sticky top-0 flex h-nav items-center px-6 py-5',
                       heading ? 'justify-between' : 'justify-end',
-                      openFrom === 'left' && !isBackMenu ? 'flex-row-reverse' : ''
+                      openFrom === 'left' || openFrom === 'top' && !isBackMenu
+                        ? 'flex-row-reverse'
+                        : '',
                     )}
                   >
                     {isBackMenu && (
@@ -93,7 +97,7 @@ export function Drawer({
                         data-test="close-cart"
                       >
                         <IconArrowLeft
-                          viewBox='0 0 32 32'
+                          viewBox="0 0 32 32"
                           className="h-8 w-8 opacity-50"
                           aria-label="Close panel"
                         />
@@ -134,7 +138,7 @@ Drawer.Title = Dialog.Title;
 
 export function useDrawer(openDefault = false) {
   const [isOpen, setIsOpen] = useState(openDefault);
-  let { pathname } = useLocation();
+  let {pathname} = useLocation();
   useEffect(() => {
     if (isOpen) {
       closeDrawer();
