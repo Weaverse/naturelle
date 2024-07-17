@@ -1,7 +1,6 @@
-@import 'swiper/css/effect-fade';
-@import 'swiper/css';
-@import 'swiper/swiper-bundle.css';
-@import 'swiper/css/pagination';
+@import 'swiper/swiper.css';
+@import 'swiper/modules/effect-fade.css';
+@import 'swiper/modules/pagination.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
