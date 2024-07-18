@@ -1,14 +1,14 @@
-import {IconSearch} from '../Icon';
-import {Input} from '../Input';
-import {PredictiveSearchResults} from './PredictiveSearchResults';
-import {PredictiveSearchForm} from './SearchForm';
+import {IconSearch} from '../../../Icon';
+import {Input} from '../../../Input';
+import {PredictiveSearchForm} from '../../SearchForm';
+import { SearchTypeDrawerResults } from './SearchTypeDrawerResults';
 
 interface PredictiveSearchProps {
   // Predictive search props
   isOpen?: boolean;
 }
 
-export function PredictiveSearch(props: PredictiveSearchProps) {
+export function SearchTypeDrawer(props: PredictiveSearchProps) {
   let {isOpen} = props;
   return (
     <div className="border-t border-bar-subtle">
@@ -36,7 +36,7 @@ export function PredictiveSearch(props: PredictiveSearchProps) {
           </div>
         )}
       </PredictiveSearchForm>
-      {isOpen && <PredictiveSearchResults />}
+      {isOpen && <SearchTypeDrawerResults />}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import {Await, useLocation} from '@remix-run/react';
+import {Await} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
@@ -15,8 +15,8 @@ import {IconAccount, IconLogin, IconSearch} from '../Icon';
 import {Link} from '../Link';
 import {Logo} from '../Logo';
 import {DrawerMenu} from './menu/DrawerMenu';
-import {PredictiveSearch} from '../predictive-search/PredictiveSearch';
 import {CartCount} from './CartCount';
+import { SearchToggle } from './SearchToggle';
 
 export function UseMenuDrawerHeader({
   header,
@@ -112,7 +112,7 @@ function HeaderMenuDrawer({menu}: {menu?: EnhancedMenu | null | undefined}) {
       <button className="text-left" onClick={openDrawer}>
         <span>☰</span>
       </button>
-      <SearchToggle />
+      <SearchToggle isOpenDrawerHearder={true} />
       <Drawer
         open={showMenu}
         onClose={closeDrawer}
@@ -153,28 +153,5 @@ function AccountLink({className}: {className?: string}) {
         }}
       </Await>
     </Suspense>
-  );
-}
-
-function SearchToggle() {
-  const {isOpen, closeDrawer, openDrawer} = useDrawer();
-  return (
-    <>
-      <button
-        onClick={openDrawer}
-        className="relative flex h-6 w-6 items-center justify-center focus:ring-primary/5"
-      >
-        <IconSearch className="h-6 w-6 !font-extralight" />
-      </button>
-      <Drawer
-        open={isOpen}
-        onClose={closeDrawer}
-        openFrom="left"
-        heading="Search"
-        isForm="search"
-      >
-        <PredictiveSearch isOpen={isOpen} />
-      </Drawer>
-    </>
   );
 }

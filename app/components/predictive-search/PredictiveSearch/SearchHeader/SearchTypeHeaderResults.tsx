@@ -1,8 +1,8 @@
 import {Link} from '@remix-run/react';
-import {PredictiveSearchResult} from './PredictiveSearchResult';
-import {usePredictiveSearch} from './usePredictiveSearch';
+import {PredictiveSearchResult} from '../../PredictiveSearchResult';
+import {usePredictiveSearch} from '../../usePredictiveSearch';
 
-export function PredictiveSearchResults() {
+export function SearchTypeHeaderResults() {
   const {results, totalResults, searchTerm, searchInputRef} =
     usePredictiveSearch();
 
@@ -28,14 +28,14 @@ export function PredictiveSearchResults() {
 
   if (!totalResults) {
     return (
-      <div className="flex w-full items-center justify-center border-t border-bar-subtle">
+      <div className="absolute top-20 z-10 flex w-full items-center justify-center">
         <NoPredictiveSearchResults searchTerm={searchTerm} />
       </div>
     );
   }
   return (
-    <div className="flex items-center justify-center border-t bg-background-subtle-1">
-      <div className="grid max-h-[78vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
+    <div className="absolute left-1/2 top-20 z-10 flex w-fit -translate-x-1/2 items-center justify-center">
+      <div className="grid max-h-[80vh] w-screen min-w-[430px] max-w-[720px] grid-cols-1 gap-6 overflow-y-auto border bg-background-subtle-1 p-6 lg:grid-cols-[1fr_2fr]">
         <div className="space-y-8">
           {queries && (
             <div className="flex flex-col gap-4 divide-y divide-bar-subtle">
@@ -61,7 +61,7 @@ export function PredictiveSearchResults() {
           )}
         </div>
         {products && (
-          <div>
+          <div className="flex flex-col items-start gap-6">
             <PredictiveSearchResult
               goToSearchResult={goToSearchResult}
               items={products.items}
@@ -70,29 +70,30 @@ export function PredictiveSearchResults() {
               type={products.type}
             />
             {/* view all results /search?q=term */}
-            
+            {searchTerm.current && (
+              <Link
+                onClick={goToSearchResult}
+                to={`/search?q=${searchTerm.current}`}
+                className="flex justify-center"
+              >
+                <p className="inline-flex h-[50px] items-center justify-center rounded-md border border-primary bg-primary px-5 py-3 font-normal text-primary-foreground hover:border-bar hover:bg-background hover:text-foreground">
+                  Show All Results ({totalResultsCount})
+                </p>
+              </Link>
+            )}
           </div>
         )}
         {pages && (
-            <div>
-              <PredictiveSearchResult
-                goToSearchResult={goToSearchResult}
-                items={pages.items}
-                key={pages.type}
-                searchTerm={searchTerm}
-                type={pages.type}
-              />
-            </div>
-          )}
-        {searchTerm.current && (
-            <Link
-              onClick={goToSearchResult}
-              to={`/search?q=${searchTerm.current}`}
-              className='flex justify-center'
-            >
-              <p className="inline-flex items-center font-normal justify-center rounded-md h-[50px] px-5 py-3 bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar">Show All Results ({totalResultsCount})</p>
-            </Link>
-          )}
+          <div>
+            <PredictiveSearchResult
+              goToSearchResult={goToSearchResult}
+              items={pages.items}
+              key={pages.type}
+              searchTerm={searchTerm}
+              type={pages.type}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -107,11 +108,9 @@ function NoPredictiveSearchResults({
     return null;
   }
   return (
-    <div className="w-full p-6">
-      <p className='border-b border-bar-subtle pb-3'>
-        NO RESULTS
-      </p>
-      <p className='pt-5'>
+    <div className="w-[640px] border bg-background-subtle-1 p-6">
+      <p className="border-b border-bar-subtle pb-3">NO RESULTS</p>
+      <p className="pt-5">
         No results found for <q>{searchTerm.current}</q>
       </p>
     </div>
