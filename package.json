@@ -85,5 +85,6 @@
     },
     "browserslist": [
         "defaults"
-    ]
+    ],
+    "type": "module"
 }

@@ -18,7 +18,6 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
         variant={variant}
         ref={ref}
         {...rest}
-        className={`mx-auto w-fit ${props.className}`}
         className={`w-fit ${props.className}`}
         style={style}
       >
