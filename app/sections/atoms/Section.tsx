@@ -1,15 +1,17 @@
-import {
-  type HydrogenComponentProps,
-  type InspectorGroup,
+import type {
+  HydrogenComponentProps,
+  InspectorGroup,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { HTMLAttributes } from "react";
-import React, { forwardRef } from "react";
+import type React from "react";
+import { forwardRef } from "react";
 import type { BackgroundImageProps } from "./BackgroundImage";
-import { BackgroundImage, backgroundInputs } from "./BackgroundImage";
+import { backgroundInputs } from "./BackgroundImage";
 import type { OverlayProps } from "./Overlay";
-import { Overlay, overlayInputs } from "./Overlay";
+import { overlayInputs } from "./Overlay";
+import { OverlayAndBackground } from "./OverlayAndBackground";
 import { cn } from "@/lib/utils";
 
 export type BackgroundProps = BackgroundImageProps & {
@@ -21,7 +23,7 @@ export interface SectionProps<T = any>
   extends Omit<VariantProps<typeof variants>, "padding">,
     Omit<HydrogenComponentProps<T>, "children">,
     Omit<HTMLAttributes<HTMLElement>, "children">,
-    BackgroundProps,
+    Partial<BackgroundProps>,
     OverlayProps {
   as: React.ElementType;
   borderRadius: number;
@@ -90,6 +92,7 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
     backgroundPosition,
     enableOverlay,
     overlayColor,
+    overlayColorHover,
     overlayOpacity,
     className,
     children,
@@ -131,31 +134,6 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
     </Component>
   );
 });
-
-function OverlayAndBackground(props: SectionProps) {
-  let {
-    backgroundImage,
-    backgroundFit,
-    backgroundPosition,
-    enableOverlay,
-    overlayColor,
-    overlayOpacity,
-  } = props;
-  return (
-    <>
-      <BackgroundImage
-        backgroundImage={backgroundImage}
-        backgroundFit={backgroundFit}
-        backgroundPosition={backgroundPosition}
-      />
-      <Overlay
-        enableOverlay={enableOverlay}
-        overlayColor={overlayColor}
-        overlayOpacity={overlayOpacity}
-      />
-    </>
-  );
-}
 
 export let layoutInputs: InspectorGroup["inputs"] = [
   {
@@ -211,12 +189,8 @@ export let layoutInputs: InspectorGroup["inputs"] = [
   },
 ];
 
-// export let sectionInspector: InspectorGroup[] = [
-//   { group: "Layout", inputs: layoutInputs },
-//   { group: "Background", inputs: backgroundInputs },
-//   { group: "Overlay", inputs: overlayInputs },
-// ];
-export let sectionInspector: InspectorGroup = {
-  group: "General",
-  inputs: [...layoutInputs, ...backgroundInputs, ...overlayInputs],
-};
+export let sectionInspector: InspectorGroup[] = [
+  { group: "Layout", inputs: layoutInputs },
+  { group: "Background", inputs: backgroundInputs },
+  { group: "Overlay", inputs: overlayInputs },
+];
