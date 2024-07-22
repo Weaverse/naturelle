@@ -116,7 +116,7 @@ export let schema: HydrogenComponentSchema = {
   ],
   childTypes: ["heading", "subheading", "countdown--timer", "button"],
   presets: {
-    backgroundImage: IMAGES_PLACEHOLDERS.banner,
+    backgroundImage: IMAGES_PLACEHOLDERS.banner_1,
     width: "stretch",
     backgroundFor: "content",
     borderRadius: 30,

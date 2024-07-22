@@ -52,9 +52,9 @@ export function UseMenuMegaHeader({
       className={clsx(
         enableTransparent ? 'fixed' : 'sticky',
         isTransparent
-          ? 'text-white'
-          : 'shadow-header',
-        'top-0 z-40 w-full border-b border-foreground',
+          ? ' text-secondary bg-transparent border-secondary'
+          : 'shadow-header text-primary bg-background-subtle-1 border-foreground',
+        'top-0 z-40 w-full border-b',
         className,
       )}
       onMouseEnter={onHover}

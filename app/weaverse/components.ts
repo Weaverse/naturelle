@@ -6,6 +6,8 @@ import * as Highlights from '~/sections/hightlight/index';
 import * as HightlightItem from '~/sections/hightlight/item';
 import * as HighlightContent from '~/sections/hightlight/content-item';
 import * as ImageWithText from '~/sections/image-with-text/index';
+import * as ImageWithTextImage from '~/sections/image-with-text/image';
+import * as ImageWithTextContent from '~/sections/image-with-text/content';
 import * as ScrollingText from '~/sections/scrolling-text/index';
 import * as Testimonials from '~/sections/testimonials/index';
 import * as ContentReview from '~/sections/testimonials/content-item';
@@ -45,6 +47,8 @@ export const components: HydrogenComponent[] = [
     HightlightItem,
     HighlightContent,
     ImageWithText,
+    ImageWithTextImage,
+    ImageWithTextContent,
     ScrollingText,
     Testimonials,
     ContentReview,
