@@ -26,7 +26,7 @@ let variants = cva('subheading', {
   defaultVariants: {
     size: 'base',
     weight: 'normal',
-    // alignment: 'center',
+    alignment: 'center',
   },
 });
 
@@ -139,7 +139,7 @@ export let schema: HydrogenComponentSchema = {
               {value: 'right', label: 'Right', icon: 'align-end-vertical'},
             ],
           },
-        //   defaultValue: 'center',
+          defaultValue: 'center',
         },
       ],
     },

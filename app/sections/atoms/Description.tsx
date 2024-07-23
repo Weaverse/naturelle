@@ -163,7 +163,7 @@ export let schema: HydrogenComponentSchema = {
               {value: 'right', label: 'Right', icon: 'align-end-vertical'},
             ],
           },
-          // defaultValue: 'center',
+          defaultValue: 'center',
         },
       ],
     },
