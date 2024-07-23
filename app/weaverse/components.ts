@@ -30,12 +30,15 @@ import * as BlogPost from '~/sections/blog-post/blog-post';
 import * as RelatedProducts from '~/sections/related-products/related-products';
 import * as CollectionBanner from '~/sections/collection-banner/collection-banner';
 import * as Newsletter from '~/sections/newsletter/index';
+import * as NewsletterInput from '~/sections/newsletter/input-email';
+import * as NewsletterIcon from '~/sections/newsletter/newsletter-icon';
 import * as SlideShowBanner from '~/sections/slideshowbanner/index';
 import * as SlideShowBannerItem from '~/sections/slideshowbanner/slideitems';
 import * as ContactForm from '~/sections/contact-form/contact-form';
 import * as Countdown from '~/sections/countdown/index';
 import * as CountdownTimer from '~/sections/countdown/timer';
 import * as ProductPlacement from '~/sections/product-placement/index';
+import * as ProductPlacementItems from '~/sections/product-placement/items';
 import * as ProductPlacementItem from '~/sections/product-placement/productItem';
 import * as Hotspots from '~/sections/image-hotspots/index';
 import * as HotspotsItem from '~/sections/image-hotspots/item';
@@ -71,12 +74,15 @@ export const components: HydrogenComponent[] = [
     RelatedProducts,
     CollectionBanner,
     Newsletter,
+    NewsletterInput,
+    NewsletterIcon,
     SlideShowBanner,
     SlideShowBannerItem,
     ContactForm,
     Countdown,
     CountdownTimer,
     ProductPlacement,
+    ProductPlacementItems,
     ProductPlacementItem,
     Hotspots,
     HotspotsItem,
