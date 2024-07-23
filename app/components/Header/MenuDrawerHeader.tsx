@@ -11,7 +11,7 @@ import {CartApiQueryFragment} from 'storefrontapi.generated';
 import {CartMain} from '../Cart';
 import {CartLoading} from '../CartLoading';
 import {Drawer, useDrawer} from '../Drawer';
-import {IconAccount, IconLogin, IconSearch} from '../Icon';
+import {IconAccount, IconLogin} from '../Icon';
 import {Link} from '../Link';
 import {Logo} from '../Logo';
 import {CartCount} from './CartCount';
@@ -60,7 +60,7 @@ export function UseMenuDrawerHeader({
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 py-4 transition-all duration-300 lg:container">
+      <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 py-4 transition-all duration-300 container">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',

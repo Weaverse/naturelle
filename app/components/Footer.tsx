@@ -16,7 +16,7 @@ export function Footer({footerMenu}: FooterProps) {
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
   return (
     <footer className="footer w-full bg-background-subtle-2">
-      <div className="flex h-fit flex-col gap-6 px-4 pb-10 pt-6 lg:container md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-10 lg:py-16">
+      <div className="flex h-fit flex-col gap-6 px-4 pb-10 pt-6 container md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-10 lg:py-16">
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
             <h3>Newsletter</h3>
