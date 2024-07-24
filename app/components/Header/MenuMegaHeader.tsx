@@ -11,7 +11,7 @@ import {CartApiQueryFragment} from 'storefrontapi.generated';
 import {CartMain} from '../Cart';
 import {CartLoading} from '../CartLoading';
 import {Drawer, useDrawer} from '../Drawer';
-import {IconAccount, IconLogin, IconSearch} from '../Icon';
+import {IconAccount, IconLogin} from '../Icon';
 import {Link} from '../Link';
 import {Logo} from '../Logo';
 import {MegaMenu} from './menu/MegaMenu';
@@ -52,15 +52,15 @@ export function UseMenuMegaHeader({
       className={clsx(
         enableTransparent ? 'fixed' : 'sticky',
         isTransparent
-          ? 'text-white'
-          : 'shadow-header',
-        'top-0 z-40 w-full border-b border-foreground',
+          ? ' text-secondary bg-transparent border-secondary'
+          : 'shadow-header text-primary bg-background-subtle-1 border-foreground',
+        'top-0 z-40 w-full border-b',
         className,
       )}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="z-40 flex transition-all duration-300 h-nav items-center justify-between gap-3 lg:container">
+      <div className="z-40 flex transition-all duration-300 h-nav items-center justify-between gap-3 container">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',

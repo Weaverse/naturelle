@@ -99,13 +99,45 @@
     }
 }
 
+.container {
+    max-width: var(--page-width, 1280px);
+}
+
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.has-background {
+    background-color: var(--section-background-color);
+    border-radius: var(--section-border-radius);
+}
+
 .dropdown-transition {
-    @apply opacity-0 -translate-y-full transform-gpu;
-    transition: opacity 0.3s ease-in-out, transform 0.5s ease-in-out;
+    @apply transform-gpu;
+    z-index: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out, visibility 0.25s;
 }
 
 .group:hover .dropdown-transition {
-    @apply opacity-100 translate-y-0;
+    opacity: 1;
+    z-index: 30;
+    visibility: visible;
 }
 
 .fly-in {
@@ -116,9 +148,8 @@
 .group:hover .fly-in {
     transform: translateX(0);
     opacity: 1;
-    transition: transform 1s cubic-bezier(.14, .8, .6, 1), opacity .5s ease;
+    transition: transform 0.5s cubic-bezier(0.14, 0.8, 0.6, 1), opacity 0.5s ease;
     transition-delay: calc(var(--item-index) * 0.1s + 0.2s);
-    /* transition-delay: 0.3s; */
 }
 
 .text-animation {

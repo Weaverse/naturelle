@@ -77,7 +77,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "searchType",
           configs: {
             options: [
-              { value: "headerSearch", label: "Header search" },
+              { value: "popupSearch", label: "Popup search" },
               { value: "drawerSearch", label: "Drawer search" },
             ]
           },

@@ -16,7 +16,7 @@ export function Footer({footerMenu}: FooterProps) {
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
   return (
     <footer className="footer w-full bg-background-subtle-2">
-      <div className='flex flex-col gap-6 md:gap-10 lg:gap-8 lg:container px-4 pb-10 lg:px-10 lg:py-16 md:px-6 md:py-10 pt-6 h-fit'>
+      <div className="flex h-fit flex-col gap-6 px-4 pb-10 pt-6 container md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-10 lg:py-16">
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
             <h3>Newsletter</h3>
@@ -86,9 +86,7 @@ function MenuLink(props: SingleMenuItem) {
     <>
       <div className="hidden flex-col gap-6 md:flex">
         <h4 className="font-medium uppercase">
-          <NavLink to={to} prefetch="intent">
-            <span className="text-animation">{title}</span>
-          </NavLink>
+          <span className="font-heading">{title}</span>
         </h4>
         <ul className="space-y-1.5">
           {items.map((subItem, ind) => (
@@ -145,14 +143,7 @@ function MenuLink(props: SingleMenuItem) {
 }
 
 function HeaderText({title, to}: {title: string; to: string}) {
-  return (
-    <NavLink
-      to={to}
-      className="border-b border-foreground pb-4 md:border-none md:pb-0"
-    >
-      <h4 className="text-animation font-medium uppercase">{title}</h4>
-    </NavLink>
-  );
+  return <h4 className="font-heading font-medium uppercase">{title}</h4>;
 }
 
 // function FooterMenu({
