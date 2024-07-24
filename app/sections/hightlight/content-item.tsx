@@ -8,6 +8,7 @@ import React, {forwardRef, CSSProperties} from 'react';
 interface ContentProps extends HydrogenComponentProps {
     itemPerRow: number;
     gap: number;
+    borderColor: string;
 }
 
 let itemsPerRowClasses: { [item: number]: string } = {
@@ -19,15 +20,16 @@ let itemsPerRowClasses: { [item: number]: string } = {
 
 const HighlightContent = forwardRef<HTMLDivElement, ContentProps>(
   (props, ref) => {
-    let {itemPerRow, gap, children, ...rest} = props;
+    let {itemPerRow, gap, borderColor, children, ...rest} = props;
     let style: CSSProperties = {
         '--item-gap': `${gap}px`,
+        '--border-color': borderColor,
     } as CSSProperties;
     let actualItemPerRow = Math.min(itemPerRow, React.Children.count(children));
     return (
       <div ref={ref} {...rest}
         className={clsx(
-          'flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)] w-full',
+          'flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)]',
           itemsPerRowClasses[actualItemPerRow],
         )}
         style={style}
@@ -70,6 +72,12 @@ export let schema: HydrogenComponentSchema = {
           },
           defaultValue: 16,
         },
+        {
+          type: 'color',
+          label: 'Border color',
+          name: 'borderColor',
+          defaultValue: '#9AA473',
+      },
       ],
     },
   ],

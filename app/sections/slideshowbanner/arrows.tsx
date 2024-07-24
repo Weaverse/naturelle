@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority";
 import clsx from "clsx";
 import { useState } from "react";
 import { useSwiper } from "swiper/react";
-import { IconArrowLeft, IconArrowRight, IconArrowScrollLeft, IconArrowScrollRight, IconArrowSlideLeft, IconArrowSlideRight, IconCaret } from "~/components/Icon";
+import { IconArrowLeft, IconArrowRight, IconCaret } from "~/components/Icon";
 
 let variants = cva(
   [

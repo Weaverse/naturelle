@@ -80,7 +80,7 @@ let variants = cva('heading', {
     size: 'default',
     weight: '400',
     letterSpacing: 'normal',
-    // alignment: 'center',
+    alignment: 'center',
   },
 });
 
@@ -307,7 +307,7 @@ export let headingInputs: InspectorGroup['inputs'] = [
         {value: 'right', label: 'Right', icon: 'align-end-vertical'},
       ],
     },
-    // defaultValue: 'center',
+    defaultValue: 'center',
   },
 ];
 

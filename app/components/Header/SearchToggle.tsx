@@ -12,7 +12,7 @@ export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boole
   let settings = useThemeSettings();
   const [searchType, setSearchType] = useState(settings?.searchType);
   const [openFrom, setOpenFrom] = useState<TypeOpenFrom>(
-    searchType === 'headerSearch' ? 'top' : 'right'
+    searchType === 'popupSearch' ? 'top' : 'right'
   );
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boole
         if (settings?.searchType === 'drawerSearch' && isOpenDrawerHearder) {
           setOpenFrom('left');
         } else {
-          setOpenFrom(settings?.searchType === 'headerSearch' ? 'top' : 'right');
+          setOpenFrom(settings?.searchType === 'popupSearch' ? 'top' : 'right');
         }
       }
     };
@@ -50,7 +50,7 @@ export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boole
         heading="Search"
         isForm="search"
       >
-        {searchType === 'headerSearch' && <SearchTypeHeader isOpen={isOpen} />}
+        {searchType === 'popupSearch' && <SearchTypeHeader isOpen={isOpen} />}
         {searchType === 'drawerSearch' && <SearchTypeDrawer isOpen={isOpen} />}
       </Drawer>
     </>

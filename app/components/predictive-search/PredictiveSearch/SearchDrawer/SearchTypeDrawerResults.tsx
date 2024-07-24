@@ -34,8 +34,8 @@ export function SearchTypeDrawerResults() {
     );
   }
   return (
-    <div className="flex items-center justify-center border-t bg-background-subtle-1">
-      <div className="grid max-h-[78vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
+    <div className="relative flex items-center justify-center border-t bg-background-subtle-1">
+      <div className="grid custom-scroll max-h-[81vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
         <div className="space-y-8">
           {queries && (
             <div className="flex flex-col gap-4 divide-y divide-bar-subtle">
@@ -83,11 +83,12 @@ export function SearchTypeDrawerResults() {
             />
           </div>
         )}
+        <div className='h-[50px]'/>
         {searchTerm.current && (
           <Link
             onClick={goToSearchResult}
             to={`/search?q=${searchTerm.current}`}
-            className="flex justify-center"
+            className="flex justify-center absolute bottom-0 p-6 bg-background-subtle-1 left-0 right-0"
           >
             <p className="inline-flex h-[50px] items-center justify-center rounded-md border border-primary bg-primary px-5 py-3 font-normal text-primary-foreground hover:border-bar hover:bg-background hover:text-foreground">
               Show All Results ({totalResultsCount})

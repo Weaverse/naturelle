@@ -63,7 +63,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
                 )}
             </div>
             <div className={clsx(
-                'lg:container w-full flex gap-3 items-center',
+                'container w-full flex gap-3 items-center',
                 reviewsPositionContent[reviewsPosition],
             )}>
                 <div className={clsx(

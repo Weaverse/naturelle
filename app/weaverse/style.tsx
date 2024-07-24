@@ -66,6 +66,7 @@ export function GlobalStyle() {
       buttonSubtleBorder,
       buttonSubtleBorderHover,
       radius,
+      pageWidth,
     } = settings;
     colorBackground = hexToRgbString(colorBackground);
     colorBackgroundSubtle = hexToRgbString(colorBackgroundSubtle);
@@ -119,6 +120,7 @@ export function GlobalStyle() {
 
               /* Layout */
               --height-nav: ${settings.navHeightMobile}rem;
+              --page-width: ${pageWidth}px;
             }
 
             body, button, input, select, textarea {
