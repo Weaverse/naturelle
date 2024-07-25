@@ -46,17 +46,17 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
             !visibleOnMobile && 'hidden sm:block',
         )}>
             <div className='overflow-hidden flex'>
-                <h3 className='font-medium whitespace-nowrap animate-scrollText text-[var(--text-color)] '
+                <h3 className='font-medium whitespace-nowrap animate-scrollContent text-[var(--text-color)] '
                     style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
                 </h3>
-                <h3 className='font-medium whitespace-nowrap animate-scrollText text-[var(--text-color)] '
+                <h3 className='font-medium whitespace-nowrap animate-scrollContent text-[var(--text-color)] '
                     style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
                 </h3>
-                <h3 className='font-medium whitespace-nowrap animate-scrollText text-[var(--text-color)] '
+                <h3 className='font-medium whitespace-nowrap animate-scrollContent text-[var(--text-color)] '
                     style={{ animationDuration: `var(--speed)`, fontSize: `${textSize}px`, }}
                 >
                     {`  ${content}  `.repeat(15)}
