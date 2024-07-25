@@ -182,7 +182,7 @@ export function QuickViewTrigger(props: {productHandle: string}) {
   }, [quickAddOpen, data, load, state]);
   return (
     <>
-      <div className="mt-2 absolute bottom-4 hidden lg:group-hover:block py-5 px-3 w-full opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
+      <div className="mt-2 absolute bottom-0 hidden lg:group-hover:block py-5 px-3 w-full opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
         <Button
           onClick={(e) => {
             e.preventDefault();
