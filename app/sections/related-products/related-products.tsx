@@ -31,7 +31,7 @@ let RelatedProducts = forwardRef<HTMLElement, RelatedProductsProps>(
                 <ProductSwimlane
                   title={heading}
                   count={productsCount}
-                  products={products}
+                  featuredProducts={products}
                 />
               )}
             </Await>
