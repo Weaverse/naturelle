@@ -1,36 +1,20 @@
 import type {
-    HydrogenComponentProps,
     HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import { forwardRef, CSSProperties } from 'react';
+import { forwardRef } from 'react';
+import { layoutInputs, Section, SectionProps } from '../atoms/Section';
 
-interface BeforeAndAfterProps extends HydrogenComponentProps {
-    backgroundColor: string;
-    topPadding: number;
-    bottomPadding: number;
-}
+type BeforeAndAfterProps = SectionProps;
 
 const BeforeAndAfter = forwardRef<HTMLElement, BeforeAndAfterProps>((props, ref) => {
     let {
-        backgroundColor,
-        topPadding,
-        bottomPadding,
         children,
         ...rest
     } = props;
-    let sectionStyle: CSSProperties = {
-        backgroundColor: backgroundColor,
-        '--top-padding-desktop': `${topPadding}px`,
-        '--bottom-padding-desktop': `${bottomPadding}px`,
-        '--top-padding-mobile': `${topPadding > 20 ? topPadding - 20 : topPadding}px`,
-        '--bottom-padding-mobile': `${bottomPadding > 20 ? bottomPadding - 20 : bottomPadding}px`,
-    } as CSSProperties;
     return (
-        <section ref={ref} {...rest} className='w-full h-full' style={sectionStyle}>
-            <div className='flex flex-col gap-12 pt-[var(--top-padding-mobile)] pb-[var(--bottom-padding-mobile)] sm:pt-[var(--top-padding-desktop)] sm:pb-[var(--bottom-padding-desktop)]'>
-                {children}
-            </div>
-        </section>
+        <Section ref={ref} {...rest}>
+            {children}
+        </Section>
     )
 });
 
@@ -42,39 +26,8 @@ export let schema: HydrogenComponentSchema = {
     toolbar: ['general-settings', ['duplicate', 'delete']],
     inspector: [
         {
-            group: 'Before & after slider',
-            inputs: [
-                {
-                    type: 'color',
-                    label: 'Background color',
-                    name: 'backgroundColor',
-                    defaultValue: '#F8F8F0',
-                },
-                {
-                    type: 'range',
-                    name: 'topPadding',
-                    label: 'Top padding',
-                    defaultValue: 80,
-                    configs: {
-                        min: 10,
-                        max: 100,
-                        step: 1,
-                        unit: 'px',
-                    },
-                },
-                {
-                    type: 'range',
-                    name: 'bottomPadding',
-                    label: 'Bottom padding',
-                    defaultValue: 80,
-                    configs: {
-                        min: 10,
-                        max: 100,
-                        step: 1,
-                        unit: 'px',
-                    },
-                },
-            ],
+            group: 'Layout',
+            inputs: layoutInputs.filter(({ name }) => name !== 'divider' && name !== 'borderRadius'),
         },
     ],
     childTypes: ['heading', 'before-after-slider'],

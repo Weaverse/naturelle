@@ -313,7 +313,7 @@ export default function SortMenu({
     items.find((item) => item.key === params.get('sort')) || items[0];
 
   return (
-    <Menu as="div" className="relative z-40">
+    <Menu as="div" className="relative z-30">
       <Menu.Button className="flex h-[50px] items-center gap-[10px] rounded border border-foreground px-4 py-3">
         <span className="font-heading text-xl font-medium">Sort by</span>
         <IconCaret />

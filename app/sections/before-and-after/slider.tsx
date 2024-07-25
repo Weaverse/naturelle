@@ -218,6 +218,7 @@ export default BeforeAndAfter;
 export let schema: HydrogenComponentSchema = {
     type: 'before-after-slider',
     title: 'Slider',
+    limit: 1,
     toolbar: ['general-settings', ['duplicate', 'delete']],
     inspector: [
         {

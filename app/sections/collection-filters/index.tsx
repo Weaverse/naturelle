@@ -44,7 +44,7 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
             appliedFilters={appliedFilters}
             collections={collections}
           />
-          <div className="px-4 md:px-6 lg:container">
+          <div className="px-4 md:px-6 container">
             <Pagination connection={collection.products}>
               {({
                 nodes,

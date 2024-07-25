@@ -188,7 +188,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   />
                 )}
                 <p
-                  className="max-w-[600px] leading-relaxed pt-6"
+                  className="max-w-[600px] leading-relaxed pt-6 prose"
                   dangerouslySetInnerHTML={{
                     __html: descriptionHtml,
                   }}
