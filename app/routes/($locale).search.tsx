@@ -290,7 +290,7 @@ function NoResults({
                 /> */}
                 <ProductSwimlane
                   title="Trending Products"
-                  products={featuredProducts}
+                  featuredProducts={featuredProducts}
                 />
               </>
             );
