@@ -20,13 +20,7 @@ const ProductPlacementItems = forwardRef<
   HTMLDivElement,
   ProductPlacementItemsProps
 >((props, ref) => {
-  let {
-    productsPerRow,
-    thumbnailRatio,
-    itemsSpacing,
-    children,
-    ...rest
-  } = props;
+  let {productsPerRow, thumbnailRatio, itemsSpacing, children, ...rest} = props;
   let contentStyle: CSSProperties = {
     '--item-thumbs-ratio': thumbnailRatio,
     '--items-spacing': `${itemsSpacing}px`,
@@ -36,12 +30,7 @@ const ProductPlacementItems = forwardRef<
     '--swiper-pagination-bullet-border-radius': '2px',
   } as CSSProperties;
   return (
-    <div
-      ref={ref}
-      {...rest}
-      style={contentStyle}
-      className="w-full bg-inherit"
-    >
+    <div ref={ref} {...rest} style={contentStyle} className="w-full bg-inherit">
       <div className="flex flex-col gap-5">
         <Grid
           items={productsPerRow}
@@ -50,23 +39,25 @@ const ProductPlacementItems = forwardRef<
         >
           {children}
         </Grid>
-        <Swiper
-          loop={true}
-          slidesPerView={1}
-          spaceBetween={100}
-          pagination={{
-            clickable: true,
-          }}
-          modules={[Pagination]}
-          className="w-full sm:hidden"
-        >
-          {children?.map((child, i) => (
-            <SwiperSlide key={i}>
-              {child}
-              <div className="cursor-pointer py-8"></div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <div className="block w-full sm:hidden">
+          <Swiper
+            loop={true}
+            slidesPerView={1}
+            spaceBetween={100}
+            pagination={{
+              clickable: true,
+            }}
+            modules={[Pagination]}
+            className="w-full"
+          >
+            {children?.map((child, i) => (
+              <SwiperSlide key={i}>
+                {child}
+                <div className="cursor-pointer py-8"></div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   );

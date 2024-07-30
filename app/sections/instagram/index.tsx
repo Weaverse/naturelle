@@ -137,56 +137,58 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
         <div className="h-full w-full text-center">{children}</div>
         <div className="flex gap-0 overflow-hidden sm:gap-4">
           <>
-            <Swiper
-              loop={true}
-              slidesPerView={1}
-              spaceBetween={100}
-              pagination={{
-                clickable: true,
-              }}
-              modules={[Pagination]}
-              className="w-full sm:hidden"
-            >
-              {displayedImages.map((item, index) => {
-                return (
-                  <SwiperSlide key={index}>
-                    <div className="group relative aspect-square min-w-80">
-                      {item.media_url ? (
-                        <Image
-                          key={index}
-                          src={item.media_url}
-                          className="aspect-square w-full object-cover"
-                          sizes="auto"
-                        />
-                      ) : (
-                        imageItemBlank()
-                      )}
-                      {item.username && (
-                        <>
-                          <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
-                            <a
-                              href={`https://www.instagram.com/${item.username}/`}
-                              target="_blank"
-                              className="flex items-center justify-center gap-2"
-                            >
-                              <IconInstagram
-                                className="h-7 w-7"
-                                viewBox="0 0 24 24"
-                              />
-                              <span className="font-heading text-xl font-medium text-white">
-                                {item.username}
-                              </span>
-                            </a>
-                          </div>
-                          <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
-                        </>
-                      )}
-                    </div>
-                    <div className="py-8"></div>
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+            <div className="block sm:hidden w-full">
+              <Swiper
+                loop={true}
+                slidesPerView={1}
+                spaceBetween={100}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[Pagination]}
+                className="w-full"
+              >
+                {displayedImages.map((item, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <div className="group relative aspect-square min-w-80">
+                        {item.media_url ? (
+                          <Image
+                            key={index}
+                            src={item.media_url}
+                            className="aspect-square w-full object-cover"
+                            sizes="auto"
+                          />
+                        ) : (
+                          imageItemBlank()
+                        )}
+                        {item.username && (
+                          <>
+                            <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
+                              <a
+                                href={`https://www.instagram.com/${item.username}/`}
+                                target="_blank"
+                                className="flex items-center justify-center gap-2"
+                              >
+                                <IconInstagram
+                                  className="h-7 w-7"
+                                  viewBox="0 0 24 24"
+                                />
+                                <span className="font-heading text-xl font-medium text-white">
+                                  {item.username}
+                                </span>
+                              </a>
+                            </div>
+                            <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
+                          </>
+                        )}
+                      </div>
+                      <div className="py-8"></div>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
             {Array.from({length: 11}).map((idx, i) => (
               <div key={i}>{imageItemRender()}</div>
             ))}

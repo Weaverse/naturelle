@@ -3,9 +3,15 @@ import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
 import {IconEllipse} from '~/components/Icon';
 import {CSSProperties, forwardRef} from 'react';
 
-const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
+interface OriginalButtonProps extends ButtonProps {
+  href?: string;
+  target?: string;
+  textColor?: string;
+}
+
+const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
   (props, ref) => {
-    const {href, target, value, variant, textColor, ...rest} = props;
+    const {href, target, value, variant, shape, textColor, ...rest} = props;
     const Component = href ? 'a' : 'button';
     let style = {
       color: textColor,
@@ -14,8 +20,9 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
       <Button
         as={Component}
         to={href}
-        target={href ? target || '_self' : undefined}
+        target={target}
         variant={variant}
+        shape={shape}
         ref={ref}
         {...rest}
         className={`w-fit ${props.className}`}
@@ -38,6 +45,8 @@ const WeaverseButton = forwardRef<HTMLButtonElement, ButtonProps>(
   },
 );
 
+export default WeaverseButton;
+
 export const schema: HydrogenComponentSchema = {
   title: 'Button',
   type: 'button',
@@ -51,16 +60,21 @@ export const schema: HydrogenComponentSchema = {
           name: 'textColor',
         },
         {
+          type: 'text',
+          name: 'value',
+          label: 'Text',
+          defaultValue: 'Shop now',
+        },
+        {
           type: 'select',
           name: 'variant',
           label: 'Variant',
-          defaultValue: 'default',
+          defaultValue: 'primary',
           configs: {
             options: [
-              {label: 'Default', value: 'default'},
+              {label: 'Primary', value: 'primary'},
               {label: 'Outline', value: 'outline'},
               {label: 'Secondary', value: 'secondary'},
-              {label: 'Primary', value: 'primary'},
               {label: 'Decor', value: 'decor'},
             ],
           },
@@ -81,10 +95,17 @@ export const schema: HydrogenComponentSchema = {
           condition: `variant.ne.decor`,
         },
         {
-          type: 'text',
-          name: 'value',
-          label: 'Text',
-          defaultValue: 'Shop now',
+          type: 'select',
+          name: 'shape',
+          label: 'Shape',
+          defaultValue: 'round',
+          configs: {
+            options: [
+              {label: 'Default', value: 'default'},
+              {label: 'Round', value: 'round'},
+            ],
+          },
+          condition: `variant.ne.decor`,
         },
         {
           type: 'url',
@@ -111,5 +132,3 @@ export const schema: HydrogenComponentSchema = {
     },
   ],
 };
-
-export default WeaverseButton;
