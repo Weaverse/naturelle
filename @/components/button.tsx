@@ -26,7 +26,7 @@ const buttonVariants = cva(
       },
       shape: {
         default: 'rounded',
-        round: 'rounded-md'
+        round: 'rounded-md',
       }
     },
     defaultVariants: {
@@ -43,6 +43,7 @@ export interface ButtonProps
   asChild?: boolean;
   as?: React.ElementType;
   to?: string;
+  target?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -70,6 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         ref={ref}
         {...props}
+        target={props.to ? props?.target || '_self' : undefined}
       >
         {loading && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">

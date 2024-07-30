@@ -19,7 +19,9 @@ import * as Instagram from '~/sections/instagram';
 import * as BeforeAndAfter from '~/sections/before-and-after/index';
 import * as BeforeAndAfterSlide from '~/sections/before-and-after/slider';
 import * as FeaturedProducts from '~/sections/feature-product/index';
+import * as FeaturedProductsList from '~/sections/feature-product/list-products';
 import * as CollectionList from '~/sections/collection-list/index';
+import * as CollectionListItem from '~/sections/collection-list/collection-list';
 import * as AllProducts from '~/sections/all-products/index';
 import * as ProductInformation from '~/sections/product-information/index';
 import * as HeaderImage from '~/sections/image-banner/index';
@@ -63,7 +65,9 @@ export const components: HydrogenComponent[] = [
     BeforeAndAfter,
     BeforeAndAfterSlide,
     FeaturedProducts,
+    FeaturedProductsList,
     CollectionList,
+    CollectionListItem,
     AllProducts,
     ProductInformation,
     HeaderImage,

@@ -100,7 +100,7 @@
 }
 
 .container {
-    max-width: var(--page-width, 1280px);
+    max-width: var(--page-width, 1440px);
 }
 
 .custom-scroll::-webkit-scrollbar {

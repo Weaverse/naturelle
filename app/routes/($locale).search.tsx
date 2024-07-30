@@ -211,7 +211,7 @@ export default function Search() {
         productNumber={products.totalCount}
         filters={productfilters}
       />
-      <div className="px-4 lg:container md:px-6">
+      <div className="px-4 container md:px-6">
         {noResults ? (
           <NoResults
             noResults={noResults}
@@ -290,7 +290,7 @@ function NoResults({
                 /> */}
                 <ProductSwimlane
                   title="Trending Products"
-                  products={featuredProducts}
+                  featuredProducts={featuredProducts}
                 />
               </>
             );

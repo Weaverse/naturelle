@@ -15,6 +15,7 @@ import {Pagination} from 'swiper/modules';
 type InstagramData = {
   instagramToken: string;
   backgroundColor: string;
+  width: string;
   imagesPerRow: number;
   speed: number;
   visibleOnMobile: boolean;
@@ -27,6 +28,11 @@ type InstagramData = {
   };
 };
 
+let widthClasses: {[item: string]: string} = {
+  full: '',
+  fixed: 'container',
+};
+
 type InstagramProps = HydrogenComponentProps<
   Awaited<ReturnType<typeof loader>>
 > &
@@ -36,6 +42,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
   let {
     instagramToken,
     backgroundColor,
+    width,
     imagesPerRow,
     speed,
     visibleOnMobile,
@@ -60,54 +67,18 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     );
   };
 
-  let res = loaderData?.data;
-  if (!res) {
-    return (
-      <section
-        ref={ref}
-        {...rest}
-        className={clsx('w-full')}
-        style={sectionStyle}
-      >
-        <div className="flex w-full flex-col items-center justify-center gap-12 px-7 py-12 sm:px-10 sm:py-20">
-          <div className="h-full w-full text-center">{children}</div>
-          <Swiper
-            loop={true}
-            slidesPerView={1}
-            spaceBetween={100}
-            pagination={{
-              clickable: true,
-            }}
-            modules={[Pagination]}
-            className="w-full sm:hidden"
-          >
-            {Array.from({length: 3}).map((idx, i) => {
-              return (
-                <SwiperSlide key={i}>
-                  <div key={i} className="w-full">
-                    {imageItemBlank()}
-                  </div>
-                  <div className="cursor-pointer py-8"></div>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-          <div className="hidden w-full items-center justify-center gap-4 sm:flex">
-            {Array.from({length: 3}).map((idx, i) => (
-              <div key={i} className="w-full">
-                {imageItemBlank()}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const defaultInstagramData = Array.from({length: 3}).map((_, i) => ({
+    id: i,
+    media_url: null,
+    username: null,
+  }));
+
+  let res = loaderData?.data ?? defaultInstagramData;
   let displayedImages = res?.slice(0, imagesPerRow);
   const imageItemRender = () => {
     return (
       <div
-        className="hidden items-center justify-center gap-4 sm:flex sm:animate-scrollImage"
+        className="hidden items-center justify-center gap-4 sm:flex sm:animate-scrollContent"
         style={{animationDuration: `var(--speed)`}}
       >
         {displayedImages.map((item, index) => {
@@ -116,25 +87,33 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
               className="group relative aspect-square min-w-80 cursor-pointer"
               key={index}
             >
-              <Image
-                key={index}
-                src={item.media_url}
-                className="aspect-square w-full object-cover"
-                sizes="auto"
-              />
-              <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
-                <a
-                  href={`https://www.instagram.com/${item.username}/`}
-                  target="_blank"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <IconInstagram className="h-7 w-7" viewBox="0 0 24 24" />
-                  <span className="font-heading text-xl font-medium text-white">
-                    {item.username}
-                  </span>
-                </a>
-              </div>
-              <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
+              {item.media_url ? (
+                <Image
+                  key={index}
+                  src={item.media_url}
+                  className="aspect-square w-full object-cover"
+                  sizes="auto"
+                />
+              ) : (
+                imageItemBlank()
+              )}
+              {item.username && (
+                <>
+                  <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
+                    <a
+                      href={`https://www.instagram.com/${item.username}/`}
+                      target="_blank"
+                      className="flex items-center justify-center gap-2"
+                    >
+                      <IconInstagram className="h-7 w-7" viewBox="0 0 24 24" />
+                      <span className="font-heading text-xl font-medium text-white">
+                        {item.username}
+                      </span>
+                    </a>
+                  </div>
+                  <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
+                </>
+              )}
             </div>
           );
         })}
@@ -149,15 +128,16 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
       className={clsx('h-full w-full', !visibleOnMobile && 'hidden sm:block')}
       style={sectionStyle}
     >
-      <div className="flex flex-col gap-12 px-7 py-12 sm:px-10 sm:py-20">
+      <div
+        className={clsx(
+          'flex flex-col gap-12 px-7 py-12 sm:px-10 sm:py-20',
+          widthClasses[width],
+        )}
+      >
         <div className="h-full w-full text-center">{children}</div>
         <div className="flex gap-0 overflow-hidden sm:gap-4">
-          {res.length === 0 ? (
-            <div className="flex h-full w-full items-center justify-center gap-4">
-              <p>Not found post</p>
-            </div>
-          ) : (
-            <>
+          <>
+            <div className="block sm:hidden w-full">
               <Swiper
                 loop={true}
                 slidesPerView={1}
@@ -166,44 +146,53 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                   clickable: true,
                 }}
                 modules={[Pagination]}
-                className="w-full sm:hidden"
+                className="w-full"
               >
                 {displayedImages.map((item, index) => {
                   return (
                     <SwiperSlide key={index}>
                       <div className="group relative aspect-square min-w-80">
-                        <Image
-                          src={item.media_url}
-                          sizes="auto"
-                          className="aspect-square w-full object-cover"
-                        />
-                        <div className="absolute inset-0 z-10 hidden w-full items-center justify-center group-hover:flex">
-                          <a
-                            href={`https://www.instagram.com/${item.username}/`}
-                            target="_blank"
-                            className="flex items-center justify-center gap-2"
-                          >
-                            <IconInstagram
-                              className="h-7 w-7"
-                              viewBox="0 0 24 24"
-                            />
-                            <span className="font-heading text-xl font-medium text-white">
-                              {item.username}
-                            </span>
-                          </a>
-                        </div>
-                        <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:bg-[#554612] group-hover:opacity-50" />
+                        {item.media_url ? (
+                          <Image
+                            key={index}
+                            src={item.media_url}
+                            className="aspect-square w-full object-cover"
+                            sizes="auto"
+                          />
+                        ) : (
+                          imageItemBlank()
+                        )}
+                        {item.username && (
+                          <>
+                            <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
+                              <a
+                                href={`https://www.instagram.com/${item.username}/`}
+                                target="_blank"
+                                className="flex items-center justify-center gap-2"
+                              >
+                                <IconInstagram
+                                  className="h-7 w-7"
+                                  viewBox="0 0 24 24"
+                                />
+                                <span className="font-heading text-xl font-medium text-white">
+                                  {item.username}
+                                </span>
+                              </a>
+                            </div>
+                            <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
+                          </>
+                        )}
                       </div>
-                      <div className="cursor-pointer py-8"></div>
+                      <div className="py-8"></div>
                     </SwiperSlide>
                   );
                 })}
               </Swiper>
-              {Array.from({length: 11}).map((idx, i) => (
-                <div key={i}>{imageItemRender()}</div>
-              ))}
-            </>
-          )}
+            </div>
+            {Array.from({length: 11}).map((idx, i) => (
+              <div key={i}>{imageItemRender()}</div>
+            ))}
+          </>
         </div>
       </div>
     </section>
@@ -235,8 +224,6 @@ export const schema: HydrogenComponentSchema = {
           type: 'text',
           name: 'instagramToken',
           label: 'Instagram api token',
-          defaultValue:
-            'IGQWRPX3Eyc1RHd3padDVwRXZANdkp4ZAkE1bkxjRlNtd3V4WnBXZAXUxWWlvVjlTc2h3SU45NmZAVOHptcEswalkyTHYtckh6cnlUNTUtaHpDUjYxTE04X0RwVG5qRnJ0cDhxcnlBVjRib3BoYUxGa2xCTlFZAZAC1PMmMZD',
           placeholder: '@instagram',
           helpText:
             'Learn more about how to get <a href="https://docs.oceanwp.org/article/487-how-to-get-instagram-access-token" target="_blank">API token for Instagram</a> section.',
@@ -246,6 +233,18 @@ export const schema: HydrogenComponentSchema = {
           label: 'Background color',
           name: 'backgroundColor',
           defaultValue: '#F8F8F0',
+        },
+        {
+          type: 'select',
+          name: 'width',
+          label: 'Content width',
+          configs: {
+            options: [
+              {value: 'full', label: 'Full page'},
+              {value: 'fixed', label: 'Fixed'},
+            ],
+          },
+          defaultValue: 'fixed',
         },
         {
           type: 'range',

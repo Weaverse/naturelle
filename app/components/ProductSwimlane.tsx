@@ -1,21 +1,21 @@
-import type {HomepageFeaturedProductsQuery} from 'storefrontapi.generated';
+import type {FeaturedItemsQuery} from 'storefrontapi.generated';
 import { Section} from '~/components/Text';
 import {ProductCard} from '~/components/ProductCard';
 import { IconArrowScrollLeft, IconArrowScrollRight } from './Icon';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 const mockProducts = {
   nodes: new Array(12).fill(''),
 };
 
-type ProductSwimlaneProps = HomepageFeaturedProductsQuery & {
+type ProductSwimlaneProps = Pick<FeaturedItemsQuery, 'featuredProducts'> & {
   title?: string;
   count?: number;
 };
 
 export function ProductSwimlane({
   title = 'Featured Products',
-  products = mockProducts,
+  featuredProducts = mockProducts,
   count = 12,
   ...props
 }: ProductSwimlaneProps) {
@@ -35,7 +35,7 @@ export function ProductSwimlane({
   return (
     <Section heading={title} padding="y" {...props} className='relative group'>
       <div ref={swimlaneRef} className="swimlane hiddenScroll scroll-px-0 px-0">
-        {products.nodes.slice(0, count).map((product) => (
+        {featuredProducts.nodes.slice(0, count).map((product) => (
           <ProductCard
             product={product}
             key={product.id}

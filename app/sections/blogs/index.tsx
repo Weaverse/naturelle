@@ -39,57 +39,20 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     ...rest
   } = props;
 
-  const blogItemBlank = () => {
-    return (
-      <div className="flex w-full cursor-pointer flex-col items-center gap-4 rounded p-0 transition-colors duration-500 group-hover:bg-background-subtle-1 sm:p-6">
-        <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-1">
-          <IconImageBlank
-            viewBox="0 0 526 526"
-            className="h-full w-full opacity-80"
-          />
-        </div>
-        <div className="flex flex-col gap-4">
-          <h3 className="font-medium group-hover:underline">
-            Trendy items for this Winter Fall 2025 season
-          </h3>
-          <div className="w-full border-b-2 border-gray-300"></div>
-          <p className="line-clamp-3 font-normal">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s.
-          </p>
-        </div>
-      </div>
-    );
-  };
-
   let sectionStyle: CSSProperties = {
     '--background-color': backgroundColor,
   } as CSSProperties;
 
-  if (loaderData === undefined) {
-    return (
-      <section
-        ref={ref}
-        {...rest}
-        className="h-full w-full bg-[var(--background-color)]"
-        style={sectionStyle}
-      >
-        <div className="flex flex-col gap-6 px-4 py-12 sm:px-6 sm:py-20">
-          {children}
-          <div className="flex grid-cols-3 flex-col gap-5 sm:grid sm:gap-0 sm:justify-self-center">
-            {Array.from({length: 3}).map((idx, i) => (
-              <div key={i} className="group w-full">
-                {blogItemBlank()}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const defaultArticles = Array.from({ length: 3 }).map((_, i) => ({
+    id: i,
+    title: 'Trendy items for this Winter Fall 2025 season',
+    excerpt: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+    image: null,
+    handle: null,
+  }));
 
-  let res = loaderData?.blog?.articles.nodes;
+  const res = loaderData?.blog?.articles.nodes ?? defaultArticles;
+  
   return (
     <section
       ref={ref}
@@ -105,10 +68,10 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
             articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)],
           )}
         >
-          {res?.map((idx: any, i: number) => (
+          {res?.map((idx, i) => (
             <Link
               key={i}
-              to={`/blogs/${blogs.handle}/${idx.handle}`}
+              to={idx.handle ? `/blogs/${blogs.handle}/${idx.handle}` : '#'}
               className={'group'}
             >
               <div
@@ -130,11 +93,13 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                   </div>
                 )}
                 <div className="flex flex-col gap-4">
-                  <h3 className="group-hover:underline">{idx.title}</h3>
+                <h3 className="group-hover:underline">{idx.title}</h3>
                   {showSeperator && (
                     <div className="w-full border-b border-bar-subtle"></div>
                   )}
-                  <p className="line-clamp-3">{idx.excerpt}</p>
+                  <p className="line-clamp-3">
+                    {idx.excerpt}
+                  </p>
                 </div>
               </div>
             </Link>
