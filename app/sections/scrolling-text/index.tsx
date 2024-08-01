@@ -56,7 +56,7 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
       )}
     >
       <ul className="inline-flex list-none">
-        {Array.from({length: 15}).map((_, i) => (
+        {Array.from({length: 50}).map((_, i) => (
           <li
             key={i}
             className="animate-scrollContent whitespace-nowrap font-heading font-medium text-[var(--text-color)] pr-[var(--gap)]"
