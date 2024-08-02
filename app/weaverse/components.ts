@@ -29,7 +29,8 @@ import * as CollectionFilters from '~/sections/collection-filters/index';
 import * as Page from '~/sections/page/page';
 import * as RelatedArticles from '~/sections/related-articles/related-articles';
 import * as BlogPost from '~/sections/blog-post/blog-post';
-import * as RelatedProducts from '~/sections/related-products/related-products';
+import * as RelatedProduct from '~/sections/related-products/related-products';
+import * as RelatedProducts from '~/sections/related-products/index';
 import * as CollectionBanner from '~/sections/collection-banner/collection-banner';
 import * as Newsletter from '~/sections/newsletter/index';
 import * as NewsletterInput from '~/sections/newsletter/input-email';
@@ -44,6 +45,7 @@ import * as ProductPlacementItems from '~/sections/product-placement/items';
 import * as ProductPlacementItem from '~/sections/product-placement/productItem';
 import * as Hotspots from '~/sections/image-hotspots/index';
 import * as HotspotsItem from '~/sections/image-hotspots/item';
+import * as Spacer from '~/sections/spacer';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -76,6 +78,7 @@ export const components: HydrogenComponent[] = [
     RelatedArticles,
     BlogPost,
     RelatedProducts,
+    RelatedProduct,
     CollectionBanner,
     Newsletter,
     NewsletterInput,
@@ -90,5 +93,6 @@ export const components: HydrogenComponent[] = [
     ProductPlacementItem,
     Hotspots,
     HotspotsItem,
+    Spacer,
     StyleGuide
 ];

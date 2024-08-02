@@ -2,6 +2,7 @@ import {Button} from '@/components/button';
 import {Input} from '@/components/input';
 import {Disclosure} from '@headlessui/react';
 import {NavLink, useFetcher} from '@remix-run/react';
+import {useThemeSettings} from '@weaverse/hydrogen';
 import {getMaxDepth} from '~/lib/menu';
 import {SingleMenuItem} from '~/lib/type';
 import {EnhancedMenu} from '~/lib/utils';
@@ -14,30 +15,43 @@ type FooterProps = Pick<LayoutProps, 'footerMenu'>;
 export function Footer({footerMenu}: FooterProps) {
   let fetcher = useFetcher<any>();
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
+  const settings = useThemeSettings();
+  let {
+    footerTextCopyright,
+    newsletterTitle,
+    newsletterDescription,
+    newsletterPlaceholder,
+    newsletterButtonText,
+  } = settings;
   return (
-    <footer className="footer w-full bg-background-subtle-2">
-      <div className="flex h-fit flex-col gap-6 px-4 pb-10 pt-6 container md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-10 lg:py-16">
+    <footer className="footer w-full bg-[var(--footer-menu-background-color)]">
+      <div className="container flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16">
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
-            <h3>Newsletter</h3>
+            {newsletterTitle && <h3>{newsletterTitle}</h3>}
             <div className="flex w-fit flex-col gap-4 md:h-fit">
-              <p>Sign up for 15% off and updates straight to your inbox.</p>
-              <fetcher.Form
-                method="POST"
-                action="/api/customer"
-                className="flex gap-2"
-              >
-                <Input
-                  className="bg-transparent"
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  required
-                />
-                <Button loading={fetcher.state === 'submitting'} type="submit">
-                  Subscribe
-                </Button>
-              </fetcher.Form>
+              {newsletterDescription && <p>{newsletterDescription}</p>}
+              {newsletterButtonText && (
+                <fetcher.Form
+                  method="POST"
+                  action="/api/customer"
+                  className="flex gap-2"
+                >
+                  <Input
+                    className="bg-transparent"
+                    type="email"
+                    name="email"
+                    placeholder={newsletterPlaceholder}
+                    required
+                  />
+                  <Button
+                    loading={fetcher.state === 'submitting'}
+                    type="submit"
+                  >
+                    {newsletterButtonText}
+                  </Button>
+                </fetcher.Form>
+              )}
               {isError && (
                 <p className="!mt-1 text-xs text-red-700">
                   {fetcher.data.errors[0].message}
@@ -47,7 +61,10 @@ export function Footer({footerMenu}: FooterProps) {
           </div>
           {footerMenu && <FooterMenu menu={footerMenu} />}
         </div>
-        <CountrySelector />
+        <div className="flex w-full items-center justify-between">
+          <CountrySelector />
+          <p className="text-xs">{footerTextCopyright}</p>
+        </div>
       </div>
     </footer>
   );
