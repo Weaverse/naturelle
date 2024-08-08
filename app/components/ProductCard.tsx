@@ -37,6 +37,9 @@ export function ProductCard({
   if (!firstVariant) return null;
   const {image, price, compareAtPrice} = firstVariant;
 
+  const productImages = product.images?.nodes || [];
+  const hasTwoImages = productImages.length >= 2;
+
   if (label) {
     cardLabel = label;
   } else if (isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2)) {
@@ -68,7 +71,7 @@ export function ProductCard({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <div className={clsx('grid gap-4', className)}>
         <div className="card-image group relative aspect-[4/5] bg-primary/5">
           {image && (
@@ -80,14 +83,40 @@ export function ProductCard({
                 return isTransitioning ? 'vt-product-image' : '';
               }}
             >
-              <Image
-                className="fadeIn w-full object-cover"
-                sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                aspectRatio="4/5"
-                data={image}
-                alt={image.altText || `Picture of ${product.title}`}
-                loading={loading}
-              />
+              {hasTwoImages && (
+                <>
+                  <Image
+                    className="fadeIn w-full object-cover absolute opacity-100 transition-opacity duration-300 group-hover:opacity-0"
+                    sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
+                    aspectRatio="4/5"
+                    data={productImages[0]}
+                    alt={
+                      productImages[0]?.altText || `Picture of ${product.title}`
+                    }
+                    loading={loading}
+                  />
+                  <Image
+                    className="fadeIn w-full object-cover absolute opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
+                    aspectRatio="4/5"
+                    data={productImages[1]}
+                    alt={
+                      productImages[1]?.altText || `Picture of ${product.title}`
+                    }
+                    loading={loading}
+                  />
+                </>
+              )}
+              {!hasTwoImages && productImages[0] && (
+                <Image
+                  className="fadeIn w-full object-cover"
+                  sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
+                  aspectRatio="4/5"
+                  data={image}
+                  alt={image.altText || `Picture of ${product.title}`}
+                  loading={loading}
+                />
+              )}
             </Link>
           )}
           <Text
