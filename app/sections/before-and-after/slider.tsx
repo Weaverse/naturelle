@@ -157,10 +157,7 @@ const BeforeAndAfter = forwardRef<HTMLDivElement, BeforeAndAfterProps>((props, r
         if (!resizerEle || !containerEle) return;
         const defaultWidth = 50;
         resizerEle.style.left = `${defaultWidth}%`;
-        const containerWidth = containerRef.current.getBoundingClientRect().width;
-        const resizerWidth = resizerEle.getBoundingClientRect().width;
-        const centerPosition = (containerWidth - resizerWidth) / 2;
-        updateWidth(defaultWidth, centerPosition);
+        updateWidth(defaultWidth * containerRef.current.getBoundingClientRect().width / 100, 0);
     }, [afterImage]);
 
     let sliderStyle: CSSProperties = {

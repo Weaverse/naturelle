@@ -9,19 +9,18 @@ import { Skeleton} from '~/components/Skeleton';
 import {ProductSwimlane} from '~/components/ProductSwimlane';
 
 interface RelatedProductsProps extends HydrogenComponentProps {
-  heading: string;
   productsCount: number;
 }
 
-let RelatedProducts = forwardRef<HTMLElement, RelatedProductsProps>(
+let RelatedProduct = forwardRef<HTMLDivElement, RelatedProductsProps>(
   (props, ref) => {
     let {recommended} = useLoaderData<{
       recommended: {nodes: ProductCardFragment[]};
     }>();
-    let {heading, productsCount, ...rest} = props;
+    let { productsCount, ...rest} = props;
     if (recommended) {
       return (
-        <section ref={ref} {...rest} className='container'>
+        <div ref={ref} {...rest}>
           <Suspense fallback={<Skeleton className="h-32" />}>
             <Await
               errorElement="There was a problem loading related products"
@@ -29,40 +28,29 @@ let RelatedProducts = forwardRef<HTMLElement, RelatedProductsProps>(
             >
               {(products) => (
                 <ProductSwimlane
-                  title={heading}
                   count={productsCount}
                   featuredProducts={products}
                 />
               )}
             </Await>
           </Suspense>
-        </section>
+        </div>
       );
     }
     return <section ref={ref} {...rest} />;
   },
 );
 
-export default RelatedProducts;
+export default RelatedProduct;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'related-products',
-  title: 'Related products',
+  type: 'related-products--list',
+  title: 'Related products list',
   limit: 1,
-  enabledOn: {
-    pages: ['PRODUCT'],
-  },
   inspector: [
     {
       group: 'Related products',
       inputs: [
-        {
-          type: 'text',
-          name: 'heading',
-          label: 'Heading',
-          defaultValue: 'You may also like',
-          placeholder: 'Related products',
-        },
         {
           type: 'range',
           name: 'productsCount',

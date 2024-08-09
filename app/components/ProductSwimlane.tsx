@@ -14,7 +14,7 @@ type ProductSwimlaneProps = Pick<FeaturedItemsQuery, 'featuredProducts'> & {
 };
 
 export function ProductSwimlane({
-  title = 'Featured Products',
+  title,
   featuredProducts = mockProducts,
   count = 12,
   ...props
@@ -33,7 +33,7 @@ export function ProductSwimlane({
     }
   };
   return (
-    <Section heading={title} padding="y" {...props} className='relative group'>
+    <Section {...(title && { heading: title })} padding="y" {...props} className='relative group'>
       <div ref={swimlaneRef} className="swimlane hiddenScroll scroll-px-0 px-0">
         {featuredProducts.nodes.slice(0, count).map((product) => (
           <ProductCard

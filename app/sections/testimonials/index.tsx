@@ -7,6 +7,7 @@ import { forwardRef, CSSProperties } from 'react';
 import clsx from 'clsx';
 import { Image } from '@shopify/hydrogen';
 import { IconImageBlank } from '~/components/Icon';
+import { layoutInputs, Section, SectionProps } from '../atoms/Section';
 
 
 interface TestimonialsProps extends HydrogenComponentProps {
@@ -22,7 +23,7 @@ let reviewsPositionContent: { [reviewsPosition: string]: string } = {
     'right': 'justify-end',
 };
 
-const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => {
+const Testimonials = forwardRef<HTMLElement, TestimonialsProps & SectionProps>((props, ref) => {
     let {
         backgroundImage,
         reviewsPosition,
@@ -40,7 +41,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
         '--desktop-content-padding': `${desktopContentPadding}px`,
     } as CSSProperties;
     return (
-        <section
+        <Section
             ref={ref}
             {...rest}
             className='relative bg-secondary overflow-hidden'
@@ -63,11 +64,11 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
                 )}
             </div>
             <div className={clsx(
-                'container w-full flex gap-3 items-center',
+                'container !mt-0 w-full flex gap-3 items-center',
                 reviewsPositionContent[reviewsPosition],
             )}>
                 <div className={clsx(
-                    "flex h-fit z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl",
+                    "h-fit z-10 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl",
                     reviewsPosition === 'full' ? 'sm:w-full' : 'sm:w-1/2'
                 )}>
                     <div className='flex flex-col gap-10 px-6 py-12 sm:py-16 sm:px-[var(--desktop-content-padding)] text-[var(--text-color)]'>
@@ -75,7 +76,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps>((props, ref) => 
                     </div>
                 </div>
             </div>
-        </section>
+        </Section>
     );
 });
 
@@ -86,6 +87,10 @@ export let schema: HydrogenComponentSchema = {
     title: 'Testimonials',
     toolbar: ['general-settings', ['duplicate', 'delete']],
     inspector: [
+        {
+            group: 'Layout',
+            inputs: layoutInputs.filter(({ name }) => name !== 'divider' && name !== 'borderRadius' && name !== 'gap'),
+        },
         {
             group: 'testimonials',
             inputs: [
@@ -120,7 +125,7 @@ export let schema: HydrogenComponentSchema = {
                 },
                 {
                     type: 'range',
-                    label: 'Desktop content padding',
+                    label: 'Desktop content padding horizontal',
                     name: 'desktopContentPadding',
                     configs: {
                       min: 30,

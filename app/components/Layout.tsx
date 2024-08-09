@@ -32,7 +32,7 @@ export function Layout({
       <main>{children}</main>
       <Suspense>
         <Await resolve={footerMenu}>
-          {(footer) => <Footer footerMenu={footerMenu} />}
+          {(footerMenu) => <Footer footerMenu={footerMenu} />}
         </Await>
       </Suspense>
     </>

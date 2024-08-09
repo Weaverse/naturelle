@@ -29,6 +29,59 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
+      group: 'Layout',
+      inputs: [
+        {
+          type: "range",
+          label: "Page width",
+          name: "pageWidth",
+          configs: {
+            min: 1000,
+            max: 1600,
+            step: 10,
+            unit: "px",
+          },
+          defaultValue: 1440,
+        },
+        {
+          type: 'range',
+          label: 'Nav height (mobile)',
+          name: 'navHeightMobile',
+          configs: {
+            min: 2,
+            max: 8,
+            step: 1,
+            unit: 'rem',
+          },
+          defaultValue: 3,
+        },
+        {
+          type: "range",
+          label: "Nav height (tablet)",
+          name: "navHeightTablet",
+          configs: {
+            min: 2,
+            max: 8,
+            step: 1,
+            unit: "rem",
+          },
+          defaultValue: 4,
+        },
+        {
+          type: "range",
+          label: "Nav height (desktop)",
+          name: "navHeightDesktop",
+          configs: {
+            min: 2,
+            max: 8,
+            step: 1,
+            unit: "rem",
+          },
+          defaultValue: 6,
+        },
+      ],
+    },
+    {
       group: 'Header',
       inputs: [
         {
@@ -83,6 +136,148 @@ export const themeSchema: HydrogenThemeSchema = {
           },
           defaultValue: "headerSearch"
         },
+        {
+          type: 'heading',
+          label: 'Trial shipping',
+        },
+        {
+          type: 'textarea',
+          name: 'content',
+          label: 'Text',
+          defaultValue:
+            'FREE SHIPPING IN THE US FOR ORDER OVER $100',
+        },
+        {
+          type: 'toggle-group',
+          label: 'Text size',
+          name: 'textSize',
+          configs: {
+            options: [
+              {label: 'S', value: '16'},
+              {label: 'M', value: '18'},
+              {label: 'L', value: '20'},
+            ],
+          },
+          defaultValue: '16',
+        },
+        {
+          type: 'color',
+          name: 'textColor',
+          label: 'Text color',
+        },
+        {
+          type: 'color',
+          name: 'borderColor',
+          label: 'Border color',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          name: 'backgroundColor',
+          label: 'Background color',
+          defaultValue: '#E5E7D4',
+        },
+        {
+          type: "range",
+          label: "Height",
+          name: "announcementBarHeight",
+          configs: {
+            min: 10,
+            max: 100,
+            step: 1,
+            unit: "px",
+          },
+          defaultValue: 48,
+        },
+        {
+          type: 'switch',
+          name: 'enableScrollingText',
+          label: 'Enable scrolling text',
+          defaultValue: false,
+        },
+        {
+          type: 'range',
+          name: 'speed',
+          label: 'Speed',
+          defaultValue: 9,
+          configs: {
+            min: 0.1,
+            max: 20,
+            step: 0.1,
+            unit: 's',
+          },
+          condition: 'enableScrollingText.eq.true',
+        },
+        {
+          type: 'range',
+          name: 'gap',
+          label: 'Gap',
+          defaultValue: 10,
+          configs: {
+            min: 0,
+            max: 100,
+            step: 1,
+            unit: 'px',
+          },
+          condition: 'enableScrollingText.eq.true',
+        },
+        {
+          type: "switch",
+          label: "Sticky",
+          name: "stickyAnnouncementBar",
+          defaultValue: true,
+        },
+        {
+          type: 'switch',
+          name: 'enableTrialShipping',
+          label: 'Enable trial shipping',
+          defaultValue: false,
+        },
+      ],
+    },
+    {
+      group: 'footer settings',
+      inputs: [
+        {
+          type: 'text',
+          label: 'Footer text Copyright @',
+          name: 'footerTextCopyright',
+          defaultValue: '© 2024 Weaverse. All rights reserved.',
+        },
+        {
+          type: 'color',
+          label: 'Footer menu background color',
+          name: 'footerMenuBackgroundColor',
+          defaultValue: '#C5C6BB',
+        },
+        {
+          type: 'heading',
+          label: 'Newsletter',
+        },
+        {
+          type: "text",
+          name: "newsletterTitle",
+          label: "Newsletter title",
+          defaultValue: "Newsletter",
+        },
+        {
+          type: "text",
+          name: "newsletterDescription",
+          label: "Newsletter description",
+          defaultValue: "Sign up for 15% off and updates straight to your inbox.",
+        },
+        {
+          type: "text",
+          name: "newsletterPlaceholder",
+          label: "Input placeholder",
+          defaultValue: "Enter your email",
+        },
+        {
+          type: "text",
+          name: "newsletterButtonText",
+          label: "Button text",
+          defaultValue: "Subcribe",
+        }
       ],
     },
     {
@@ -280,59 +475,6 @@ export const themeSchema: HydrogenThemeSchema = {
             step: 0.1,
           },
           defaultValue: 1.2,
-        },
-      ],
-    },
-    {
-      group: 'Layout',
-      inputs: [
-        {
-          type: "range",
-          label: "Page width",
-          name: "pageWidth",
-          configs: {
-            min: 1000,
-            max: 1600,
-            step: 10,
-            unit: "px",
-          },
-          defaultValue: 1440,
-        },
-        {
-          type: 'range',
-          label: 'Nav height (mobile)',
-          name: 'navHeightMobile',
-          configs: {
-            min: 2,
-            max: 8,
-            step: 1,
-            unit: 'rem',
-          },
-          defaultValue: 3,
-        },
-        {
-          type: "range",
-          label: "Nav height (tablet)",
-          name: "navHeightTablet",
-          configs: {
-            min: 2,
-            max: 8,
-            step: 1,
-            unit: "rem",
-          },
-          defaultValue: 4,
-        },
-        {
-          type: "range",
-          label: "Nav height (desktop)",
-          name: "navHeightDesktop",
-          configs: {
-            min: 2,
-            max: 8,
-            step: 1,
-            unit: "rem",
-          },
-          defaultValue: 6,
         },
       ],
     },

@@ -14,9 +14,9 @@ import {Drawer, useDrawer} from '../Drawer';
 import {IconAccount, IconLogin} from '../Icon';
 import {Link} from '../Link';
 import {Logo} from '../Logo';
-import {MegaMenu} from './menu/MegaMenu';
 import {CartCount} from './CartCount';
-import { SearchToggle } from './SearchToggle';
+import {MegaMenu} from './menu/MegaMenu';
+import {SearchToggle} from './SearchToggle';
 
 export function UseMenuMegaHeader({
   header,
@@ -29,7 +29,8 @@ export function UseMenuMegaHeader({
   cart: Promise<CartApiQueryFragment | null>;
   className?: string;
 }) {
-  const isHome  = useIsHomePath();
+  let {stickyAnnouncementBar, announcementBarHeight} = useThemeSettings();
+  const isHome = useIsHomePath();
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
@@ -40,6 +41,9 @@ export function UseMenuMegaHeader({
 
   let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
+  let top = stickyAnnouncementBar
+    ? announcementBarHeight
+    : Math.max(announcementBarHeight - y, 0);
   const {
     isOpen: isCartOpen,
     openDrawer: openCart,
@@ -52,25 +56,27 @@ export function UseMenuMegaHeader({
       className={clsx(
         enableTransparent ? 'fixed' : 'sticky',
         isTransparent
-          ? ' text-secondary bg-transparent border-secondary'
-          : 'shadow-header text-primary bg-background-subtle-1 border-foreground',
+          ? 'border-secondary bg-transparent text-secondary'
+          : 'shadow-header border-foreground bg-background-subtle-1 text-primary',
         'top-0 z-40 w-full border-b',
         className,
       )}
+      style={{['--announcement-bar-height' as string]: `${top}px`}}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="z-40 flex transition-all duration-300 h-nav items-center justify-between gap-3 container">
+      <div className="container z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',
             'transition-all duration-500 ease-in-out',
-            isTransparent
-              ? 'opacity-0'
-              : 'opacity-100',
+            isTransparent ? 'opacity-0' : 'opacity-100',
           )}
         ></div>
-        <Logo className="z-30 flex justify-start" showTransparent={isTransparent}/>
+        <Logo
+          className="z-30 flex justify-start"
+          showTransparent={isTransparent}
+        />
         <MegaMenu menu={header} />
         <div className="z-30 flex items-center justify-end gap-2">
           <SearchToggle />
@@ -125,4 +131,3 @@ function AccountLink({className}: {className?: string}) {
     </Suspense>
   );
 }
-

@@ -1,16 +1,24 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
+import {
+  isBrowser,
+  type HydrogenComponentProps,
+  type HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
 import type {VariantProps} from 'class-variance-authority';
 import {cva} from 'class-variance-authority';
 import clsx from 'clsx';
 import type {CSSProperties} from 'react';
-import {forwardRef, lazy, Suspense} from 'react';
+import {
+  forwardRef,
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import {useInView} from 'react-intersection-observer';
 import {Overlay, overlayInputs, OverlayProps} from '../atoms/Overlay';
-import ReactPlayer from 'react-player';
 
-const HEIGHTS = {
+const SECTION_HEIGHTS = {
   small: {
     desktop: '40vh',
     mobile: '50vh',
@@ -24,17 +32,27 @@ const HEIGHTS = {
     mobile: '80vh',
   },
   full: {
-    desktop: 'calc(var(--screen-height, 100vh) - var(--height-nav))',
-    mobile: 'calc(var(--screen-height, 100vh) - var(--height-nav))',
+    desktop: 'calc(var(--screen-height, 100vh)',
+    mobile: 'calc(var(--screen-height, 100vh)',
   },
   custom: null,
 };
 
-export interface HeroVideoProps
+type WeaverseVideo = {
+  id: string;
+  url: string;
+  altText: string;
+  width: number;
+  height: number;
+  previewSrc: string;
+};
+
+export interface VideoBannerProps
   extends Omit<VariantProps<typeof variants>, 'padding'>,
     HydrogenComponentProps,
     OverlayProps {
-  videoURL: string;
+  videoURL: WeaverseVideo;
+  videoURL2: string;
   height: 'small' | 'medium' | 'large' | 'full' | 'custom';
   heightOnDesktop: number;
   heightOnMobile: number;
@@ -69,33 +87,81 @@ let variants = cva(
   },
 );
 
-// let ReactPlayer = lazy(() => import('react-player/lazy'));
+let ReactPlayer = lazy(() => import('react-player/lazy'));
 
-let VideoBanner = forwardRef<HTMLElement, HeroVideoProps>((props, ref) => {
+function getPlayerSize(id: string) {
+  if (isBrowser) {
+    let section = document.querySelector(`[data-wv-id="${id}"]`);
+    if (section) {
+      let rect = section.getBoundingClientRect();
+      let aspectRatio = rect.width / rect.height;
+      if (aspectRatio < 16 / 9) {
+        return {width: 'auto', height: '100%'};
+      }
+    }
+  }
+  return {width: '100%', height: 'auto'};
+}
+
+let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
   let {
     videoURL,
+    videoURL2,
     gap,
     height,
     heightOnDesktop,
     heightOnMobile,
     enableOverlay,
     overlayColor,
+    overlayColorHover,
     overlayOpacity,
     children,
     ...rest
   } = props;
 
-  let desktopHeight = HEIGHTS[height]?.desktop || `${heightOnDesktop}px`;
-  let mobileHeight = HEIGHTS[height]?.mobile || `${heightOnMobile}px`;
+  let id = rest['data-wv-id'];
+  let [size, setSize] = useState(() => getPlayerSize(id));
 
+  let desktopHeight =
+    SECTION_HEIGHTS[height]?.desktop || `${heightOnDesktop}px`;
+  let mobileHeight = SECTION_HEIGHTS[height]?.mobile || `${heightOnMobile}px`;
   let sectionStyle: CSSProperties = {
     '--desktop-height': desktopHeight,
     '--mobile-height': mobileHeight,
   } as CSSProperties;
 
+  let {ref: inViewRef, inView} = useInView({
+    triggerOnce: true,
+  });
+
+  // Use `useCallback` so we don't recreate the function on each render
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  let setRefs = useCallback(
+    (node: HTMLElement) => {
+      // Ref's from useRef needs to have the node assigned to `current`
+      ref && Object.assign(ref, {current: node});
+      // Callback refs, like the one from `useInView`, is a function that takes the node as an argument
+      inViewRef(node);
+    },
+    [inViewRef],
+  );
+
+  function handleResize() {
+    setSize(getPlayerSize(id));
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [inView, height, heightOnDesktop, heightOnMobile]);
+
   return (
     <section
-      ref={ref}
+      ref={setRefs}
       {...rest}
       className="h-full w-full overflow-hidden"
       style={sectionStyle}
@@ -108,22 +174,24 @@ let VideoBanner = forwardRef<HTMLElement, HeroVideoProps>((props, ref) => {
           'translate-x-[min(0px,calc((var(--mobile-height)/9*16-100vw)/-2))] sm:translate-x-[min(0px,calc((var(--desktop-height)/9*16-100vw)/-2))]',
         )}
       >
-        <Suspense fallback={null}>
-          <ReactPlayer
-            url={videoURL}
-            playing
-            muted
-            loop={true}
-            width="100%"
-            height="auto"
-            controls={false}
-            className="aspect-video"
-            loading="lazy"
-          />
-        </Suspense>
+        {inView && (
+          <Suspense fallback={null}>
+            <ReactPlayer
+              url={videoURL2 || videoURL.url}
+              playing
+              muted
+              loop={true}
+              width={size.width}
+              height={size.height}
+              controls={false}
+              className="aspect-video"
+            />
+          </Suspense>
+        )}
         <Overlay
           enableOverlay={enableOverlay}
           overlayColor={overlayColor}
+          overlayColorHover={overlayColorHover}
           overlayOpacity={overlayOpacity}
           className="z-0"
         />
@@ -138,18 +206,23 @@ export default VideoBanner;
 export let schema: HydrogenComponentSchema = {
   type: 'video-banner',
   title: 'Video banner',
-  toolbar: ['general-settings', ['duplicate', 'delete']],
   inspector: [
     {
       group: 'Video',
       inputs: [
         {
-          type: 'text',
+          type: 'video',
           name: 'videoURL',
           label: 'Video URL',
-          defaultValue: 'https://cdn.shopify.com/videos/c/o/v/da736f2426744842b544038265c59a8d.mp4',
-          placeholder: 'https://cdn.shopify.com/videos/c/o/v/da736f2426744842b544038265c59a8d.mp4',
           helpText: 'Support YouTube, Vimeo, MP4, WebM, and HLS streams.',
+        },
+        {
+          type: 'text',
+          name: 'videoURL2',
+          label: 'Video URL 2',
+          placeholder: 'https://www.youtube.com/watch?v=Su-x4Mo5xmU',
+          helpText:
+            'Support YouTube, Vimeo, MP4, WebM, and HLS streams. If you enter the url link in the input text that will take priority',
         },
         {
           type: 'heading',
@@ -220,8 +293,16 @@ export let schema: HydrogenComponentSchema = {
     enableOverlay: true,
     overlayColor: '#000000',
     overlayOpacity: 40,
-    videoURL: 'https://cdn.shopify.com/videos/c/o/v/da736f2426744842b544038265c59a8d.mp4',
-    height: 'medium',
+    videoURL: {
+      id: 'gbLmku5QACM',
+      url: 'https://cdn.shopify.com/videos/c/o/v/f996c8ca1d0144e1b53b813f82d187b0.mp4',
+      previewSrc:
+        'https://img.youtube.com/vi/gbLmku5QACM/maxresdefault.jpg',
+      width: 1920,
+      height: 1080,
+      altText: 'Naturelle demo',
+    },
+    height: 'large',
     gap: 20,
     children: [
       {
@@ -232,7 +313,7 @@ export let schema: HydrogenComponentSchema = {
       {
         type: 'heading',
         content: 'Bring your brand to life.',
-        size: 'jumbo',
+        as: 'h2',
         color: '#fff',
       },
       {

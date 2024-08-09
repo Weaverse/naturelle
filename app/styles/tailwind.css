@@ -188,3 +188,7 @@
 .animate-hover:hover::before {
     @apply origin-left scale-x-100;
 }
+
+#announcement-bar~header {
+    top: var(--announcement-bar-height, 0px);
+}
