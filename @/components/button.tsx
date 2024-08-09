@@ -6,17 +6,18 @@ import {cn} from '@/lib/utils';
 import { Spinner } from "./spinner";
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap font-normal transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground border border-primary hover:bg-background hover:text-foreground hover:border-bar',
+        primary: 'bg-primary text-primary-foreground border border-primary hover:bg-transparent hover:text-foreground hover:border-bar',
         secondary:
-          'border border-bar bg-background hover:bg-primary hover:text-secondary',
+          'border border-bar bg-transparent hover:bg-primary hover:text-secondary',
         outline:
-          'bg-background border border-bar text-secondary-foreground font-heading text-xl font-medium',
+          'bg-transparent border border-bar text-secondary-foreground font-heading text-xl',
         link: 'text-primary underline-offset-4 hover:underline',
         decor: 'relative',
+        custom: '',
       },
       size: {
         default: 'h-[50px] px-5 py-3',
@@ -27,7 +28,11 @@ const buttonVariants = cva(
       shape: {
         default: 'rounded',
         round: 'rounded-md',
-      }
+      },
+      fontFamily: {
+        body: 'font-body',
+        heading: 'font-heading',
+      },
     },
     defaultVariants: {
       variant: 'primary',
@@ -54,6 +59,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size = 'default',
       shape = 'round',
+      fontFamily = 'body',
       asChild,
       as = 'button',
       children,
@@ -66,7 +72,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Component
         className={cn(
-          buttonVariants({variant, size, shape, className}),
+          buttonVariants({variant, size, shape, fontFamily, className}),
           loading && 'pointer-events-none relative',
         )}
         ref={ref}

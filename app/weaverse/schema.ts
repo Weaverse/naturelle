@@ -136,6 +136,103 @@ export const themeSchema: HydrogenThemeSchema = {
           },
           defaultValue: "headerSearch"
         },
+        {
+          type: 'heading',
+          label: 'Trial shipping',
+        },
+        {
+          type: 'textarea',
+          name: 'content',
+          label: 'Text',
+          defaultValue:
+            'FREE SHIPPING IN THE US FOR ORDER OVER $100',
+        },
+        {
+          type: 'toggle-group',
+          label: 'Text size',
+          name: 'textSize',
+          configs: {
+            options: [
+              {label: 'S', value: '16'},
+              {label: 'M', value: '18'},
+              {label: 'L', value: '20'},
+            ],
+          },
+          defaultValue: '16',
+        },
+        {
+          type: 'color',
+          name: 'textColor',
+          label: 'Text color',
+        },
+        {
+          type: 'color',
+          name: 'borderColor',
+          label: 'Border color',
+          defaultValue: '#3D490B',
+        },
+        {
+          type: 'color',
+          name: 'backgroundColor',
+          label: 'Background color',
+          defaultValue: '#E5E7D4',
+        },
+        {
+          type: "range",
+          label: "Height",
+          name: "announcementBarHeight",
+          configs: {
+            min: 10,
+            max: 100,
+            step: 1,
+            unit: "px",
+          },
+          defaultValue: 48,
+        },
+        {
+          type: 'switch',
+          name: 'enableScrollingText',
+          label: 'Enable scrolling text',
+          defaultValue: false,
+        },
+        {
+          type: 'range',
+          name: 'speed',
+          label: 'Speed',
+          defaultValue: 9,
+          configs: {
+            min: 0.1,
+            max: 20,
+            step: 0.1,
+            unit: 's',
+          },
+          condition: 'enableScrollingText.eq.true',
+        },
+        {
+          type: 'range',
+          name: 'gap',
+          label: 'Gap',
+          defaultValue: 10,
+          configs: {
+            min: 0,
+            max: 100,
+            step: 1,
+            unit: 'px',
+          },
+          condition: 'enableScrollingText.eq.true',
+        },
+        {
+          type: "switch",
+          label: "Sticky",
+          name: "stickyAnnouncementBar",
+          defaultValue: true,
+        },
+        {
+          type: 'switch',
+          name: 'enableTrialShipping',
+          label: 'Enable trial shipping',
+          defaultValue: false,
+        },
       ],
     },
     {

@@ -2,14 +2,17 @@ import {useThemeSettings} from '@weaverse/hydrogen';
 import {UseMenuDrawerHeader} from './MenuDrawerHeader';
 import {UseMenuMegaHeader} from './MenuMegaHeader';
 import type {LayoutProps} from '../Layout';
+import { AnnouncementBar } from './AnnouncementBar';
 
 type HeaderProps = Pick<LayoutProps, 'headerMenu' | 'cart' | 'isLoggedIn'>;
 
 export function Header({headerMenu, isLoggedIn, cart}: HeaderProps) {
   let settings = useThemeSettings();
   let typeMenu = settings?.typeMenuHeader;
+  let enableTrialShipping = settings?.enableTrialShipping;
   return (
     <>
+      {enableTrialShipping && <AnnouncementBar/>}
       {typeMenu === 'mega' && (
         <UseMenuMegaHeader
           header={headerMenu}

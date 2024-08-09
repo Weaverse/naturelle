@@ -29,6 +29,7 @@ export function UseMenuDrawerHeader({
   cart: Promise<CartApiQueryFragment | null>;
   className?: string;
 }) {
+  let {stickyAnnouncementBar, announcementBarHeight} = useThemeSettings();
   const isHome = useIsHomePath();
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
@@ -40,6 +41,9 @@ export function UseMenuDrawerHeader({
 
   let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
+  let top = stickyAnnouncementBar
+    ? announcementBarHeight
+    : Math.max(announcementBarHeight - y, 0);
   const {
     isOpen: isCartOpen,
     openDrawer: openCart,
@@ -57,6 +61,7 @@ export function UseMenuDrawerHeader({
         'top-0 z-40 w-full border-b border-foreground',
         className,
       )}
+      style={{['--announcement-bar-height' as string]: `${top}px`}}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >

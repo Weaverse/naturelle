@@ -1,7 +1,7 @@
+import {Button} from '@/components/button';
 import {Link} from '@remix-run/react';
+import {useEffect} from 'react';
 import {IconClose} from './Icon';
-import { Button } from "@/components/button";
-import { useEffect } from "react";
 
 export function Modal({
   children,
@@ -13,13 +13,14 @@ export function Modal({
   onClose?: () => void;
 }) {
   useEffect(() => {
-    if (!document.body.classList.contains("overflow-hidden")) {
-      document.body.classList.add("overflow-hidden")
+    if (!document.body.classList.contains('overflow-hidden')) {
+      document.body.classList.add('overflow-hidden');
     }
     return () => {
-      document.body.classList.remove("overflow-hidden")      
-    }
-  },[])
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, []);
+
   return (
     <div
       className="relative z-50"
@@ -28,27 +29,30 @@ export function Modal({
       aria-modal="true"
       id="modal-bg"
     >
-      <div className="fixed inset-0 transition-opacity bg-opacity-75 bg-primary/40"></div>
-      <div className="fixed inset-0 z-50 overflow-y-hidden">
-        <div className="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
+      <div className="fixed inset-0 bg-primary/40 bg-opacity-75 transition-opacity"></div>
+      <div
+        className="fixed inset-0 z-50 overflow-y-hidden"
+      >
+        <div className="relative flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+          <div className='absolute inset-0 z-10' onClick={onClose}/>
           <div
-            className="relative flex-1 overflow-hidden text-left transition-all transform rounded sm:flex-none"
-            role="button"
+            className="relative z-20 flex-1 transform overflow-hidden rounded text-left transition-all sm:flex-none"
+            role="dialog"
             onKeyPress={(e) => {
               e.stopPropagation();
             }}
             tabIndex={0}
           >
-            <div className="absolute top-0 right-0">
+            <div className="absolute right-0 top-0">
               {cancelLink ? (
                 <Link
                   to={cancelLink}
-                  className="-m-4 transition text-body hover:text-body/50"
+                  className="text-body hover:text-body/50 -m-4 transition"
                 >
                   <IconClose aria-label="Close panel" />
                 </Link>
               ) : (
-                <Button variant='link' onClick={onClose}>
+                <Button variant="link" onClick={onClose}>
                   <IconClose aria-label="Close panel" />
                 </Button>
               )}
