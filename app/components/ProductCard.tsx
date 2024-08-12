@@ -73,7 +73,7 @@ export function ProductCard({
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className={clsx('grid gap-4', className)}>
-        <div className="card-image group relative aspect-[4/5] bg-primary/5">
+        <div className="card-image group/productCard relative aspect-[4/5] bg-primary/5">
           {image && (
             <Link
               onClick={onClick}
@@ -86,7 +86,7 @@ export function ProductCard({
               {hasTwoImages && (
                 <>
                   <Image
-                    className="fadeIn w-full object-cover absolute opacity-100 transition-opacity duration-300 group-hover:opacity-0"
+                    className="fadeIn w-full object-cover absolute opacity-100 transition-opacity duration-300 group-hover/productCard:opacity-0"
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio="4/5"
                     data={productImages[0]}
@@ -96,7 +96,7 @@ export function ProductCard({
                     loading={loading}
                   />
                   <Image
-                    className="fadeIn w-full object-cover absolute opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    className="fadeIn w-full object-cover absolute opacity-0 transition-opacity duration-300 group-hover/productCard:opacity-100"
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio="4/5"
                     data={productImages[1]}
@@ -135,7 +135,7 @@ export function ProductCard({
           {quickAdd &&
             variants.length === 1 &&
             firstVariant.availableForSale && (
-              <div className="absolute bottom-0 hidden w-full bg-[rgba(238,239,234,0.10)] px-3 py-5 opacity-100 backdrop-blur-2xl lg:group-hover:block">
+              <div className="absolute bottom-0 hidden w-full bg-[rgba(238,239,234,0.10)] px-3 py-5 opacity-100 backdrop-blur-2xl lg:group-hover/productCard:block">
                 <AddToCartButton
                   className="w-full"
                   lines={[
