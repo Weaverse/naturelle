@@ -9,7 +9,7 @@ import {Input} from '@/components/input';
 import {cn} from '@/lib/utils';
 import clsx from "clsx";
 
-type CartLine = CartApiQueryFragment['lines']['nodes'][0];
+type CartLine = CartApiQueryFragment['lines']['edges'][0]['node'];
 
 type CartMainProps = {
   cart: CartApiQueryFragment | null;
@@ -17,7 +17,7 @@ type CartMainProps = {
 };
 
 export function CartMain({layout, cart}: CartMainProps) {
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
+  const linesCount = Boolean(cart?.lines?.edges?.length || 0);
   const withDiscount =
     cart &&
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
@@ -40,6 +40,7 @@ function CartDetails({layout, cart}: CartMainProps) {
     aside:
       'cart-details flex flex-col gap-6 relative justify-between h-screen-in-drawer',
   };
+  if (!cart) return null;
   return (
     <div className={styles[layout]}>
       <CartLines lines={cart?.lines} layout={layout} />
@@ -84,7 +85,7 @@ function CartLines({
           </thead>
         )}
         <tbody>
-          {lines.nodes.map((line) => (
+          {lines?.edges?.map(({node: line}) => (
             <CartLineItem key={line.id} line={line} layout={layout} />
           ))}
         </tbody>

@@ -839,8 +839,8 @@ export type CartApiQueryFragment = Pick<
     >;
   };
   lines: {
-    nodes: Array<
-      Pick<StorefrontAPI.CartLine, 'id' | 'quantity'> & {
+    edges: Array<{
+      node: Pick<StorefrontAPI.CartLine, 'id' | 'quantity'> & {
         attributes: Array<Pick<StorefrontAPI.Attribute, 'key' | 'value'>>;
         cost: {
           totalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
@@ -871,8 +871,8 @@ export type CartApiQueryFragment = Pick<
             Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
           >;
         };
-      }
-    >;
+      };
+    }>;
   };
   cost: {
     subtotalAmount: Pick<StorefrontAPI.MoneyV2, 'currencyCode' | 'amount'>;
