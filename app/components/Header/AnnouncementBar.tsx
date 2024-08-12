@@ -38,9 +38,6 @@ export function AnnouncementBar() {
       if (contentRef.current && containerRef.current) {
         const contentWidth = contentRef.current.scrollWidth;
         const containerWidth = containerRef.current.clientWidth;
-        console.log('🚀 ~ contentWidth:', contentWidth);
-        console.log('🚀 ~ containerWidth:', containerWidth);
-
         if (contentWidth > containerWidth || enableScrollingText) {
           setShouldScroll(true);
         } else {
