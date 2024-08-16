@@ -10,7 +10,7 @@ import type {VariantProps} from 'class-variance-authority';
 import {cva} from 'class-variance-authority';
 import {forwardRef} from 'react';
 
-let variants = cva('w-full h-auto', {
+let variants = cva('w-full h-auto flex-1', {
   variants: {
     width: {
       small: 'md:w-[40%]',
