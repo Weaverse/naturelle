@@ -44,7 +44,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps & SectionProps>((
         <Section
             ref={ref}
             {...rest}
-            className='relative bg-secondary overflow-hidden'
+            className='relative bg-secondary overflow-hidden px-0'
             style={sectionStyle}
         >
             <div className="absolute inset-0">
@@ -92,7 +92,7 @@ export let schema: HydrogenComponentSchema = {
             inputs: layoutInputs.filter(({ name }) => name !== 'divider' && name !== 'borderRadius' && name !== 'gap'),
         },
         {
-            group: 'testimonials',
+            group: 'Testimonials',
             inputs: [
                 {
                     type: 'image',
