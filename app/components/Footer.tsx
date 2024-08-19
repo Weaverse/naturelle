@@ -61,7 +61,7 @@ export function Footer({footerMenu}: FooterProps) {
           </div>
           {footerMenu && <FooterMenu menu={footerMenu} />}
         </div>
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <CountrySelector />
           <p className="text-xs">{footerTextCopyright}</p>
         </div>
