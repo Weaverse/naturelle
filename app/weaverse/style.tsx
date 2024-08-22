@@ -128,7 +128,7 @@ export function GlobalStyle() {
             body, button, input, select, textarea {
               -webkit-font-smoothing: antialiased;
               -webkit-text-size-adjust: 100%;
-              font-size: calc(var(--body-base-size) * 0.92);
+              font-size: var(--body-base-size);
               letter-spacing: var(--body-base-spacing);
               line-height: var(--body-base-line-height);
               text-rendering: optimizeSpeed;

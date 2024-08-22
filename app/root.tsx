@@ -5,7 +5,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   useMatches,
   useRouteError,
   type ShouldRevalidateFunction,
@@ -29,12 +28,12 @@ import tailwind from './styles/tailwind.css?url';
 import {GlobalStyle} from './weaverse/style';
 import '@fontsource-variable/cormorant/wght.css?url';
 import '@fontsource-variable/open-sans/wght.css?url';
-import {CustomAnalytics} from '~/components/Analytics';
-import {seoPayload} from '~/lib/seo.server';
 import {Button} from '@/components/button';
 import {Image} from '@shopify/hydrogen';
+import {CustomAnalytics} from '~/components/Analytics';
+import {seoPayload} from '~/lib/seo.server';
 import {getErrorMessage} from './lib/defineMessageError';
-import { parseMenu } from './lib/utils';
+import {parseMenu} from './lib/utils';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -105,7 +104,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   const headerMenu = header?.menu
     ? parseMenu(header.menu, header.shop.primaryDomain.url, env)
     : undefined;
-    const footerMenu = footer?.menu
+  const footerMenu = footer?.menu
     ? parseMenu(footer.menu, footer.shop.primaryDomain.url, env)
     : undefined;
 
@@ -140,9 +139,10 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 export const meta = ({data}: MetaArgs<typeof loader>) => {
   return getSeoMeta(data!.seo as SeoConfig);
 };
-function App() {
+
+function IndexLayout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
-  const data = useLoaderData<typeof loader>();
+  const data = useRootLoaderData();
   return (
     <html lang="en">
       <head>
@@ -153,16 +153,24 @@ function App() {
         <GlobalStyle />
       </head>
       <body>
-        <Analytics.Provider
-          cart={data.cart}
-          shop={data.shop}
-          consent={data.consent}
-        >
-          <Layout {...data}>
-            <Outlet />
-          </Layout>
-          <CustomAnalytics />
-        </Analytics.Provider>
+        {data ? (
+          <Analytics.Provider
+            cart={data.cart}
+            shop={data.shop}
+            consent={data.consent}
+          >
+            <Layout
+              {...data}
+              footerMenu={data.footerMenu}
+              headerMenu={data.headerMenu}
+            >
+              {children}
+            </Layout>
+            <CustomAnalytics />
+          </Analytics.Provider>
+        ) : (
+          children
+        )}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
@@ -170,14 +178,20 @@ function App() {
   );
 }
 
-export default withWeaverse(App);
-function ErrorBoundaryComponent() {
-  const routeError = useRouteError();
-  const rootData = useRootLoaderData();
-  const nonce = useNonce();
+function App() {
+  return (
+    <IndexLayout>
+      <Outlet />
+    </IndexLayout>
+  );
+}
 
+export default withWeaverse(App);
+export function ErrorBoundary() {
+  const routeError = useRouteError();
   let errorMessage = '';
   let errorStatus = 0;
+  
   if (isRouteErrorResponse(routeError)) {
     errorMessage = getErrorMessage(routeError.status);
     errorStatus = routeError.status;
@@ -186,46 +200,34 @@ function ErrorBoundaryComponent() {
   }
 
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <Meta />
-        <Links />
-        <GlobalStyle />
-      </head>
-      <body>
-        <Layout {...rootData}>
-        <div className="relative flex lg:h-[720px] md:h-[500px] h-80 w-full items-center justify-center">
-              <div className="absolute inset-0 h-full w-full">
-                <Image
-                  src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
-                  loading="lazy"
-                  className="h-full object-cover"
-                  sizes="auto"
-                />
-              </div>
-              <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
-                <h2 className=" text-7xl font-medium text-white">{errorStatus}</h2>
-                {errorMessage && (
-                  <span className=" font-body font-normal text-white">{errorMessage}</span>
-                )}
-                <Button variant={'primary'} to='/'>
-                  <span className="font-heading text-xl font-medium">
-                    Back to Homepage
-                  </span>
-                </Button>
-              </div>
-            </div>
-        </Layout>
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
-      </body>
-    </html>
+    <IndexLayout>
+        <div className="relative flex h-80 w-full items-center justify-center md:h-[500px] lg:h-[720px]">
+        <div className="absolute inset-0 h-full w-full">
+          <Image
+            src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
+            loading="lazy"
+            className="h-full object-cover"
+            sizes="auto"
+          />
+        </div>
+        <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
+          <h2 className="text-7xl font-medium text-white">{errorStatus}</h2>
+          {errorMessage && (
+            <span className="font-body font-normal text-white">
+              {errorMessage}
+            </span>
+          )}
+          <Button variant={'primary'} to="/">
+            <span className="font-heading text-xl font-medium">
+              Back to Homepage
+            </span>
+          </Button>
+        </div>
+      </div>
+    </IndexLayout>
   );
 }
 
-export let ErrorBoundary = withWeaverse(ErrorBoundaryComponent);
 
 const MENU_FRAGMENT = `#graphql
   fragment MenuItem on MenuItem {

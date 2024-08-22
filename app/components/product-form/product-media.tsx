@@ -4,6 +4,9 @@ import { useState } from "react";
 import type { MediaFragment } from "storefrontapi.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
+import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
 
 interface ProductMediaProps {
   selectedVariant: any;

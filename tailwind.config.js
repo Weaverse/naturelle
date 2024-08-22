@@ -12,8 +12,27 @@ module.exports = {
       },
     },
     fontFamily: {
-      body: ["Open Sans Variable", "ui-sans-serif", "system-ui", "sans-serif"],
+      body: ["Nunito Sans Variable", "ui-sans-serif", "system-ui", "sans-serif"],
       heading: ["Cormorant Variable", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+    },
+    fontSize: {
+      scale: [
+        "calc(var(--min-size-px) + (var(--max-size) - var(--min-size)) * ((100vw - var(--wv-min-viewport-size, 320) * 1px) / (var(--wv-max-viewport-size, 1920) - var(--wv-min-viewport-size, 320))))",
+        1,
+      ],
+      xs: ["calc(var(--body-base-size) * 0.75)", 1],
+      sm: ["calc(var(--body-base-size) * 0.875)", 1.25],
+      base: ["var(--body-base-size)", "var(--body-base-line-height)"],
+      lg: ["calc(var(--body-base-size) * 1.125)", 1.75],
+      xl: ["calc(var(--body-base-size) * 1.25)", 1.75],
+      "2xl": ["calc(var(--body-base-size) * 1.5)", 2],
+      "3xl": ["calc(var(--body-base-size) * 1.875)", 2.25],
+      "4xl": ["calc(var(--body-base-size) * 2.25)", 2.5],
+      "5xl": ["calc(var(--body-base-size) * 3)", 1],
+      "6xl": ["calc(var(--body-base-size) * 3.75)", 1],
+      "7xl": ["calc(var(--body-base-size) * 4.5)", 1],
+      "8xl": ["calc(var(--body-base-size) * 6)", 1],
+      "9xl": ["calc(var(--body-base-size) * 8)", 1],
     },
     extend: {
       colors: {

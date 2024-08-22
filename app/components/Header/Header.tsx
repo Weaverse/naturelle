@@ -4,9 +4,9 @@ import {UseMenuMegaHeader} from './MenuMegaHeader';
 import type {LayoutProps} from '../Layout';
 import { AnnouncementBar } from './AnnouncementBar';
 
-type HeaderProps = Pick<LayoutProps, 'headerMenu' | 'cart' | 'isLoggedIn'>;
+type HeaderProps = Pick<LayoutProps, 'headerMenu' | 'cart' >;
 
-export function Header({headerMenu, isLoggedIn, cart}: HeaderProps) {
+export function Header({headerMenu, cart}: HeaderProps) {
   let settings = useThemeSettings();
   let typeMenu = settings?.typeMenuHeader;
   let enableTrialShipping = settings?.enableTrialShipping;
@@ -16,7 +16,6 @@ export function Header({headerMenu, isLoggedIn, cart}: HeaderProps) {
       {typeMenu === 'mega' && (
         <UseMenuMegaHeader
           header={headerMenu}
-          isLoggedIn={isLoggedIn}
           cart={cart}
           className="hidden xl:flex"
         />
@@ -24,13 +23,11 @@ export function Header({headerMenu, isLoggedIn, cart}: HeaderProps) {
       {typeMenu === 'drawer' ? (
         <UseMenuDrawerHeader
           header={headerMenu}
-          isLoggedIn={isLoggedIn}
           cart={cart}
         />
       ) : (
         <UseMenuDrawerHeader
           header={headerMenu}
-          isLoggedIn={isLoggedIn}
           cart={cart}
           className="block xl:hidden"
         />

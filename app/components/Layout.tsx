@@ -12,7 +12,6 @@ export type LayoutProps = {
   children?: React.ReactNode;
   footerMenu: EnhancedMenu | undefined | null;
   headerMenu: EnhancedMenu | undefined | null;
-  isLoggedIn: Promise<boolean>;
 };
 
 export function Layout({
@@ -20,7 +19,6 @@ export function Layout({
   children = null,
   footerMenu,
   headerMenu,
-  isLoggedIn,
 }: LayoutProps) {
 
   return (
@@ -28,7 +26,7 @@ export function Layout({
       {/* <CartAside cart={cart} /> */}
       {/* <SearchAside /> */}
       {/* <MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
-      {headerMenu && <Header headerMenu={headerMenu} cart={cart} isLoggedIn={isLoggedIn} />}
+      {headerMenu && <Header headerMenu={headerMenu} cart={cart} />}
       <main>{children}</main>
       <Suspense>
         <Await resolve={footerMenu}>

@@ -33,7 +33,7 @@ let ImageWithTextContent = forwardRef<
 >((props, ref) => {
   let {alignment, children, ...rest} = props;
   return (
-    <div ref={ref} {...rest} className={clsx(variants({alignment}))}>
+    <div ref={ref} {...rest} className={clsx(variants({alignment}), 'flex-1')}>
       {children}
     </div>
   );
