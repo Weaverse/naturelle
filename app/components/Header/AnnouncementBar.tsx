@@ -1,9 +1,12 @@
 import {useThemeSettings} from '@weaverse/hydrogen';
 import clsx from 'clsx';
-import {CSSProperties, useState} from 'react';
+import {CSSProperties, useEffect, useRef, useState} from 'react';
 
 export function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(true);
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const settings = useThemeSettings();
   let {
     content,
@@ -30,10 +33,30 @@ export function AnnouncementBar() {
     setIsVisible(false);
   };
 
+  useEffect(() => {
+    const checkScrollCondition = () => {
+      if (contentRef.current && containerRef.current) {
+        const contentWidth = contentRef.current.scrollWidth;
+        const containerWidth = containerRef.current.clientWidth;
+        if (contentWidth > containerWidth || enableScrollingText) {
+          setShouldScroll(true);
+        } else {
+          setShouldScroll(false);
+        }
+      }
+    };
+    setTimeout(checkScrollCondition, 0);
+    window.addEventListener('resize', checkScrollCondition);
+    return () => {
+      window.removeEventListener('resize', checkScrollCondition);
+    };
+  }, [content, enableScrollingText]);
+
   if (!isVisible) return null;
   return (
     <div
       id="announcement-bar"
+      ref={containerRef}
       style={style}
       className={clsx(
         'h-[var(--height-bar)] bg-[var(--background-color)] py-[var(--vertical-padding)]',
@@ -48,31 +71,40 @@ export function AnnouncementBar() {
       >
         ×
       </button>
-      {enableScrollingText && (
+      {shouldScroll && (
         <>
           <div className="absolute right-0 z-10 h-full w-11 bg-[var(--background-color)]" />
           <div className="absolute left-0 z-10 h-full w-11 bg-[var(--background-color)]" />
+          <ul className="inline-flex list-none">
+            {Array.from({length: 15}).map((_, i) => (
+              <li
+                key={i}
+                className="animate-scrollContent whitespace-nowrap pr-[var(--gap)] font-body font-normal text-[var(--text-color)]"
+                style={{
+                  animationDuration: `var(--speed)`,
+                  fontSize: `${textSize}px`,
+                }}
+              >
+                {content}
+              </li>
+            ))}
+          </ul>
         </>
       )}
-      {!enableScrollingText && (
-        <div className="flex items-center justify-center">{content}</div>
-      )}
-      {enableScrollingText && (
-        <ul className="inline-flex list-none">
-          {Array.from({length: 15}).map((_, i) => (
-            <li
-              key={i}
-              className="animate-scrollContent whitespace-nowrap pr-[var(--gap)] font-body font-normal text-[var(--text-color)]"
-              style={{
-                animationDuration: `var(--speed)`,
-                fontSize: `${textSize}px`,
-              }}
-            >
-              {content}
-            </li>
-          ))}
-        </ul>
-      )}
+      <div
+        className={clsx(
+          'flex items-center justify-center',
+          !shouldScroll ? 'w-full' : 'w-0',
+        )}
+        style={{fontSize: `${textSize}px`}}
+      >
+        <div
+          ref={contentRef}
+          className="w-fit whitespace-nowrap px-11 font-body font-normal text-[var(--text-color)]"
+        >
+          {content}
+        </div>
+      </div>
     </div>
   );
 }

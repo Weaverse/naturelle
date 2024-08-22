@@ -20,12 +20,10 @@ import {SearchToggle} from './SearchToggle';
 
 export function UseMenuDrawerHeader({
   header,
-  isLoggedIn,
   cart,
   className,
 }: {
   header: EnhancedMenu | null | undefined;
-  isLoggedIn: Promise<boolean>;
   cart: Promise<CartApiQueryFragment | null>;
   className?: string;
 }) {
