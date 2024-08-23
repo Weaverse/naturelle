@@ -83,12 +83,13 @@ export function SearchTypeDrawerResults() {
             />
           </div>
         )}
-        <div className='h-[50px]'/>
+        <div className='h-[50px] mt-2'/>
         {searchTerm.current && (
           <Link
             onClick={goToSearchResult}
             to={`/search?q=${searchTerm.current}`}
             className="flex justify-center absolute bottom-0 p-6 bg-background-subtle-1 left-0 right-0"
+            style={{ boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1)' }}
           >
             <p className="inline-flex h-[50px] items-center justify-center rounded-md border border-primary bg-primary px-5 py-3 font-normal text-primary-foreground hover:border-bar hover:bg-background hover:text-foreground">
               Show All Results ({totalResultsCount})
