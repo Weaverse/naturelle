@@ -30,10 +30,10 @@ const HighlightItem = forwardRef<HTMLDivElement, HightlightProps>(
             >
                 {React.Children.map(children, (child, index) => (
                     <>
-                        <div className='w-full flex justify-center gap-4'>
+                        <div className='w-full flex justify-center items-center gap-4'>
                             {index === 0 && (
                                 <div className='w-fit h-fit'>
-                                    <span className='border border-[var(--border-color)] rounded-full font-heading font-medium w-11 h-11 flex justify-center text-3xl'>
+                                    <span className='flex justify-center items-center border border-[var(--border-color)] rounded-full font-heading font-medium w-11 h-11 text-2xl'>
                                         {(parentInstance?._store?.children as { id: string }[])?.findIndex((c) => c.id === child?.props.parentId) + 1}
                                     </span>
                                 </div>
