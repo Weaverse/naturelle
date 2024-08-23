@@ -83,7 +83,7 @@ export function Drawer({
                   <header
                     className={cn(
                       'sticky top-0 flex h-nav items-center px-6 py-5',
-                      heading ? 'justify-between' : 'justify-end',
+                      heading ? 'justify-between' : 'justify-items-end',
                       openFrom === 'left' || openFrom === 'top' && !isBackMenu
                         ? 'flex-row-reverse'
                         : '',
@@ -115,9 +115,7 @@ export function Drawer({
                     )}
                     {heading !== null && (
                       <Dialog.Title>
-                        <Heading as="span" size="heading" id="cart-contents">
-                          {heading}
-                        </Heading>
+                        <span className='font-heading text-xl font-medium' id='cart-contents'>{heading}</span>
                       </Dialog.Title>
                     )}
                     <div className="p-0" />
