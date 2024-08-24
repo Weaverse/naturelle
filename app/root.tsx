@@ -34,6 +34,7 @@ import {CustomAnalytics} from '~/components/Analytics';
 import {seoPayload} from '~/lib/seo.server';
 import {getErrorMessage} from './lib/defineMessageError';
 import {parseMenu} from './lib/utils';
+import { GlobalLoading } from './components/global-loading';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -171,6 +172,7 @@ function IndexLayout({children}: {children?: React.ReactNode}) {
         ) : (
           children
         )}
+        <GlobalLoading />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
