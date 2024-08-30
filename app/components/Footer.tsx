@@ -103,7 +103,7 @@ function MenuLink(props: SingleMenuItem) {
     <>
       <div className="hidden flex-col gap-6 md:flex">
         <h4 className="font-medium uppercase">
-          <span className="font-heading">{title}</span>
+          {title}
         </h4>
         <ul className="space-y-1.5">
           {items.map((subItem, ind) => (
@@ -160,101 +160,5 @@ function MenuLink(props: SingleMenuItem) {
 }
 
 function HeaderText({title, to}: {title: string; to: string}) {
-  return <h4 className="font-heading font-medium uppercase">{title}</h4>;
-}
-
-// function FooterMenu({
-//   menu,
-//   primaryDomainUrl,
-// }: {
-//   menu: FooterQuery['menu'];
-//   primaryDomainUrl: FooterQuery['shop']['primaryDomain']['url'];
-// }) {
-//   const {publicStoreDomain} = useRootLoaderData();
-
-//   return (
-//     <nav className="flex flex-col gap-4" role="navigation">
-//       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-//         if (!item.url) return null;
-//         // if the url is internal, we strip the domain
-//         const url =
-//           item.url.includes('myshopify.com') ||
-//           item.url.includes(publicStoreDomain) ||
-//           item.url.includes(primaryDomainUrl)
-//             ? new URL(item.url).pathname
-//             : item.url;
-//         const isExternal = !url.startsWith('/');
-//         return isExternal ? (
-//           <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-//             {item.title}
-//           </a>
-//         ) : (
-//           <NavLink
-//             end
-//             key={item.id}
-//             prefetch="intent"
-//             // style={activeLinkStyle}
-//             to={url}
-//           >
-//             {item.title}
-//           </NavLink>
-//         );
-//       })}
-//     </nav>
-//   );
-// }
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
+  return <h4 className="font-medium uppercase">{title}</h4>;
 }

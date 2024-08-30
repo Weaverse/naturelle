@@ -55,7 +55,8 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
         !visibleOnMobile && 'hidden sm:block',
       )}
     >
-      <ul className="inline-flex list-none">
+      <div className='sm:hidden block text-center font-heading text-base'>{content}</div>
+      <ul className="hidden list-none sm:inline-flex">
         {Array.from({length: 50}).map((_, i) => (
           <li
             key={i}

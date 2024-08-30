@@ -1,12 +1,9 @@
 import { Image } from "@shopify/hydrogen";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { MediaFragment } from "storefrontapi.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
-import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
 
 interface ProductMediaProps {
   selectedVariant: any;
@@ -21,9 +18,53 @@ export function ProductMedia(props: ProductMediaProps) {
   let media = _media.filter((med) => med.__typename === "MediaImage");
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [activeIndex, setActiveIndex] = useState(0);
+  console.log("🚀 ~ thumbsSwiper:", thumbsSwiper)
+  
+  useEffect(() => {
+    if (thumbsSwiper) {
+      thumbsSwiper.slideTo(activeIndex);
+    }
+  }, [thumbsSwiper]);
   
   return (
-    <div className="flex flex-col-reverse md:flex-col-reverse gap-4 w-full overflow-hidden">
+    <div className="flex flex-col gap-4 w-full overflow-hidden">
+      <Swiper
+        modules={[FreeMode, Thumbs, Pagination]}
+        pagination={{ type: "fraction" }}
+        spaceBetween={10}
+        onSlideChange={(swiper) => {
+          setActiveIndex(swiper.activeIndex);
+        }}
+        thumbs={
+          thumbsSwiper
+            ? {
+                swiper: thumbsSwiper,
+                slideThumbActiveClass: "thumb-active",
+              }
+            : undefined
+        }
+        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-fraction]:hidden"
+        style={
+          {
+            "--swiper-pagination-bottom": "20px",
+          } as React.CSSProperties
+        }
+      >
+        {media.map((med, i) => {
+          let image = { ...med.image, altText: med.alt || "Product image" };
+          return (
+            <SwiperSlide key={med.id}>
+              <Image
+                data={image}
+                loading={i === 0 ? "eager" : "lazy"}
+                aspectRatio={"3/4"}
+                className="object-cover w-full h-auto fadeIn"
+                sizes="auto"
+              />
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
       <Swiper
         onSwiper={setThumbsSwiper}
         direction="horizontal"
@@ -48,43 +89,6 @@ export function ProductMedia(props: ProductMediaProps) {
                 data={image}
                 loading={i === 0 ? "eager" : "lazy"}
                 className="object-contain fadeIn h-[100px] w-full"
-                sizes="auto"
-              />
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
-      <Swiper
-        modules={[FreeMode, Thumbs, Pagination]}
-        pagination={{ type: "fraction" }}
-        spaceBetween={10}
-        thumbs={
-          thumbsSwiper
-            ? {
-                swiper: thumbsSwiper,
-                slideThumbActiveClass: "thumb-active",
-              }
-            : undefined
-        }
-        onSlideChange={(swiper) => {
-          setActiveIndex(swiper.activeIndex);
-        }}
-        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-fraction]:hidden"
-        style={
-          {
-            "--swiper-pagination-bottom": "20px",
-          } as React.CSSProperties
-        }
-      >
-        {media.map((med, i) => {
-          let image = { ...med.image, altText: med.alt || "Product image" };
-          return (
-            <SwiperSlide key={med.id}>
-              <Image
-                data={image}
-                loading={i === 0 ? "eager" : "lazy"}
-                aspectRatio={"3/4"}
-                className="object-cover w-full h-auto fadeIn"
                 sizes="auto"
               />
             </SwiperSlide>
