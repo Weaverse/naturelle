@@ -236,7 +236,7 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
-      group: 'footer settings',
+      group: 'Footer',
       inputs: [
         {
           type: 'text',

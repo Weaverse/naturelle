@@ -11,7 +11,7 @@ import {CartApiQueryFragment} from 'storefrontapi.generated';
 import {CartMain} from '../Cart';
 import {CartLoading} from '../CartLoading';
 import {Drawer, useDrawer} from '../Drawer';
-import {IconAccount, IconLogin} from '../Icon';
+import {IconAccount, IconListMenu, IconLogin} from '../Icon';
 import {Link} from '../Link';
 import {Logo} from '../Logo';
 import {CartCount} from './CartCount';
@@ -115,23 +115,15 @@ function HeaderMenuDrawer({menu}: {menu?: EnhancedMenu | null | undefined}) {
       role="navigation"
     >
       <button className="text-left" onClick={openDrawer}>
-        <span>☰</span>
+        <IconListMenu />
       </button>
       <SearchToggle isOpenDrawerHearder={true} />
       <Drawer
         open={showMenu}
         onClose={closeDrawer}
         openFrom="left"
-        // className="fixed top-0 flex h-fit w-full flex-col bg-white"
         heading="MENU"
       >
-        {/* <HeaderMenu
-              menu={menu}
-              viewport="desktop"
-              primaryDomainUrl={header.shop.primaryDomain.url}
-              showMenu={showMenu}
-              onCloseMenu={closeDrawer}
-            /> */}
         <DrawerMenu menu={menu} />
       </Drawer>
     </nav>

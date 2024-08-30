@@ -77,6 +77,7 @@ type BlogData = {
   blogs: WeaverseBlog;
   backgroundColor: string;
   articlePerRow: number;
+  gapRow: number;
   showSeperator: boolean;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   minSize?: number;
@@ -101,6 +102,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     blogs,
     backgroundColor,
     articlePerRow,
+    gapRow,
     showSeperator,
     as: Tag = 'h4',
     size,
@@ -119,6 +121,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     '--min-size-px': `${minSize}px`,
     '--min-size': minSize,
     '--max-size': maxSize,
+    '--gap-row': `${gapRow}px`,
   } as CSSProperties;
 
   const defaultArticles = Array.from({length: 3}).map((_, i) => ({
@@ -143,7 +146,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
         {children}
         <div
           className={clsx(
-            'flex flex-col gap-9 sm:grid sm:gap-0 sm:justify-self-center',
+            'flex flex-col gap-[var(--gap-row)] sm:grid sm:gap-0 sm:justify-self-center sm:gap-y-[var(--gap-row)]',
             articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)],
           )}
         >
@@ -155,7 +158,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
             >
               <div
                 key={idx.id}
-                className="flex w-full cursor-pointer flex-col items-center gap-4 rounded p-0 transition-colors duration-500 group-hover:bg-background-subtle-1 sm:p-6"
+                className="flex w-full h-full cursor-pointer flex-col items-center gap-4 rounded p-0 transition-colors duration-500 group-hover:bg-background-subtle-1 sm:p-6"
               >
                 {idx.image ? (
                   <Image
@@ -239,6 +242,18 @@ export const schema: HydrogenComponentSchema = {
             max: 4,
             step: 1,
           },
+        },
+        {
+          type: 'range',
+          label: 'Spacing between rows',
+          name: 'gapRow',
+          configs: {
+            min: 0,
+            max: 100,
+            step: 1,
+            unit: 'px',
+          },
+          defaultValue: 20,
         },
         {
           type: 'switch',

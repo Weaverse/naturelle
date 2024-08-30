@@ -2,18 +2,15 @@ import {useLoaderData} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import type {Article} from '@shopify/hydrogen/storefront-api-types';
 import type {
-  HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
+import { layoutInputs, Section, SectionProps } from '../atoms/Section';
 
-interface BlogPostProps extends HydrogenComponentProps {
-  paddingTop: number;
-  paddingBottom: number;
-}
+type BlogPostProps = SectionProps;
 
 let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
-  let {paddingTop, paddingBottom, ...rest} = props;
+  let { ...rest} = props;
   let {article, formattedDate} = useLoaderData<{
     article: Article;
     formattedDate: string;
@@ -21,12 +18,8 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
   let {title, image, contentHtml, author, tags} = article;
   if (article) {
     return (
-      <section ref={ref} {...rest} className='h-fit'>
+      <Section ref={ref} {...rest} className='h-fit'>
         <div
-          style={{
-            paddingTop: `${paddingTop}px`,
-            paddingBottom: `${paddingBottom}px`,
-          }}
           className='flex flex-col h-fit'
         >
           <div className="h-full flex flex-col">
@@ -46,7 +39,7 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
               <p className="font-semibold opacity-45 text-foreground-subtle mt-9">{formattedDate}</p>
             </div>
         </div>
-      </section>
+      </Section>
     );
   }
   return <section ref={ref} {...rest} />;
@@ -65,32 +58,7 @@ export let schema: HydrogenComponentSchema = {
   inspector: [
     {
       group: 'Blog post',
-      inputs: [
-        {
-          type: 'range',
-          label: 'Top padding',
-          name: 'paddingTop',
-          configs: {
-            min: 0,
-            max: 100,
-            step: 4,
-            unit: 'px',
-          },
-          defaultValue: 0,
-        },
-        {
-          type: 'range',
-          label: 'Bottom padding',
-          name: 'paddingBottom',
-          configs: {
-            min: 0,
-            max: 100,
-            step: 4,
-            unit: 'px',
-          },
-          defaultValue: 0,
-        },
-      ],
+      inputs: layoutInputs.filter(({ name }) => name !== 'divider' && name !== 'borderRadius'),
     },
   ],
 };
