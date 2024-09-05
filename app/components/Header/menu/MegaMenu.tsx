@@ -103,7 +103,7 @@ function MultiMenu(props: SingleMenuItem & {isShowIconCaret?: boolean}) {
   );
   return (
     <GroupWrapper title={title} to={to} isShowIconCaret={isShowIconCaret}>
-      <div className={clsx('left-0 top-full w-screen', dropdownContentClass)}>
+      <div className={clsx('left-0 top-full w-full', dropdownContentClass)}>
         <div className="container mx-auto py-6">
           <div className="flex w-full justify-center gap-6">
             {items.map((item, id) =>
@@ -165,7 +165,7 @@ function ImageMenu({
 }: SingleMenuItem & {isShowIconCaret?: boolean}) {
   return (
     <GroupWrapper title={title} to={to} isShowIconCaret={isShowIconCaret}>
-      <div className={clsx('left-0 top-full w-screen', dropdownContentClass)}>
+      <div className={clsx('left-0 top-full w-full', dropdownContentClass)}>
         <div className="py-8">
           <div className="container mx-auto flex w-fit gap-6">
             {items.map((item, id) => (
