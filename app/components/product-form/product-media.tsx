@@ -20,12 +20,6 @@ export function ProductMedia(props: ProductMediaProps) {
   let [activeIndex, setActiveIndex] = useState(0);
   console.log("🚀 ~ thumbsSwiper:", thumbsSwiper)
   
-  useEffect(() => {
-    if (thumbsSwiper) {
-      thumbsSwiper.slideTo(activeIndex);
-    }
-  }, [thumbsSwiper]);
-  
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
       <Swiper
@@ -66,7 +60,10 @@ export function ProductMedia(props: ProductMediaProps) {
         })}
       </Swiper>
       <Swiper
-        onSwiper={setThumbsSwiper}
+        onSwiper={(swiper) => {
+          setThumbsSwiper(swiper);
+          swiper.update();
+        }}
         direction="horizontal"
         spaceBetween={spacing}
         freeMode
@@ -80,15 +77,20 @@ export function ProductMedia(props: ProductMediaProps) {
           return (
             <SwiperSlide
               key={med.id}
+              onClick={() => {
+                if (thumbsSwiper) {
+                  thumbsSwiper.slideTo(i);
+                }
+              }}
               className={clsx(
-                "!h-fit !w-fit p-1 border transition-colors !aspect-[3/4] cursor-pointer",
+                "!h-fit !w-fit p-1 border transition-colors cursor-pointer",
                 activeIndex === i ? "border-black" : "border-transparent",
               )}
             >
               <Image
                 data={image}
                 loading={i === 0 ? "eager" : "lazy"}
-                className="object-contain fadeIn h-[100px] w-full"
+                className="fadeIn object-cover !h-[100px] !aspect-[3/4]"
                 sizes="auto"
               />
             </SwiperSlide>
