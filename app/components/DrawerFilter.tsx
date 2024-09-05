@@ -53,7 +53,7 @@ export function DrawerFilter({
           <div className="flex gap-2">
             <SortMenu showSearchSort={showSearchSort} />
             <Button onClick={openDrawer} shape="default" variant="outline">
-              <span>Filter</span>
+              <span className='font-heading text-xl font-normal'>Filter</span>
             </Button>
             <Drawer
               open={isOpen}
