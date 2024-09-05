@@ -9,7 +9,7 @@ import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
 import { IconRemove } from "./Icon";
 
-type CartLine = CartApiQueryFragment["lines"]["edges"][0]["node"];
+type CartLine = CartApiQueryFragment["lines"]["nodes"][0];
 
 type CartMainProps = {
   cart: CartApiQueryFragment | null;
@@ -17,7 +17,7 @@ type CartMainProps = {
 };
 
 export function CartMain({ layout, cart }: CartMainProps) {
-  const linesCount = Boolean(cart?.lines?.edges?.length || 0);
+  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const withDiscount =
     cart &&
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
@@ -85,7 +85,7 @@ function CartLines({
           </thead>
         )}
         <tbody>
-          {lines?.edges?.map(({ node: line }) => (
+          {lines?.nodes?.map((line) => (
             <CartLineItem key={line.id} line={line} layout={layout} />
           ))}
         </tbody>
