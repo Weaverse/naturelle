@@ -1,9 +1,10 @@
-import {RemixServer} from '@remix-run/react';
-import {createContentSecurityPolicy} from '@shopify/hydrogen';
-import type {AppLoadContext, EntryContext} from '@shopify/remix-oxygen';
-import {getWeaverseCsp} from '~/weaverse/weaverse.server';
-import {isbot} from 'isbot';
-import {renderToReadableStream} from 'react-dom/server';
+import { RemixServer } from "@remix-run/react";
+import { createContentSecurityPolicy } from "@shopify/hydrogen";
+import type { AppLoadContext, EntryContext } from "@shopify/remix-oxygen";
+import { isbot } from "isbot";
+import { renderToReadableStream } from "react-dom/server";
+
+import { getWeaverseCsp } from "~/weaverse/csp";
 
 export default async function handleRequest(
   request: Request,
@@ -12,7 +13,7 @@ export default async function handleRequest(
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
-  const {nonce, header, NonceProvider} = createContentSecurityPolicy({
+  const { nonce, header, NonceProvider } = createContentSecurityPolicy({
     ...getWeaverseCsp(request, context),
     shop: {
       checkoutDomain:
@@ -28,19 +29,18 @@ export default async function handleRequest(
       nonce,
       signal: request.signal,
       onError(error) {
-        // eslint-disable-next-line no-console
         console.error(error);
         responseStatusCode = 500;
       },
     },
   );
 
-  if (isbot(request.headers.get('user-agent'))) {
+  if (isbot(request.headers.get("user-agent"))) {
     await body.allReady;
   }
 
-  responseHeaders.set('Content-Type', 'text/html');
-  responseHeaders.set('Content-Security-Policy', header);
+  responseHeaders.set("Content-Type", "text/html");
+  responseHeaders.set("Content-Security-Policy", header);
   return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,

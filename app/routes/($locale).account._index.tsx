@@ -1,41 +1,49 @@
 import {
   Form,
   Link,
+  type MetaFunction,
   useActionData,
   useLoaderData,
   useNavigation,
   useOutletContext,
-  type MetaFunction,
-} from '@remix-run/react';
+} from "@remix-run/react";
 import {
-  flattenConnection,
-  getPaginationVariables,
   Image,
   Pagination,
-} from '@shopify/hydrogen';
-import {ActionFunctionArgs, json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
+  flattenConnection,
+  getPaginationVariables,
+} from "@shopify/hydrogen";
+import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  json,
+} from "@shopify/remix-oxygen";
 import type {
   CustomerFragment,
   CustomerOrdersFragment,
   OrderItemFragment,
-} from 'customer-accountapi.generated';
+} from "customer-accountapi.generated";
 import Addresses from "~/components/account/Addresses";
-import { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
-import { CREATE_ADDRESS_MUTATION, DELETE_ADDRESS_MUTATION, UPDATE_ADDRESS_MUTATION } from "~/graphql/customer-account/CustomerAddressMutations";
+import {
+  CREATE_ADDRESS_MUTATION,
+  DELETE_ADDRESS_MUTATION,
+  UPDATE_ADDRESS_MUTATION,
+} from "~/graphql/customer-account/CustomerAddressMutations";
+import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/CustomerOrdersQuery";
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Orders'}];
+  return [{ title: "Orders" }];
 };
 
-export async function loader({request, context}: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 20,
   });
   let access = await context.customerAccount.getAccessToken();
   console.log(access);
 
-  const {data, errors} = await context.customerAccount.query(
+  const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
     {
       variables: {
@@ -45,78 +53,68 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   );
 
   if (errors?.length || !data?.customer) {
-    throw Error('Customer orders not found');
+    throw Error("Customer orders not found");
   }
 
-  return json(
-    {customer: data.customer},
-    {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
-    },
-  );
+  return json({ customer: data.customer });
 }
 
-export async function action({request, context, params}: ActionFunctionArgs) {
-  const {customerAccount} = context;
+export async function action({ request, context, params }: ActionFunctionArgs) {
+  const { customerAccount } = context;
 
   try {
     const form = await request.formData();
 
-    const addressId = form.has('addressId')
-      ? String(form.get('addressId'))
+    const addressId = form.has("addressId")
+      ? String(form.get("addressId"))
       : null;
     if (!addressId) {
-      throw new Error('You must provide an address id.');
+      throw new Error("You must provide an address id.");
     }
 
     // this will ensure redirecting to login never happen for mutatation
     const isLoggedIn = await customerAccount.isLoggedIn();
     if (!isLoggedIn) {
       return json(
-        {error: {[addressId]: 'Unauthorized'}},
+        { error: { [addressId]: "Unauthorized" } },
         {
           status: 401,
-          headers: {
-            'Set-Cookie': await context.session.commit(),
-          },
         },
       );
     }
 
-    const defaultAddress = form.has('defaultAddress')
-    ? String(form.get('defaultAddress')) === 'on'
-    : false;
+    const defaultAddress = form.has("defaultAddress")
+      ? String(form.get("defaultAddress")) === "on"
+      : false;
     const address: CustomerAddressInput = {};
     const keys: (keyof CustomerAddressInput)[] = [
-      'address1',
-      'address2',
-      'city',
-      'company',
-      'territoryCode',
-      'firstName',
-      'lastName',
-      'phoneNumber',
-      'zoneCode',
-      'zip',
+      "address1",
+      "address2",
+      "city",
+      "company",
+      "territoryCode",
+      "firstName",
+      "lastName",
+      "phoneNumber",
+      "zoneCode",
+      "zip",
     ];
 
     for (const key of keys) {
       const value = form.get(key);
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         address[key] = value;
       }
     }
 
     switch (request.method) {
-      case 'POST': {
+      case "POST": {
         // handle new address creation
         try {
-          const {data, errors} = await customerAccount.mutate(
+          const { data, errors } = await customerAccount.mutate(
             CREATE_ADDRESS_MUTATION,
             {
-              variables: {address, defaultAddress},
+              variables: { address, defaultAddress },
             },
           );
 
@@ -129,49 +127,36 @@ export async function action({request, context, params}: ActionFunctionArgs) {
           }
 
           if (!data?.customerAddressCreate?.customerAddress) {
-            throw new Error('Customer address create failed.');
+            throw new Error("Customer address create failed.");
           }
 
-          return json(
-            {
-              error: null,
-              createdAddress: data?.customerAddressCreate?.customerAddress,
-              defaultAddress,
-            },
-            {
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
-            },
-          );
+          return json({
+            error: null,
+            createdAddress: data?.customerAddressCreate?.customerAddress,
+            defaultAddress,
+          });
         } catch (error: unknown) {
           if (error instanceof Error) {
             return json(
-              {error: {[addressId]: error.message}},
+              { error: { [addressId]: error.message } },
               {
                 status: 400,
-                headers: {
-                  'Set-Cookie': await context.session.commit(),
-                },
               },
             );
           }
           return json(
-            {error: {[addressId]: error}},
+            { error: { [addressId]: error } },
             {
               status: 400,
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
             },
           );
         }
       }
 
-      case 'PUT': {
+      case "PUT": {
         // handle address updates
         try {
-          const {data, errors} = await customerAccount.mutate(
+          const { data, errors } = await customerAccount.mutate(
             UPDATE_ADDRESS_MUTATION,
             {
               variables: {
@@ -191,57 +176,42 @@ export async function action({request, context, params}: ActionFunctionArgs) {
           }
 
           if (!data?.customerAddressUpdate?.customerAddress) {
-            throw new Error('Customer address update failed.');
+            throw new Error("Customer address update failed.");
           }
           // return redirect(params?.locale ? `${params.locale}/account` : '/account', {
-          //   headers: {
-          //     'Set-Cookie': await context.session.commit(),
-          //   },
+
           // });
 
-          return json(
-            {
-              error: null,
-              updatedAddress: address,
-              defaultAddress,
-            },
-            {
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
-            },
-          );
+          return json({
+            error: null,
+            updatedAddress: address,
+            defaultAddress,
+          });
         } catch (error: unknown) {
           if (error instanceof Error) {
             return json(
-              {error: {[addressId]: error.message}},
+              { error: { [addressId]: error.message } },
               {
                 status: 400,
-                headers: {
-                  'Set-Cookie': await context.session.commit(),
-                },
               },
             );
           }
           return json(
-            {error: {[addressId]: error}},
+            { error: { [addressId]: error } },
             {
               status: 400,
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
             },
           );
         }
       }
 
-      case 'DELETE': {
+      case "DELETE": {
         // handles address deletion
         try {
-          const {data, errors} = await customerAccount.mutate(
+          const { data, errors } = await customerAccount.mutate(
             DELETE_ADDRESS_MUTATION,
             {
-              variables: {addressId: decodeURIComponent(addressId)},
+              variables: { addressId: decodeURIComponent(addressId) },
             },
           );
 
@@ -254,36 +224,23 @@ export async function action({request, context, params}: ActionFunctionArgs) {
           }
 
           if (!data?.customerAddressDelete?.deletedAddressId) {
-            throw new Error('Customer address delete failed.');
+            throw new Error("Customer address delete failed.");
           }
 
-          return json(
-            {error: null, deletedAddress: addressId},
-            {
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
-            },
-          );
+          return json({ error: null, deletedAddress: addressId });
         } catch (error: unknown) {
           if (error instanceof Error) {
             return json(
-              {error: {[addressId]: error.message}},
+              { error: { [addressId]: error.message } },
               {
                 status: 400,
-                headers: {
-                  'Set-Cookie': await context.session.commit(),
-                },
               },
             );
           }
           return json(
-            {error: {[addressId]: error}},
+            { error: { [addressId]: error } },
             {
               status: 400,
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
             },
           );
         }
@@ -291,12 +248,9 @@ export async function action({request, context, params}: ActionFunctionArgs) {
 
       default: {
         return json(
-          {error: {[addressId]: 'Method not allowed'}},
+          { error: { [addressId]: "Method not allowed" } },
           {
             status: 405,
-            headers: {
-              'Set-Cookie': await context.session.commit(),
-            },
           },
         );
       }
@@ -304,31 +258,25 @@ export async function action({request, context, params}: ActionFunctionArgs) {
   } catch (error: unknown) {
     if (error instanceof Error) {
       return json(
-        {error: error.message},
+        { error: error.message },
         {
           status: 400,
-          headers: {
-            'Set-Cookie': await context.session.commit(),
-          },
         },
       );
     }
     return json(
-      {error},
+      { error },
       {
         status: 400,
-        headers: {
-          'Set-Cookie': await context.session.commit(),
-        },
       },
     );
   }
 }
 
 export default function Account() {
-  const {customer} = useLoaderData<{customer: CustomerOrdersFragment}>();
-  console.log("🚀 ~ customer:", customer)
-  const {orders} = customer;
+  const { customer } = useLoaderData<{ customer: CustomerOrdersFragment }>();
+  console.log("🚀 ~ customer:", customer);
+  const { orders } = customer;
   return (
     <div className="space-y-10">
       <div className="orders space-y-4">
@@ -345,22 +293,22 @@ export default function Account() {
   );
 }
 
-function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
+function OrdersTable({ orders }: Pick<CustomerOrdersFragment, "orders">) {
   return (
     <div className="acccount-orders grid grid-cols-1 gap-4 md:grid-cols-2">
       {orders?.nodes.length ? (
         <Pagination connection={orders}>
-          {({nodes, isLoading, PreviousLink, NextLink}) => {
+          {({ nodes, isLoading, PreviousLink, NextLink }) => {
             return (
               <>
                 <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  {isLoading ? "Loading..." : <span>↑ Load previous</span>}
                 </PreviousLink>
                 {nodes.map((order) => {
                   return <OrderItem key={order.id} order={order} />;
                 })}
                 <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                  {isLoading ? "Loading..." : <span>Load more ↓</span>}
                 </NextLink>
               </>
             );
@@ -385,7 +333,7 @@ function EmptyOrders() {
   );
 }
 
-function OrderItem({order}: {order: OrderItemFragment}) {
+function OrderItem({ order }: { order: OrderItemFragment }) {
   const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
   let item = order.lineItems.nodes[0];
   let length = order.lineItems.nodes.length;
@@ -424,11 +372,11 @@ type ActionResponse = {
 };
 
 function AccountProfile() {
-  const account = useOutletContext<{customer: CustomerFragment}>();
-  const {state} = useNavigation();
+  const account = useOutletContext<{ customer: CustomerFragment }>();
+  const { state } = useNavigation();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
-  console.log("🚀 ~ customer2:", customer)
+  console.log("🚀 ~ customer2:", customer);
 
   return (
     <div className="account-profile">
@@ -460,7 +408,7 @@ function AccountProfile() {
               autoComplete="given-name"
               placeholder="First name"
               aria-label="First name"
-              defaultValue={customer.firstName ?? ''}
+              defaultValue={customer.firstName ?? ""}
               minLength={2}
             />
             <label htmlFor="lastName">Last name</label>
@@ -471,7 +419,7 @@ function AccountProfile() {
               autoComplete="family-name"
               placeholder="Last name"
               aria-label="Last name"
-              defaultValue={customer.lastName ?? ''}
+              defaultValue={customer.lastName ?? ""}
               minLength={2}
             />
           </fieldset>
@@ -484,8 +432,8 @@ function AccountProfile() {
           ) : (
             <br />
           )}
-          <button type="submit" disabled={state !== 'idle'}>
-            {state !== 'idle' ? 'Updating' : 'Update'}
+          <button type="submit" disabled={state !== "idle"}>
+            {state !== "idle" ? "Updating" : "Update"}
           </button>
         </Form>
       </div>

@@ -1,30 +1,28 @@
-import {Button} from '@/components/button';
-import {Checkbox} from '@/components/checkbox';
-import {Input} from '@/components/input';
-import {Dialog} from '@headlessui/react';
+import { Button } from "@/components/button";
+import { Checkbox } from "@/components/checkbox";
+import { Input } from "@/components/input";
+import { Dialog } from "@headlessui/react";
 import {
   Form,
   useActionData,
-  useFetchers,
-  useFormAction,
   useNavigation,
   useOutlet,
   useOutletContext,
-} from '@remix-run/react';
-import type {CustomerAddressInput} from '@shopify/hydrogen/customer-account-api-types';
+} from "@remix-run/react";
+import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
 import type {
   AddressFragment,
   CustomerFragment,
-} from 'customer-accountapi.generated';
-import {useEffect, useState} from 'react';
-import {IconClose} from '../Icon';
+} from "customer-accountapi.generated";
+import { useEffect, useState } from "react";
+import { IconClose } from "../Icon";
 
 function AddressCard(props: {
   address: AddressFragment;
   defaultAddress?: boolean;
 }) {
-  let {address, defaultAddress} = props;
-  console.log("🚀 ~ address:", address)
+  let { address, defaultAddress } = props;
+  console.log("🚀 ~ address:", address);
   return (
     <div className="space-y-2 border border-bar-subtle p-5">
       {defaultAddress && (
@@ -62,9 +60,9 @@ function AddressCard(props: {
 
 export default function Addresses() {
   const outlet = useOutlet();
-  const {customer} = useOutletContext<{customer: CustomerFragment}>();
-  console.log("🚀 ~ customer3:", customer)
-  const {defaultAddress, addresses: _addresses} = customer;
+  const { customer } = useOutletContext<{ customer: CustomerFragment }>();
+  console.log("🚀 ~ customer3:", customer);
+  const { defaultAddress, addresses: _addresses } = customer;
   let addresses = _addresses.nodes.filter(
     (address) => address.id !== defaultAddress?.id,
   );
@@ -136,13 +134,13 @@ function NewAddress() {
         open={isOpen}
         onClose={() => setIsOpen(false)}
       >
-        <NewAddressForm onClose={() => setIsOpen(false)}/>
+        <NewAddressForm onClose={() => setIsOpen(false)} />
       </AddressPopup>
     </>
   );
 }
 
-function EditAddress({address}: {address: AddressFragment}) {
+function EditAddress({ address }: { address: AddressFragment }) {
   let [isOpen, setIsOpen] = useState(false);
   let onClose = () => setIsOpen(false);
   return (
@@ -157,20 +155,20 @@ function EditAddress({address}: {address: AddressFragment}) {
           onSucess={onClose}
           defaultAddress={null}
         >
-          {({stateForMethod}) => (
+          {({ stateForMethod }) => (
             <div className="space-x-3 text-right">
               <Button
-                disabled={stateForMethod('PUT') !== 'idle'}
+                disabled={stateForMethod("PUT") !== "idle"}
                 variant="secondary"
                 onClick={onClose}
               >
                 Cancel
               </Button>
               <Button
-                disabled={stateForMethod('PUT') !== 'idle'}
+                disabled={stateForMethod("PUT") !== "idle"}
                 formMethod="PUT"
                 type="submit"
-                loading={stateForMethod('PUT') !== 'idle'}
+                loading={stateForMethod("PUT") !== "idle"}
               >
                 Save
               </Button>
@@ -182,42 +180,42 @@ function EditAddress({address}: {address: AddressFragment}) {
   );
 }
 
-function NewAddressForm({onClose}: {onClose: () => void}) {
+function NewAddressForm({ onClose }: { onClose: () => void }) {
   const newAddress = {
-    address1: '',
-    address2: '',
-    city: '',
-    company: '',
-    territoryCode: '',
-    firstName: '',
-    id: 'new',
-    lastName: '',
-    phoneNumber: '',
-    zoneCode: '',
-    zip: '',
+    address1: "",
+    address2: "",
+    city: "",
+    company: "",
+    territoryCode: "",
+    firstName: "",
+    id: "new",
+    lastName: "",
+    phoneNumber: "",
+    zoneCode: "",
+    zip: "",
   } as CustomerAddressInput;
 
   return (
     <AddressForm
-      addressId={'NEW_ADDRESS_ID'}
+      addressId={"NEW_ADDRESS_ID"}
       address={newAddress}
       onSucess={onClose}
       defaultAddress={null}
     >
-      {({stateForMethod}) => (
+      {({ stateForMethod }) => (
         <div className="space-x-3 text-right">
           <Button
-            disabled={stateForMethod('PUT') !== 'idle'}
+            disabled={stateForMethod("PUT") !== "idle"}
             variant="secondary"
             onClick={onClose}
           >
             Cancel
           </Button>
           <Button
-            disabled={stateForMethod('POST') !== 'idle'}
+            disabled={stateForMethod("POST") !== "idle"}
             formMethod="POST"
             type="submit"
-            loading={stateForMethod('POST') !== 'idle'}
+            loading={stateForMethod("POST") !== "idle"}
           >
             Save
           </Button>
@@ -239,22 +237,22 @@ export function AddressForm({
   onSucess,
   children,
 }: {
-  addressId: AddressFragment['id'];
+  addressId: AddressFragment["id"];
   address: CustomerAddressInput;
-  defaultAddress: CustomerFragment['defaultAddress'];
+  defaultAddress: CustomerFragment["defaultAddress"];
   onSucess?: () => void;
   children: (props: {
     stateForMethod: (
-      method: 'PUT' | 'POST' | 'DELETE',
-    ) => ReturnType<typeof useNavigation>['state'];
+      method: "PUT" | "POST" | "DELETE",
+    ) => ReturnType<typeof useNavigation>["state"];
   }) => React.ReactNode;
 }) {
-  const {state, formMethod} = useNavigation();
+  const { state, formMethod } = useNavigation();
   const action = useActionData<ActionResponse>();
   const error = action?.error?.[0];
   const isDefaultAddress = defaultAddress?.id === addressId;
   useEffect(() => {
-    if (state === 'loading' && action) {
+    if (state === "loading" && action) {
       onSucess?.();
     }
   }, [action, state]);
@@ -265,7 +263,7 @@ export function AddressForm({
         <Input
           aria-label="First name"
           autoComplete="given-name"
-          defaultValue={address?.firstName ?? ''}
+          defaultValue={address?.firstName ?? ""}
           id="firstName"
           name="firstName"
           placeholder="First name"
@@ -275,7 +273,7 @@ export function AddressForm({
         <Input
           aria-label="Last name"
           autoComplete="family-name"
-          defaultValue={address?.lastName ?? ''}
+          defaultValue={address?.lastName ?? ""}
           id="lastName"
           name="lastName"
           placeholder="Last name"
@@ -285,7 +283,7 @@ export function AddressForm({
         <Input
           aria-label="Company"
           autoComplete="organization"
-          defaultValue={address?.company ?? ''}
+          defaultValue={address?.company ?? ""}
           id="company"
           name="company"
           placeholder="Company"
@@ -294,7 +292,7 @@ export function AddressForm({
         <Input
           aria-label="Address line 1"
           autoComplete="address-line1"
-          defaultValue={address?.address1 ?? ''}
+          defaultValue={address?.address1 ?? ""}
           id="address1"
           name="address1"
           placeholder="Address line 1*"
@@ -304,7 +302,7 @@ export function AddressForm({
         <Input
           aria-label="Address line 2"
           autoComplete="address-line2"
-          defaultValue={address?.address2 ?? ''}
+          defaultValue={address?.address2 ?? ""}
           id="address2"
           name="address2"
           placeholder="Address line 2"
@@ -313,7 +311,7 @@ export function AddressForm({
         <Input
           aria-label="City"
           autoComplete="address-level2"
-          defaultValue={address?.city ?? ''}
+          defaultValue={address?.city ?? ""}
           id="city"
           name="city"
           placeholder="City"
@@ -333,7 +331,7 @@ export function AddressForm({
         <Input
           aria-label="Zip"
           autoComplete="postal-code"
-          defaultValue={address?.zip ?? ''}
+          defaultValue={address?.zip ?? ""}
           id="zip"
           name="zip"
           placeholder="Zip / Postal Code"
@@ -343,7 +341,7 @@ export function AddressForm({
         <Input
           aria-label="territoryCode"
           autoComplete="country"
-          defaultValue={address?.territoryCode ?? ''}
+          defaultValue={address?.territoryCode ?? ""}
           id="territoryCode"
           name="territoryCode"
           placeholder="Country"
@@ -354,7 +352,7 @@ export function AddressForm({
         <Input
           aria-label="Phone Number"
           autoComplete="tel"
-          defaultValue={address?.phoneNumber ?? ''}
+          defaultValue={address?.phoneNumber ?? ""}
           id="phoneNumber"
           name="phoneNumber"
           placeholder="Phone Number"
@@ -379,7 +377,7 @@ export function AddressForm({
           <br />
         )}
         {children({
-          stateForMethod: (method) => (formMethod === method ? state : 'idle'),
+          stateForMethod: (method) => (formMethod === method ? state : "idle"),
         })}
       </fieldset>
     </Form>

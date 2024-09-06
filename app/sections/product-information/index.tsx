@@ -1,20 +1,20 @@
-import {useLoaderData} from '@remix-run/react';
-import {Money, ShopPayButton} from '@shopify/hydrogen';
+import { useLoaderData } from "@remix-run/react";
+import { Money, ShopPayButton } from "@shopify/hydrogen";
 import {
   useThemeSettings,
   type HydrogenComponentProps,
   type HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {forwardRef, useEffect, useState} from 'react';
-import type {ProductQuery, VariantsQuery} from 'storefrontapi.generated';
-import {AddToCartButton} from '~/components/AddToCartButton';
-import {Text} from '~/components/Text';
-import {getExcerpt} from '~/lib/utils';
-import {ProductPlaceholder} from '../../components/product-form/placeholder';
-import {ProductMedia} from '../../components/product-form/product-media';
-import {Quantity} from '../../components/product-form/quantity';
-import {ProductVariants} from '../../components/product-form/variants';
-import {ProductDetail} from './product-detail';
+} from "@weaverse/hydrogen";
+import { forwardRef, useEffect, useState } from "react";
+import type { ProductQuery, VariantsQuery } from "storefrontapi.generated";
+import { AddToCartButton } from "~/components/AddToCartButton";
+import { Text } from "~/components/Text";
+import { getExcerpt } from "~/lib/utils";
+import { ProductPlaceholder } from "../../components/product-form/placeholder";
+import { ProductMedia } from "../../components/product-form/product-media";
+import { Quantity } from "../../components/product-form/quantity";
+import { ProductVariants } from "../../components/product-form/variants";
+import { ProductDetail } from "./product-detail";
 interface ProductInformationProps extends HydrogenComponentProps {
   addToCartText: string;
   soldOutText: string;
@@ -46,7 +46,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
     >();
     let variants = _variants?.product?.variants;
     let [selectedVariant, setSelectedVariant] = useState<any>(
-      product?.selectedVariant,
+      product?.selectedVariant
     );
     let {
       addToCartText,
@@ -95,7 +95,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
         searchParams.set(option.name, option.value);
       }
       let url = `${window.location.pathname}?${searchParams.toString()}`;
-      window.history.replaceState({}, '', url);
+      window.history.replaceState({}, "", url);
     };
 
     if (!product || !selectedVariant)
@@ -105,8 +105,8 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
         </section>
       );
     if (product && variants) {
-      const {title, vendor, descriptionHtml} = product;
-      const {shippingPolicy, refundPolicy} = shop;
+      const { title, vendor, descriptionHtml } = product;
+      const { shippingPolicy, refundPolicy } = shop;
       return (
         <section ref={ref} {...rest}>
           <div className="container p-6 md:p-8 lg:p-12 lg:px-12 px-4 md:px-6 mx-auto">
@@ -118,96 +118,107 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                 numberOfThumbnails={numberOfThumbnails}
                 spacing={spacing}
               />
-              <div className="flex flex-col justify-start space-y-5">
-                <div className="space-y-4">
-                  <div className="flex flex-col gap-2">
-                    <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
-                      {title}
-                    </h2>
-                    {showVendor && vendor && (
-                      <Text className={'opacity-50 font-medium'}>{vendor}</Text>
-                    )}
+              <div
+                style={
+                  {
+                    "--shop-pay-button-border-radius": "9999px",
+                    "--shop-pay-button-height": "56px",
+                  } as React.CSSProperties
+                }
+              >
+                <div className="flex flex-col justify-start space-y-5">
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-2">
+                      <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
+                        {title}
+                      </h2>
+                      {showVendor && vendor && (
+                        <Text className={"opacity-50 font-medium"}>
+                          {vendor}
+                        </Text>
+                      )}
+                    </div>
+                    <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
+                      {selectedVariant && selectedVariant.compareAtPrice && (
+                        <Money
+                          withoutTrailingZeros
+                          data={selectedVariant.compareAtPrice}
+                          className="text-label-sale line-through"
+                          as="span"
+                        />
+                      )}
+
+                      {selectedVariant ? (
+                        <Money
+                          withoutTrailingZeros
+                          data={selectedVariant.price}
+                          as="span"
+                        />
+                      ) : null}
+                    </p>
+                    {children}
+
+                    <ProductVariants
+                      product={product}
+                      selectedVariant={selectedVariant}
+                      onSelectedVariantChange={handleSelectedVariantChange}
+                      swatch={swatches}
+                      variants={variants}
+                      options={product?.options}
+                      handle={product?.handle}
+                      hideUnavailableOptions={hideUnavailableOptions}
+                    />
                   </div>
-                  <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
-                    {selectedVariant && selectedVariant.compareAtPrice && (
-                      <Money
-                        withoutTrailingZeros
-                        data={selectedVariant.compareAtPrice}
-                        className="text-label-sale line-through"
-                        as="span"
-                      />
-                    )}
-
-                    {selectedVariant ? (
-                      <Money
-                        withoutTrailingZeros
-                        data={selectedVariant.price}
-                        as="span"
-                      />
-                    ) : null}
-                  </p>
-                  {children}
-
-                  <ProductVariants
-                    product={product}
-                    selectedVariant={selectedVariant}
-                    onSelectedVariantChange={handleSelectedVariantChange}
-                    swatch={swatches}
-                    variants={variants}
-                    options={product?.options}
-                    handle={product?.handle}
-                    hideUnavailableOptions={hideUnavailableOptions}
-                  />
-                </div>
-                <Quantity value={quantity} onChange={setQuantity} />
-                <AddToCartButton
-                  disabled={!selectedVariant?.availableForSale}
-                  lines={[
-                    {
-                      merchandiseId: selectedVariant?.id,
-                      quantity,
-                    },
-                  ]}
-                  variant="primary"
-                  data-test="add-to-cart"
-                  className="w-[360px]"
-                >
-                  <span> {atcText}</span>
-                </AddToCartButton>
-                {selectedVariant?.availableForSale && (
-                  <ShopPayButton
-                    className='w-[360px]'
-                    width="100%"
-                    variantIdsAndQuantities={[
+                  <Quantity value={quantity} onChange={setQuantity} />
+                  <AddToCartButton
+                    disabled={!selectedVariant?.availableForSale}
+                    lines={[
                       {
-                        id: selectedVariant?.id,
+                        merchandiseId: selectedVariant?.id,
                         quantity,
                       },
                     ]}
-                    storeDomain={storeDomain}
+                    variant="primary"
+                    data-test="add-to-cart"
+                    className="w-[360px]"
+                  >
+                    <span> {atcText}</span>
+                  </AddToCartButton>
+                  {selectedVariant?.availableForSale && (
+                    <ShopPayButton
+                      className="w-[360px]"
+                      width="100%"
+                      variantIdsAndQuantities={[
+                        {
+                          id: selectedVariant?.id,
+                          quantity,
+                        },
+                      ]}
+                      storeDomain={storeDomain}
+                    />
+                  )}
+                  <p
+                    className="max-w-[600px] leading-relaxed pt-6 prose"
+                    dangerouslySetInnerHTML={{
+                      __html: descriptionHtml,
+                    }}
                   />
-                )}
-                <p
-                  className="max-w-[600px] leading-relaxed pt-6 prose"
-                  dangerouslySetInnerHTML={{
-                    __html: descriptionHtml,
-                  }}
-                />
-                <div className="grid gap-4 py-4">
-                  {showShippingPolicy && shippingPolicy?.body && (
-                    <ProductDetail
-                      title="Shipping"
-                      content={getExcerpt(shippingPolicy.body)}
-                      learnMore={`/policies/${shippingPolicy.handle}`}
-                    />
-                  )}
-                  {showRefundPolicy && refundPolicy?.body && (
-                    <ProductDetail
-                      title="Returns"
-                      content={getExcerpt(refundPolicy.body)}
-                      learnMore={`/policies/${refundPolicy.handle}`}
-                    />
-                  )}
+                  <div className="grid gap-4 py-4">
+                    {showShippingPolicy && shippingPolicy?.body && (
+                      <ProductDetail
+                        title="Shipping"
+                        content={getExcerpt(shippingPolicy.body)}
+                        learnMore={`/policies/${shippingPolicy.handle}`}
+                      />
+                    )}
+                    {showRefundPolicy && refundPolicy?.body && (
+                      <ProductDetail
+                        title="Returns"
+                        content={getExcerpt(refundPolicy.body)}
+                        learnMore={`/policies/${refundPolicy.handle}`}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -216,95 +227,95 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       );
     }
     return <div ref={ref} {...rest} />;
-  },
+  }
 );
 
 export default ProductInformation;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'product-information',
-  title: 'Product information',
-  childTypes: ['judgeme'],
+  type: "product-information",
+  title: "Product information",
+  childTypes: ["judgeme"],
   limit: 1,
   enabledOn: {
-    pages: ['PRODUCT'],
+    pages: ["PRODUCT"],
   },
   inspector: [
     {
-      group: 'Product form',
+      group: "Product form",
       inputs: [
         {
-          type: 'text',
-          label: 'Add to cart text',
-          name: 'addToCartText',
-          defaultValue: 'Add to cart',
-          placeholder: 'Add to cart',
+          type: "text",
+          label: "Add to cart text",
+          name: "addToCartText",
+          defaultValue: "Add to cart",
+          placeholder: "Add to cart",
         },
         {
-          type: 'text',
-          label: 'Sold out text',
-          name: 'soldOutText',
-          defaultValue: 'Sold out',
-          placeholder: 'Sold out',
+          type: "text",
+          label: "Sold out text",
+          name: "soldOutText",
+          defaultValue: "Sold out",
+          placeholder: "Sold out",
         },
         {
-          type: 'text',
-          label: 'Unavailable text',
-          name: 'unavailableText',
-          defaultValue: 'Unavailable',
-          placeholder: 'Unavailable',
+          type: "text",
+          label: "Unavailable text",
+          name: "unavailableText",
+          defaultValue: "Unavailable",
+          placeholder: "Unavailable",
         },
         {
-          type: 'switch',
-          label: 'Show vendor',
-          name: 'showVendor',
+          type: "switch",
+          label: "Show vendor",
+          name: "showVendor",
           defaultValue: true,
         },
         {
-          type: 'switch',
-          label: 'Show sale price',
-          name: 'showSalePrice',
+          type: "switch",
+          label: "Show sale price",
+          name: "showSalePrice",
           defaultValue: true,
         },
         {
-          type: 'switch',
-          label: 'Show details',
-          name: 'showDetails',
+          type: "switch",
+          label: "Show details",
+          name: "showDetails",
           defaultValue: true,
         },
         {
-          type: 'switch',
-          label: 'Show shipping policy',
-          name: 'showShippingPolicy',
+          type: "switch",
+          label: "Show shipping policy",
+          name: "showShippingPolicy",
           defaultValue: true,
         },
         {
-          type: 'switch',
-          label: 'Show refund policy',
-          name: 'showRefundPolicy',
+          type: "switch",
+          label: "Show refund policy",
+          name: "showRefundPolicy",
           defaultValue: true,
         },
         {
-          label: 'Hide unavailable options',
-          type: 'switch',
-          name: 'hideUnavailableOptions',
+          label: "Hide unavailable options",
+          type: "switch",
+          name: "hideUnavailableOptions",
         },
       ],
     },
     {
-      group: 'Product Media',
+      group: "Product Media",
       inputs: [
         {
-          label: 'Show thumbnails',
-          name: 'showThumbnails',
-          type: 'switch',
+          label: "Show thumbnails",
+          name: "showThumbnails",
+          type: "switch",
           defaultValue: true,
         },
         {
-          label: 'Number of thumbnails',
-          name: 'numberOfThumbnails',
-          type: 'range',
-          condition: 'showThumbnails.eq.true',
+          label: "Number of thumbnails",
+          name: "numberOfThumbnails",
+          type: "range",
+          condition: "showThumbnails.eq.true",
           configs: {
             min: 1,
             max: 10,
@@ -312,9 +323,9 @@ export let schema: HydrogenComponentSchema = {
           defaultValue: 4,
         },
         {
-          label: 'Gap between images',
-          name: 'spacing',
-          type: 'range',
+          label: "Gap between images",
+          name: "spacing",
+          type: "range",
           configs: {
             min: 0,
             step: 2,
@@ -325,5 +336,5 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ['general-settings', ['duplicate', 'delete']],
+  toolbar: ["general-settings", ["duplicate", "delete"]],
 };
