@@ -28,12 +28,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
   return json(
-    {},
-    {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
-    },
+    {}
   );
 }
 
@@ -81,20 +76,13 @@ export async function action({request, context}: ActionFunctionArgs) {
         error: null,
         customer: data?.customerUpdate?.customer,
       },
-      {
-        headers: {
-          'Set-Cookie': await context.session.commit(),
-        },
-      },
+
     );
   } catch (error: any) {
     return json(
       {error: error.message, customer: null},
       {
         status: 400,
-        headers: {
-          'Set-Cookie': await context.session.commit(),
-        },
       },
     );
   }

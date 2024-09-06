@@ -48,11 +48,6 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
       discountPercentage,
       fulfillmentStatus,
     },
-    {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
-    },
   );
 }
 

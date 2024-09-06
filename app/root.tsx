@@ -1,51 +1,53 @@
 import {
-  isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  type ShouldRevalidateFunction,
+  isRouteErrorResponse,
   useMatches,
   useRouteError,
-  type ShouldRevalidateFunction,
-} from '@remix-run/react';
+  useRouteLoaderData,
+} from "@remix-run/react";
 import {
   Analytics,
+  Image,
+  type SeoConfig,
   getSeoMeta,
   getShopAnalytics,
   useNonce,
-  type SeoConfig,
-} from '@shopify/hydrogen';
+} from "@shopify/hydrogen";
 import {
-  defer,
+  type AppLoadContext,
   type LoaderFunctionArgs,
   type MetaArgs,
   type SerializeFrom,
-} from '@shopify/remix-oxygen';
-import {withWeaverse} from '@weaverse/hydrogen';
-import {Layout} from '~/components/Layout';
-import tailwind from './styles/tailwind.css?url';
-import {GlobalStyle} from './weaverse/style';
-import '@fontsource-variable/cormorant/wght.css?url';
-import '@fontsource-variable/open-sans/wght.css?url';
-import {Button} from '@/components/button';
-import {Image} from '@shopify/hydrogen';
-import {CustomAnalytics} from '~/components/Analytics';
-import {seoPayload} from '~/lib/seo.server';
-import {getErrorMessage} from './lib/defineMessageError';
-import {parseMenu} from './lib/utils';
-import { GlobalLoading } from './components/global-loading';
+  defer,
+} from "@shopify/remix-oxygen";
+import { withWeaverse } from "@weaverse/hydrogen";
+import { Layout as LayoutComponent } from "~/components/Layout";
+import tailwind from "./styles/tailwind.css?url";
+import { GlobalStyle } from "./weaverse/style";
+import "@fontsource-variable/cormorant/wght.css?url";
+import "@fontsource-variable/open-sans/wght.css?url";
+import { Button } from "@/components/button";
+import invariant from "tiny-invariant";
+import { CustomAnalytics } from "~/components/Analytics";
+import { seoPayload } from "~/lib/seo.server";
+import { GlobalLoading } from "./components/global-loading";
+import { getErrorMessage } from "./lib/defineMessageError";
+import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
 
-/**
- * This is important to avoid re-fetching root queries on sub-navigations
- */
-export const shouldRevalidate: ShouldRevalidateFunction = ({
+export type RootLoader = typeof loader;
+
+export let shouldRevalidate: ShouldRevalidateFunction = ({
   formMethod,
   currentUrl,
   nextUrl,
 }) => {
   // revalidate when a mutation is performed e.g add to cart, login...
-  if (formMethod && formMethod !== 'GET') {
+  if (formMethod && formMethod !== "GET") {
     return true;
   }
 
@@ -59,16 +61,16 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
-    {rel: 'stylesheet', href: tailwind},
+    { rel: "stylesheet", href: tailwind },
     {
-      rel: 'preconnect',
-      href: 'https://cdn.shopify.com',
+      rel: "preconnect",
+      href: "https://cdn.shopify.com",
     },
     {
-      rel: 'preconnect',
-      href: 'https://shop.app',
+      rel: "preconnect",
+      href: "https://shop.app",
     },
-    {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
+    { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
   ];
 }
 
@@ -80,72 +82,75 @@ export const useRootLoaderData = () => {
   return root?.data as SerializeFrom<typeof loader>;
 };
 
-export async function loader({context, request}: LoaderFunctionArgs) {
-  const {storefront, customerAccount, cart, env} = context;
-  const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
+export async function loader(args: LoaderFunctionArgs) {
+  // Start fetching non-critical data without blocking time to first byte
+  const deferredData = loadDeferredData(args);
 
-  const isLoggedInPromise = customerAccount.isLoggedIn();
+  // Await the critical data required to render initial state of the page
+  const criticalData = await loadCriticalData(args);
 
-  // defer the footer query (below the fold)
-  const footer = await storefront.query(FOOTER_QUERY, {
-    cache: storefront.CacheLong(),
-    variables: {
-      footerMenuHandle: 'footer', // Adjust to your footer menu handle
-    },
+  return defer({
+    ...deferredData,
+    ...criticalData,
   });
-
-  // await the header query (above the fold)
-  const header = await storefront.query(HEADER_QUERY, {
-    cache: storefront.CacheLong(),
-    variables: {
-      headerMenuHandle: 'main-menu', // Adjust to your header menu handle
-    },
-  });
-
-  const headerMenu = header?.menu
-    ? parseMenu(header.menu, header.shop.primaryDomain.url, env)
-    : undefined;
-  const footerMenu = footer?.menu
-    ? parseMenu(footer.menu, footer.shop.primaryDomain.url, env)
-    : undefined;
-
-  const seo = seoPayload.root({shop: header.shop, url: request.url});
-  return defer(
-    {
-      cart: cart.get(),
-      shop: getShopAnalytics({
-        storefront: context.storefront,
-        publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
-      }),
-      consent: {
-        checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN,
-        storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-      },
-      footerMenu,
-      headerMenu,
-      seo,
-      selectedLocale: storefront.i18n,
-      isLoggedIn: isLoggedInPromise,
-      publicStoreDomain,
-      weaverseTheme: await context.weaverse.loadThemeSettings(),
-    },
-    {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
-    },
-  );
 }
 
-export const meta = ({data}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+/**
+ * Load data necessary for rendering content above the fold. This is the critical data
+ * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
+ */
+async function loadCriticalData({ request, context }: LoaderFunctionArgs) {
+  const [layout] = await Promise.all([
+    getLayoutData(context),
+    // Add other queries here, so that they are loaded in parallel
+  ]);
+
+  const seo = seoPayload.root({ shop: layout.shop, url: request.url });
+
+  const { storefront, env } = context;
+
+  return {
+    layout,
+    seo,
+    shop: getShopAnalytics({
+      storefront,
+      publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
+    }),
+    consent: {
+      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+      storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+    },
+    selectedLocale: storefront.i18n,
+    weaverseTheme: await context.weaverse.loadThemeSettings(),
+    googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
+  };
+}
+
+/**
+ * Load data for rendering content below the fold. This data is deferred and will be
+ * fetched after the initial page load. If it's unavailable, the page should still 200.
+ * Make sure to not throw any errors here, as it will cause the page to 500.
+ */
+function loadDeferredData({ context }: LoaderFunctionArgs) {
+  const { cart, customerAccount } = context;
+
+  return {
+    isLoggedIn: customerAccount.isLoggedIn(),
+    cart: cart.get(),
+  };
+}
+
+export const meta = ({ data }: MetaArgs<typeof loader>) => {
+  return getSeoMeta(data?.seo as SeoConfig);
 };
 
-function IndexLayout({children}: {children?: React.ReactNode}) {
+export function Layout({ children }: { children?: React.ReactNode }) {
   const nonce = useNonce();
-  const data = useRootLoaderData();
+  const data = useRouteLoaderData<RootLoader>("root");
+  const locale = data?.selectedLocale ?? DEFAULT_LOCALE;
+
   return (
-    <html lang="en">
+    <html lang={locale.language}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -160,13 +165,13 @@ function IndexLayout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
-            <Layout
+            <LayoutComponent
               {...data}
-              footerMenu={data.footerMenu}
-              headerMenu={data.headerMenu}
+              footerMenu={data.layout.footerMenu}
+              headerMenu={data.layout.headerMenu}
             >
               {children}
-            </Layout>
+            </LayoutComponent>
             <CustomAnalytics />
           </Analytics.Provider>
         ) : (
@@ -181,19 +186,16 @@ function IndexLayout({children}: {children?: React.ReactNode}) {
 }
 
 function App() {
-  return (
-    <IndexLayout>
-      <Outlet />
-    </IndexLayout>
-  );
+  return <Outlet />;
 }
 
 export default withWeaverse(App);
+
 export function ErrorBoundary() {
   const routeError = useRouteError();
-  let errorMessage = '';
+  let errorMessage = "";
   let errorStatus = 0;
-  
+
   if (isRouteErrorResponse(routeError)) {
     errorMessage = getErrorMessage(routeError.status);
     errorStatus = routeError.status;
@@ -202,36 +204,63 @@ export function ErrorBoundary() {
   }
 
   return (
-    <IndexLayout>
-        <div className="relative flex h-80 w-full items-center justify-center md:h-[500px] lg:h-[720px]">
-        <div className="absolute inset-0 h-full w-full">
-          <Image
-            src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
-            loading="lazy"
-            className="h-full object-cover"
-            sizes="auto"
-          />
-        </div>
-        <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
-          <h2 className="text-7xl font-medium text-white">{errorStatus}</h2>
-          {errorMessage && (
-            <span className="font-body font-normal text-white">
-              {errorMessage}
-            </span>
-          )}
-          <Button variant={'primary'} to="/">
-            <span className="font-heading text-xl font-medium">
-              Back to Homepage
-            </span>
-          </Button>
-        </div>
+    <div className="relative flex h-80 w-full items-center justify-center md:h-[500px] lg:h-[720px]">
+      <div className="absolute inset-0 h-full w-full">
+        <Image
+          src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
+          loading="lazy"
+          className="h-full object-cover"
+          sizes="auto"
+        />
       </div>
-    </IndexLayout>
+      <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
+        <h2 className="text-7xl font-medium text-white">{errorStatus}</h2>
+        {errorMessage && (
+          <span className="font-body font-normal text-white">
+            {errorMessage}
+          </span>
+        )}
+        <Button variant={"primary"} to="/">
+          <span className="font-heading text-xl font-medium">
+            Back to Homepage
+          </span>
+        </Button>
+      </div>
+    </div>
   );
 }
 
-
-const MENU_FRAGMENT = `#graphql
+const LAYOUT_QUERY = `#graphql
+  query layout(
+    $language: LanguageCode
+    $headerMenuHandle: String!
+    $footerMenuHandle: String!
+  ) @inContext(language: $language) {
+    shop {
+      ...Shop
+    }
+    headerMenu: menu(handle: $headerMenuHandle) {
+      ...Menu
+    }
+    footerMenu: menu(handle: $footerMenuHandle) {
+      ...Menu
+    }
+  }
+  fragment Shop on Shop {
+    id
+    name
+    description
+    primaryDomain {
+      url
+    }
+    brand {
+      logo {
+        image {
+          url
+        }
+      }
+    }
+  }
   fragment MenuItem on MenuItem {
     id
     resourceId
@@ -260,6 +289,7 @@ const MENU_FRAGMENT = `#graphql
     type
     url
   }
+
   fragment ChildMenuItem on MenuItem {
     ...MenuItem
   }
@@ -283,64 +313,44 @@ const MENU_FRAGMENT = `#graphql
   }
 ` as const;
 
-const HEADER_QUERY = `#graphql
-  fragment Shop on Shop {
-    id
-    name
-    description
-    primaryDomain {
-      url
-    }
-    brand {
-      logo {
-        image {
-          url
-        }
-      }
-    }
-  }
-  query Header(
-    $country: CountryCode
-    $headerMenuHandle: String!
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    shop {
-      ...Shop
-    }
-    menu(handle: $headerMenuHandle) {
-      ...Menu
-    }
-  }
-  ${MENU_FRAGMENT}
-` as const;
+async function getLayoutData({ storefront, env }: AppLoadContext) {
+  const data = await storefront.query(LAYOUT_QUERY, {
+    variables: {
+      headerMenuHandle: "main-menu",
+      footerMenuHandle: "footer",
+      language: storefront.i18n.language,
+    },
+  });
 
-const FOOTER_QUERY = `#graphql
-fragment Shop on Shop {
-    id
-    name
-    description
-    primaryDomain {
-      url
-    }
-    brand {
-      logo {
-        image {
-          url
-        }
-      }
-    }
-  }
-  query Footer(
-    $country: CountryCode
-    $footerMenuHandle: String!
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    shop {
-      ...Shop
-    }
-    menu(handle: $footerMenuHandle) {
-      ...Menu
-    }
-  }
-  ${MENU_FRAGMENT}
-` as const;
+  invariant(data, "No data returned from Shopify API");
+
+  /*
+      Modify specific links/routes (optional)
+      @see: https://shopify.dev/api/storefront/unstable/enums/MenuItemType
+      e.g here we map:
+        - /blogs/news -> /news
+        - /blog/news/blog-post -> /news/blog-post
+        - /collections/all -> /products
+    */
+  let customPrefixes = { CATALOG: "products" };
+
+  const headerMenu = data?.headerMenu
+    ? parseMenu(
+        data.headerMenu,
+        data.shop.primaryDomain.url,
+        env,
+        customPrefixes,
+      )
+    : undefined;
+
+  const footerMenu = data?.footerMenu
+    ? parseMenu(
+        data.footerMenu,
+        data.shop.primaryDomain.url,
+        env,
+        customPrefixes,
+      )
+    : undefined;
+
+  return { shop: data.shop, headerMenu, footerMenu };
+}

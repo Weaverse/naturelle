@@ -63,13 +63,14 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
 
     if (collection?.products && collections) {
       return (
-        <section ref={sectionRef} {...rest} className={cn(variants({ gap, width, padding: width }),)}>
+        <section ref={sectionRef} {...rest} >
           <DrawerFilter
             productNumber={productNumber}
             filters={collection.products.filters as Filter[]}
             appliedFilters={appliedFilters}
             collections={collections}
           />
+          <div className={cn(variants({ gap, width, padding: width }),)}>
           <Pagination connection={collection.products}>
             {({
               nodes,
@@ -101,6 +102,7 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
               </>
             )}
           </Pagination>
+          </div>
         </section>
       );
     }
