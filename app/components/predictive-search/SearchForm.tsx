@@ -23,7 +23,7 @@ export function PredictiveSearchForm({
       : searchAction;
     const newSearchTerm = event.target.value || '';
     fetcher.submit(
-      {q: newSearchTerm, limit: '6'},
+      {q: newSearchTerm, limit: '5'},
       {method, action: localizedAction},
     );
   }
