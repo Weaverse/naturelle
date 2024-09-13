@@ -1,9 +1,8 @@
-import {cn} from '@/lib/utils';
-import {Dialog, Transition} from '@headlessui/react';
-import {useLocation} from '@remix-run/react';
-import {Fragment, useEffect, useState} from 'react';
-import {IconArrowLeft, IconClose} from './Icon';
-import {Heading} from './Text';
+import { cn } from "@/lib/utils";
+import { Dialog, Transition } from "@headlessui/react";
+import { useLocation } from "@remix-run/react";
+import { Fragment, useEffect, useState } from "react";
+import { IconArrowLeft, IconClose } from "./Icon";
 
 /**
  * Drawer component that opens on user click.
@@ -17,7 +16,7 @@ export function Drawer({
   heading,
   open,
   onClose,
-  openFrom = 'right',
+  openFrom = "right",
   isForm,
   isBackMenu = false,
   children,
@@ -25,15 +24,15 @@ export function Drawer({
   heading?: string;
   open: boolean;
   onClose: () => void;
-  openFrom: 'right' | 'left' | 'top';
+  openFrom: "right" | "left" | "top";
   children: React.ReactNode;
-  isForm?: 'cart' | 'search' | 'menu';
+  isForm?: "cart" | "search" | "menu";
   isBackMenu?: boolean;
 }) {
   const offScreen = {
-    right: 'translate-x-full',
-    left: '-translate-x-full',
-    top: '-translate-y-full',
+    right: "translate-x-full",
+    left: "-translate-x-full",
+    top: "-translate-y-full",
   };
 
   return (
@@ -55,7 +54,7 @@ export function Drawer({
           <div className="absolute inset-0 overflow-hidden bg-black/60">
             <div
               className={`fixed inset-y-0 flex max-w-full ${
-                openFrom === 'right' ? 'right-0' : ''
+                openFrom === "right" ? "right-0" : ""
               }`}
             >
               <Transition.Child
@@ -69,26 +68,41 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    'transform text-left align-middle shadow-xl transition-all',
-                    openFrom === 'left'
-                      ? 'h-screen-dynamic w-screen max-w-96 bg-background-subtle-1'
-                      : openFrom === 'top'
-                        ? 'h-fit w-screen bg-background-subtle-1'
-                        : 'h-screen-dynamic w-screen max-w-96',
-                    isForm === 'cart'
-                      ? 'bg-background-basic'
-                      : 'bg-background-subtle-1',
+                    "transform text-left align-middle shadow-xl transition-all",
+                    openFrom === "left"
+                      ? "h-screen-dynamic w-screen max-w-96 bg-background-subtle-1"
+                      : openFrom === "top"
+                        ? "h-fit w-screen bg-background-subtle-1"
+                        : "h-screen-dynamic w-screen max-w-96",
+                    isForm === "cart"
+                      ? "bg-background-basic"
+                      : "bg-background-subtle-1"
                   )}
                 >
                   <header
                     className={cn(
-                      'sticky top-0 flex h-nav items-center px-6 py-5',
-                      heading ? 'justify-between' : 'justify-items-end',
-                      openFrom === 'left' || openFrom === 'top' && !isBackMenu
-                        ? 'flex-row-reverse'
-                        : '',
+                      "sticky top-0 flex h-nav items-center px-6 py-5",
+                      heading ? "justify-between" : "justify-items-end",
+                      openFrom === "left" || (openFrom === "top" && !isBackMenu)
+                        ? "flex-row-reverse"
+                        : ""
                     )}
                   >
+                    <button
+                      type="button"
+                      className="text-body hover:text-body/50 -m-4 p-4 transition"
+                      onClick={onClose}
+                      data-test="close-cart"
+                    >
+                      <IconClose aria-label="Close panel" />
+                    </button>
+                    {heading !== null && (
+                      <Dialog.Title>
+                        <h4 className=" font-semibold" id="cart-contents">
+                          {heading}
+                        </h4>
+                      </Dialog.Title>
+                    )}
                     {isBackMenu && (
                       <button
                         type="button"
@@ -103,22 +117,7 @@ export function Drawer({
                         />
                       </button>
                     )}
-                    {!isBackMenu && (
-                      <button
-                        type="button"
-                        className="text-body hover:text-body/50 -m-4 p-4 transition"
-                        onClick={onClose}
-                        data-test="close-cart"
-                      >
-                        <IconClose aria-label="Close panel" />
-                      </button>
-                    )}
-                    {heading !== null && (
-                      <Dialog.Title>
-                        <span className='font-heading text-xl font-medium' id='cart-contents'>{heading}</span>
-                      </Dialog.Title>
-                    )}
-                    <div className="p-0" />
+                    {isForm !== 'cart' && !isBackMenu && <div className="p-0" />}
                   </header>
                   {children}
                 </Dialog.Panel>
@@ -136,7 +135,7 @@ Drawer.Title = Dialog.Title;
 
 export function useDrawer(openDefault = false) {
   const [isOpen, setIsOpen] = useState(openDefault);
-  let {pathname} = useLocation();
+  let { pathname } = useLocation();
   useEffect(() => {
     if (isOpen) {
       closeDrawer();
