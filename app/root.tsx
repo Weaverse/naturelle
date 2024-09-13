@@ -158,7 +158,10 @@ export function Layout({ children }: { children?: React.ReactNode }) {
         <Links />
         <GlobalStyle />
       </head>
-      <body>
+      <body
+        style={{ opacity: 0 }}
+        className="transition-opacity !opacity-100 duration-300"
+      >
         {data ? (
           <Analytics.Provider
             cart={data.cart}
@@ -339,7 +342,7 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
         data.headerMenu,
         data.shop.primaryDomain.url,
         env,
-        customPrefixes,
+        customPrefixes
       )
     : undefined;
 
@@ -348,7 +351,7 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
         data.footerMenu,
         data.shop.primaryDomain.url,
         env,
-        customPrefixes,
+        customPrefixes
       )
     : undefined;
 

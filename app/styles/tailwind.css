@@ -70,7 +70,7 @@
         @apply border-bar;
     }
     body {
-        @apply font-body bg-background text-foreground;
+        @apply font-body bg-background text-foreground antialiased;
     }
     h1,
     h2,
@@ -132,7 +132,7 @@
     z-index: 0;
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.25s ease-in-out, visibility 0.25s;
+    transition: all 200ms cubic-bezier(0.104, 0.204, 0.492, 1);
 }
 
 .group:hover .dropdown-transition {
@@ -159,7 +159,7 @@
     background-repeat: no-repeat;
     display: inline;
     padding-bottom: 3px;
-    transition: all .3s ease;
+    transition: all .2s ease;
     background-position: left calc(1em + 4px);
 }
 
