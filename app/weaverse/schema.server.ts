@@ -116,13 +116,25 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: 'image',
           name: 'transparentLogoData',
-          label: 'Trasparent Logo',
+          label: 'Transparent Logo',
           defaultValue: {
             altText: 'Logo',
             url: 'https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Property_1_White.png?v=1720064102',
             width: 320,
             height: 116,
           },
+        },
+        {
+          type: "range",
+          name: "logoWidth",
+          label: "Logo width",
+          configs: {
+            min: 50,
+            max: 500,
+            step: 1,
+            unit: "px",
+          },
+          defaultValue: 150,
         },
         {
           type: "toggle-group",
