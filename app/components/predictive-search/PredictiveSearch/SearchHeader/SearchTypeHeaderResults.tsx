@@ -64,7 +64,7 @@ export function SearchTypeHeaderResults() {
           <div className="flex flex-col items-start gap-6">
             <PredictiveSearchResult
               goToSearchResult={goToSearchResult}
-              items={products.items.slice(0, 5)}
+              items={products.items}
               key={products.type}
               searchTerm={searchTerm}
               type={products.type}

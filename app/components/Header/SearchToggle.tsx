@@ -47,7 +47,7 @@ export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boole
         open={isOpen}
         onClose={closeDrawer}
         openFrom={openFrom}
-        heading={settings?.searchType === 'drawerSearch' ? 'Search' : ''}
+        heading={searchType === 'drawerSearch' ? 'Search' : ''}
         isForm="search"
       >
         {searchType === 'popupSearch' && <SearchTypeHeader isOpen={isOpen} />}
