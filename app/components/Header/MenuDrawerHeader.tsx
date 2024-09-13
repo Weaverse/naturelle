@@ -1,15 +1,10 @@
 import {Await} from '@remix-run/react';
-import {CartForm} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
-import {useCartFetchers} from '~/hooks/useCartFetchers';
 import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
 import {Suspense, useState} from 'react';
 import useWindowScroll from 'react-use/lib/useWindowScroll';
-import {CartApiQueryFragment} from 'storefrontapi.generated';
-import {CartMain} from '../Cart';
-import {CartLoading} from '../CartLoading';
 import {Drawer, useDrawer} from '../Drawer';
 import {IconAccount, IconListMenu, IconLogin} from '../Icon';
 import {Link} from '../Link';
@@ -20,12 +15,12 @@ import {SearchToggle} from './SearchToggle';
 
 export function UseMenuDrawerHeader({
   header,
-  cart,
   className,
+  openCart,
 }: {
   header: EnhancedMenu | null | undefined;
-  cart: Promise<CartApiQueryFragment | null>;
   className?: string;
+  openCart: () => void;
 }) {
   let {stickyAnnouncementBar, announcementBarHeight} = useThemeSettings();
   const isHome = useIsHomePath();
@@ -42,12 +37,6 @@ export function UseMenuDrawerHeader({
   let top = stickyAnnouncementBar
     ? announcementBarHeight
     : Math.max(announcementBarHeight - y, 0);
-  const {
-    isOpen: isCartOpen,
-    openDrawer: openCart,
-    closeDrawer: closeCart,
-  } = useDrawer();
-  useCartFetchers(CartForm.ACTIONS.LinesAdd, openCart);
   return (
     <header
       role="banner"
@@ -56,7 +45,7 @@ export function UseMenuDrawerHeader({
         isTransparent
           ? 'border-secondary bg-transparent text-secondary'
           : 'shadow-header border-foreground bg-background-subtle-1 text-primary',
-        'top-0 z-40 w-full border-b border-foreground',
+        'top-0 z-40 w-screen border-b border-foreground',
         className,
       )}
       style={{['--announcement-bar-height' as string]: `${top}px`}}
@@ -80,27 +69,6 @@ export function UseMenuDrawerHeader({
         <div className="z-30 flex items-center justify-end gap-2">
           <AccountLink />
           <CartCount isHome={false} openCart={openCart} />
-          <Drawer
-            open={isCartOpen}
-            onClose={closeCart}
-            openFrom="right"
-            heading="Cart"
-            isForm="cart"
-          >
-            <div>
-              <Suspense fallback={<CartLoading />}>
-                <Await resolve={cart}>
-                  {(cart) => (
-                    <CartMain
-                      layout="aside"
-                      // onClose={onClose}
-                      cart={cart}
-                    />
-                  )}
-                </Await>
-              </Suspense>
-            </div>
-          </Drawer>
         </div>
       </div>
     </header>
@@ -123,6 +91,7 @@ function HeaderMenuDrawer({menu}: {menu?: EnhancedMenu | null | undefined}) {
         onClose={closeDrawer}
         openFrom="left"
         heading="MENU"
+        isForm='menu'
       >
         <DrawerMenu menu={menu} />
       </Drawer>
