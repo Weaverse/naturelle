@@ -1,6 +1,6 @@
 import { Image } from "@shopify/hydrogen";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { MediaFragment } from "storefrontapi.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -18,7 +18,7 @@ export function ProductMedia(props: ProductMediaProps) {
   let media = _media.filter((med) => med.__typename === "MediaImage");
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [activeIndex, setActiveIndex] = useState(0);
-  console.log("🚀 ~ thumbsSwiper:", thumbsSwiper)
+  console.log('🚀 ~ swiper:', thumbsSwiper);
   
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
@@ -50,7 +50,7 @@ export function ProductMedia(props: ProductMediaProps) {
             <SwiperSlide key={med.id}>
               <Image
                 data={image}
-                loading={i === 0 ? "eager" : "lazy"}
+                // loading={i === 0 ? "eager" : "lazy"}
                 aspectRatio={"3/4"}
                 className="object-cover w-full h-auto fadeIn"
                 sizes="auto"
@@ -80,6 +80,7 @@ export function ProductMedia(props: ProductMediaProps) {
               onClick={() => {
                 if (thumbsSwiper) {
                   thumbsSwiper.slideTo(i);
+                  thumbsSwiper.update();
                 }
               }}
               className={clsx(
@@ -89,7 +90,7 @@ export function ProductMedia(props: ProductMediaProps) {
             >
               <Image
                 data={image}
-                loading={i === 0 ? "eager" : "lazy"}
+                // loading={i === 0 ? "eager" : "lazy"}
                 className="fadeIn object-cover !h-[100px] !aspect-[3/4]"
                 sizes="auto"
               />

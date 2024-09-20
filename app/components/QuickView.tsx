@@ -13,6 +13,7 @@ import { Modal } from "./Modal";
 import { ProductMedia } from "./product-form/product-media";
 import { Quantity } from "./product-form/quantity";
 import { ProductVariants } from "./product-form/variants";
+import { Portal } from "@headlessui/react";
 
 export function QuickView(props: { data: Jsonify<ProductData> }) {
   const { data } = props;
@@ -206,9 +207,11 @@ export function QuickViewTrigger(props: { productHandle: string }) {
         </Button>
       </div>
       {quickAddOpen && data && (
-        <Modal onClose={() => setQuickAddOpen(false)}>
-          <QuickView data={data} />
-        </Modal>
+        <Portal>
+          <Modal onClose={() => setQuickAddOpen(false)}>
+            {data && <QuickView data={data} />}
+          </Modal>
+        </Portal>
       )}
     </>
   );
