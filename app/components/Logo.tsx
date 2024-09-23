@@ -1,26 +1,41 @@
-import {useNavigate} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {useThemeSettings} from '@weaverse/hydrogen';
 import clsx from 'clsx';
+import { Link } from './Link';
 
 export function Logo({className, showTransparent} : {className?: string, showTransparent?: boolean}) {
   let settings = useThemeSettings();
-  let navigate = useNavigate();
-  let {logoData, transparentLogoData} = settings || {};
-  let redirectToHomepage = () => {
-    navigate('/');
-  };
-  if (!logoData) {
-    return null;
-  }
-
+  let {logoData, transparentLogoData, logoWidth} = settings;
   return (
-    <div className={clsx(className)} role="button" onClick={redirectToHomepage}>
-      <Image
-        data={showTransparent ? transparentLogoData : logoData}
-        sizes="auto"
-        className="max-w-[120px] h-full object-contain"
-      />
-    </div>
+    <Link
+      className={clsx("flex items-center justify-center w-full h-full lg:w-fit lg:h-fit z-30", className)}
+      to="/"
+      prefetch="intent"
+    >
+      <div
+        className="relative"
+        style={{ width: logoData ? logoWidth : "auto" }}
+      >
+        {logoData &&
+          <>
+            <Image
+              data={logoData}
+              sizes="auto"
+              className={clsx(
+                "w-full h-full object-cover transition-opacity duration-300 ease-in group-hover/header:opacity-100",
+                showTransparent ? "opacity-0" : "opacity-100",
+              )}
+            />
+            <Image
+              data={transparentLogoData}
+              sizes="auto"
+              className={clsx(
+                "absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-300 ease-in group-hover/header:opacity-0",
+                showTransparent ? "opacity-100" : "opacity-0",
+              )}
+            />
+          </>}
+      </div>
+    </Link>
   );
 }

@@ -9,7 +9,10 @@ import { Section, SectionProps, layoutInputs } from "../atoms/Section";
 import { backgroundInputs } from "../atoms/BackgroundImage";
 import { overlayInputs } from "../atoms/Overlay";
 
-export interface SlideShowBannerItemProps extends VariantProps<typeof variants> {}
+export interface SlideShowBannerItemProps
+  extends VariantProps<typeof variants> {
+  horizontalPadding: string;
+}
 
 let variants = cva("flex flex-col [&_.paragraph]:mx-[unset]", {
   variants: {
@@ -42,10 +45,16 @@ let variants = cva("flex flex-col [&_.paragraph]:mx-[unset]", {
   },
 });
 
-let HeaderImage = forwardRef<HTMLElement, SlideShowBannerItemProps & SectionProps>(
-  (props, ref) => {
-    let { children, height, contentPosition, ...rest } = props;
-    return (
+let HeaderImage = forwardRef<
+  HTMLElement,
+  SlideShowBannerItemProps & SectionProps
+>((props, ref) => {
+  let { children, height, contentPosition, horizontalPadding, ...rest } = props;
+  let style = {
+    "--horizontal-padding": `${horizontalPadding}px`,
+  } as React.CSSProperties;
+  return (
+    <div style={style} className="px-[var(--horizontal-padding)] md:px-[calc(var(--horizontal-padding) * 1.5)] lg:px-[calc(var(--horizontal-padding) * 2)]">
       <Section
         ref={ref}
         {...rest}
@@ -53,9 +62,9 @@ let HeaderImage = forwardRef<HTMLElement, SlideShowBannerItemProps & SectionProp
       >
         {children}
       </Section>
-    );
-  },
-);
+    </div>
+  );
+});
 
 export default HeaderImage;
 
@@ -86,9 +95,20 @@ export let schema: HydrogenComponentSchema = {
           label: "Content position",
           defaultValue: "center center",
         },
-        ...layoutInputs.filter(
-          (inp) => inp.name !== "divider" && inp.name !== "borderRadius",
-        ),
+        ...layoutInputs,
+        {
+          type: "range",
+          name: "horizontalPadding",
+          label: "Horizontal padding",
+          configs: {
+            min: 0,
+            max: 100,
+            step: 1,
+            unit: "px",
+          },
+          defaultValue: 0,
+          helpText: "Set the horizontal padding value for the entire section",
+        },
       ],
     },
     {

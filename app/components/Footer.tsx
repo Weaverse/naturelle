@@ -28,7 +28,7 @@ export function Footer({footerMenu}: FooterProps) {
       <div className="container flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16">
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
-            {newsletterTitle && <h3>{newsletterTitle}</h3>}
+            {newsletterTitle && <h5>{newsletterTitle}</h5>}
             <div className="flex w-fit flex-col gap-4 md:h-fit">
               {newsletterDescription && <p>{newsletterDescription}</p>}
               {newsletterButtonText && (
@@ -102,9 +102,9 @@ function MenuLink(props: SingleMenuItem) {
   return (
     <>
       <div className="hidden flex-col gap-6 md:flex">
-        <h4 className="font-medium uppercase">
+        <h5 className="font-medium uppercase">
           {title}
-        </h4>
+        </h5>
         <ul className="space-y-1.5">
           {items.map((subItem, ind) => (
             <li key={ind} className="leading-6">
@@ -122,7 +122,7 @@ function MenuLink(props: SingleMenuItem) {
           {({open}) => (
             <>
               <Disclosure.Button className="w-full text-left">
-                <h4 className="flex justify-between font-medium uppercase">
+                <h5 className="flex justify-between font-medium uppercase">
                   {title}
                   <span>
                     <IconPlusLinkFooter
@@ -130,7 +130,7 @@ function MenuLink(props: SingleMenuItem) {
                       className={`trasition-transform h-5 w-5 duration-300 ${open ? 'rotate-90' : 'rotate-0'}`}
                     />
                   </span>
-                </h4>
+                </h5>
               </Disclosure.Button>
               <div
                 className={`${
@@ -160,5 +160,5 @@ function MenuLink(props: SingleMenuItem) {
 }
 
 function HeaderText({title, to}: {title: string; to: string}) {
-  return <h4 className="font-medium uppercase">{title}</h4>;
+  return <h5 className="font-medium uppercase">{title}</h5>;
 }

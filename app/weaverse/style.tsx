@@ -1,21 +1,21 @@
-import {useThemeSettings} from '@weaverse/hydrogen';
+import { useThemeSettings } from "@weaverse/hydrogen";
 
 const hexToPercent = (hex: string) => {
   const num = parseInt(hex, 16);
   return Math.floor((num / 255) * 100);
 };
 
-function hexToRgbString(hexColor = ''): string {
-  hexColor = hexColor.replace('#', '');
+function hexToRgbString(hexColor = ""): string {
+  hexColor = hexColor.replace("#", "");
   if (hexColor.length === 3) {
-    hexColor = hexColor.replace(/(.)/g, '$1$1');
+    hexColor = hexColor.replace(/(.)/g, "$1$1");
   }
-  const r = parseInt(hexColor.substring(0, 2), 16) || '';
-  const g = parseInt(hexColor.substring(2, 4), 16) || '';
-  const b = parseInt(hexColor.substring(4, 6), 16) || '';
-  const a = hexToPercent(hexColor.substring(6, 8)) || '';
+  const r = parseInt(hexColor.substring(0, 2), 16) || "";
+  const g = parseInt(hexColor.substring(2, 4), 16) || "";
+  const b = parseInt(hexColor.substring(4, 6), 16) || "";
+  const a = hexToPercent(hexColor.substring(6, 8)) || "";
   const val = `${r} ${g} ${b}`;
-  return `${val}${a ? ` / ${a}%` : ''}`.trim();
+  return `${val}${a ? ` / ${a}%` : ""}`.trim();
 }
 
 export function GlobalStyle() {
@@ -152,6 +152,12 @@ export function GlobalStyle() {
             h4, .h4 {
               font-size: calc(var(--heading-base-size) * 0.55);
             }
+            h5, .h5 {
+              font-size: calc(var(--heading-base-size) * 0.44);
+            }
+            h6, .h6 {
+              font-size: calc(var(--heading-base-size) * 0.37);
+            }
 
             /* Desktop sizes */
             @media (min-width: 32em) {
@@ -159,10 +165,19 @@ export function GlobalStyle() {
                 font-size: var(--heading-base-size);
               }
               h2, .h2 {
-                font-size: calc(var(--heading-base-size) * 0.85);
+                font-size: calc(var(--heading-base-size) * 0.828125);
               }
               h3, .h3 {
-                font-size: calc(var(--heading-base-size) * 0.7);
+                font-size: calc(var(--heading-base-size) * 0.6875);
+              }
+              h4, .h4 {
+                font-size: calc(var(--heading-base-size) * 0.578125);
+              }
+              h5, .h5 {
+                font-size: calc(var(--heading-base-size) * 0.484375);
+              }
+              h6, .h6 {
+                font-size: calc(var(--heading-base-size) * 0.40625);
               }
             }
 
