@@ -1,6 +1,6 @@
 import { Image } from "@shopify/hydrogen";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { MediaFragment } from "storefrontapi.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -14,15 +14,32 @@ interface ProductMediaProps {
 }
 
 export function ProductMedia(props: ProductMediaProps) {
-  let { selectedVariant, showThumbnails, media: _media, numberOfThumbnails, spacing } = props;
-  let media = _media.filter((med) => med.__typename === "MediaImage");
-  let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
+  let {
+    selectedVariant,
+    showThumbnails,
+    media: _media,
+    numberOfThumbnails,
+    spacing,
+  } = props;
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
+    null
+  );
   let [activeIndex, setActiveIndex] = useState(0);
-  console.log('🚀 ~ swiper:', thumbsSwiper);
-  
+  let media = _media.filter((med) => med.__typename === "MediaImage");
+
+  useEffect(() => {
+    if (swiperInstance && thumbsSwiper) {
+      swiperInstance.thumbs.swiper = thumbsSwiper;
+      swiperInstance.thumbs.init();
+      swiperInstance.slideTo(activeIndex);
+    }
+  }, [swiperInstance, thumbsSwiper, activeIndex]);
+
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
       <Swiper
+        loop={true}
         modules={[FreeMode, Thumbs, Pagination]}
         pagination={{ type: "fraction" }}
         spaceBetween={10}
@@ -37,7 +54,8 @@ export function ProductMedia(props: ProductMediaProps) {
               }
             : undefined
         }
-        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-fraction]:hidden"
+        onSwiper={setSwiperInstance}
+        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-fraction]:hidden mySwiper2"
         style={
           {
             "--swiper-pagination-bottom": "20px",
@@ -50,7 +68,7 @@ export function ProductMedia(props: ProductMediaProps) {
             <SwiperSlide key={med.id}>
               <Image
                 data={image}
-                // loading={i === 0 ? "eager" : "lazy"}
+                loading={i === 0 ? "eager" : "lazy"}
                 aspectRatio={"3/4"}
                 className="object-cover w-full h-auto fadeIn"
                 sizes="auto"
@@ -60,37 +78,29 @@ export function ProductMedia(props: ProductMediaProps) {
         })}
       </Swiper>
       <Swiper
-        onSwiper={(swiper) => {
-          setThumbsSwiper(swiper);
-          swiper.update();
-        }}
+        onSwiper={setThumbsSwiper}
+        loop={true}
         direction="horizontal"
         spaceBetween={spacing}
-        freeMode
+        freeMode={true}
         slidesPerView={"auto"}
-        threshold={2}
         modules={[FreeMode, Thumbs]}
-        className="w-full overflow-visible hidden md:block"
+        watchSlidesProgress={true}
+        className="w-full overflow-visible hidden md:block mySwiper"
       >
         {media.map((med, i) => {
           let image = { ...med.image, altText: med.alt || "Product image" };
           return (
             <SwiperSlide
               key={med.id}
-              onClick={() => {
-                if (thumbsSwiper) {
-                  thumbsSwiper.slideTo(i);
-                  thumbsSwiper.update();
-                }
-              }}
               className={clsx(
                 "!h-fit !w-fit p-1 border transition-colors cursor-pointer",
-                activeIndex === i ? "border-black" : "border-transparent",
+                activeIndex === i ? "border-black" : "border-transparent"
               )}
             >
               <Image
                 data={image}
-                // loading={i === 0 ? "eager" : "lazy"}
+                loading={i === 0 ? "eager" : "lazy"}
                 className="fadeIn object-cover !h-[100px] !aspect-[3/4]"
                 sizes="auto"
               />
