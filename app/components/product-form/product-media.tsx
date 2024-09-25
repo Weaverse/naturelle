@@ -21,18 +21,20 @@ export function ProductMedia(props: ProductMediaProps) {
     numberOfThumbnails,
     spacing,
   } = props;
+  let media = _media.filter((med) => med.__typename === "MediaImage");
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
     null
   );
   let [activeIndex, setActiveIndex] = useState(0);
-  let media = _media.filter((med) => med.__typename === "MediaImage");
 
   useEffect(() => {
     if (swiperInstance && thumbsSwiper) {
-      swiperInstance.thumbs.swiper = thumbsSwiper;
-      swiperInstance.thumbs.init();
-      swiperInstance.slideTo(activeIndex);
+      if (swiperInstance.thumbs) {
+        swiperInstance.thumbs.swiper = thumbsSwiper;
+        swiperInstance.thumbs.init();
+        swiperInstance.slideTo(activeIndex);
+      }
     }
   }, [swiperInstance, thumbsSwiper, activeIndex]);
 
