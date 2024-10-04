@@ -23,7 +23,7 @@ let variants = cva("relative lg:pb-20 pb-12", {
     padding: {
       full: "",
       stretch: "px-3 md:px-10 lg:px-16",
-      fixed: "mx-auto",
+      fixed: "px-3 md:px-4 lg:px-0 mx-auto",
     },
     gap: {
       0: "",
