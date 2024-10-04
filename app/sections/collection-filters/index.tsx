@@ -1,20 +1,18 @@
-import {useLoaderData} from '@remix-run/react';
-import {Pagination} from '@shopify/hydrogen';
-import type {Filter} from '@shopify/hydrogen/storefront-api-types';
-import type {
-  HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {DrawerFilter} from '~/components/DrawerFilter';
-import type {AppliedFilter} from '~/lib/filter';
-import {forwardRef} from 'react';
-import {useInView} from 'react-intersection-observer';
-import type {CollectionDetailsQuery} from 'storefrontapi.generated';
-import {ProductsLoadedOnScroll} from './products-loaded-on-scroll';
-import { Button } from '@/components/button';
-import { cva, VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { useLoaderData } from "@remix-run/react";
+import { Pagination } from "@shopify/hydrogen";
+import type { Filter } from "@shopify/hydrogen/storefront-api-types";
+import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { DrawerFilter } from "~/components/DrawerFilter";
+import type { AppliedFilter } from "~/lib/filter";
+import { forwardRef } from "react";
+import { useInView } from "react-intersection-observer";
+import type { CollectionDetailsQuery } from "storefrontapi.generated";
+import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
+import { Button } from "@/components/button";
+import { cva, VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-interface CollectionFiltersProps extends VariantProps<typeof variants> {};
+interface CollectionFiltersProps extends VariantProps<typeof variants> {}
 let variants = cva("relative lg:pb-20 pb-12", {
   variants: {
     width: {
@@ -25,7 +23,7 @@ let variants = cva("relative lg:pb-20 pb-12", {
     padding: {
       full: "",
       stretch: "px-3 md:px-10 lg:px-16",
-      fixed: "px-3 md:px-4 lg:px-6 mx-auto",
+      fixed: "px-3 md:px-4 lg:px-0 mx-auto",
     },
     gap: {
       0: "",
@@ -50,11 +48,11 @@ let variants = cva("relative lg:pb-20 pb-12", {
 
 let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
   (props, sectionRef) => {
-    let {width, gap, ...rest} = props;
-    let {ref, inView} = useInView();
-    let {collection, collections, appliedFilters} = useLoaderData<
+    let { width, gap, ...rest } = props;
+    let { ref, inView } = useInView();
+    let { collection, collections, appliedFilters } = useLoaderData<
       CollectionDetailsQuery & {
-        collections: Array<{handle: string; title: string}>;
+        collections: Array<{ handle: string; title: string }>;
         appliedFilters: AppliedFilter[];
       }
     >();
@@ -63,66 +61,70 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
 
     if (collection?.products && collections) {
       return (
-        <section ref={sectionRef} {...rest} >
+        <section ref={sectionRef} {...rest}>
           <DrawerFilter
             productNumber={productNumber}
             filters={collection.products.filters as Filter[]}
             appliedFilters={appliedFilters}
             collections={collections}
           />
-          <div className={cn(variants({ gap, width, padding: width }),)}>
-          <Pagination connection={collection.products}>
-            {({
-              nodes,
-              isLoading,
-              PreviousLink,
-              NextLink,
-              nextPageUrl,
-              hasNextPage,
-              state,
-            }) => (
-              <>
-                <div className="!mb-6 flex w-full items-center justify-center">
-                  <Button as={PreviousLink} variant="outline">
-                    <span className='font-heading font-light'>{isLoading ? 'Loading...' : 'Load previous'}</span>
+          <div className={cn(variants({ gap, width, padding: width }))}>
+            <Pagination connection={collection.products}>
+              {({
+                nodes,
+                isLoading,
+                PreviousLink,
+                NextLink,
+                nextPageUrl,
+                hasNextPage,
+                state,
+              }) => (
+                <div className="flex flex-col w-full items-center justify-center lg:!mt-16 mt-9">
+                  <Button
+                    as={PreviousLink}
+                    variant="outline"
+                    className="!mb-14"
+                  >
+                    <span className="font-heading font-light">
+                      {isLoading ? "Loading..." : "Load previous"}
+                    </span>
+                  </Button>
+                  <ProductsLoadedOnScroll
+                    nodes={nodes}
+                    inView={inView}
+                    nextPageUrl={nextPageUrl}
+                    hasNextPage={hasNextPage}
+                    state={state}
+                  />
+                  <Button as={NextLink} variant="outline" className="!mt-14">
+                    <span className="font-heading font-light my-0.5">
+                      {isLoading ? "Loading..." : "Show more +"}
+                    </span>
                   </Button>
                 </div>
-                <ProductsLoadedOnScroll
-                  nodes={nodes}
-                  inView={inView}
-                  nextPageUrl={nextPageUrl}
-                  hasNextPage={hasNextPage}
-                  state={state}
-                />
-                <div className="!mt-14 flex w-full items-center justify-center">
-                  <Button as={NextLink} variant="outline">
-                    <span className='font-heading font-light my-0.5'>{isLoading ? 'Loading...' : 'Show more +'}</span>
-                  </Button>
-                </div>
-              </>
-            )}
-          </Pagination>
+              )}
+            </Pagination>
           </div>
         </section>
       );
     }
     return <section ref={ref} {...rest} />;
-  },
+  }
 );
 
 export default CollectionFilters;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'collection-filters',
-  title: 'Collection filters',
+  type: "collection-filters",
+  title: "Collection filters",
   limit: 1,
   enabledOn: {
-    pages: ['COLLECTION'],
+    pages: ["COLLECTION"],
   },
-  toolbar: ['general-settings'],
+  toolbar: ["general-settings"],
   inspector: [
     {
-      group: 'Collection filters',
+      group: "Collection filters",
       inputs: [
         {
           type: "select",
@@ -149,7 +151,7 @@ export let schema: HydrogenComponentSchema = {
           },
           defaultValue: 20,
         },
-      ]
+      ],
     },
   ],
 };

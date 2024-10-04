@@ -254,7 +254,7 @@ function CartCheckoutActions({ checkoutUrl }: { checkoutUrl: string }) {
   return (
     <div>
       <a href={checkoutUrl} target="_self">
-        <Button className="w-full">Checkout</Button>
+        <Button className="w-full">Continue to Checkout</Button>
       </a>
       <br />
     </div>
@@ -286,7 +286,7 @@ export function CartSummary({
           totalStyles[layout],
         )}
       >
-        <span>Total</span>
+        <span className="font-semibold">Subtotal</span>
         <div className={layout === "page" ? "text-3xl" : ""}>
           {cost?.subtotalAmount?.amount ? (
             <Money data={cost?.subtotalAmount} />
@@ -295,7 +295,7 @@ export function CartSummary({
           )}
         </div>
       </div>
-      <p className="text-sm">Shipping & taxes calculated at checkout</p>
+      {/* <p className="text-sm">Shipping & taxes calculated at checkout</p> */}
       {/* <p className="underline">Add delivery note</p> */}
       {children}
     </div>

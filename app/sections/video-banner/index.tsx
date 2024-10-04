@@ -96,7 +96,7 @@ function getPlayerSize(id: string) {
       let rect = section.getBoundingClientRect();
       let aspectRatio = rect.width / rect.height;
       if (aspectRatio < 16 / 9) {
-        return {width: 'auto', height: '100%'};
+        return {width: 'auto', height: '100vh'};
       }
     }
   }
@@ -175,7 +175,7 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
         )}
       >
         {inView && (
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className='w-full h-full bg-background-subtle-1'></div>}>
             <ReactPlayer
               url={videoURL2 || videoURL.url}
               playing

@@ -26,7 +26,7 @@ export function Drawer({
   onClose: () => void;
   openFrom: "right" | "left" | "top";
   children: React.ReactNode;
-  isForm?: "cart" | "search" | "menu";
+  isForm?: "cart" | "search" | "menu" | "filter";
   isBackMenu?: boolean;
 }) {
   const offScreen = {
@@ -70,11 +70,11 @@ export function Drawer({
                   className={cn(
                     "transform text-left align-middle shadow-xl transition-all",
                     openFrom === "left"
-                      ? "h-screen-dynamic w-screen max-w-96 bg-background-subtle-1"
+                      ? "h-screen-dynamic w-screen max-w-96"
                       : openFrom === "top"
-                        ? "h-fit w-screen bg-background-subtle-1"
+                        ? "h-fit w-screen"
                         : "h-screen-dynamic w-screen max-w-96",
-                    isForm === "cart"
+                    isForm === "cart" || isForm === "filter"
                       ? "bg-background-basic"
                       : "bg-background-subtle-1"
                   )}
@@ -117,7 +117,7 @@ export function Drawer({
                         />
                       </button>
                     )}
-                    {isForm !== 'cart' && !isBackMenu && <div className="p-0" />}
+                    {isForm !== 'cart' && isForm !== 'filter' && !isBackMenu && <div className="p-0" />}
                   </header>
                   {children}
                 </Dialog.Panel>

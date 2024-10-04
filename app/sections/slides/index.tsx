@@ -2,8 +2,8 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from '@weaverse/hydrogen';
-import {CSSProperties, forwardRef} from 'react';
-import {EffectFade} from 'swiper/modules';
+import {CSSProperties, forwardRef, useEffect, useState} from 'react';
+import {EffectFade, Pagination} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
@@ -21,9 +21,23 @@ let widthClasses: {[item: string]: string} = {
 
 const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
   let {sectionHeight, width, children, ...rest} = props;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize(); 
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   let sectionStyle: CSSProperties = {
     '--section-height': `${sectionHeight}px`,
+    '--swiper-pagination-bottom': '50%',
+    '--swiper-pagination-top': '50%',
+    '--swiper-theme-color': '#3D490B',
   } as CSSProperties;
 
   return (
@@ -44,7 +58,10 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
         fadeEffect={{
           crossFade: true,
         }}
-        modules={[EffectFade]}
+        pagination={isMobile && {
+          clickable: true,
+        }}
+        modules={[EffectFade, Pagination]}
       >
         {children?.map((child, index) => (
           <SwiperSlide key={index}>{child}</SwiperSlide>
