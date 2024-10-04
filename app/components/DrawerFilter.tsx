@@ -45,7 +45,7 @@ export function DrawerFilter({
   const {openDrawer, isOpen, closeDrawer} = useDrawer();
   return (
     <>
-      <div className="border-y border-bar-subtle py-4">
+      <div className="border-y border-bar-subtle py-4 px-3 md:px-4 lg:px-0">
         <div className="container flex w-full items-center justify-between">
           <span className="font-heading text-xl font-medium tracking-tight">
             {productNumber} Products
@@ -60,6 +60,7 @@ export function DrawerFilter({
               onClose={closeDrawer}
               openFrom="left"
               heading="Filter"
+              isForm='filter'
             >
               <div className="w-96 px-6">
                 <FiltersDrawer

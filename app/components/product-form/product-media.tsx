@@ -33,15 +33,19 @@ export function ProductMedia(props: ProductMediaProps) {
       if (swiperInstance.thumbs) {
         swiperInstance.thumbs.swiper = thumbsSwiper;
         swiperInstance.thumbs.init();
-        swiperInstance.slideTo(activeIndex);
       }
+      swiperInstance.on("slideChange", () => {
+        const realIndex = swiperInstance.realIndex;
+        setActiveIndex(realIndex);
+        thumbsSwiper.slideTo(realIndex);
+      });
     }
-  }, [swiperInstance, thumbsSwiper, activeIndex]);
+  }, [swiperInstance, thumbsSwiper]);
 
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
       <Swiper
-        loop={true}
+        loop={false}
         modules={[FreeMode, Thumbs, Pagination]}
         pagination={{ type: "fraction" }}
         spaceBetween={10}
@@ -81,7 +85,7 @@ export function ProductMedia(props: ProductMediaProps) {
       </Swiper>
       <Swiper
         onSwiper={setThumbsSwiper}
-        loop={true}
+        loop={false}
         direction="horizontal"
         spaceBetween={spacing}
         freeMode={true}

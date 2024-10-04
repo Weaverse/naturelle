@@ -1,16 +1,16 @@
-import {Button} from '@/components/button';
-import {useLoaderData} from '@remix-run/react';
-import {Pagination} from '@shopify/hydrogen';
+import { Button } from "@/components/button";
+import { useLoaderData } from "@remix-run/react";
+import { Pagination } from "@shopify/hydrogen";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {Grid} from '~/components/Grid';
-import {ProductCard} from '~/components/ProductCard';
-import {getImageLoadingPriority} from '~/lib/const';
-import {Children, forwardRef} from 'react';
-import type {AllProductsQuery} from 'storefrontapi.generated';
-import {layoutInputs, Section, SectionProps} from '../atoms/Section';
+} from "@weaverse/hydrogen";
+import { Grid } from "~/components/Grid";
+import { ProductCard } from "~/components/ProductCard";
+import { getImageLoadingPriority } from "~/lib/const";
+import { Children, forwardRef } from "react";
+import type { AllProductsQuery } from "storefrontapi.generated";
+import { layoutInputs, Section, SectionProps } from "../atoms/Section";
 
 interface AllProductsProps extends HydrogenComponentProps {
   heading: string;
@@ -18,16 +18,14 @@ interface AllProductsProps extends HydrogenComponentProps {
 
 let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
   (props, ref) => {
-    let {heading, children, ...rest} = props;
-    let {products} = useLoaderData<AllProductsQuery>();
+    let { heading, children, ...rest } = props;
+    let { products } = useLoaderData<AllProductsQuery>();
 
     return (
       <Section ref={ref} {...rest}>
-        {!!Children.count(children) && (
-          <div>{children}</div>
-        )}
+        {!!Children.count(children) && <div>{children}</div>}
         <Pagination connection={products}>
-          {({nodes, isLoading, NextLink, PreviousLink}) => {
+          {({ nodes, isLoading, NextLink, PreviousLink }) => {
             let itemsMarkup = nodes.map((product, i) => (
               <ProductCard
                 quickAdd
@@ -38,12 +36,16 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
             ));
 
             return (
-              <>
-                <div className="mb-20 mt-5 flex items-center justify-center">
-                  <Button as={PreviousLink} variant="secondary">
-                    {isLoading ? 'Loading...' : 'Previous'}
-                  </Button>
-                </div>
+              <div className="flex flex-col items-center justify-center">
+                <Button
+                  as={PreviousLink}
+                  variant="outline"
+                  className="!mb-9 lg:!mb-16 lg:!mt-16 !mt-9"
+                >
+                  <span className="font-heading font-light">
+                    {isLoading ? "Loading..." : "Load previous"}
+                  </span>
+                </Button>
                 <Grid
                   className="!gap-y-10"
                   layout="products"
@@ -51,42 +53,46 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
                 >
                   {itemsMarkup}
                 </Grid>
-                <div className="mb-5 mt-20 flex items-center justify-center">
-                  <Button as={NextLink} variant="secondary">
-                    {isLoading ? 'Loading...' : 'Next'}
-                  </Button>
-                </div>
-              </>
+                <Button
+                  as={NextLink}
+                  variant="outline"
+                  className="!mb-5 lg:!mt-20 !mt-12"
+                >
+                  <span className="font-heading font-light">
+                    {isLoading ? "Loading..." : "Show more +"}
+                  </span>
+                </Button>
+              </div>
             );
           }}
         </Pagination>
       </Section>
     );
-  },
+  }
 );
 
 export default AllProducts;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'all-products',
-  title: 'All products',
+  type: "all-products",
+  title: "All products",
   limit: 1,
   enabledOn: {
-    pages: ['ALL_PRODUCTS'],
+    pages: ["ALL_PRODUCTS"],
   },
-  toolbar: ['general-settings'],
+  toolbar: ["general-settings"],
   inspector: [
     {
-      group: 'All products',
-      inputs: layoutInputs.filter(({ name }) => name !== 'borderRadius'),
+      group: "All products",
+      inputs: layoutInputs.filter(({ name }) => name !== "borderRadius"),
     },
   ],
-  childTypes: ['heading'],
+  childTypes: ["heading"],
   presets: {
     children: [
       {
-        type: 'heading',
-        content: 'All products',
+        type: "heading",
+        content: "All products",
       },
     ],
   },

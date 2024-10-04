@@ -61,8 +61,8 @@ export function CountrySelector() {
           ref={closeRef}
           onToggle={toggleDropdown}
         >
-          <summary className="flex w-full cursor-pointer items-center justify-between px-4 py-3.5">
-            <h5 className='font-medium'>{selectedLocale.label}</h5>
+          <summary className="flex w-full cursor-pointer items-center justify-between px-4 py-3">
+            <span className='font-normal font-heading text-xl'>{selectedLocale.label}</span>
             <span className={`transition-transform duration-300 ${isOpen ? '-rotate-180' : 'rotate-0'}`}>
               <IconCaret direction="down" className="h-4 w-4" />
             </span>
