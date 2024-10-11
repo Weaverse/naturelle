@@ -52,7 +52,7 @@ export function UseMenuMegaHeader({
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="container z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
+      <div className="container px-6 md:px-8 lg:px-6 z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',

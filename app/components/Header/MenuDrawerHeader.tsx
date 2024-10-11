@@ -52,7 +52,7 @@ export function UseMenuDrawerHeader({
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 py-4 transition-all duration-300 container">
+      <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 md:px-8 lg:px-6 py-4 transition-all duration-300 container">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',
