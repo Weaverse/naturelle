@@ -34,7 +34,6 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
                 loading={getImageLoadingPriority(i)}
               />
             ));
-            console.log("🚀 ~ Previous Link:", PreviousLink);
 
             return (
               <div className="flex flex-col items-center justify-center">
