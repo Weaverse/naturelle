@@ -59,7 +59,7 @@ function CartLines({
   if (!lines) return null;
   const styles = {
     page: "col-span-2",
-    aside: "flex-1 overflow-y-auto overflow-hidden",
+    aside: "flex-1 overflow-y-auto overflow-hidden custom-scroll",
   };
   return (
     <div aria-labelledby="cart-lines" className={styles[layout]}>
@@ -131,7 +131,7 @@ function CartLineItem({
         )}
       </td>
       <td className={cellClass}>
-        <div className=" flex gap-1">
+        <div className=" flex gap-1 justify-between">
           <Link
             prefetch="intent"
             to={lineItemUrl}
