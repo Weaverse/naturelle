@@ -162,7 +162,7 @@ function CartLineItem({
         </td>
       )}
       <td className={cn(cellClass, "row-start-2")}>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <CartLineQuantity line={line} />
           {layout === "aside" && (
             <p className="text-center">

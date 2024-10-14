@@ -201,7 +201,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
               </div>
             </div>
             <div className="flex flex-col gap-4 mt-20 w-full">
-              <ProductDetail title="Description" content={descriptionHtml} /> 
+              {descriptionHtml && <ProductDetail title="Description" content={descriptionHtml} /> }
               <div className="grid gap-4 py-4">
                 {showShippingPolicy && shippingPolicy?.body && (
                   <ProductDetail
