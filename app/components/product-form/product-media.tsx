@@ -47,7 +47,7 @@ export function ProductMedia(props: ProductMediaProps) {
       <Swiper
         loop={false}
         modules={[FreeMode, Thumbs, Pagination]}
-        pagination={{ type: "fraction" }}
+        pagination={{ type: "bullets" }}
         spaceBetween={10}
         onSlideChange={(swiper) => {
           setActiveIndex(swiper.activeIndex);
@@ -61,10 +61,11 @@ export function ProductMedia(props: ProductMediaProps) {
             : undefined
         }
         onSwiper={setSwiperInstance}
-        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-fraction]:hidden mySwiper2"
+        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
         style={
           {
             "--swiper-pagination-bottom": "20px",
+            "--swiper-pagination-color": "#3D490B",
           } as React.CSSProperties
         }
       >
