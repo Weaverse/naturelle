@@ -36,6 +36,7 @@ import invariant from "tiny-invariant";
 import { CustomAnalytics } from "~/components/Analytics";
 import { seoPayload } from "~/lib/seo.server";
 import { GlobalLoading } from "./components/global-loading";
+import { Preloader } from "./components/Preloader";
 import { getErrorMessage } from "./lib/defineMessageError";
 import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
 
@@ -181,6 +182,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
           children
         )}
         <GlobalLoading />
+        <Preloader />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
