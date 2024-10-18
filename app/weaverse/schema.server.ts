@@ -524,6 +524,17 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
+      group: "Animations and effects",
+      inputs: [
+        {
+          type: "switch",
+          label: "Enable view transition",
+          name: "enableViewTransition",
+          defaultValue: true,
+        },
+      ],
+    },
+    {
       group: 'Quick view',
       inputs: [
         {
