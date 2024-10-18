@@ -10,14 +10,14 @@ let variants = cva(
     "hidden md:block z-10",
     "absolute top-1/2 -translate-y-1/2 z-1",
     "p-2 text-center cursor-pointer",
-    "border border-transparent",
+    "border border-bar-subtle",
     "transition-all duration-200",
   ],
   {
     variants: {
       arrowsColor: {
-        light: "text-gray-900 bg-white hover:bg-gray-100",
-        dark: "text-gray-100 bg-gray-900 hover:bg-gray-800",
+        light: "text-foreground bg-transparent",
+        dark: "text-gray-100 bg-primary",
       },
       arrowsShape: {
         square: "",
@@ -25,7 +25,7 @@ let variants = cva(
         circle: "rounded-full",
       },
       disabled: {
-        true: "opacity-60 cursor-not-allowed",
+        true: "opacity-30 !cursor-not-allowed",
         false: "",
       },
       showArrowsOnHover: { true: "", false: "" },
@@ -35,22 +35,22 @@ let variants = cva(
       {
         showArrowsOnHover: true,
         side: "left",
-        className: "-left-12 group-hover/arrow:left-6",
+        className: "-left-12 group-hover/arrow:left-0",
       },
       {
         showArrowsOnHover: false,
         side: "left",
-        className: "left-6",
+        className: "left-0",
       },
       {
         showArrowsOnHover: true,
         side: "right",
-        className: "-right-12 group-hover/arrow:right-6",
+        className: "-right-12 group-hover/arrow:right-0",
       },
       {
         showArrowsOnHover: false,
         side: "right",
-        className: "right-6",
+        className: "right-0",
       },
     ],
   }
