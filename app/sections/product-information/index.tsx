@@ -27,7 +27,7 @@ interface ProductInformationProps extends HydrogenComponentProps {
   hideUnavailableOptions: boolean;
   // product media props
   showThumbnails: boolean;
-  numberOfThumbnails: number;
+  imageAspectRatio: string;
   spacing: number;
 }
 
@@ -59,7 +59,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       showRefundPolicy,
       hideUnavailableOptions,
       showThumbnails,
-      numberOfThumbnails,
+      imageAspectRatio,
       spacing,
       children,
       ...rest
@@ -68,8 +68,8 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
     let atcText = selectedVariant?.availableForSale
       ? addToCartText
       : selectedVariant?.quantityAvailable === -1
-        ? unavailableText
-        : soldOutText;
+      ? unavailableText
+      : soldOutText;
     useEffect(() => {
       if (!selectedVariant) {
         setSelectedVariant(variants?.nodes?.[0]);
@@ -115,7 +115,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                 media={product?.media.nodes}
                 selectedVariant={selectedVariant}
                 showThumbnails={showThumbnails}
-                numberOfThumbnails={numberOfThumbnails}
+                imageAspectRatio={imageAspectRatio}
                 spacing={spacing}
               />
               <div
@@ -126,8 +126,8 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   } as React.CSSProperties
                 }
               >
-                <div className="flex flex-col justify-start space-y-5">
-                  <div className="space-y-4">
+                <div className="flex flex-col justify-start gap-6">
+                  <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
                         {title}
@@ -137,27 +137,26 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                           {vendor}
                         </Text>
                       )}
+                      {children}
+                      <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
+                        {selectedVariant && selectedVariant.compareAtPrice && (
+                          <Money
+                            withoutTrailingZeros
+                            data={selectedVariant.compareAtPrice}
+                            className="text-label-sale line-through"
+                            as="span"
+                          />
+                        )}
+
+                        {selectedVariant ? (
+                          <Money
+                            withoutTrailingZeros
+                            data={selectedVariant.price}
+                            as="span"
+                          />
+                        ) : null}
+                      </p>
                     </div>
-                    <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
-                      {selectedVariant && selectedVariant.compareAtPrice && (
-                        <Money
-                          withoutTrailingZeros
-                          data={selectedVariant.compareAtPrice}
-                          className="text-label-sale line-through"
-                          as="span"
-                        />
-                      )}
-
-                      {selectedVariant ? (
-                        <Money
-                          withoutTrailingZeros
-                          data={selectedVariant.price}
-                          as="span"
-                        />
-                      ) : null}
-                    </p>
-                    {children}
-
                     <ProductVariants
                       product={product}
                       selectedVariant={selectedVariant}
@@ -170,56 +169,54 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                     />
                   </div>
                   <Quantity value={quantity} onChange={setQuantity} />
-                  <AddToCartButton
-                    disabled={!selectedVariant?.availableForSale}
-                    lines={[
-                      {
-                        merchandiseId: selectedVariant?.id,
-                        quantity,
-                      },
-                    ]}
-                    variant="primary"
-                    data-test="add-to-cart"
-                    className="w-[360px]"
-                  >
-                    <span> {atcText}</span>
-                  </AddToCartButton>
-                  {selectedVariant?.availableForSale && (
-                    <ShopPayButton
-                      className="w-[360px]"
-                      width="100%"
-                      variantIdsAndQuantities={[
+                  <div className="flex flex-col gap-3 sm:w-[360px]">
+                    <AddToCartButton
+                      disabled={!selectedVariant?.availableForSale}
+                      lines={[
                         {
-                          id: selectedVariant?.id,
+                          merchandiseId: selectedVariant?.id,
                           quantity,
                         },
                       ]}
-                      storeDomain={storeDomain}
-                    />
-                  )}
-                  <p
-                    className="max-w-[600px] leading-relaxed pt-6 prose"
-                    dangerouslySetInnerHTML={{
-                      __html: descriptionHtml,
-                    }}
-                  />
-                  <div className="grid gap-4 py-4">
-                    {showShippingPolicy && shippingPolicy?.body && (
-                      <ProductDetail
-                        title="Shipping"
-                        content={getExcerpt(shippingPolicy.body)}
-                        learnMore={`/policies/${shippingPolicy.handle}`}
-                      />
-                    )}
-                    {showRefundPolicy && refundPolicy?.body && (
-                      <ProductDetail
-                        title="Returns"
-                        content={getExcerpt(refundPolicy.body)}
-                        learnMore={`/policies/${refundPolicy.handle}`}
+                      variant="primary"
+                      data-test="add-to-cart"
+                      className="w-full"
+                    >
+                      <span> {atcText}</span>
+                    </AddToCartButton>
+                    {selectedVariant?.availableForSale && (
+                      <ShopPayButton
+                        width="100%"
+                        variantIdsAndQuantities={[
+                          {
+                            id: selectedVariant?.id,
+                            quantity,
+                          },
+                        ]}
+                        storeDomain={storeDomain}
                       />
                     )}
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-4 mt-20 w-full">
+              {descriptionHtml && <ProductDetail title="Description" content={descriptionHtml} /> }
+              <div className="grid gap-4 py-4">
+                {showShippingPolicy && shippingPolicy?.body && (
+                  <ProductDetail
+                    title="Shipping"
+                    content={getExcerpt(shippingPolicy.body)}
+                    learnMore={`/policies/${shippingPolicy.handle}`}
+                  />
+                )}
+                {showRefundPolicy && refundPolicy?.body && (
+                  <ProductDetail
+                    title="Returns"
+                    content={getExcerpt(refundPolicy.body)}
+                    learnMore={`/policies/${refundPolicy.handle}`}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -312,15 +309,19 @@ export let schema: HydrogenComponentSchema = {
           defaultValue: true,
         },
         {
-          label: "Number of thumbnails",
-          name: "numberOfThumbnails",
-          type: "range",
-          condition: "showThumbnails.eq.true",
+          type: "select",
+          name: "imageAspectRatio",
+          label: "Aspect ratio",
+          defaultValue: "1/1",
           configs: {
-            min: 1,
-            max: 10,
+            options: [
+              { value: "1/1", label: "Square (1/1)" },
+              { value: "3/4", label: "Portrait (3/4)" },
+              { value: "4/3", label: "Landscape (4/3)" },
+              { value: "16/9", label: "Widescreen (16/9)" },
+            ],
           },
-          defaultValue: 4,
+          condition: "showThumbnails.eq.true",
         },
         {
           label: "Gap between images",
@@ -332,6 +333,7 @@ export let schema: HydrogenComponentSchema = {
             max: 100,
           },
           defaultValue: 10,
+          condition: "showThumbnails.eq.true",
         },
       ],
     },

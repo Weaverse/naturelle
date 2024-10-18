@@ -35,6 +35,8 @@ export function Drawer({
     top: "-translate-y-full",
   };
 
+  const maxWidth = isForm === "cart" ? "max-w-[420px]" : "max-w-96";
+
   return (
     <Transition appear show={open} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -70,10 +72,10 @@ export function Drawer({
                   className={cn(
                     "transform text-left align-middle shadow-xl transition-all",
                     openFrom === "left"
-                      ? "h-screen-dynamic w-screen max-w-96"
+                      ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
                         ? "h-fit w-screen"
-                        : "h-screen-dynamic w-screen max-w-96",
+                        : `h-screen-dynamic w-screen ${maxWidth}`,
                     isForm === "cart" || isForm === "filter"
                       ? "bg-background-basic"
                       : "bg-background-subtle-1"

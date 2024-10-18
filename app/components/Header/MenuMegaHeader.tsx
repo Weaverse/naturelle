@@ -3,7 +3,7 @@ import {useThemeSettings} from '@weaverse/hydrogen';
 import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
-import {Suspense, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import useWindowScroll from 'react-use/lib/useWindowScroll';
 import { useDrawer} from '../Drawer';
 import {IconAccount, IconLogin} from '../Icon';
@@ -27,6 +27,7 @@ export function UseMenuMegaHeader({
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
+  const [top, setCalculatedTop] = useState(0);
   let {isOpen} = useDrawer();
 
   let onHover = () => setHovered(true);
@@ -34,25 +35,28 @@ export function UseMenuMegaHeader({
 
   let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
-  let top = stickyAnnouncementBar
-    ? announcementBarHeight
-    : Math.max(announcementBarHeight - y, 0);
+  useEffect(() => {
+    let calculatedTop = stickyAnnouncementBar
+      ? announcementBarHeight
+      : Math.max(announcementBarHeight - y, 0);
+      setCalculatedTop(calculatedTop);
+  }, [y, stickyAnnouncementBar, announcementBarHeight]);
   return (
     <header
       role="banner"
       className={clsx(
-        enableTransparent ? 'fixed' : 'sticky',
+        enableTransparent ? 'fixed w-screen' : 'sticky',
         isTransparent
           ? 'border-secondary bg-transparent text-secondary'
           : 'shadow-header border-foreground bg-background-subtle-1 text-primary',
-        'top-0 z-40 w-screen border-b',
+        'top-0 z-40 border-b',
         className,
       )}
       style={{['--announcement-bar-height' as string]: `${top}px`}}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="container z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
+      <div className="container px-6 md:px-8 lg:px-6 z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-background-subtle-1',

@@ -263,6 +263,22 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: '#C5C6BB',
         },
         {
+          type: 'select',
+          name: 'tagNameTitle',
+          label: 'Tag name title',
+          configs: {
+            options: [
+              {value: 'h1', label: '<h1> (Heading 1)'},
+              {value: 'h2', label: '<h2> (Heading 2)'},
+              {value: 'h3', label: '<h3> (Heading 3)'},
+              {value: 'h4', label: '<h4> (Heading 4)'},
+              {value: 'h5', label: '<h5> (Heading 5)'},
+              {value: 'h6', label: '<h6> (Heading 6)'},
+            ],
+          },
+          defaultValue: 'h6',
+        },
+        {
           type: 'heading',
           label: 'Newsletter',
         },
@@ -508,6 +524,17 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
+      group: "Animations and effects",
+      inputs: [
+        {
+          type: "switch",
+          label: "Enable view transition",
+          name: "enableViewTransition",
+          defaultValue: true,
+        },
+      ],
+    },
+    {
       group: 'Quick view',
       inputs: [
         {
@@ -573,15 +600,19 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: true,
         },
         {
-          label: 'Number of thumbnails',
-          name: 'numberOfThumbnails',
-          type: 'range',
-          condition: 'showThumbnails.eq.true',
+          type: "select",
+          name: "imageAspectRatio",
+          label: "Aspect ratio",
+          defaultValue: "1/1",
           configs: {
-            min: 1,
-            max: 10,
+            options: [
+              { value: "1/1", label: "Square (1/1)" },
+              { value: "3/4", label: "Portrait (3/4)" },
+              { value: "4/3", label: "Landscape (4/3)" },
+              { value: "16/9", label: "Widescreen (16/9)" },
+            ],
           },
-          defaultValue: 4,
+          condition: "showThumbnails.eq.true",
         },
         {
           label: 'Gap between images',
@@ -593,6 +624,7 @@ export const themeSchema: HydrogenThemeSchema = {
             max: 100,
           },
           defaultValue: 10,
+          condition: "showThumbnails.eq.true",
         },
       ],
     }

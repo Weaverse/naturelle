@@ -14,6 +14,7 @@ import { ProductMedia } from "./product-form/product-media";
 import { Quantity } from "./product-form/quantity";
 import { ProductVariants } from "./product-form/variants";
 import { Portal } from "@headlessui/react";
+import { Link } from "./Link";
 
 export function QuickView(props: { data: Jsonify<ProductData> }) {
   const { data } = props;
@@ -44,7 +45,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
     showRefundPolicy,
     hideUnavailableOptions,
     showThumbnails,
-    numberOfThumbnails,
+    imageAspectRatio,
     spacing,
   } = themeSettings;
   let handleSelectedVariantChange = (variant: any) => {
@@ -67,8 +68,8 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
   let atcText = selectedVariant?.availableForSale
     ? addToCartText
     : selectedVariant?.quantityAvailable === -1
-      ? unavailableText
-      : soldOutText;
+    ? unavailableText
+    : soldOutText;
   return (
     <div className="p-10 rounded-md bg-background w-[80vw] max-w-[1000px]">
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">
@@ -76,7 +77,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           media={product?.media.nodes}
           selectedVariant={selectedVariant}
           showThumbnails={showThumbnails}
-          numberOfThumbnails={numberOfThumbnails}
+          imageAspectRatio={imageAspectRatio}
           spacing={spacing}
         />
         <div
@@ -87,34 +88,34 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
             } as React.CSSProperties
           }
         >
-          <div className="flex flex-col justify-start space-y-5">
-            <div className="space-y-4">
+          <div className="flex flex-col justify-start gap-4">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
+                <h2 className="font-medium tracking-tighter font-heading">
                   {title}
                 </h2>
                 {showVendor && vendor && (
                   <Text className={"opacity-50 font-medium"}>{vendor}</Text>
                 )}
-              </div>
-              <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3">
-                {selectedVariant && selectedVariant.compareAtPrice && (
-                  <Money
-                    withoutTrailingZeros
-                    data={selectedVariant.compareAtPrice}
-                    className="text-label-sale line-through"
-                    as="span"
-                  />
-                )}
+                <h4 className="flex gap-3">
+                  {selectedVariant && selectedVariant.compareAtPrice && (
+                    <Money
+                      withoutTrailingZeros
+                      data={selectedVariant.compareAtPrice}
+                      className="text-label-sale line-through"
+                      as="span"
+                    />
+                  )}
 
-                {selectedVariant ? (
-                  <Money
-                    withoutTrailingZeros
-                    data={selectedVariant.price}
-                    as="span"
-                  />
-                ) : null}
-              </p>
+                  {selectedVariant ? (
+                    <Money
+                      withoutTrailingZeros
+                      data={selectedVariant.price}
+                      as="span"
+                    />
+                  ) : null}
+                </h4>
+              </div>
               <ProductVariants
                 product={product}
                 selectedVariant={selectedVariant}
@@ -127,54 +128,67 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
               />
             </div>
             <Quantity value={quantity} onChange={setQuantity} />
-            <AddToCartButton
-              disabled={!selectedVariant?.availableForSale}
-              lines={[
-                {
-                  merchandiseId: selectedVariant?.id,
-                  quantity,
-                },
-              ]}
-              data-test="add-to-cart"
-              className="w-[360px]"
-            >
-              <span> {atcText}</span>
-            </AddToCartButton>
-            {selectedVariant?.availableForSale && (
-              <ShopPayButton
-                className="w-[360px]"
-                width="100%"
-                variantIdsAndQuantities={[
+            <div className="flex flex-col gap-3">
+              <AddToCartButton
+                disabled={!selectedVariant?.availableForSale}
+                lines={[
                   {
-                    id: selectedVariant?.id,
+                    merchandiseId: selectedVariant?.id,
                     quantity,
                   },
                 ]}
-                storeDomain={storeDomain}
-              />
-            )}
-            <p
-              className="max-w-[600px] leading-relaxed"
-              dangerouslySetInnerHTML={{
-                __html: descriptionHtml,
-              }}
-            />
-            <div className="grid gap-4 py-4">
-              {showShippingPolicy && shippingPolicy?.body && (
-                <ProductDetail
-                  title="Shipping"
-                  content={getExcerpt(shippingPolicy.body)}
-                  learnMore={`/policies/${shippingPolicy.handle}`}
-                />
-              )}
-              {showRefundPolicy && refundPolicy?.body && (
-                <ProductDetail
-                  title="Returns"
-                  content={getExcerpt(refundPolicy.body)}
-                  learnMore={`/policies/${refundPolicy.handle}`}
+                data-test="add-to-cart"
+                className="w-[360px]"
+              >
+                <span> {atcText}</span>
+              </AddToCartButton>
+              {selectedVariant?.availableForSale && (
+                <ShopPayButton
+                  className="w-[360px]"
+                  width="100%"
+                  variantIdsAndQuantities={[
+                    {
+                      id: selectedVariant?.id,
+                      quantity,
+                    },
+                  ]}
+                  storeDomain={storeDomain}
                 />
               )}
             </div>
+            <div className="flex flex-col gap-3">
+              <p
+                className="prose text-base font-normal text-foreground-subtle line-clamp-3"
+                dangerouslySetInnerHTML={{
+                  __html: descriptionHtml,
+                }}
+              />
+              <Link
+                to={`/products/${product?.handle}`}
+                className="underline font-body text-foreground font-normal"
+              >
+                View full details
+              </Link>
+            </div>
+            {(showShippingPolicy && shippingPolicy?.body) ||
+            (showRefundPolicy && refundPolicy?.body) ? (
+              <div className="grid gap-4 py-4">
+                {showShippingPolicy && shippingPolicy?.body && (
+                  <ProductDetail
+                    title="Shipping"
+                    content={getExcerpt(shippingPolicy.body)}
+                    learnMore={`/policies/${shippingPolicy.handle}`}
+                  />
+                )}
+                {showRefundPolicy && refundPolicy?.body && (
+                  <ProductDetail
+                    title="Returns"
+                    content={getExcerpt(refundPolicy.body)}
+                    learnMore={`/policies/${refundPolicy.handle}`}
+                  />
+                )}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

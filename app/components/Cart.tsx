@@ -59,7 +59,7 @@ function CartLines({
   if (!lines) return null;
   const styles = {
     page: "col-span-2",
-    aside: "flex-1 overflow-y-auto",
+    aside: "flex-1 overflow-y-auto overflow-hidden custom-scroll",
   };
   return (
     <div aria-labelledby="cart-lines" className={styles[layout]}>
@@ -106,7 +106,7 @@ function CartLineItem({
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   let styles = {
     page: "grid md:table-row gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]",
-    aside: "grid gap-3 grid-rows-[1fr_auto] grid-cols-[100px_1fr_64px] pb-4",
+    aside: "grid gap-3 grid-rows-[1fr_auto] grid-cols-[100px_1fr] pb-4",
   };
 
   const cellStyles = {
@@ -117,32 +117,38 @@ function CartLineItem({
 
   return (
     <tr key={id} className={styles[layout]}>
-      <td className="py-2 row-start-1 row-end-3">
+      <td className="row-start-1 row-end-3">
         {image && (
           <Image
             alt={title}
-            aspectRatio="1/1"
+            aspectRatio="3/4"
             data={image}
             height={100}
             loading="lazy"
             width={100}
+            className="object-cover"
           />
         )}
       </td>
       <td className={cellClass}>
-        <Link
-          prefetch="intent"
-          to={lineItemUrl}
-          onClick={() => {
-            if (layout === "aside") {
-              // close the drawer
-              window.location.href = lineItemUrl;
-            }
-          }}
-        >
-          <p>{product.title}</p>
-        </Link>
-        <ul className="mt-1 space-y-1">
+        <div className=" flex gap-1 justify-between">
+          <Link
+            prefetch="intent"
+            to={lineItemUrl}
+            onClick={() => {
+              if (layout === "aside") {
+                // close the drawer
+                window.location.href = lineItemUrl;
+              }
+            }}
+          >
+            <p className="line-clamp-1">{product.title}</p>
+          </Link>
+          <div className={layout === "page" ? "md:hidden" : ""}>
+            <CartLineRemoveButton lineIds={[line.id]} />
+          </div>
+        </div>
+        <ul className="mt-4 space-y-1">
           {selectedOptions.map((option) => (
             <li key={option.name}>
               <span className="text-foreground-subtle">{option.value}</span>
@@ -150,15 +156,19 @@ function CartLineItem({
           ))}
         </ul>
       </td>
-      <td className={cn(cellClass, "text-center")}>
-        <Money withoutTrailingZeros data={line.cost.amountPerQuantity} />
-      </td>
+      {layout === "page" && (
+        <td className={cn(cellClass, "text-center")}>
+          <Money withoutTrailingZeros data={line.cost.amountPerQuantity} />
+        </td>
+      )}
       <td className={cn(cellClass, "row-start-2")}>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <CartLineQuantity line={line} />
-          <div className={layout === "page" ? "md:hidden" : ""}>
-            <CartLineRemoveButton lineIds={[line.id]} />
-          </div>
+          {layout === "aside" && (
+            <p className="text-center">
+              <Money withoutTrailingZeros data={line.cost.amountPerQuantity} />
+            </p>
+          )}
         </div>
       </td>
       {layout === "page" && (
@@ -283,7 +293,7 @@ export function CartSummary({
       <div
         className={clsx(
           "flex items-center justify-between font-medium",
-          totalStyles[layout],
+          totalStyles[layout]
         )}
       >
         <span className="font-semibold">Subtotal</span>
