@@ -45,11 +45,11 @@ export function UseMenuMegaHeader({
     <header
       role="banner"
       className={clsx(
-        enableTransparent ? 'fixed' : 'sticky',
+        enableTransparent ? 'fixed w-screen' : 'sticky',
         isTransparent
           ? 'border-secondary bg-transparent text-secondary'
           : 'shadow-header border-foreground bg-background-subtle-1 text-primary',
-        'top-0 z-40 w-screen border-b',
+        'top-0 z-40 border-b',
         className,
       )}
       style={{['--announcement-bar-height' as string]: `${top}px`}}
