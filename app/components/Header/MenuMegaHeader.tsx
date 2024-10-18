@@ -3,7 +3,7 @@ import {useThemeSettings} from '@weaverse/hydrogen';
 import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
-import {Suspense, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import useWindowScroll from 'react-use/lib/useWindowScroll';
 import { useDrawer} from '../Drawer';
 import {IconAccount, IconLogin} from '../Icon';
@@ -27,6 +27,7 @@ export function UseMenuMegaHeader({
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
+  const [top, setCalculatedTop] = useState(0);
   let {isOpen} = useDrawer();
 
   let onHover = () => setHovered(true);
@@ -34,9 +35,12 @@ export function UseMenuMegaHeader({
 
   let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
-  let top = stickyAnnouncementBar
-    ? announcementBarHeight
-    : Math.max(announcementBarHeight - y, 0);
+  useEffect(() => {
+    let calculatedTop = stickyAnnouncementBar
+      ? announcementBarHeight
+      : Math.max(announcementBarHeight - y, 0);
+      setCalculatedTop(calculatedTop);
+  }, [y, stickyAnnouncementBar, announcementBarHeight]);
   return (
     <header
       role="banner"
