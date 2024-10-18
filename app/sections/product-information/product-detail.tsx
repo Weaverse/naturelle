@@ -13,12 +13,12 @@ export function ProductDetail({
   learnMore?: string;
 }) {
   return (
-    <Disclosure key={title} as="div" className="grid w-full gap-2">
+    <Disclosure key={title} as="div" className="grid w-full gap-2" defaultOpen={true}>
       {({ open }) => (
         <>
           <Disclosure.Button className="text-left">
             <div className="flex justify-between items-center bg-background-subtle-1 py-3 px-4">
-              <Text as="span" className="font-normal text-base">
+              <Text as="span" className="font-normal text-base uppercase">
                 {title}
               </Text>
               <IconPlusLinkFooter
