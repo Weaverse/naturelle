@@ -20,7 +20,7 @@ export function Quantity(props: QuantityProps) {
   };
   return (
     <div className="space-y-3">
-      <legend className="whitespace-pre-wrap max-w-prose text-lg leading-snug">
+      <legend className="whitespace-pre-wrap max-w-prose text-base font-body font-semibold leading-snug">
         Quantity
       </legend>
       <div className="w-fit flex gap-2">

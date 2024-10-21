@@ -76,8 +76,8 @@ export function VariantOption(props: VariantOptionProps) {
   return (
     <div className="flex flex-col gap-2">
       <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-[4rem]">
-        <span>{displayName || name}:</span>
-        <span className="ml-2">{selectedOptionValue}</span>
+        <span className="font-semibold text-base">{displayName || name}:</span>
+        <span className="ml-2 font-semibold text-base">{selectedOptionValue}</span>
       </legend>
       {type === "button" && (
         <div className="flex gap-4">
@@ -198,7 +198,7 @@ export function VariantOption(props: VariantOptionProps) {
       )}
 
       {type === "default" && (
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           {values.map((value) => (
             <div
               key={value.value}
