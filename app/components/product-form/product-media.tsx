@@ -9,7 +9,7 @@ interface ProductMediaProps {
   selectedVariant: any;
   media: MediaFragment[];
   showThumbnails: boolean;
-  numberOfThumbnails: number;
+  imageAspectRatio: string;
   spacing: number;
 }
 
@@ -18,7 +18,7 @@ export function ProductMedia(props: ProductMediaProps) {
     selectedVariant,
     showThumbnails,
     media: _media,
-    numberOfThumbnails,
+    imageAspectRatio,
     spacing,
   } = props;
   let media = _media.filter((med) => med.__typename === "MediaImage");
@@ -47,7 +47,7 @@ export function ProductMedia(props: ProductMediaProps) {
       <Swiper
         loop={false}
         modules={[FreeMode, Thumbs, Pagination]}
-        pagination={{ type: "fraction" }}
+        pagination={{ type: "bullets" }}
         spaceBetween={10}
         onSlideChange={(swiper) => {
           setActiveIndex(swiper.activeIndex);
@@ -61,10 +61,11 @@ export function ProductMedia(props: ProductMediaProps) {
             : undefined
         }
         onSwiper={setSwiperInstance}
-        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-fraction]:hidden mySwiper2"
+        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
         style={
           {
             "--swiper-pagination-bottom": "20px",
+            "--swiper-pagination-color": "#3D490B",
           } as React.CSSProperties
         }
       >
@@ -75,45 +76,48 @@ export function ProductMedia(props: ProductMediaProps) {
               <Image
                 data={image}
                 loading={i === 0 ? "eager" : "lazy"}
-                aspectRatio={"3/4"}
-                className="object-cover w-full h-auto fadeIn"
+                aspectRatio={imageAspectRatio}
+                className="object-cover w-full h-auto fadeIn rounded"
                 sizes="auto"
               />
             </SwiperSlide>
           );
         })}
       </Swiper>
-      <Swiper
-        onSwiper={setThumbsSwiper}
-        loop={false}
-        direction="horizontal"
-        spaceBetween={spacing}
-        freeMode={true}
-        slidesPerView={"auto"}
-        modules={[FreeMode, Thumbs]}
-        watchSlidesProgress={true}
-        className="w-full overflow-visible hidden md:block mySwiper"
-      >
-        {media.map((med, i) => {
-          let image = { ...med.image, altText: med.alt || "Product image" };
-          return (
-            <SwiperSlide
-              key={med.id}
-              className={clsx(
-                "!h-fit !w-fit p-1 border transition-colors cursor-pointer",
-                activeIndex === i ? "border-black" : "border-transparent"
-              )}
-            >
-              <Image
-                data={image}
-                loading={i === 0 ? "eager" : "lazy"}
-                className="fadeIn object-cover !h-[100px] !aspect-[3/4]"
-                sizes="auto"
-              />
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+      {showThumbnails && (
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          loop={false}
+          direction="horizontal"
+          spaceBetween={spacing}
+          freeMode={true}
+          slidesPerView={"auto"}
+          modules={[FreeMode, Thumbs]}
+          watchSlidesProgress={true}
+          className="w-full overflow-visible hidden md:block mySwiper"
+        >
+          {media.map((med, i) => {
+            let image = { ...med.image, altText: med.alt || "Product image" };
+            return (
+              <SwiperSlide
+                key={med.id}
+                className={clsx(
+                  "!h-fit !w-fit p-1 border transition-colors cursor-pointer rounded",
+                  activeIndex === i ? "border-black" : "border-transparent"
+                )}
+              >
+                <Image
+                  data={image}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  className="fadeIn object-cover !h-[100px] rounded"
+                  aspectRatio={imageAspectRatio}
+                  sizes="auto"
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      )}
     </div>
   );
 }

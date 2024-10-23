@@ -23,7 +23,7 @@ export function Modal({
 
   return (
     <div
-      className="relative z-50"
+      className="relative z-50 hidden lg:block"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"

@@ -100,6 +100,27 @@
     }
 }
 
+.diagonal {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .diagonal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background: linear-gradient(
+        to top left,
+        transparent calc(50% - 2px),
+        #C2C3C2,
+        transparent calc(50% + 2px)
+      ) no-repeat;
+  }
+
 .container {
     max-width: var(--page-width, 1440px);
 }
