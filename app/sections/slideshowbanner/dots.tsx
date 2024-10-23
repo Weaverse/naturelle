@@ -14,8 +14,8 @@ let variants = cva(
   {
     variants: {
       dotsPosition: {
-        top: "left-0 right-0 top-10",
-        bottom: "left-0 right-0 bottom-10",
+        top: "left-0 right-0 !top-14",
+        bottom: "left-0 right-0 !bottom-14",
         left: "top-0 bottom-0 flex-col left-5",
         right: "top-0 bottom-0 flex-col right-5",
       },

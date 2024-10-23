@@ -1,17 +1,17 @@
-import {Await} from '@remix-run/react';
-import {useThemeSettings} from '@weaverse/hydrogen';
-import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
-import {useRootLoaderData} from '~/root';
-import clsx from 'clsx';
-import {Suspense, useState} from 'react';
-import useWindowScroll from 'react-use/lib/useWindowScroll';
-import {Drawer, useDrawer} from '../Drawer';
-import {IconAccount, IconListMenu, IconLogin} from '../Icon';
-import {Link} from '../Link';
-import {Logo} from '../Logo';
-import {CartCount} from './CartCount';
-import {DrawerMenu} from './menu/DrawerMenu';
-import {SearchToggle} from './SearchToggle';
+import { Await } from "@remix-run/react";
+import { useThemeSettings } from "@weaverse/hydrogen";
+import { EnhancedMenu, useIsHomePath } from "~/lib/utils";
+import { useRootLoaderData } from "~/root";
+import clsx from "clsx";
+import { Suspense, useEffect, useState } from "react";
+import useWindowScroll from "react-use/lib/useWindowScroll";
+import { Drawer, useDrawer } from "../Drawer";
+import { IconAccount, IconListMenu, IconLogin } from "../Icon";
+import { Link } from "../Link";
+import { Logo } from "../Logo";
+import { CartCount } from "./CartCount";
+import { DrawerMenu } from "./menu/DrawerMenu";
+import { SearchToggle } from "./SearchToggle";
 
 export function UseMenuDrawerHeader({
   header,
@@ -22,42 +22,46 @@ export function UseMenuDrawerHeader({
   className?: string;
   openCart: () => void;
 }) {
-  let {stickyAnnouncementBar, announcementBarHeight} = useThemeSettings();
+  let { stickyAnnouncementBar, announcementBarHeight } = useThemeSettings();
   const isHome = useIsHomePath();
-  const {y} = useWindowScroll();
+  const { y } = useWindowScroll();
   let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
-  let {isOpen} = useDrawer();
+  const [top, setCalculatedTop] = useState(0);
+  let { isOpen } = useDrawer();
 
   let onHover = () => setHovered(true);
   let onLeave = () => setHovered(false);
 
   let enableTransparent = settings?.enableTransparentHeader && isHome;
   let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
-  let top = stickyAnnouncementBar
-    ? announcementBarHeight
-    : Math.max(announcementBarHeight - y, 0);
+  useEffect(() => {
+    let calculatedTop = stickyAnnouncementBar
+      ? announcementBarHeight
+      : Math.max(announcementBarHeight - y, 0);
+    setCalculatedTop(calculatedTop);
+  }, [y, stickyAnnouncementBar, announcementBarHeight]);
   return (
     <header
       role="banner"
       className={clsx(
-        enableTransparent ? 'fixed' : 'sticky',
+        enableTransparent ? "fixed w-screen" : "sticky",
         isTransparent
-          ? 'border-secondary bg-transparent text-secondary'
-          : 'shadow-header border-foreground bg-background-subtle-1 text-primary',
-        'top-0 z-40 w-screen border-b border-foreground',
-        className,
+          ? "border-secondary bg-transparent text-secondary"
+          : "shadow-header border-foreground bg-background-subtle-1 text-primary",
+        "top-0 z-40 border-b border-foreground",
+        className
       )}
-      style={{['--announcement-bar-height' as string]: `${top}px`}}
+      style={{ ["--announcement-bar-height" as string]: `${top}px` }}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 py-4 transition-all duration-300 container">
+      <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 md:px-8 lg:px-6 py-4 transition-all duration-300 container">
         <div
           className={clsx(
-            'absolute inset-0 z-20 bg-background-subtle-1',
-            'transition-all duration-300 ease-in-out',
-            isTransparent ? 'opacity-0' : 'opacity-100',
+            "absolute inset-0 z-20 bg-background-subtle-1",
+            "transition-all duration-300 ease-in-out",
+            isTransparent ? "opacity-0" : "opacity-100"
           )}
         ></div>
         {header && <HeaderMenuDrawer menu={header} />}
@@ -75,8 +79,12 @@ export function UseMenuDrawerHeader({
   );
 }
 
-function HeaderMenuDrawer({menu}: {menu?: EnhancedMenu | null | undefined}) {
-  let {isOpen: showMenu, openDrawer, closeDrawer} = useDrawer();
+function HeaderMenuDrawer({
+  menu,
+}: {
+  menu?: EnhancedMenu | null | undefined;
+}) {
+  let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
   return (
     <nav
       className="z-30 flex items-center justify-start gap-3"
@@ -91,7 +99,7 @@ function HeaderMenuDrawer({menu}: {menu?: EnhancedMenu | null | undefined}) {
         onClose={closeDrawer}
         openFrom="left"
         heading="MENU"
-        isForm='menu'
+        isForm="menu"
       >
         <DrawerMenu menu={menu} />
       </Drawer>
@@ -99,7 +107,7 @@ function HeaderMenuDrawer({menu}: {menu?: EnhancedMenu | null | undefined}) {
   );
 }
 
-function AccountLink({className}: {className?: string}) {
+function AccountLink({ className }: { className?: string }) {
   const rootData = useRootLoaderData();
   const isLoggedIn = rootData?.isLoggedIn;
 

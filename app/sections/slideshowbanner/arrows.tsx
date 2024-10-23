@@ -16,8 +16,8 @@ let variants = cva(
   {
     variants: {
       arrowsColor: {
-        light: "text-gray-900 bg-white hover:bg-gray-100",
-        dark: "text-gray-100 bg-gray-900 hover:bg-gray-800",
+        light: "text-foreground bg-white hover:bg-gray-100",
+        dark: "text-gray-100 bg-primary hover:bg-primary/80",
       },
       arrowsShape: {
         square: "",
@@ -25,7 +25,7 @@ let variants = cva(
         circle: "rounded-full",
       },
       disabled: {
-        true: "opacity-75 cursor-not-allowed",
+        true: "opacity-50 !cursor-not-allowed",
         false: "",
       },
       showArrowsOnHover: { true: "", false: "" },
@@ -85,7 +85,7 @@ export function Arrows(props: SlideshowArrowsProps) {
       <button
         type="button"
         className={clsx(
-          "slideshow-arrow-prev roude",
+          "slideshow-arrow-prev",
           variants({
             arrowsColor,
             arrowsShape,

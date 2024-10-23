@@ -97,7 +97,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         key={key}
         ref={ref}
         {...rest}
-        className={"group/arrow flex flex-col gap-12"}
+        className={"group/arrow flex flex-col gap-12 px-12"}
       >
         <Swiper
           onSwiper={setSwiperInstance}
@@ -126,7 +126,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
               spaceBetween: 20,
             },
           }}
-          className="w-full"
+          className="w-full !static"
         >
           {renderProducts()}
           {showArrows && <Arrows {...props} />}

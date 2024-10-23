@@ -73,7 +73,7 @@ export function ProductCard({
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className={clsx('grid gap-4', className)}>
-        <div className="card-image group/productCard relative aspect-[4/5] bg-primary/5">
+        <div className="card-image group/productCard relative aspect-[1/1] bg-primary/5">
           {image && (
             <Link
               onClick={onClick}
@@ -88,7 +88,7 @@ export function ProductCard({
                   <Image
                     className="fadeIn w-full object-cover absolute opacity-100 transition-opacity duration-300 group-hover/productCard:opacity-0"
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                    aspectRatio="4/5"
+                    aspectRatio="1/1"
                     data={productImages[0]}
                     alt={
                       productImages[0]?.altText || `Picture of ${product.title}`
@@ -98,7 +98,7 @@ export function ProductCard({
                   <Image
                     className="fadeIn w-full object-cover absolute opacity-0 transition-opacity duration-300 group-hover/productCard:opacity-100"
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                    aspectRatio="4/5"
+                    aspectRatio="1/1"
                     data={productImages[1]}
                     alt={
                       productImages[1]?.altText || `Picture of ${product.title}`
@@ -111,7 +111,7 @@ export function ProductCard({
                 <Image
                   className="fadeIn w-full object-cover"
                   sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                  aspectRatio="4/5"
+                  aspectRatio="1/1"
                   data={image}
                   alt={image.altText || `Picture of ${product.title}`}
                   loading={loading}

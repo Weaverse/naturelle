@@ -72,7 +72,7 @@ export function ProductVariants(props: ProductVariantsProps) {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <VariantSelector handle={handle} variants={nodes} options={options}>
         {({option}) => {
           let optionName = option.name;
