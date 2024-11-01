@@ -15,6 +15,8 @@ import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
 import { ProductDetail } from "./product-detail";
+import { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import { StarRating } from "~/components/StarRating";
 interface ProductInformationProps extends HydrogenComponentProps {
   addToCartText: string;
   soldOutText: string;
@@ -65,6 +67,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       ...rest
     } = props;
     let [quantity, setQuantity] = useState<number>(1);
+    const { judgemeReviews } = useLoaderData<ProductLoaderType>();
     let atcText = selectedVariant?.availableForSale
       ? addToCartText
       : selectedVariant?.quantityAvailable === -1
@@ -132,13 +135,19 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                       <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
                         {title}
                       </h2>
+                      {judgemeReviews && (
+                        <div className="flex items-center gap-0.5 mt-1.5">
+                          <StarRating rating={judgemeReviews.rating} />
+                          <span className="ml-1">({judgemeReviews.rating.toFixed(1)})</span>
+                        </div>
+                      )}
                       {showVendor && vendor && (
                         <Text className={"opacity-50 font-medium"}>
                           {vendor}
                         </Text>
                       )}
                       {children}
-                      <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
+                      <p className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium">
                         {selectedVariant && selectedVariant.compareAtPrice && (
                           <Money
                             withoutTrailingZeros
@@ -201,7 +210,9 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
               </div>
             </div>
             <div className="flex flex-col gap-4 mt-20 w-full">
-              {descriptionHtml && <ProductDetail title="Description" content={descriptionHtml} /> }
+              {descriptionHtml && (
+                <ProductDetail title="Description" content={descriptionHtml} />
+              )}
               <div className="grid gap-4 py-4">
                 {showShippingPolicy && shippingPolicy?.body && (
                   <ProductDetail
