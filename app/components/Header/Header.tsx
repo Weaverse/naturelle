@@ -62,7 +62,7 @@ function CartDrawer({
       open={isOpen}
       onClose={onClose}
       openFrom="right"
-      heading="Cart"
+      heading="CART"
       isForm="cart"
     >
       <div>
