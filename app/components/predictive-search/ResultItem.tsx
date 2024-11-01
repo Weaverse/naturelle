@@ -1,6 +1,7 @@
-import {Link} from '@remix-run/react';
-import {Image, Money, Pagination} from '@shopify/hydrogen';
-import {SearchResultItemProps} from './types';
+import { Link } from "@remix-run/react";
+import { Image, Money } from "@shopify/hydrogen";
+import { SearchResultItemProps } from "./types";
+import clsx from "clsx";
 
 export function SearchResultItem({
   goToSearchResult,
@@ -8,12 +9,17 @@ export function SearchResultItem({
 }: SearchResultItemProps) {
   return (
     <li key={item.id}>
-      <Link className="flex gap-4" onClick={goToSearchResult} to={item.url} data-type={item.__typename}>
-        {item.__typename === 'Product' && (
-          <div className="h-20 w-20 shrink-0">
+      <Link
+        className="flex gap-3"
+        onClick={goToSearchResult}
+        to={item.url}
+        data-type={item.__typename}
+      >
+        {item.__typename === "Product" && (
+          <div className="h-20 w-20 shrink-0 aspect-square">
             {item.image?.url && (
               <Image
-                alt={item.image.altText ?? ''}
+                alt={item.image.altText ?? ""}
                 src={item.image.url}
                 width={80}
                 height={80}
@@ -22,26 +28,29 @@ export function SearchResultItem({
             )}
           </div>
         )}
-        <div className="space-y-2">
+        <div className="flex flex-col">
           {item.vendor && (
-            <div>
+            <p>
               <small className="text-foreground-subtle">By {item.vendor}</small>
-            </div>
+            </p>
           )}
           {item.styledTitle ? (
-            <div
+            <p
               dangerouslySetInnerHTML={{
                 __html: item.styledTitle,
               }}
+              className="text-base font-normal"
             />
           ) : (
-            <div
-              className={
-                item.__typename === 'Product' ? 'line-clamp-1' : 'line-clamp-2'
-              }
+            <p
+              className={clsx(
+                item.__typename === "Product"
+                  ? "line-clamp-1 font-heading text-xl font-semibold"
+                  : "line-clamp-2 font-body text-base font-normal"
+              )}
             >
               {item.title}
-            </div>
+            </p>
           )}
           <div className="flex gap-2">
             {item?.compareAtPrice && (

@@ -20,11 +20,11 @@ export function PredictiveSearchResult({
 
   return (
     <div
-      className="predictive-search-result flex flex-col gap-4 divide-y divide-bar-subtle"
+      className="predictive-search-result flex flex-col gap-3 divide-y divide-bar-subtle"
       key={type}
     >
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
-        <h5 className="uppercase font-semibold">{isSuggestions ? 'Suggestions' : type}</h5>
+        <span className="uppercase font-semibold font-heading text-xl">{isSuggestions ? 'Suggestions' : type}</span>
       </Link>
       <ul className={clsx("pt-5", type === "products" ? 'space-y-4' : 'space-y-1')}>
         {items.map((item: NormalizedPredictiveSearchResultItem) => (
