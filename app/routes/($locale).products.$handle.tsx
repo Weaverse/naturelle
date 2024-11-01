@@ -10,8 +10,8 @@ import {
   type SeoConfig,
 } from '@shopify/hydrogen';
 import type {SelectedOptionInput} from '@shopify/hydrogen/storefront-api-types';
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {defer} from '@shopify/remix-oxygen';
+import type {ActionFunctionArgs, LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {defer, json} from '@shopify/remix-oxygen';
 import {getSelectedProductOptions} from '@weaverse/hydrogen';
 import {routeHeaders} from '~/data/cache';
 import {
@@ -19,7 +19,7 @@ import {
   RECOMMENDED_PRODUCTS_QUERY,
   VARIANTS_QUERY,
 } from '~/data/queries';
-import {getJudgemeReviews} from '~/lib/judgeme';
+import {createJudgemeReview, getJudgemeReviews} from '~/lib/judgeme';
 import {seoPayload} from '~/lib/seo.server';
 import type {Storefront} from '~/lib/type';
 import {WeaverseContent} from '~/weaverse';
@@ -91,16 +91,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     url: request.url,
   });
 
-  let judgeme_API_TOKEN = context.env.JUDGEME_PUBLIC_TOKEN;
-  let judgemeReviews = null;
-  if (judgeme_API_TOKEN) {
-    let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
-    judgemeReviews = await getJudgemeReviews(
-      judgeme_API_TOKEN,
-      shop_domain,
-      handle,
-    );
-  }
+  let judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
+  let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
+  let judgemeReviews = await getJudgemeReviews(
+    judgeme_API_TOKEN,
+    shop_domain,
+    handle,
+    context.weaverse
+  );
 
   return defer({
     variants,
@@ -121,6 +119,25 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     }),
     judgemeReviews,
   });
+}
+
+export type ProductLoaderType = typeof loader;
+
+export async function action({ request, context }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  let judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
+  invariant(judgeme_API_TOKEN, "Missing JUDGEME_PRIVATE_API_TOKEN");
+  let response: any = {
+    status: 201,
+  };
+  let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
+  response = await createJudgemeReview(
+    judgeme_API_TOKEN,
+    shop_domain,
+    formData
+  );
+  const { status, ...rest } = response;
+  return json(rest, { status });
 }
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
