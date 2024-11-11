@@ -59,7 +59,7 @@ export function DrawerFilter({
               open={isOpen}
               onClose={closeDrawer}
               openFrom="left"
-              heading="Filter"
+              heading="FILTER"
               isForm='filter'
             >
               <div className="w-96 px-6">

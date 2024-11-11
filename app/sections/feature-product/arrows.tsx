@@ -7,7 +7,7 @@ import { IconArrowLeft, IconArrowRight, IconCaret } from "~/components/Icon";
 
 let variants = cva(
   [
-    "hidden md:block z-10",
+    "z-10",
     "absolute top-1/2 -translate-y-1/2 z-1",
     "p-2 text-center cursor-pointer",
     "border border-bar-subtle",
@@ -25,7 +25,7 @@ let variants = cva(
         circle: "rounded-full",
       },
       disabled: {
-        true: "opacity-30 !cursor-not-allowed",
+        true: "opacity-30",
         false: "",
       },
       showArrowsOnHover: { true: "", false: "" },
@@ -35,7 +35,7 @@ let variants = cva(
       {
         showArrowsOnHover: true,
         side: "left",
-        className: "-left-12 group-hover/arrow:left-0",
+        className: "lg:-left-12 lg:group-hover/arrow:left-0 left-0",
       },
       {
         showArrowsOnHover: false,
@@ -45,7 +45,7 @@ let variants = cva(
       {
         showArrowsOnHover: true,
         side: "right",
-        className: "-right-12 group-hover/arrow:right-0",
+        className: "lg:-right-12 lg:group-hover/arrow:right-0 right-0",
       },
       {
         showArrowsOnHover: false,

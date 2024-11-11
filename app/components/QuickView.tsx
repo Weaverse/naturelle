@@ -91,7 +91,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           <div className="flex flex-col justify-start gap-4">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                <h2 className="font-medium tracking-tighter font-heading">
+                <h2 className="font-medium tracking-tighter">
                   {title}
                 </h2>
                 {showVendor && vendor && (
@@ -207,7 +207,7 @@ export function QuickViewTrigger(props: { productHandle: string }) {
   }, [quickAddOpen, data, load, state]);
   return (
     <>
-      <div className="mt-2 absolute bottom-0 hidden lg:group-hover/productCard:block py-5 px-3 w-full opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
+      <div className="mt-2 absolute rounded-b bottom-0 hidden lg:group-hover/productCard:block py-5 px-3 w-full opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">
         <Button
           onClick={(e) => {
             e.preventDefault();

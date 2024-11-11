@@ -46,6 +46,8 @@ import * as ProductPlacementItem from '~/sections/product-placement/productItem'
 import * as Hotspots from '~/sections/image-hotspots/index';
 import * as HotspotsItem from '~/sections/image-hotspots/item';
 import * as Spacer from '~/sections/spacer';
+import * as JudgemeReviewSection from '~/sections/judgeme-reviews/index';
+import * as JudgemeReviewIndex from '~/sections/judgeme-reviews/review-index';
 import { atoms } from '~/sections/atoms/atoms';
 export const components: HydrogenComponent[] = [
     ...atoms,
@@ -94,5 +96,7 @@ export const components: HydrogenComponent[] = [
     Hotspots,
     HotspotsItem,
     Spacer,
+    JudgemeReviewSection,
+    JudgemeReviewIndex,
     StyleGuide
 ];

@@ -85,7 +85,7 @@ export function Drawer({
                     className={cn(
                       "sticky top-0 flex h-nav items-center px-6 py-5",
                       heading ? "justify-between" : "justify-items-end",
-                      openFrom === "left" || (openFrom === "top" && !isBackMenu)
+                      openFrom === "left" || isForm === "cart" || (openFrom === "top" && !isBackMenu)
                         ? "flex-row-reverse"
                         : ""
                     )}
@@ -99,10 +99,10 @@ export function Drawer({
                       <IconClose aria-label="Close panel" />
                     </button>
                     {heading !== null && (
-                      <Dialog.Title>
-                        <h4 className=" font-semibold" id="cart-contents">
+                      <Dialog.Title as="span">
+                        <span className={cn("font-semibold font-heading text-xl", isForm !== 'search' && 'uppercase')} id="cart-contents">
                           {heading}
-                        </h4>
+                        </span>
                       </Dialog.Title>
                     )}
                     {isBackMenu && (

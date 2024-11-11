@@ -1,5 +1,4 @@
 @import 'swiper/swiper-bundle.css';
-@import '@fontsource-variable/cormorant';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

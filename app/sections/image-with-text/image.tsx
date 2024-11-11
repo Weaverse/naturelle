@@ -10,7 +10,7 @@ import type {VariantProps} from 'class-variance-authority';
 import {cva} from 'class-variance-authority';
 import {forwardRef} from 'react';
 
-let variants = cva('w-full h-auto flex-1', {
+let variants = cva('w-full h-auto basis-full md:basis-1/2', {
   variants: {
     width: {
       small: 'md:w-[40%]',
@@ -81,7 +81,7 @@ let ImageWithTextImage = forwardRef<HTMLDivElement, ImageWithTextImageProps>(
           data={imageData}
           sizes="auto"
           aspectRatio={aspRt}
-          className={cn('h-auto w-full', variants({objectFit, borderRadius}))}
+          className={cn('h-auto', variants({objectFit, borderRadius}))}
         />
       </div>
     );

@@ -97,7 +97,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         key={key}
         ref={ref}
         {...rest}
-        className={"group/arrow flex flex-col gap-12 px-12"}
+        className={"group/arrow flex flex-col gap-12 px-0 md:px-8 lg:px-12"}
       >
         <Swiper
           onSwiper={setSwiperInstance}
