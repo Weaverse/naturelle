@@ -61,10 +61,10 @@ export function ProductMedia(props: ProductMediaProps) {
             : undefined
         }
         onSwiper={setSwiperInstance}
-        className="vt-product-image max-w-full pb-14 md:pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
+        className="vt-product-image max-w-full pb-4 md:pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
         style={
           {
-            "--swiper-pagination-bottom": "20px",
+            "--swiper-pagination-bottom": "-6px",
             "--swiper-pagination-color": "#3D490B",
           } as React.CSSProperties
         }

@@ -113,7 +113,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       return (
         <section ref={ref} {...rest}>
           <div className="container p-6 md:p-8 lg:p-12 lg:px-12 px-4 md:px-6 mx-auto">
-            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">
+            <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-12">
               <ProductMedia
                 media={product?.media.nodes}
                 selectedVariant={selectedVariant}
@@ -129,14 +129,14 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   } as React.CSSProperties
                 }
               >
-                <div className="flex flex-col justify-start gap-6">
+                <div className="flex flex-col justify-start gap-4 lg:gap-6">
                   <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                      <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
+                    <div className="flex flex-col gap-4 sm:gap-5">
+                      <h2 className="font-medium tracking-tighter">
                         {title}
                       </h2>
                       {judgemeReviews && (
-                        <div className="flex items-center gap-0.5 mt-1.5">
+                        <div className="flex items-center gap-0.5">
                           <StarRating rating={judgemeReviews.rating} />
                           <span className="ml-1">({judgemeReviews.rating.toFixed(1)})</span>
                         </div>
@@ -178,7 +178,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                     />
                   </div>
                   <Quantity value={quantity} onChange={setQuantity} />
-                  <div className="flex flex-col gap-3 sm:w-[360px]">
+                  <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
                     <AddToCartButton
                       disabled={!selectedVariant?.availableForSale}
                       lines={[
