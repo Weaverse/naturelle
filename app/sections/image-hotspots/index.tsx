@@ -14,31 +14,53 @@ type HotspotsProps = SectionProps & {
   heading?: string;
   description?: string;
   image: string;
+  image2: string;
   aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
+  duplicateImage: boolean;
 };
 
 let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
-  let { heading, description, image, aspectRatio, children, ...rest } = props;
+  let {
+    heading,
+    description,
+    image,
+    image2,
+    aspectRatio,
+    duplicateImage,
+    children,
+    ...rest
+  } = props;
   let imageData: Partial<WeaverseImage> =
     typeof image === "string"
       ? { url: image, altText: "Hotspots image" }
       : image;
-
+  let image2Data: Partial<WeaverseImage> =
+    typeof image2 === "string"
+      ? { url: image2, altText: "Hotspots image" }
+      : image2;
   return (
-    <Section ref={ref} {...rest} overflow="unset">
+    <Section ref={ref} {...rest} overflow="hidden">
       {heading && <Heading as="h2" content={heading} />}
       {description && (
         <Description as="p" content={description} alignment="center" />
       )}
-      <div
-        className="relative"
-        style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
-      >
+      <div className="flex sm:flex-row flex-col gap-8 w-full h-full relative">
         <Image
           data={imageData}
           sizes="auto"
           className="object-cover z-0 w-full h-full"
+          style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
         />
+        {duplicateImage && (
+          <Image
+            data={image2Data}
+            sizes="auto"
+            className="object-cover z-0 w-full h-full"
+            style={{
+              aspectRatio: getImageAspectRatio(image2Data, aspectRatio),
+            }}
+          />
+        )}
         {children}
       </div>
     </Section>
@@ -94,10 +116,27 @@ export let schema: HydrogenComponentSchema = {
           },
           defaultValue: "medium",
         },
+      ],
+    },
+    {
+      group: "Image",
+      inputs: [
         {
           type: "image",
           name: "image",
           label: "Image",
+        },
+        {
+          type: "image",
+          name: "image2",
+          label: "Image #2",
+          condition: "duplicateImage.eq.true",
+        },
+        {
+          type: "switch",
+          name: "duplicateImage",
+          label: "Duplicate image",
+          defaultValue: false,
         },
         {
           type: "select",
@@ -140,6 +179,7 @@ export let schema: HydrogenComponentSchema = {
   presets: {
     heading: "Shop the look",
     image: IMAGES_PLACEHOLDERS.collection_4,
+    image2: IMAGES_PLACEHOLDERS.collection_4,
     aspectRatio: "16/9",
     gap: 40,
     children: [

@@ -110,7 +110,7 @@ export function ProductPopup({
         )}
         <div className="flex flex-col gap-2 py-2 font-sans">
           <div>
-            <div className="font-semibold">{product.title}</div>
+            <div className="font-semibold line-clamp-2">{product.title}</div>
             {showPrice && (
               <div className="flex items-center gap-1.5">
                 {compareAtPrice && (
@@ -118,7 +118,7 @@ export function ProductPopup({
                     withoutTrailingZeros
                     data={compareAtPrice}
                     as="div"
-                    className="text-base font-medium line-through text-gray-400"
+                    className="text-base font-medium line-through text-label-sale"
                   />
                 )}
                 <Money
