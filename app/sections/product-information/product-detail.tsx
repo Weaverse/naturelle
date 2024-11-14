@@ -32,7 +32,7 @@ export function ProductDetail({
 
           <Disclosure.Panel className={"pt-4 lg:px-6 px-1.5 flex flex-col lg:flex-row gap-6"}>
             <p className="font-semibold text-base w-full lg:w-1/3">About this product</p>
-            <div
+            <p
               className="lg:w-2/3 w-full"
               dangerouslySetInnerHTML={{ __html: content }}
             />

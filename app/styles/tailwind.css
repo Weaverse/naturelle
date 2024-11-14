@@ -80,7 +80,7 @@
         @apply font-heading;
     }
     mark {
-        @apply bg-transparent font-semibold;
+        @apply bg-transparent font-normal;
     }
 }
 

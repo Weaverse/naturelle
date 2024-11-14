@@ -147,7 +147,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                         </Text>
                       )}
                       {children}
-                      <p className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium">
+                      <p className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium flex gap-3">
                         {selectedVariant && selectedVariant.compareAtPrice && (
                           <Money
                             withoutTrailingZeros
