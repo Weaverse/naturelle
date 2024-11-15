@@ -3,7 +3,7 @@ import type { MediaImage } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
 import type { CSSProperties } from "react";
 import type { ProductQuery } from "storefrontapi.generated";
-import type { HotspotsItemData } from "./item";
+import type { HotspotsItemData } from "./hotspot-item";
 import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import { Link } from "~/components/Link";
 
