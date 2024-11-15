@@ -1,10 +1,9 @@
-import type {
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import React, { forwardRef } from "react";
 import { Section, SectionProps } from "../atoms/Section";
 import Heading from "../atoms/Heading";
 import Description from "../atoms/Description";
+import clsx from "clsx";
 
 type HotspotsProps = SectionProps & {
   heading?: string;
@@ -12,19 +11,21 @@ type HotspotsProps = SectionProps & {
 };
 
 let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
-  let {
-    heading,
-    description,
-    children,
-    ...rest
-  } = props;
+  let { heading, description, children, ...rest } = props;
   return (
     <Section ref={ref} {...rest} overflow="unset">
       {heading && <Heading as="h2" content={heading} />}
       {description && (
         <Description as="p" content={description} alignment="center" />
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8 w-full h-full">
+      <div
+        className={clsx(
+          "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 w-full h-full",
+          React.Children.count(children) > 1
+            ? "sm:grid-cols-2"
+            : "sm:grid-cols-1"
+        )}
+      >
         {children}
       </div>
     </Section>
