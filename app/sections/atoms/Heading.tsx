@@ -275,7 +275,6 @@ export let headingInputs: InspectorGroup['inputs'] = [
       ],
     },
     defaultValue: '400',
-    helpText: 'Learn more about image <a href="https://fontsource.org/fonts/cormorant" target="_blank" rel="noopener noreferrer">font weight</a> properties.',
   },
   {
     type: 'select',

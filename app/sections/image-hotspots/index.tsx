@@ -39,7 +39,7 @@ let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
       ? { url: image2, altText: "Hotspots image" }
       : image2;
   return (
-    <Section ref={ref} {...rest} overflow="hidden">
+    <Section ref={ref} {...rest} overflow="unset">
       {heading && <Heading as="h2" content={heading} />}
       {description && (
         <Description as="p" content={description} alignment="center" />
