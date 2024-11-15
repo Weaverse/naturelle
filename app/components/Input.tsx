@@ -54,7 +54,7 @@ export let Input = React.forwardRef<HTMLInputElement, InputProps>(
         // type={type}
         ref={ref}
         className={clsx(
-          'w-full !shadow-none focus:ring-0 focus-visible:outline-none',
+          'w-full !shadow-none focus:ring-0 focus-visible:outline-none placeholder:text-foreground-subtle',
           hasChild
             ? 'relatvie grow border-none bg-transparent p-0'
             : commonClasses,

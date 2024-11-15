@@ -84,14 +84,14 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
         {displayedImages.map((item, index) => {
           return (
             <div
-              className="group relative aspect-square min-w-80 cursor-pointer"
+              className="group relative aspect-square min-w-80 cursor-pointer rounded"
               key={index}
             >
               {item.media_url ? (
                 <Image
                   key={index}
                   src={item.media_url}
-                  className="aspect-square w-full object-cover"
+                  className="aspect-square w-full object-cover rounded"
                   sizes="auto"
                 />
               ) : (

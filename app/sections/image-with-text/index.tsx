@@ -13,7 +13,7 @@ let ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>(
       <Section
         ref={ref}
         {...rest}
-        containerClassName="flex flex-col gap-9 md:flex-row px-0 sm:px-0"
+        containerClassName="flex flex-col md:flex-row md:justify-between px-0 sm:px-0"
       >
         {children}
       </Section>

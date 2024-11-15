@@ -86,7 +86,10 @@ function CartLines({
         )}
         <tbody>
           {lines?.nodes?.map((line) => (
-            <CartLineItem key={line.id} line={line} layout={layout} />
+            <>
+              {layout === "page" && <div className="h-4 w-full"></div>}
+              <CartLineItem key={line.id} line={line} layout={layout} />
+            </>
           ))}
         </tbody>
       </table>
@@ -106,7 +109,8 @@ function CartLineItem({
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   let styles = {
     page: "grid md:table-row gap-2 grid-rows-2 grid-cols-[100px_1fr_64px]",
-    aside: "grid gap-3 grid-rows-[1fr_auto] grid-cols-[100px_1fr] pb-4",
+    aside:
+      "grid gap-y-2 gap-x-3 grid-rows-[1fr_auto] grid-cols-[100px_1fr] pb-4",
   };
 
   const cellStyles = {
@@ -121,7 +125,7 @@ function CartLineItem({
         {image && (
           <Image
             alt={title}
-            aspectRatio="3/4"
+            aspectRatio="1/1"
             data={image}
             height={100}
             loading="lazy"
@@ -131,7 +135,7 @@ function CartLineItem({
         )}
       </td>
       <td className={cellClass}>
-        <div className=" flex gap-1 justify-between">
+        <div className="flex gap-1 justify-between">
           <Link
             prefetch="intent"
             to={lineItemUrl}
@@ -142,13 +146,22 @@ function CartLineItem({
               }
             }}
           >
-            <p className="line-clamp-1">{product.title}</p>
+            <p
+              className={clsx(
+                "line-clamp-1",
+                layout === "page"
+                  ? "text-base font-normal"
+                  : "text-base font-semibold"
+              )}
+            >
+              {product.title}
+            </p>
           </Link>
           <div className={layout === "page" ? "md:hidden" : ""}>
             <CartLineRemoveButton lineIds={[line.id]} />
           </div>
         </div>
-        <ul className="mt-4 space-y-1">
+        <ul className="space-y-1">
           {selectedOptions.map((option) => (
             <li key={option.name}>
               <span className="text-foreground-subtle">{option.value}</span>
@@ -163,9 +176,9 @@ function CartLineItem({
       )}
       <td className={cn(cellClass, "row-start-2")}>
         <div className="flex items-center justify-between gap-2">
-          <CartLineQuantity line={line} />
+          <CartLineQuantity line={line} layout={layout} />
           {layout === "aside" && (
-            <p className="text-center">
+            <p className="text-center text-base font-semibold">
               <Money withoutTrailingZeros data={line.cost.amountPerQuantity} />
             </p>
           )}
@@ -326,17 +339,26 @@ function CartLineRemoveButton({ lineIds }: { lineIds: string[] }) {
   );
 }
 
-function CartLineQuantity({ line }: { line: CartLine }) {
+function CartLineQuantity({
+  line,
+  layout,
+}: {
+  line: CartLine;
+  layout: CartMainProps["layout"];
+}) {
   if (!line || typeof line?.quantity === "undefined") return null;
   const { id: lineId, quantity } = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
   const nextQuantity = Number((quantity + 1).toFixed(0));
-
+  let buttonStyles = {
+    page: "w-10 h-10 transition",
+    aside: "w-10 h-[35px] transition",
+  };
   return (
     <div className="flex items-center border border-bar-subtle rounded w-fit">
       <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
         <button
-          className="w-10 h-10 transition "
+          className={buttonStyles[layout]}
           aria-label="Decrease quantity"
           disabled={quantity <= 1}
           name="decrease-quantity"
@@ -348,7 +370,7 @@ function CartLineQuantity({ line }: { line: CartLine }) {
       <div className="px-2 w-8 text-center">{quantity}</div>
       <CartLineUpdateButton lines={[{ id: lineId, quantity: nextQuantity }]}>
         <button
-          className="w-10 h-10 transition "
+          className={buttonStyles[layout]}
           aria-label="Increase quantity"
           name="increase-quantity"
           value={nextQuantity}

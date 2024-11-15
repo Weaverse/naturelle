@@ -1,5 +1,4 @@
 @import 'swiper/swiper-bundle.css';
-@import '@fontsource-variable/cormorant';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -81,7 +80,7 @@
         @apply font-heading;
     }
     mark {
-        @apply bg-transparent font-semibold;
+        @apply bg-transparent font-normal;
     }
 }
 

@@ -15,6 +15,8 @@ import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
 import { ProductDetail } from "./product-detail";
+import { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import { StarRating } from "~/components/StarRating";
 interface ProductInformationProps extends HydrogenComponentProps {
   addToCartText: string;
   soldOutText: string;
@@ -65,6 +67,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       ...rest
     } = props;
     let [quantity, setQuantity] = useState<number>(1);
+    const { judgemeReviews } = useLoaderData<ProductLoaderType>();
     let atcText = selectedVariant?.availableForSale
       ? addToCartText
       : selectedVariant?.quantityAvailable === -1
@@ -110,7 +113,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       return (
         <section ref={ref} {...rest}>
           <div className="container p-6 md:p-8 lg:p-12 lg:px-12 px-4 md:px-6 mx-auto">
-            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">
+            <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-12">
               <ProductMedia
                 media={product?.media.nodes}
                 selectedVariant={selectedVariant}
@@ -126,19 +129,25 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   } as React.CSSProperties
                 }
               >
-                <div className="flex flex-col justify-start gap-6">
+                <div className="flex flex-col justify-start gap-4 lg:gap-6">
                   <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                      <h2 className="text-3xl font-medium tracking-tighter sm:text-5xl">
+                    <div className="flex flex-col gap-4 sm:gap-5">
+                      <h2 className="font-medium tracking-tighter">
                         {title}
                       </h2>
+                      {judgemeReviews && (
+                        <div className="flex items-center gap-0.5">
+                          <StarRating rating={judgemeReviews.rating} />
+                          <span className="ml-1">({judgemeReviews.rating.toFixed(1)})</span>
+                        </div>
+                      )}
                       {showVendor && vendor && (
                         <Text className={"opacity-50 font-medium"}>
                           {vendor}
                         </Text>
                       )}
                       {children}
-                      <p className="text-xl md:text-2xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed flex gap-3 font-heading">
+                      <p className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium flex gap-3">
                         {selectedVariant && selectedVariant.compareAtPrice && (
                           <Money
                             withoutTrailingZeros
@@ -169,7 +178,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                     />
                   </div>
                   <Quantity value={quantity} onChange={setQuantity} />
-                  <div className="flex flex-col gap-3 sm:w-[360px]">
+                  <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
                     <AddToCartButton
                       disabled={!selectedVariant?.availableForSale}
                       lines={[
@@ -201,7 +210,9 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
               </div>
             </div>
             <div className="flex flex-col gap-4 mt-20 w-full">
-              {descriptionHtml && <ProductDetail title="Description" content={descriptionHtml} /> }
+              {descriptionHtml && (
+                <ProductDetail title="Description" content={descriptionHtml} />
+              )}
               <div className="grid gap-4 py-4">
                 {showShippingPolicy && shippingPolicy?.body && (
                   <ProductDetail
