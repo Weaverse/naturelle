@@ -1,29 +1,17 @@
-import { Image } from "@shopify/hydrogen";
-import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
-import type {
-  WeaverseImage,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import React, { forwardRef } from "react";
 import { Section, SectionProps } from "../atoms/Section";
 import Heading from "../atoms/Heading";
 import Description from "../atoms/Description";
-import { getImageAspectRatio } from "~/lib/utils";
+import clsx from "clsx";
 
 type HotspotsProps = SectionProps & {
   heading?: string;
   description?: string;
-  image: string;
-  aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
 };
 
 let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
-  let { heading, description, image, aspectRatio, children, ...rest } = props;
-  let imageData: Partial<WeaverseImage> =
-    typeof image === "string"
-      ? { url: image, altText: "Hotspots image" }
-      : image;
-
+  let { heading, description, children, ...rest } = props;
   return (
     <Section ref={ref} {...rest} overflow="unset">
       {heading && <Heading as="h2" content={heading} />}
@@ -31,14 +19,13 @@ let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
         <Description as="p" content={description} alignment="center" />
       )}
       <div
-        className="relative"
-        style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
+        className={clsx(
+          "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 w-full h-full",
+          React.Children.count(children) > 1
+            ? "sm:grid-cols-2"
+            : "sm:grid-cols-1"
+        )}
       >
-        <Image
-          data={imageData}
-          sizes="auto"
-          className="object-cover z-0 w-full h-full"
-        />
         {children}
       </div>
     </Section>
@@ -50,7 +37,7 @@ export default Hotspots;
 export let schema: HydrogenComponentSchema = {
   type: "hotspots",
   title: "Hotspots",
-  childTypes: ["hotspots--item"],
+  childTypes: ["image-hotspots"],
   inspector: [
     {
       group: "Layout",
@@ -94,28 +81,6 @@ export let schema: HydrogenComponentSchema = {
           },
           defaultValue: "medium",
         },
-        {
-          type: "image",
-          name: "image",
-          label: "Image",
-        },
-        {
-          type: "select",
-          name: "aspectRatio",
-          label: "Aspect ratio",
-          defaultValue: "adapt",
-          configs: {
-            options: [
-              { value: "adapt", label: "Adapt to image" },
-              { value: "1/1", label: "1/1" },
-              { value: "4/3", label: "4/3" },
-              { value: "3/4", label: "3/4" },
-              { value: "16/9", label: "16/9" },
-            ],
-          },
-          helpText:
-            'Learn more about image <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio" target="_blank" rel="noopener noreferrer">aspect ratio</a> property.',
-        },
       ],
     },
     {
@@ -139,19 +104,10 @@ export let schema: HydrogenComponentSchema = {
   toolbar: ["general-settings", ["duplicate", "delete"]],
   presets: {
     heading: "Shop the look",
-    image: IMAGES_PLACEHOLDERS.collection_4,
-    aspectRatio: "16/9",
     gap: 40,
     children: [
       {
-        type: "hotspots--item",
-        offsetX: 25,
-        offsetY: 30,
-      },
-      {
-        type: "hotspots--item",
-        offsetX: 55,
-        offsetY: 65,
+        type: "image-hotspots",
       },
     ],
   },

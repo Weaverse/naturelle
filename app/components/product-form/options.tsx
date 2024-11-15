@@ -80,7 +80,7 @@ export function VariantOption(props: VariantOptionProps) {
         <span className="ml-2 font-semibold text-base">{selectedOptionValue}</span>
       </legend>
       {type === "button" && (
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           {values.map((value) => (
             <button
               key={value.value}
@@ -99,7 +99,7 @@ export function VariantOption(props: VariantOptionProps) {
       )}
 
       {type === "color" && (
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           {values.map((value) => {
             let swatchColor: string =
               swatches.colorSwatches.find((color) => color.name === value.value)
@@ -128,7 +128,7 @@ export function VariantOption(props: VariantOptionProps) {
         </div>
       )}
       {type === "custom-image" && (
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           {values.map((value) => {
             let swatchImage: WeaverseImage =
               swatches.imageSwatches.find((image) => image.name === value.value)
@@ -159,7 +159,7 @@ export function VariantOption(props: VariantOptionProps) {
         </div>
       )}
       {type === "variant-image" && (
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           {values.map((value) => {
             return (
               <button
@@ -198,7 +198,7 @@ export function VariantOption(props: VariantOptionProps) {
       )}
 
       {type === "default" && (
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           {values.map((value) => (
             <div
               key={value.value}
