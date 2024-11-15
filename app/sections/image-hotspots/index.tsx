@@ -24,7 +24,7 @@ let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
       {description && (
         <Description as="p" content={description} alignment="center" />
       )}
-      <div className="flex sm:flex-row flex-col gap-4 md:gap-6 lg:gap-8 w-full h-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8 w-full h-full">
         {children}
       </div>
     </Section>

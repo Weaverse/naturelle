@@ -41,6 +41,7 @@ export default HotspotsImage;
 export let schema: HydrogenComponentSchema = {
   type: "image-hotspots",
   title: "Image hotspots",
+  limit: 2,
   childTypes: ["hotspots--item"],
   inspector: [
     {
