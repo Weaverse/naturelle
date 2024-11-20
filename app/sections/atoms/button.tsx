@@ -36,6 +36,7 @@ const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
       <Button
         as={Component}
         to={href}
+        data-motion="fade-up"
         target={target}
         variant={variant}
         shape={shape}

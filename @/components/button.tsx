@@ -14,7 +14,7 @@ const buttonVariants = cva(
         secondary:
           'border border-bar bg-transparent hover:bg-primary hover:text-secondary',
         outline:
-          'bg-transparent border border-bar text-secondary-foreground font-heading text-xl',
+          'bg-transparent border border-bar text-secondary-foreground !font-heading',
         link: 'text-primary underline-offset-4 hover:underline',
         decor: 'relative',
         custom: '',

@@ -12,6 +12,7 @@ import {BLOG_QUERY} from '~/data/queries';
 import {cva, VariantProps} from 'class-variance-authority';
 import clsx from 'clsx';
 import {CSSProperties, forwardRef} from 'react';
+import { useMotion } from '~/hooks/use-motion';
 
 let fontSizeVariants = cva('', {
   variants: {
@@ -98,6 +99,7 @@ let articlesPerRowClasses: {[item: number]: string} = {
 };
 
 const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
+  const [scope] = useMotion(ref);
   let {
     blogs,
     backgroundColor,
@@ -137,7 +139,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
 
   return (
     <section
-      ref={ref}
+      ref={scope}
       {...rest}
       className="flex h-full w-full justify-center bg-[var(--background-color)]"
       style={sectionStyle}
@@ -154,6 +156,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
             <Link
               key={i}
               to={idx.handle ? `/blogs/${blogs.handle}/${idx.handle}` : '#'}
+              data-motion="slide-in"
               className={'group'}
             >
               <div

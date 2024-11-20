@@ -71,13 +71,13 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
     const renderProducts = () => {
       if (!loaderData || !displayedProducts) {
         return Array.from({ length: 4 }).map((_, i) => (
-          <SwiperSlide key={i} className="w-full">
+          <SwiperSlide key={i} data-motion="slide-in" className="w-full">
             {productItemBlank()}
           </SwiperSlide>
         ));
       } else {
         return displayedProducts.map((product, i) => (
-          <SwiperSlide key={product.id}>
+          <SwiperSlide key={product.id} data-motion="slide-in">
               <ProductCard
                 quickAdd
                 product={product}
