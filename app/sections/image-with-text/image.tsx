@@ -76,7 +76,7 @@ let ImageWithTextImage = forwardRef<HTMLDivElement, ImageWithTextImageProps>(
     }
 
     return (
-      <div ref={ref} {...rest} className={cn(variants({width}))}>
+      <div data-motion="zoom-in" ref={ref} {...rest} className={cn(variants({width}))}>
         <Image
           data={imageData}
           sizes="auto"

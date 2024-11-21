@@ -54,6 +54,7 @@ export function ReviewForm({
     >
       {judgemeReviews.reviews.length !== 0 || !isFormVisible ? (
         <div
+          data-motion="fade-up"
           className={clsx(
             "flex flex-col gap-4 bg-background-subtle-1 p-6 w-full",
             judgemeReviews.reviews.length === 0 ? "items-center" : "items-start"
@@ -90,6 +91,7 @@ export function ReviewForm({
       ) : null}
       {isFormVisible && (
         <div
+          data-motion="fade-up"
           className={clsx(
             "bg-background-subtle-1 p-6 w-full",
             judgemeReviews.reviews.length === 0 && "flex justify-center"
@@ -237,6 +239,7 @@ export function ReviewForm({
       )}
       {isPopupVisible && (
         <div
+          data-motion="fade-up"
           className={clsx(
             "flex flex-col gap-6 p-6 bg-background-subtle-1 w-full",
             judgemeReviews.reviews.length === 0 && "items-center"

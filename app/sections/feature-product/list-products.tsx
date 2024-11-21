@@ -71,13 +71,13 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
     const renderProducts = () => {
       if (!loaderData || !displayedProducts) {
         return Array.from({ length: 4 }).map((_, i) => (
-          <SwiperSlide key={i} data-motion="slide-in" className="w-full">
+          <SwiperSlide key={i} className="w-full">
             {productItemBlank()}
           </SwiperSlide>
         ));
       } else {
         return displayedProducts.map((product, i) => (
-          <SwiperSlide key={product.id} data-motion="slide-in">
+          <SwiperSlide key={product.id}>
               <ProductCard
                 quickAdd
                 product={product}
@@ -97,6 +97,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         key={key}
         ref={ref}
         {...rest}
+        data-motion="fade-up"
         className={"group/arrow flex flex-col gap-12 px-0 md:px-8 lg:px-12"}
       >
         <Swiper
