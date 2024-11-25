@@ -66,6 +66,7 @@ let Description = forwardRef<
     <Tag
       ref={ref}
       {...rest}
+      data-motion="fade-up"
       style={{color}}
       className={clsx(variants({textSize, width, alignment, className}))}
       suppressHydrationWarning

@@ -13,6 +13,7 @@ import type { OverlayProps } from "./Overlay";
 import { overlayInputs } from "./Overlay";
 import { OverlayAndBackground } from "./OverlayAndBackground";
 import { cn } from "@/lib/utils";
+import { useMotion } from "~/hooks/use-motion";
 
 export type BackgroundProps = BackgroundImageProps & {
   backgroundFor: "section" | "content";
@@ -78,6 +79,7 @@ let variants = cva("relative", {
 });
 
 export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
+  const [scope] = useMotion(ref);
   let {
     as: Component = "section",
     width,
@@ -112,12 +114,12 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
 
   return (
     <Component
-      ref={ref}
+      ref={scope}
       {...rest}
       style={style}
       className={cn(
         variants({ padding: width, overflow, className }),
-        hasBackground && !isBgForContent && "has-background",
+        hasBackground && !isBgForContent && "has-background"
       )}
     >
       {!isBgForContent && <OverlayAndBackground {...props} />}
@@ -125,7 +127,7 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
         className={cn(
           variants({ gap, width, verticalPadding, overflow }),
           hasBackground && isBgForContent && "has-background px-4 sm:px-8",
-          containerClassName,
+          containerClassName
         )}
       >
         {isBgForContent && <OverlayAndBackground {...props} />}

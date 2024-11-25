@@ -169,7 +169,7 @@ const BeforeAndAfter = forwardRef<HTMLDivElement, BeforeAndAfterProps>((props, r
     } as CSSProperties;
 
     return (
-        <div ref={containerRef} {...rest} className="w-full relative h-[var(--slider-height-mobile)] sm:h-[var(--slider-height-desktop)] select-none" style={sliderStyle}>
+        <div data-motion="slide-in" ref={containerRef} {...rest} className="w-full relative h-[var(--slider-height-mobile)] sm:h-[var(--slider-height-desktop)] select-none" style={sliderStyle}>
             <div className="left-0 absolute top-0 h-full w-full" ref={firstHalfRef}>
                 {afterImage ? (<Image
                     data={afterImage}

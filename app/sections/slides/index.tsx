@@ -8,6 +8,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import clsx from 'clsx';
+import { useMotion } from '~/hooks/use-motion';
 
 interface SlidesProps extends HydrogenComponentProps {
   sectionHeight: number;
@@ -22,6 +23,7 @@ let widthClasses: {[item: string]: string} = {
 const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
   let {sectionHeight, width, children, ...rest} = props;
   const [isMobile, setIsMobile] = useState(false);
+  const [scope] = useMotion(ref);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -42,7 +44,7 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
 
   return (
     <section
-      ref={ref}
+      ref={scope}
       {...rest}
       style={sectionStyle}
       className={clsx(

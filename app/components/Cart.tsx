@@ -130,7 +130,7 @@ function CartLineItem({
             height={100}
             loading="lazy"
             width={100}
-            className="object-cover"
+            className="object-cover rounded-[2px]"
           />
         )}
       </td>

@@ -19,7 +19,7 @@ const NewsletterIcon = forwardRef<HTMLDivElement, NewsletterIconProps>((props, r
   } as CSSProperties;
 
   return (
-    <div ref={ref} {...rest} style={style} className="flex items-center justify-center">
+    <div data-motion="fade-up" ref={ref} {...rest} style={style} className="flex items-center justify-center">
       {iconImage ? (
         <Image
           data={iconImage}

@@ -22,7 +22,7 @@ const ProductPlacementItem = forwardRef<
   let {image, product, ...rest} = props;
   let contentStyle: CSSProperties = {} as CSSProperties;
   return (
-    <div ref={ref} {...rest} style={contentStyle} className="h-full w-full">
+    <div data-motion="slide-in" ref={ref} {...rest} style={contentStyle} className="h-full w-full">
       {image ? (
         <div className="relative h-full w-full">
           <Image
