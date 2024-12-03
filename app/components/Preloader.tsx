@@ -13,7 +13,7 @@ export function Preloader() {
 
   return (
     <div
-      className={`fixed inset-0 bg-background-subtle-1 z-50 flex items-center justify-center transition-opacity duration-500 ${
+      className={`fixed inset-0 bg-background z-50 flex items-center justify-center transition-opacity duration-500 ${
         isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     />
