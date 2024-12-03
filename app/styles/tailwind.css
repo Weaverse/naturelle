@@ -66,10 +66,10 @@
 
 @layer base {
     * {
-        @apply border-bar;
+        @apply border-border;
     }
     body {
-        @apply font-body bg-background text-foreground antialiased;
+        @apply font-body bg-background text-text-primary antialiased;
     }
     h1,
     h2,
@@ -203,7 +203,7 @@
 .animate-hover::before {
     content: "";
     /* transform-origin: right; */
-    @apply absolute bottom-0 left-0 w-full border-b-2 origin-right duration-300 transition-transform scale-x-0;
+    @apply absolute bottom-0 left-0 w-full border-b-2 border-border origin-right duration-300 transition-transform scale-x-0;
 }
 
 .animate-hover:hover::before {
