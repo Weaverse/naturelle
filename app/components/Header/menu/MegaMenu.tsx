@@ -12,7 +12,7 @@ interface EnhancedMenuItem extends SingleMenuItem {
 }
 
 const dropdownContentClass =
-  'absolute overflow-hidden bg-background-subtle-1 shadow-md z-10 dropdown-transition border-t';
+  'absolute overflow-hidden bg-[var(--color-header-bg)] shadow-md z-10 dropdown-transition border-t';
 
 export function MegaMenu(props: {menu: EnhancedMenu | null | undefined}) {
   let {menu} = props;
@@ -58,7 +58,7 @@ function MultiMenu(props: SingleMenuItem & {isShowIconCaret?: boolean}) {
       key={idx}
       style={{'--item-index': idx} as {[key: string]: any}}
     >
-      <h5 className="mb-4 font-semibold uppercase text-foreground">
+      <h5 className="mb-4 font-semibold uppercase text-text-primary">
         <Link to={item.to} prefetch="intent">
           <span className="text-animation">{item.title}</span>
         </Link>

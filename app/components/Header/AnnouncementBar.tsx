@@ -11,9 +11,6 @@ export function AnnouncementBar() {
   let {
     content,
     textSize,
-    textColor,
-    borderColor,
-    backgroundColor,
     announcementBarHeight,
     speed,
     gap,
@@ -21,9 +18,6 @@ export function AnnouncementBar() {
     enableScrollingText,
   } = settings;
   let style: CSSProperties = {
-    '--text-color': textColor,
-    '--border-color': borderColor,
-    '--background-color': backgroundColor,
     '--height-bar': `${announcementBarHeight}px`,
     '--speed': `${speed}s`,
     '--gap': `${gap}px`,
@@ -59,15 +53,15 @@ export function AnnouncementBar() {
       ref={containerRef}
       style={style}
       className={clsx(
-        'h-[var(--height-bar)] bg-[var(--background-color)] py-[var(--vertical-padding)]',
-        'border-y border-y-[var(--border-color)]',
+        'h-[var(--height-bar)] bg-[var(--color-topbar-bg)] py-[var(--vertical-padding)]',
+        'border-y border-y-[var(--color-topbar-border)]',
         'flex w-full items-center justify-center overflow-hidden',
         stickyAnnouncementBar ? 'sticky top-0 z-40' : 'relative',
       )}
     >
       <button
         onClick={handleClose}
-        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 transform cursor-pointer border-none bg-transparent text-[var(--text-color)]"
+        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 transform cursor-pointer border-none bg-transparent text-[var(--color-topbar-text)]"
       >
         ×
       </button>
@@ -79,7 +73,7 @@ export function AnnouncementBar() {
             {Array.from({length: 15}).map((_, i) => (
               <li
                 key={i}
-                className="animate-scrollContent whitespace-nowrap pr-[var(--gap)] font-body font-normal text-[var(--text-color)]"
+                className="animate-scrollContent whitespace-nowrap pr-[var(--gap)] font-body font-normal text-[var(--color-topbar-text)]"
                 style={{
                   animationDuration: `var(--speed)`,
                   fontSize: `${textSize}px`,
@@ -100,7 +94,7 @@ export function AnnouncementBar() {
       >
         <div
           ref={contentRef}
-          className="w-fit whitespace-nowrap px-11 font-body font-normal text-[var(--text-color)]"
+          className="w-fit whitespace-nowrap px-11 font-body font-normal text-[var(--color-topbar-text)]"
         >
           {content}
         </div>
