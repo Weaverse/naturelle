@@ -70,15 +70,12 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    "transform text-left align-middle shadow-xl transition-all",
+                    "transform text-left align-middle shadow-xl transition-all bg-[var(--color-drawer-bg)]",
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
                         ? "h-fit w-screen"
-                        : `h-screen-dynamic w-screen ${maxWidth}`,
-                    isForm === "cart" || isForm === "filter"
-                      ? "bg-background-basic"
-                      : "bg-background-subtle-1"
+                        : `h-screen-dynamic w-screen ${maxWidth}`
                   )}
                 >
                   <header
@@ -92,7 +89,7 @@ export function Drawer({
                   >
                     <button
                       type="button"
-                      className="text-body hover:text-body/50 -m-4 p-4 transition"
+                      className="text-text-primary hover:text-text-primary/50 -m-4 p-4 transition"
                       onClick={onClose}
                       data-test="close-cart"
                     >
@@ -100,7 +97,7 @@ export function Drawer({
                     </button>
                     {heading !== null && (
                       <Dialog.Title as="span">
-                        <span className={cn("font-semibold font-heading text-xl", isForm !== 'search' && 'uppercase')} id="cart-contents">
+                        <span className={cn("font-semibold font-heading text-xl text-text-primary", isForm !== 'search' && 'uppercase')} id="cart-contents">
                           {heading}
                         </span>
                       </Dialog.Title>
@@ -108,7 +105,7 @@ export function Drawer({
                     {isBackMenu && (
                       <button
                         type="button"
-                        className="text-body hover:text-body/50 -m-4 p-2 transition"
+                        className="text-text-primary hover:text-text-primary/50 -m-4 p-2 transition"
                         onClick={onClose}
                         data-test="close-cart"
                       >

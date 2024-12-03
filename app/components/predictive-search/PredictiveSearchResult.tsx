@@ -20,7 +20,7 @@ export function PredictiveSearchResult({
 
   return (
     <div
-      className="predictive-search-result flex flex-col gap-3 divide-y divide-bar-subtle"
+      className="predictive-search-result flex flex-col gap-3 divide-y divide-border-subtle"
       key={type}
     >
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
