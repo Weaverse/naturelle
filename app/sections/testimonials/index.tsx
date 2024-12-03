@@ -44,7 +44,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps & SectionProps>((
         <Section
             ref={ref}
             {...rest}
-            className='relative bg-secondary overflow-hidden px-0'
+            className='relative bg-[#f8f8f0] overflow-hidden px-0'
             style={sectionStyle}
         >
             <div className="absolute inset-0">
@@ -55,7 +55,7 @@ const Testimonials = forwardRef<HTMLElement, TestimonialsProps & SectionProps>((
                         sizes="auto"
                     />
                 ) : (
-                    <div className="flex justify-center items-center bg-background-subtle-1 w-full h-full">
+                    <div className="flex justify-center items-center bg-[#e5e6d4] w-full h-full">
                         <IconImageBlank
                             className="w-96 h-96 opacity-80"
                             viewBox="0 0 526 526"

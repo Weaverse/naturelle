@@ -30,7 +30,7 @@ const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
     } as CSSProperties;
     let styleButton = ""
     if (variant === 'custom') {
-      styleButton = "bg-[var(--background-color)] border border-[var(--border-color)] text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]"
+      styleButton = "bg-[var(--background-color)] border border-[var(--border-color)] !text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:!text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]"
     }
     return (
       <Button
@@ -163,6 +163,7 @@ export const schema: HydrogenComponentSchema = {
           type: 'color',
           label: 'Text color',
           name: 'textColorDecor',
+          defaultValue: '#fff',
           condition: "variant.eq.decor",
         },
         {

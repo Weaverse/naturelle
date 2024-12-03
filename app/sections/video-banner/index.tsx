@@ -178,7 +178,7 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
         )}
       >
         {inView && (
-          <Suspense fallback={<div className='w-full h-full bg-background-subtle-1'></div>}>
+          <Suspense fallback={<div className='w-full h-full bg-background'></div>}>
             <ReactPlayer
               url={videoURL2 || videoURL.url}
               playing

@@ -60,7 +60,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
   } as CSSProperties;
   const imageItemBlank = () => {
     return (
-      <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-1">
+      <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
         <IconImageBlank
           viewBox="0 0 526 526"
           className="!h-full !w-full opacity-80"
