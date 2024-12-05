@@ -1,5 +1,5 @@
-import { Button } from "@/components/button";
-import { Input } from "@/components/input";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { cn } from "@/lib/utils";
 import { Link } from "@remix-run/react";
 import { CartForm, Image, Money } from "@shopify/hydrogen";

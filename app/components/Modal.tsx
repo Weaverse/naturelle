@@ -1,4 +1,4 @@
-import {Button} from '@/components/button';
+import {Button} from '~/components/button';
 import {Link} from '@remix-run/react';
 import {useEffect} from 'react';
 import {IconClose} from './Icon';

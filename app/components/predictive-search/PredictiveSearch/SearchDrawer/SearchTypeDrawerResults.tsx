@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { PredictiveSearchResult } from "../../PredictiveSearchResult";
 import { usePredictiveSearch } from "../../usePredictiveSearch";
-import { Button } from "@/components/button";
+import { Button } from "~/components/button";
 
 export function SearchTypeDrawerResults() {
   const { results, totalResults, searchTerm, searchInputRef } =

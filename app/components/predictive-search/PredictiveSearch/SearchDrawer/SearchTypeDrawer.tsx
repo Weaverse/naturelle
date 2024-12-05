@@ -1,4 +1,4 @@
-import { Input } from '@/components/input';
+import { Input } from '~/components/input';
 import {IconSearch} from '../../../Icon';
 import {PredictiveSearchForm} from '../../SearchForm';
 import { SearchTypeDrawerResults } from './SearchTypeDrawerResults';

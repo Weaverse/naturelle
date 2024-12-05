@@ -1,5 +1,5 @@
-import {Button} from '@/components/button';
-import {Input} from '@/components/input';
+import {Button} from '~/components/button';
+import {Input} from '~/components/input';
 import {Disclosure} from '@headlessui/react';
 import {NavLink, useFetcher} from '@remix-run/react';
 import {useThemeSettings} from '@weaverse/hydrogen';

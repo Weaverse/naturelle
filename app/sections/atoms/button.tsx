@@ -1,4 +1,4 @@
-import {Button, type ButtonProps} from '@/components/button';
+import {Button, type ButtonProps} from '~/components/button';
 import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
 import {IconEllipse} from '~/components/Icon';
 import {CSSProperties, forwardRef} from 'react';

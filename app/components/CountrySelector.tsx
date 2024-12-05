@@ -8,7 +8,7 @@ import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useInView} from 'react-intersection-observer';
-import { Button } from '@/components/button';
+import { Button } from '~/components/button';
 
 export function CountrySelector() {
   const fetcher = useFetcher();

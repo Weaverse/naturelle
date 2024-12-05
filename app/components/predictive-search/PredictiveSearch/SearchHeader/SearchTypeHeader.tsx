@@ -1,7 +1,7 @@
 import {IconSearch} from '~/components/Icon';
 import {PredictiveSearchForm} from '../../SearchForm';
 import { SearchTypeHeaderResults } from './SearchTypeHeaderResults';
-import { Input } from '@/components/input';
+import { Input } from '~/components/input';
 
 interface PredictiveSearchProps {
   // Predictive search props

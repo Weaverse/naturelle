@@ -1,5 +1,5 @@
-import { Button } from "@/components/button";
-import { Input } from "@/components/input";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { FormEvent, useEffect, useRef, useState } from "react";

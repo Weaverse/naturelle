@@ -31,7 +31,7 @@ import tailwind from "./styles/tailwind.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/cormorant";
 import "@fontsource-variable/nunito-sans";
-import { Button } from "@/components/button";
+import { Button } from "~/components/button";
 import invariant from "tiny-invariant";
 import { CustomAnalytics } from "~/components/Analytics";
 import { seoPayload } from "~/lib/seo.server";

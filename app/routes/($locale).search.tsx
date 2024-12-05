@@ -1,4 +1,4 @@
-import {Button} from '@/components/button';
+import {Button} from '~/components/button';
 import {
   Await,
   Form,
@@ -36,7 +36,7 @@ import {
   getFeaturedData,
   type FeaturedData,
 } from './($locale).featured-products';
-import { Input } from '@/components/input';
+import { Input } from '~/components/input';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
