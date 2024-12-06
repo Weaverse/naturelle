@@ -11,6 +11,8 @@ import typographicBase from "typographic-base/index";
 import { countries } from "~/data/countries";
 import type { RootLoader } from "~/root";
 import type { I18nLocale } from "./type";
+import {type ClassValue, clsx} from 'clsx';
+import {twMerge} from 'tailwind-merge';
 
 type EnhancedMenuItemProps = {
   to: string;
@@ -37,6 +39,10 @@ export function missingClass(string?: string, prefix?: string) {
 
   const regex = new RegExp(` ?${prefix}`, "g");
   return string.match(regex) === null;
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
 export function formatText(input?: string | React.ReactNode) {

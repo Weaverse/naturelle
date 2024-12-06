@@ -12,7 +12,7 @@ import { backgroundInputs } from "./BackgroundImage";
 import type { OverlayProps } from "./Overlay";
 import { overlayInputs } from "./Overlay";
 import { OverlayAndBackground } from "./OverlayAndBackground";
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 import { useMotion } from "~/hooks/use-motion";
 
 export type BackgroundProps = BackgroundImageProps & {

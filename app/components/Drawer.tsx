@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { useLocation } from "@remix-run/react";
 import { Fragment, useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import {cn} from '@/lib/utils';
+import { cn } from "~/lib/utils";
 import {Image} from '@shopify/hydrogen';
 import {
   IMAGES_PLACEHOLDERS,

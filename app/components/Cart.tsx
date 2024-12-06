@@ -1,6 +1,5 @@
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { cn } from "@/lib/utils";
 import { Link } from "@remix-run/react";
 import { CartForm, Image, Money } from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
@@ -8,6 +7,7 @@ import clsx from "clsx";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
 import { IconRemove } from "./Icon";
+import { cn } from "~/lib/utils";
 
 type CartLine = CartApiQueryFragment["lines"]["nodes"][0];
 

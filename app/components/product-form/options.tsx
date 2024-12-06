@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Image } from "@shopify/hydrogen";
 import type { WeaverseImage } from "@weaverse/hydrogen";
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
