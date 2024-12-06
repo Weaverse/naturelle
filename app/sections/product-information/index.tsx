@@ -135,7 +135,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                       <h2 className="font-medium tracking-tighter">
                         {title}
                       </h2>
-                      {judgemeReviews && (
+                      {judgemeReviews?.rating === 0 && (
                         <div className="flex items-center gap-0.5">
                           <StarRating rating={judgemeReviews.rating} />
                           <span className="ml-1">({judgemeReviews.rating.toFixed(1)})</span>

@@ -23,20 +23,36 @@ export function GlobalStyle() {
   if (settings) {
     let {
       colorBackground,
-      colorBackgroundSubtle,
-      colorBackgroundSubtle2,
-      colorBackgroundBasic,
-      colorForeground,
-      colorForegroundSubtle,
-      colorForegroundBasic,
-      colorPrimary,
-      colorPrimaryForeground,
-      colorSecondary,
-      colorSecondaryForeground,
-      colorOutline,
-      colorOutlineForeground,
-      colorBorder,
-      colorBorderSubtle,
+      colorTextPrimary,
+      colorTextSubtle,
+      colorTextInverse,
+      topbarTextColor,
+      topbarBorderColor,
+      topbarBgColor,
+      headerText,
+      transparentHeader,
+      headerBgColor,
+      footerText,
+      footerBgColor,
+      borderColor,
+      borderSubtleColor,
+      drawerBgColor,
+      buttonTextPrimary,
+      buttonBgColorPrimary,
+      buttonBorderColorPrimary,
+      buttonTextHoverPrimary,
+      buttonBgHoverPrimary,
+      buttonBorderHoverPrimary,
+      buttonTextSecondary,
+      buttonBgColorSecondary,
+      buttonBorderColorSecondary,
+      buttonTextHoverSecondary,
+      buttonBgHoverSecondary,
+      buttonBorderHoverSecondary,
+      buttonTextOutline,
+      buttonBorderColorOutline,
+      buttonTextHoverOutline,
+      buttonBorderHoverOutline,
     } = settings;
     const {
       bodyBaseSize,
@@ -47,43 +63,16 @@ export function GlobalStyle() {
       headingBaseLineHeight,
       navHeightDesktop,
       navHeightTablet,
-      buttonPrimaryBg,
-      buttonPrimaryBgHover,
-      buttonPrimaryColor,
-      buttonPrimaryColorHover,
-      buttonPrimaryBorder,
-      buttonPrimaryBorderHover,
-      buttonSecondaryBg,
-      buttonSecondaryBgHover,
-      buttonSecondaryColor,
-      buttonSecondaryColorHover,
-      buttonSecondaryBorder,
-      buttonSecondaryBorderHover,
-      buttonSubtleBg,
-      buttonSubtleBgHover,
-      buttonSubtleColor,
-      buttonSubtleColorHover,
-      buttonSubtleBorder,
-      buttonSubtleBorderHover,
       radius,
       footerMenuBackgroundColor,
       pageWidth,
     } = settings;
     colorBackground = hexToRgbString(colorBackground);
-    colorBackgroundSubtle = hexToRgbString(colorBackgroundSubtle);
-    colorBackgroundSubtle2 = hexToRgbString(colorBackgroundSubtle2);
-    colorBackgroundBasic = hexToRgbString(colorBackgroundBasic);
-    colorForeground = hexToRgbString(colorForeground);
-    colorForegroundSubtle = hexToRgbString(colorForegroundSubtle);
-    colorForegroundBasic = hexToRgbString(colorForegroundBasic);
-    colorPrimary = hexToRgbString(colorPrimary);
-    colorPrimaryForeground = hexToRgbString(colorPrimaryForeground);
-    colorSecondary = hexToRgbString(colorSecondary);
-    colorSecondaryForeground = hexToRgbString(colorSecondaryForeground);
-    colorOutline = hexToRgbString(colorOutline);
-    colorOutlineForeground = hexToRgbString(colorOutlineForeground);
-    colorBorder = hexToRgbString(colorBorder);
-    colorBorderSubtle = hexToRgbString(colorBorderSubtle);
+    colorTextPrimary = hexToRgbString(colorTextPrimary);
+    colorTextSubtle = hexToRgbString(colorTextSubtle);
+    colorTextInverse = hexToRgbString(colorTextInverse);
+    borderColor = hexToRgbString(borderColor);
+    borderSubtleColor = hexToRgbString(borderSubtleColor);
     return (
       <style
         id="global-theme-style"
@@ -93,20 +82,21 @@ export function GlobalStyle() {
             :root {
               /* Colors */
               --color-background: ${colorBackground};
-              --color-background-subtle: ${colorBackgroundSubtle};
-              --color-background-subtle-2: ${colorBackgroundSubtle2};
-              --color-background-basic: ${colorBackgroundBasic};
-              --color-foreground: ${colorForeground};
-              --color-foreground-subtle: ${colorForegroundSubtle};
-              --color-foreground-basic: ${colorForegroundBasic};
-              --color-primary: ${colorPrimary};
-              --color-primary-foreground: ${colorPrimaryForeground};
-              --color-secondary: ${colorSecondary};
-              --color-secondary-foreground: ${colorSecondaryForeground};
-              --color-outline: ${colorOutline};
-              --color-outline-foreground: ${colorOutlineForeground};
-              --color-border: ${colorBorder};
-              --color-border-subtle: ${colorBorderSubtle};
+              --color-text-primary: ${colorTextPrimary};
+              --color-text-subtle: ${colorTextSubtle};
+              --color-text-inverse: ${colorTextInverse};
+              --color-topbar-text: ${topbarTextColor};
+              --color-topbar-border: ${topbarBorderColor};
+              --color-topbar-bg: ${topbarBgColor};
+              --color-header-text: ${headerText};
+              --color-transparent-header: ${transparentHeader};
+              --color-header-bg: ${headerBgColor};
+              --color-footer-text: ${footerText};
+              --color-footer-bg: ${footerBgColor};
+              --color-border: ${borderColor};
+              --color-border-subtle: ${borderSubtleColor};
+              --color-drawer-bg: ${drawerBgColor};
+              
 
               /* Typography */
               --body-base-size: ${bodyBaseSize}px;
@@ -192,36 +182,34 @@ export function GlobalStyle() {
               }
             }
             .btn-primary{
-              background-color: ${buttonPrimaryBg};
-              color: ${buttonPrimaryColor};
-              border: 2px solid ${buttonPrimaryBorder};
+              background-color: ${buttonBgColorPrimary};
+              color: ${buttonTextPrimary}!important;
+              border: 1px solid ${buttonBorderColorPrimary};
             }
             .btn-primary:hover{
-              background-color: ${buttonPrimaryBgHover}!important;
-              color: ${buttonPrimaryColorHover}!important;
-              border: 2px solid ${buttonPrimaryBorderHover} !important;
+              background-color: ${buttonBgHoverPrimary}!important;
+              color: ${buttonTextHoverPrimary}!important;
+              border: 1px solid ${buttonBorderHoverPrimary}!important;
               transition: 0.3s background-color color border;
             }
             .btn-secondary{
-              background-color: ${buttonSecondaryBg};
-              color: ${buttonSecondaryColor};
-              border: 2px solid ${buttonSecondaryBorder};
+              background-color: ${buttonBgColorSecondary};
+              color: ${buttonTextSecondary}!important;
+              border: 1px solid ${buttonBorderColorSecondary};
             }
             .btn-secondary:hover{
-              background-color: ${buttonSecondaryBgHover}!important;
-              color: ${buttonSecondaryColorHover}!important;
-              border: 2px solid ${buttonSecondaryBorderHover} !important;
+              background-color: ${buttonBgHoverSecondary}!important;
+              color: ${buttonTextHoverSecondary}!important;
+              border: 1px solid ${buttonBorderHoverSecondary}!important;
               transition: 0.3s background-color color border;
             }
-            .btn-subtle{
-              background-color: ${buttonSubtleBg};
-              color: ${buttonSubtleColor};
-              border: 2px solid ${buttonSubtleBorder};
+            .btn-outline{
+              color: ${buttonTextOutline}!important;
+              border: 1px solid ${buttonBorderColorOutline};
             }
-            .btn-subtle:hover{
-              background-color: ${buttonSubtleBgHover}!important;
-              color: ${buttonSubtleColorHover}!important;
-              border: 2px solid ${buttonSubtleBorderHover} !important;
+            .btn-outline:hover{
+              color: ${buttonTextHoverOutline}!important;
+              border: 1px solid ${buttonBorderHoverOutline} !important;
               transition: 0.3s background-color color border;
             }
           `,

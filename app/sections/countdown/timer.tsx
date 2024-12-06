@@ -63,6 +63,7 @@ let CountdownTimer = forwardRef<
     <div
       ref={ref}
       {...rest}
+      data-motion="fade-up"
       className="countdown--timer flex text-[var(--timer-color)] py-3 sm:py-0"
       style={timerStyle}
     >

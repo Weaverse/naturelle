@@ -1,4 +1,4 @@
-import {Button} from '@/components/button';
+import {Button} from '~/components/button';
 import {Link} from '@remix-run/react';
 import {useEffect} from 'react';
 import {IconClose} from './Icon';
@@ -29,7 +29,7 @@ export function Modal({
       aria-modal="true"
       id="modal-bg"
     >
-      <div className="fixed inset-0 bg-primary/40 bg-opacity-75 transition-opacity"></div>
+      <div className="fixed inset-0 bg-black/60 bg-opacity-75 transition-opacity"></div>
       <div
         className="fixed inset-0 z-50 overflow-y-hidden"
       >

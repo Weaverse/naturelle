@@ -8,7 +8,7 @@ import { forwardRef } from "react";
 import { useInView } from "react-intersection-observer";
 import type { CollectionDetailsQuery } from "storefrontapi.generated";
 import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
-import { Button } from "@/components/button";
+import { Button } from "~/components/button";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 

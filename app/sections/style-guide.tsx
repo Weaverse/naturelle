@@ -1,5 +1,5 @@
-import {Input} from '@/components/input';
-import {Button} from '@/components/button';
+import {Input} from '~/components/input';
+import {Button} from '~/components/button';
 import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
 

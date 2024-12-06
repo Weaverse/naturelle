@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "~/components/button";
 import { useFetcher } from "@remix-run/react";
 import { Jsonify } from "@remix-run/server-runtime/dist/jsonify";
 import { Money, ShopPayButton } from "@shopify/hydrogen";

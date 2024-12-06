@@ -47,8 +47,8 @@ export function UseMenuMegaHeader({
       className={clsx(
         enableTransparent ? 'fixed w-screen' : 'sticky',
         isTransparent
-          ? 'border-secondary bg-transparent text-secondary'
-          : 'shadow-header border-foreground bg-background-subtle-1 text-primary',
+          ? 'border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]'
+          : 'shadow-header border-[var(--color-header-text)] bg-[var(--color-header-bg)] text-[var(--color-header-text)]',
         'top-0 z-40 border-b',
         className,
       )}
@@ -59,7 +59,7 @@ export function UseMenuMegaHeader({
       <div className="container px-6 md:px-8 lg:px-6 z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
         <div
           className={clsx(
-            'absolute inset-0 z-20 bg-background-subtle-1',
+            'absolute inset-0 z-20 bg-[var(--color-header-bg)]',
             'transition-all duration-500 ease-in-out',
             isTransparent ? 'opacity-0' : 'opacity-100',
           )}

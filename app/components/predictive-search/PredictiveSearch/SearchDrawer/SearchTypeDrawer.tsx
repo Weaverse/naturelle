@@ -1,5 +1,5 @@
+import { Input } from '~/components/input';
 import {IconSearch} from '../../../Icon';
-import {Input} from '../../../Input';
 import {PredictiveSearchForm} from '../../SearchForm';
 import { SearchTypeDrawerResults } from './SearchTypeDrawerResults';
 
@@ -11,7 +11,7 @@ interface PredictiveSearchProps {
 export function SearchTypeDrawer(props: PredictiveSearchProps) {
   let {isOpen} = props;
   return (
-    <div className="border-t border-bar-subtle">
+    <div className="border-t border-border-subtle flex flex-col">
       <PredictiveSearchForm>
         {({fetchResults, inputRef}) => (
           <div className="mx-auto w-full max-w-[560px] p-6">

@@ -1,5 +1,5 @@
-import {Button} from '@/components/button';
-import {Input} from '@/components/input';
+import {Button} from '~/components/button';
+import {Input} from '~/components/input';
 import {useFetcher} from '@remix-run/react';
 import type {
   HydrogenComponentProps,
@@ -50,6 +50,7 @@ const NewsletterInput = forwardRef<HTMLDivElement, InputEmailProps>((props, ref)
     <div
       ref={ref}
       {...rest}
+      data-motion="fade-up"
       style={style}
       className="flex h-full flex-col items-center justify-center gap-5 text-center"
     >

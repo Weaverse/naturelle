@@ -23,7 +23,7 @@ export function SearchResultItem({
                 src={item.image.url}
                 width={80}
                 height={80}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover rounded-[2px]"
               />
             )}
           </div>

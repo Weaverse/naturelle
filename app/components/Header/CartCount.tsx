@@ -42,7 +42,7 @@ export function CartCount({
       () => (
         <>
           <IconBag className="h-6 w-6" viewBox="0 0 24 24" />
-          <div className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-primary p-[0.125rem] text-center text-[0.625rem] font-medium leading-none text-primary-foreground subpixel-antialiased">
+          <div className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-header-text)] p-[0.125rem] text-center text-[0.625rem] font-medium leading-none text-[var(--color-transparent-header)] subpixel-antialiased">
             <span>{count || 0}</span>
           </div>
         </>

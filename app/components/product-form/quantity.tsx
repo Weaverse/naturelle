@@ -1,4 +1,4 @@
-import { Input } from "@/components/input";
+import { Input } from "~/components/input";
 
 interface QuantityProps {
   value: number;
@@ -27,7 +27,7 @@ export function Quantity(props: QuantityProps) {
         <button
           name="decrease-quantity"
           aria-label="Decrease quantity"
-          className="transition py-2.5 px-5 border-2 rounded border-bar-subtle"
+          className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
           disabled={value <= 1}
           onClick={() => onChange(value - 1)}
         >
@@ -40,7 +40,7 @@ export function Quantity(props: QuantityProps) {
           onChange={(e) => onChange(Number(e.currentTarget.value))}
         />
         <button
-          className="transition py-2.5 px-5 border-2 rounded border-bar-subtle"
+          className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
           name="increase-quantity"
           aria-label="Increase quantity"
           onClick={() => onChange(value + 1)}

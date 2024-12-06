@@ -1,4 +1,4 @@
-import {Button, type ButtonProps} from '@/components/button';
+import {Button, type ButtonProps} from '~/components/button';
 import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
 import {IconEllipse} from '~/components/Icon';
 import {CSSProperties, forwardRef} from 'react';
@@ -30,12 +30,13 @@ const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
     } as CSSProperties;
     let styleButton = ""
     if (variant === 'custom') {
-      styleButton = "bg-[var(--background-color)] border border-[var(--border-color)] text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]"
+      styleButton = "bg-[var(--background-color)] border border-[var(--border-color)] !text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:!text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]"
     }
     return (
       <Button
         as={Component}
         to={href}
+        data-motion="fade-up"
         target={target}
         variant={variant}
         shape={shape}
@@ -162,6 +163,7 @@ export const schema: HydrogenComponentSchema = {
           type: 'color',
           label: 'Text color',
           name: 'textColorDecor',
+          defaultValue: '#fff',
           condition: "variant.eq.decor",
         },
         {

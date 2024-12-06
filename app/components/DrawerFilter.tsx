@@ -1,6 +1,6 @@
-import {Button} from '@/components/button';
-import {Checkbox} from '@/components/checkbox';
-import {Input} from '@/components/input';
+import {Button} from '~/components/button';
+import {Checkbox} from '~/components/checkbox';
+import {Input} from '~/components/input';
 import {Disclosure, Menu} from '@headlessui/react';
 import {
   Link,
@@ -45,7 +45,7 @@ export function DrawerFilter({
   const {openDrawer, isOpen, closeDrawer} = useDrawer();
   return (
     <>
-      <div className="border-y border-bar-subtle py-4 px-3 md:px-4 lg:px-0">
+      <div className="border-y border-border-subtle py-4 px-3 md:px-4 lg:px-0">
         <div className="container flex w-full items-center justify-between">
           <span className="font-heading text-xl font-medium tracking-tight">
             {productNumber} Products
@@ -137,7 +137,7 @@ export function FiltersDrawer({
 
   return (
     <nav className="">
-      <div className="divide-y divide-bar-subtle">
+      <div className="divide-y divide-border-subtle">
         {filters.map((filter: Filter) => (
           <Disclosure as="div" key={filter.id} className="w-full pb-6 pt-5">
             {({open}) => (
@@ -315,7 +315,7 @@ export default function SortMenu({
 
   return (
     <Menu as="div" className="relative z-30">
-      <Menu.Button className="flex h-[50px] items-center gap-[10px] rounded border border-foreground px-4 py-3">
+      <Menu.Button className="flex h-[50px] items-center gap-[10px] rounded border border-border px-4 py-3">
         <span className="font-heading text-xl font-medium">Sort by</span>
         <IconCaret />
       </Menu.Button>

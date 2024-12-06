@@ -14,11 +14,17 @@ let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
   let { heading, description, children, ...rest } = props;
   return (
     <Section ref={ref} {...rest} overflow="unset">
-      {heading && <Heading as="h2" content={heading} />}
+      {heading && <Heading data-motion="fade-up" as="h2" content={heading} />}
       {description && (
-        <Description as="p" content={description} alignment="center" />
+        <Description
+          data-motion="fade-up"
+          as="p"
+          content={description}
+          alignment="center"
+        />
       )}
       <div
+        data-motion="zoom-in"
         className={clsx(
           "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 w-full h-full",
           React.Children.count(children) > 1

@@ -1,6 +1,6 @@
-import { Button } from "@/components/button";
-import { Checkbox } from "@/components/checkbox";
-import { Input } from "@/components/input";
+import { Button } from "~/components/button";
+import { Checkbox } from "~/components/checkbox";
+import { Input } from "~/components/input";
 import { Dialog } from "@headlessui/react";
 import {
   Form,

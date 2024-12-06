@@ -11,6 +11,7 @@ import 'swiper/css/pagination';
 import {IconImageBlank, IconInstagram} from '~/components/Icon';
 import clsx from 'clsx';
 import {Pagination} from 'swiper/modules';
+import { useMotion } from '~/hooks/use-motion';
 
 type InstagramData = {
   instagramToken: string;
@@ -50,6 +51,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     children,
     ...rest
   } = props;
+  const [scope] = useMotion(ref);
 
   let sectionStyle: CSSProperties = {
     backgroundColor: backgroundColor,
@@ -58,7 +60,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
   } as CSSProperties;
   const imageItemBlank = () => {
     return (
-      <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-1">
+      <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
         <IconImageBlank
           viewBox="0 0 526 526"
           className="!h-full !w-full opacity-80"
@@ -123,7 +125,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
 
   return (
     <section
-      ref={ref}
+      ref={scope}
       {...rest}
       className={clsx('h-full w-full', !visibleOnMobile && 'hidden sm:block')}
       style={sectionStyle}

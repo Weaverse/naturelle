@@ -54,7 +54,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
     const productItemBlank = () => {
       return (
         <div className="flex w-full cursor-pointer flex-col gap-4">
-          <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-1">
+          <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
             <IconImageBlank
               viewBox="0 0 526 526"
               className="h-full w-full opacity-80"
@@ -97,6 +97,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         key={key}
         ref={ref}
         {...rest}
+        data-motion="fade-up"
         className={"group/arrow flex flex-col gap-12 px-0 md:px-8 lg:px-12"}
       >
         <Swiper

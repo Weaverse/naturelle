@@ -1,4 +1,4 @@
-import {Button} from '@/components/button';
+import {Button} from '~/components/button';
 import {useLoaderData} from '@remix-run/react';
 import {Pagination} from '@shopify/hydrogen';
 import type {

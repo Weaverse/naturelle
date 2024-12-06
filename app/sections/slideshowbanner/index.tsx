@@ -13,6 +13,7 @@ import type {SlideshowArrowsProps} from './arrows';
 import {Arrows} from './arrows';
 import type {SlideshowDotsProps} from './dots';
 import {Dots} from './dots';
+import { useMotion } from '~/hooks/use-motion';
 
 let variants = cva('group [&_.swiper]:h-full', {
   variants: {
@@ -60,12 +61,13 @@ let Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
     children = [],
     ...rest
   } = props;
+  const [scope] = useMotion(ref);
 
   let id = rest['data-wv-id'];
   let key = `slideshow-${id}-${loop}-${autoRotate}-${changeSlidesEvery}`;
 
   return (
-    <section key={key} ref={ref} {...rest} className={variants({height})}>
+    <section key={key} ref={scope} {...rest} className={variants({height})}>
       <Swiper
         effect="fade"
         loop={loop}

@@ -20,6 +20,7 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
     return (
       <Section ref={ref} {...rest} className='h-fit'>
         <div
+          data-motion="fade-in"
           className='flex flex-col h-fit'
         >
           <div className="h-full flex flex-col">

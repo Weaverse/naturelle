@@ -65,7 +65,7 @@ export function VariantOption(props: VariantOptionProps) {
   );
 
   let defaultButtonClassName = clsx(
-    "border border-bar-subtle cursor-pointer",
+    "border border-border-subtle cursor-pointer",
     BUTTON_SIZE_MAP[size],
     "p-2 text-sm text-center",
     roundedClassName
@@ -87,7 +87,7 @@ export function VariantOption(props: VariantOptionProps) {
               className={cn(
                 defaultButtonClassName,
                 selectedOptionValue === value.value &&
-                  "border-bar bg-background-subtle-1",
+                  "border-border bg-[#E5E6D4]",
                 !value.isAvailable && "opacity-50 bg-btn/30"
               )}
               onClick={() => onSelectOptionValue(value.value)}
@@ -111,7 +111,7 @@ export function VariantOption(props: VariantOptionProps) {
                   defaultClassName,
                   "p-1",
                   selectedOptionValue === value.value &&
-                    "border-2 border-bar/70",
+                    "border-2 border-border/90",
                   !value.isAvailable && disabledClassName
                 )}
                 onClick={() => onSelectOptionValue(value.value)}
@@ -140,7 +140,7 @@ export function VariantOption(props: VariantOptionProps) {
                   defaultClassName,
                   "p-0.5",
                   selectedOptionValue === value.value &&
-                    "border-2 border-bar/70",
+                    "border-2 border-border/90",
                   !value.isAvailable && disabledClassName
                 )}
                 onClick={() => onSelectOptionValue(value.value)}
@@ -167,7 +167,7 @@ export function VariantOption(props: VariantOptionProps) {
                 className={clsx(
                   defaultClassName,
                   selectedOptionValue === value.value &&
-                    "border-2 border-bar/70",
+                    "border-2 border-border/90",
                   !value.isAvailable && disabledClassName
                 )}
                 onClick={() => onSelectOptionValue(value.value)}
@@ -205,9 +205,9 @@ export function VariantOption(props: VariantOptionProps) {
               className={clsx(
                 "!leading-none py-3 px-3 cursor-pointer transition-all duration-200 font-normal border-2 rounded",
                 value.isAvailable && selectedOptionValue === value.value
-                  ? "border-bar bg-background-subtle-1"
+                  ? "border-border/90 bg-[#E5E6D4]"
                   : value.isAvailable
-                  ? "border-bar-subtle"
+                  ? "border-border-subtle"
                   : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
               )}
               onClick={() => onSelectOptionValue(value.value)}

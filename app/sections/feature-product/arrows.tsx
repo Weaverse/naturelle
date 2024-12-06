@@ -10,14 +10,13 @@ let variants = cva(
     "z-10",
     "absolute top-1/2 -translate-y-1/2 z-1",
     "p-2 text-center cursor-pointer",
-    "border border-bar-subtle",
     "transition-all duration-200",
   ],
   {
     variants: {
       arrowsColor: {
-        light: "text-foreground bg-transparent",
-        dark: "text-gray-100 bg-primary",
+        light: "text-text bg-transparent border border-border-subtle",
+        dark: "text-gray-100 bg-[#3d490b]",
       },
       arrowsShape: {
         square: "",

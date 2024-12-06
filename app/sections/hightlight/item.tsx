@@ -24,6 +24,7 @@ const HighlightItem = forwardRef<HTMLDivElement, HightlightProps>(
             <div
                 ref={ref}
                 {...rest}
+                data-motion="slide-in"
                 className={clsx('flex flex-col gap-4 items-center w-full border-2 border-[var(--border-color)] rounded px-8 py-10',
                 !visibleOnMobile && 'hidden sm:flex',
                 )}
