@@ -39,7 +39,7 @@ const ProductPlacementItem = forwardRef<
           )}
         </div>
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-background-subtle-1">
+        <div className="flex h-full w-full items-center justify-center bg-[#e5e6d4]">
           <IconImageBlank
             className="h-full w-full opacity-80 !aspect-[var(--item-thumbs-ratio)]"
             viewBox="0 0 526 526"

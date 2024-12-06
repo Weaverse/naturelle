@@ -1,5 +1,5 @@
-import {Button} from '@/components/button';
-import {Input} from '@/components/input';
+import {Button} from '~/components/button';
+import {Input} from '~/components/input';
 import {Disclosure} from '@headlessui/react';
 import {NavLink, useFetcher} from '@remix-run/react';
 import {useThemeSettings} from '@weaverse/hydrogen';
@@ -12,7 +12,6 @@ import {IconPlusLinkFooter} from './Icon';
 import {LayoutProps} from './Layout';
 
 type FooterProps = Pick<LayoutProps, 'footerMenu'>;
-type TagName = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 export function Footer({footerMenu}: FooterProps) {
   let fetcher = useFetcher<any>();
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
@@ -26,7 +25,7 @@ export function Footer({footerMenu}: FooterProps) {
     tagNameTitle: Tag = 'h6',
   } = settings;
   return (
-    <footer className="footer w-full bg-[var(--footer-menu-background-color)]">
+    <footer className="footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]">
       <div className="container flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16">
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">

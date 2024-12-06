@@ -9,7 +9,7 @@ import {
 import type { FetcherWithComponents } from '@remix-run/react';
 import { useEffect } from 'react';
 
-import { Button } from '@/components/button';
+import { Button } from '~/components/button';
 import { usePageAnalytics } from '~/hooks/usePageAnalytics';
 
 export function AddToCartButton({

@@ -12,14 +12,14 @@ const animations: Record<MotionType, any> = {
 };
 
 export function useMotion(ref?: ForwardedRef<any>) {
-  let { enableViewTransition } = useThemeSettings();
+  let { enableScrollReveal } = useThemeSettings();
   const [scope] = useAnimate();
   useEffect(() => {
     if (!scope.current || !ref) return;
     Object.assign(ref, { current: scope.current });
   }, [scope, ref]);
   useEffect(() => {
-    if (!enableViewTransition) {
+    if (!enableScrollReveal) {
       return;
     }
     scope.current?.classList.add("animated-scope");

@@ -4,8 +4,8 @@ import type {
  } from "@weaverse/hydrogen";
 import { forwardRef, CSSProperties } from "react";
 import { Form } from "@remix-run/react";
-import { Input } from "@/components/input";
-import { Button } from "@/components/button";
+import { Input } from "~/components/input";
+import { Button } from "~/components/button";
 import { useMotion } from "~/hooks/use-motion";
 
 interface ContactFormProps extends HydrogenComponentProps {

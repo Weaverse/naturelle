@@ -10,7 +10,7 @@ import { EnhancedMenu } from '~/lib/utils';
 export function DrawerMenu({ menu }: { menu: EnhancedMenu | null | undefined }) {
   let items = menu?.items as unknown as SingleMenuItem[];
   return (
-    <nav className="grid text-foreground-subtle overflow-auto border-t-2 border-bar-subtle px-6 pb-16 pt-8">
+    <nav className="grid text-text-subtle overflow-auto border-t border-border-subtle px-6 pb-16 pt-8">
       {items.map((item, id) => {
         let { title, ...rest } = item;
         let level = getMaxDepth(item);
@@ -34,7 +34,7 @@ function ItemHeader({title, to}: {title: string; to: string}) {
   return (
     <div className="flex items-center justify-between py-3" role="button">
       <Link to={to}>
-        <h5 className="font-medium text-xl uppercase hover:text-foreground">{title}</h5>
+        <h5 className="font-medium text-xl uppercase hover:text-text-primary">{title}</h5>
       </Link>
     </div>
   );
@@ -56,14 +56,14 @@ function MultiMenu(props: SingleMenuItem) {
       isBackMenu
       // bordered
     >
-      <div className="grid overflow-auto px-6 pb-16 pt-8 border-t-2 border-bar-subtle">
+      <div className="grid overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
         {items.map((item, id) => (
           <div key={id}>
             <Disclosure>
               {({open}) => (
                 <>
                   <Disclosure.Button className="w-full text-left">
-                    <h5 className="flex w-full text-xl justify-between py-3 font-medium uppercase text-foreground-subtle hover:text-foreground">
+                    <h5 className="flex w-full text-xl justify-between py-3 font-medium uppercase text-text-subtle hover:text-text-primary">
                       {item.title}
                       {item.items.length > 0 && <span className="">
                         <IconCaret
@@ -87,9 +87,9 @@ function MultiMenu(props: SingleMenuItem) {
                                 key={ind}
                                 to={subItem.to}
                                 prefetch="intent"
-                                className="text-foreground-subtle"
+                                className="text-text-subtle"
                               >
-                                <span className='font-body hover:text-foreground text-base font-normal'>{subItem.title}</span>
+                                <span className='font-body hover:text-text-primary text-base font-normal'>{subItem.title}</span>
                               </Link>
                             </li>
                           ))}
@@ -108,7 +108,7 @@ function MultiMenu(props: SingleMenuItem) {
   return (
     <div className="">
       <div
-        className="flex items-center justify-between py-3 hover:text-foreground"
+        className="flex items-center justify-between py-3 hover:text-text-primary"
         role="button"
         onClick={openMenu}
       >
@@ -137,7 +137,7 @@ function ImageMenu({title, items, to}: SingleMenuItem) {
       isBackMenu
       // bordered
     >
-      <div className="grid grid-cols-2 gap-3 px-6 pb-16 pt-8 border-t-2 border-bar-subtle">
+      <div className="grid grid-cols-2 gap-3 px-6 pb-16 pt-8 border-t border-border-subtle">
         {items.map((item, id) => (
           <Link to={item.to} prefetch="intent" key={id}>
             <div className="relative aspect-square w-full group">
@@ -149,7 +149,7 @@ function ImageMenu({title, items, to}: SingleMenuItem) {
               <div className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center z-30">
                 <h4 className='font-medium text-center text-white transition-all duration-300 text-2xl group-hover:underline'>{item.title}</h4>
               </div>
-              <div className='absolute inset-0 opacity-0 group-hover:opacity-30 bg-foreground-subtle transition-opacity duration-300'/>
+              <div className='absolute inset-0 opacity-0 group-hover:opacity-30 bg-background transition-opacity duration-300'/>
             </div>
           </Link>
         ))}
@@ -159,7 +159,7 @@ function ImageMenu({title, items, to}: SingleMenuItem) {
   return (
     <div className="">
       <div
-        className="flex items-center justify-between py-3 hover:text-foreground"
+        className="flex items-center justify-between py-3 hover:text-text-primary"
         role="button"
         onClick={openMenu}
       >
@@ -189,7 +189,7 @@ function SingleMenu(props: SingleMenuItem) {
       isBackMenu
       // bordered
     >
-      <div className="grid overflow-auto px-6 pb-16 pt-8 border-t-2 border-bar-subtle">
+      <div className="grid overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
         <ul className="space-y-3 pb-3 pt-2">
           {items.map((subItem, ind) => (
             <li key={ind} className="leading-6">
@@ -197,9 +197,9 @@ function SingleMenu(props: SingleMenuItem) {
                 key={ind}
                 to={subItem.to}
                 prefetch="intent"
-                className="text-foreground-subtle"
+                className="text-text-subtle"
               >
-                <span className='font-body hover:text-foreground text-base font-normal'>{subItem.title}</span>
+                <span className='font-body hover:text-text-primary text-base font-normal'>{subItem.title}</span>
               </Link>
             </li>
           ))}
@@ -210,7 +210,7 @@ function SingleMenu(props: SingleMenuItem) {
   return (
     <div className="">
       <div
-        className="flex items-center justify-between py-3 hover:text-foreground"
+        className="flex items-center justify-between py-3 hover:text-text-primary"
         role="button"
         onClick={openMenu}
       >

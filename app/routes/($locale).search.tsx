@@ -1,4 +1,4 @@
-import {Button} from '@/components/button';
+import {Button} from '~/components/button';
 import {
   Await,
   Form,
@@ -18,7 +18,6 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {DrawerFilter} from '~/components/DrawerFilter';
 import {Grid} from '~/components/Grid';
 import {IconSearch} from '~/components/Icon';
-import {Input} from '~/components/Input';
 import {ProductCard} from '~/components/ProductCard';
 import {ProductSwimlane} from '~/components/ProductSwimlane';
 import {PageHeader, Text} from '~/components/Text';
@@ -37,6 +36,7 @@ import {
   getFeaturedData,
   type FeaturedData,
 } from './($locale).featured-products';
+import { Input } from '~/components/input';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -176,7 +176,7 @@ export default function Search() {
 
   return (
     <>
-      <PageHeader variant="search" className="bg-background-subtle-1">
+      <PageHeader variant="search" className="bg-[#e0e5d6]">
         <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
           {searchTerm
             ? `Search results for “${searchTerm}”`
