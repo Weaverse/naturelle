@@ -1,5 +1,5 @@
-import { Button } from "@/components/button";
-import { Input } from "@/components/input";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { cn } from "@/lib/utils";
 import { Link } from "@remix-run/react";
 import { CartForm, Image, Money } from "@shopify/hydrogen";
@@ -67,20 +67,20 @@ function CartLines({
         {layout === "page" && (
           <thead>
             <tr className="p-2">
-              <th className="font-medium p-4 text-left border-bar/15 border-b border-bar">
+              <th className="font-medium p-4 text-left border-border/15 border-b border-border">
                 Product
               </th>
-              <th className="font-medium p-4 border-b border-bar/15 hidden md:table-cell"></th>
-              <th className="font-medium p-4 border-b border-bar/15 hidden md:table-cell">
+              <th className="font-medium p-4 border-b border-border/15 hidden md:table-cell"></th>
+              <th className="font-medium p-4 border-b border-border/15 hidden md:table-cell">
                 Price
               </th>
-              <th className="font-medium p-4 border-b border-bar/15 hidden md:table-cell">
+              <th className="font-medium p-4 border-b border-border/15 hidden md:table-cell">
                 Quantity
               </th>
-              <th className="font-medium p-4 border-b border-bar/15 hidden md:table-cell">
+              <th className="font-medium p-4 border-b border-border/15 hidden md:table-cell">
                 Total
               </th>
-              <th className="font-medium p-4 border-b border-bar/15 hidden md:table-cell"></th>
+              <th className="font-medium p-4 border-b border-border/15 hidden md:table-cell"></th>
             </tr>
           </thead>
         )}
@@ -130,7 +130,7 @@ function CartLineItem({
             height={100}
             loading="lazy"
             width={100}
-            className="object-cover"
+            className="object-cover rounded-[2px]"
           />
         )}
       </td>
@@ -208,7 +208,7 @@ function CartCheckout({
   layout: CartMainProps["layout"];
 }) {
   let styles = {
-    page: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1 border-bar-subtle md:border-t md:pt-6 lg:p-0 lg:border-none",
+    page: "grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1 border-border-subtle md:border-t md:pt-6 lg:p-0 lg:border-none",
     aside: "pb-6 pt-4 shrink-0",
   };
   let isDrawer = layout === "aside";
@@ -295,7 +295,7 @@ export function CartSummary({
 }) {
   const styles = {
     page: "bg-white p-6 space-y-6",
-    aside: "space-y-6 border-t border-bar-subtle pt-4",
+    aside: "space-y-6 border-t border-border-subtle pt-4",
   };
   const totalStyles = {
     page: "text-2xl font-heading",
@@ -355,7 +355,7 @@ function CartLineQuantity({
     aside: "w-10 h-[35px] transition",
   };
   return (
-    <div className="flex items-center border border-bar-subtle rounded w-fit">
+    <div className="flex items-center border border-border-subtle rounded w-fit">
       <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
         <button
           className={buttonStyles[layout]}
@@ -467,7 +467,7 @@ function CartDiscounts({
       {/* Show an input to apply a discount */}
       <UpdateDiscountForm discountCodes={codes}>
         <div className="flex gap-2">
-          <Input type="text" name="discountCode" placeholder="Promotion code" />
+          <Input type="text" name="discountCode" variant={"default"} placeholder="Promotion code" />
           <Button type="submit" variant="link">
             Apply
           </Button>

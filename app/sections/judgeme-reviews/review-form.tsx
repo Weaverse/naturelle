@@ -1,5 +1,5 @@
-import { Button } from "@/components/button";
-import { Input } from "@/components/input";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -54,8 +54,9 @@ export function ReviewForm({
     >
       {judgemeReviews.reviews.length !== 0 || !isFormVisible ? (
         <div
+          data-motion="fade-up"
           className={clsx(
-            "flex flex-col gap-4 bg-background-subtle-1 p-6 w-full",
+            "flex flex-col gap-4 bg-[#E0E5D6] p-6 w-full",
             judgemeReviews.reviews.length === 0 ? "items-center" : "items-start"
           )}
         >
@@ -90,8 +91,9 @@ export function ReviewForm({
       ) : null}
       {isFormVisible && (
         <div
+          data-motion="fade-up"
           className={clsx(
-            "bg-background-subtle-1 p-6 w-full",
+            "bg-[#E0E5D6] p-6 w-full",
             judgemeReviews.reviews.length === 0 && "flex justify-center"
           )}
         >
@@ -203,7 +205,7 @@ export function ReviewForm({
                   <textarea
                     id="body"
                     name="body"
-                    className="w-full bg-transparent border px-3 py-3 border-line/30 outline-none focus-visible:border-line"
+                    className="w-full bg-transparent rounded border-2 px-3 py-3 border-border-subtle outline-none focus-visible:border-border"
                     rows={4}
                   ></textarea>
                 </div>
@@ -237,8 +239,9 @@ export function ReviewForm({
       )}
       {isPopupVisible && (
         <div
+          data-motion="fade-up"
           className={clsx(
-            "flex flex-col gap-6 p-6 bg-background-subtle-1 w-full",
+            "flex flex-col gap-6 p-6 bg-[#E0E5D6] w-full",
             judgemeReviews.reviews.length === 0 && "items-center"
           )}
           role="alert"

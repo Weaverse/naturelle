@@ -4,8 +4,9 @@ import type {
  } from "@weaverse/hydrogen";
 import { forwardRef, CSSProperties } from "react";
 import { Form } from "@remix-run/react";
-import { Input } from "@/components/input";
-import { Button } from "@/components/button";
+import { Input } from "~/components/input";
+import { Button } from "~/components/button";
+import { useMotion } from "~/hooks/use-motion";
 
 interface ContactFormProps extends HydrogenComponentProps {
   backgroundColor: string;
@@ -13,12 +14,13 @@ interface ContactFormProps extends HydrogenComponentProps {
   heading: string;
   subHeading: string;
   buttonLabel: string;
-  variant: string;
+  variant: "custom" | "outline" | "link" | "primary" | "secondary" | "decor" | null | undefined;
   topPadding: number;
   bottomPadding: number;
 }
 
 let ContactForm = forwardRef<HTMLDivElement, ContactFormProps>((props, ref) => {
+  const [scope] = useMotion(ref);
   let {backgroundColor, contentAlignment, heading, subHeading, buttonLabel, variant, topPadding, bottomPadding} = props;
   let sectionStyle: CSSProperties = {
     justifyContent: `${contentAlignment}`,
@@ -27,7 +29,7 @@ let ContactForm = forwardRef<HTMLDivElement, ContactFormProps>((props, ref) => {
     '--bottom-padding': `${bottomPadding}px`,
   } as CSSProperties;
   return (
-    <div ref={ref} {...props} style={sectionStyle} className="flex justify-center px-0 md:px-10">
+    <div ref={scope} {...props} style={sectionStyle} className="flex justify-center px-0 md:px-10">
       <Form
         action="/contact"
         method="POST"
@@ -36,28 +38,30 @@ let ContactForm = forwardRef<HTMLDivElement, ContactFormProps>((props, ref) => {
         className="w-80 pt-[var(--top-padding)] pb-[var(--bottom-padding)] text-center"
       >
         <div className="space-y-2 flex flex-col gap-5">
-          <label htmlFor="contact-us" className="text-5xl font-medium font-heading">
+          <label htmlFor="contact-us" data-motion="fade-up" className="text-5xl font-medium !font-heading">
             {heading}
           </label>
-          <p className="font-body font-normal">{subHeading}</p>
+          <p data-motion="fade-up" className="font-body font-normal">{subHeading}</p>
         </div>
         <div className="space-y-2 mt-8 mb-5">
-          <Input type="text" name="name" placeholder="Name" className="placeholder-foreground-subtle" />
-          <Input type="email" name="email" placeholder="Email" className="placeholder-foreground-subtle" />
+          <Input data-motion="fade-up" type="text" name="name" placeholder="Name" className="placeholder-foreground-subtle" />
+          <Input data-motion="fade-up" type="email" name="email" placeholder="Email" className="placeholder-foreground-subtle" />
           <Input
+            data-motion="fade-up"
             type="text"
             name="subject"
             placeholder="Subject"
             className="placeholder-foreground-subtle"
           />
           <textarea
+            data-motion="fade-up"
             className="resize-none w-full p-2.5 border-2 border-bar-subtle rounded focus-visible:outline-none focus-visible:border-bar hover:border-bar placeholder-foreground-subtle"
             rows={4}
             name="message"
             placeholder="Message"
           />
         </div>
-        {buttonLabel && <Button type="submit" variant={variant}>{buttonLabel}</Button>}
+        {buttonLabel && <Button data-motion="fade-up" type="submit" variant={variant}>{buttonLabel}</Button>}
       </Form>
     </div>
   );

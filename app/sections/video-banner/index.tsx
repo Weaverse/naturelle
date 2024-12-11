@@ -17,6 +17,7 @@ import {
 } from 'react';
 import {useInView} from 'react-intersection-observer';
 import {Overlay, overlayInputs, OverlayProps} from '../atoms/Overlay';
+import { useMotion } from '~/hooks/use-motion';
 
 const SECTION_HEIGHTS = {
   small: {
@@ -159,6 +160,8 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
     };
   }, [inView, height, heightOnDesktop, heightOnMobile]);
 
+  const [scope] = useMotion(ref);
+
   return (
     <section
       ref={setRefs}
@@ -175,7 +178,7 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
         )}
       >
         {inView && (
-          <Suspense fallback={<div className='w-full h-full bg-background-subtle-1'></div>}>
+          <Suspense fallback={<div className='w-full h-full bg-background'></div>}>
             <ReactPlayer
               url={videoURL2 || videoURL.url}
               playing
@@ -195,7 +198,7 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
           overlayOpacity={overlayOpacity}
           className="z-0"
         />
-        <div className={clsx(variants({gap}))}>{children}</div>
+        <div ref={scope} className={clsx(variants({gap}))}>{children}</div>
       </div>
     </section>
   );

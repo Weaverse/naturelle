@@ -10,12 +10,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground border border-primary hover:bg-transparent hover:text-foreground hover:border-bar',
+        primary: 'btn-primary',
         secondary:
-          'border border-bar bg-transparent hover:bg-primary hover:text-secondary',
+          'btn-secondary',
         outline:
-          'bg-transparent border border-bar text-secondary-foreground font-heading text-xl',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'btn-outline !font-heading',
+        link: 'text-text-primary underline-offset-4 hover:underline',
         decor: 'relative',
         custom: '',
       },
@@ -49,6 +49,7 @@ export interface ButtonProps
   as?: React.ElementType;
   to?: string;
   target?: string;
+  classNameContainer?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -62,6 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       fontFamily = 'body',
       asChild,
       as = 'button',
+      classNameContainer,
       children,
       ...props
     },
@@ -84,7 +86,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <Spinner size={20} />
           </div>
         )}
-        <span className={loading ? 'invisible' : ''}>{children}</span>
+        <span className={cn(classNameContainer, loading ? 'invisible' : '')}>{children}</span>
       </Component>
     );
   },

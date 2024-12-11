@@ -28,7 +28,7 @@ const Review = forwardRef<HTMLDivElement, ReviewProps>((props, ref) => {
         return stars;
     };
     return (
-        <div ref={ref} {...rest} className='border rounded border-[var(--border-color)] gap-2 p-6 flex flex-col relative'>
+        <div data-motion="fade-up" ref={ref} {...rest} className='border rounded border-[var(--border-color)] gap-2 p-6 flex flex-col relative'>
             {name && <h4 className='font-medium text-[var(--text-color)]'>{name}</h4>}
             <p className='flex gap-1'>
                 {renderStars()}

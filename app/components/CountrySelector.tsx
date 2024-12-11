@@ -1,7 +1,6 @@
 import {useFetcher, useLocation, useRouteLoaderData} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import type {CartBuyerIdentityInput} from '@shopify/hydrogen/storefront-api-types';
-import {Button} from '~/components/Button';
 import {IconCaret, IconCheck} from '~/components/Icon';
 import type {Locale, Localizations} from '~/lib/type';
 import {DEFAULT_LOCALE} from '~/lib/utils';
@@ -9,6 +8,7 @@ import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useInView} from 'react-intersection-observer';
+import { Button } from '~/components/button';
 
 export function CountrySelector() {
   const fetcher = useFetcher();
@@ -57,7 +57,7 @@ export function CountrySelector() {
     <div ref={observerRef} className="md:max-w-72 w-full" onMouseLeave={closeDropdown}>
       <div className="relative">
         <details
-          className="w-full overflow-hidden rounded border border-bar-subtle dark:border-white"
+          className="w-full overflow-hidden rounded border border-border-subtle dark:border-white"
           ref={closeRef}
           onToggle={toggleDropdown}
         >
@@ -67,7 +67,7 @@ export function CountrySelector() {
               <IconCaret direction="down" className="h-4 w-4" />
             </span>
           </summary>
-          <div className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border-t border-bar-subtle bg-white dark:border-white transition-all duration-500
+          <div className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border-t border-border-subtle bg-background dark:border-white transition-all duration-500
             ${isOpen ? 'max-h-36' : 'max-h-0'}`}>
             {countries &&
               Object.keys(countries).map((countryPath) => {
@@ -117,12 +117,13 @@ function Country({
       }}
     >
       <Button
-        className={clsx([
-          'flex w-full justify-start rounded bg-background p-2 transition',
+        classNameContainer={clsx([
+          'flex w-full justify-start',
           'cursor-pointer items-center px-4 py-2 text-left',
         ])}
+        className='rounded bg-background p-2 transition w-full'
+        variant={"custom"}
         type="submit"
-        variant="primary"
         onClick={closeDropdown}
       >
         {countryLocale.label}

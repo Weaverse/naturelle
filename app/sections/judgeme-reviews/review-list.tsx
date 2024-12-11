@@ -23,7 +23,7 @@ export function ReviewList({judgemeReviews}: {judgemeReviews: JudgemeReviewsData
           Reviews ({judgemeReviews.reviewNumber})
         </span>
         {reviews.map((review, index) => (
-          <>
+          <div data-motion="fade-up" className="space-y-6">
             <div key={index} className="flex gap-4 flex-col md:flex-row">
               <div className="flex flex-col gap-4 md:w-1/4 w-full">
                 <div className="flex items-center gap-0.5">
@@ -42,17 +42,17 @@ export function ReviewList({judgemeReviews}: {judgemeReviews: JudgemeReviewsData
                 <p className="font-normal text-base line-clamp-4">{review.body}</p>
               </div>
             </div>
-            <hr className="border-t border-bar-subtle" />
-          </>
+            <hr className="border-t border-border-subtle" />
+          </div>
         ))}
       </div>
       {pageNumber > 1 && (
-        <div className="flex justify-center gap-2">
+        <div data-motion="fade-up" className="flex justify-center gap-2">
           {Array.from({ length: pageNumber }, (_, i) => (
             <button
               key={i}
               onClick={() => setPage(i)}
-              className="bg-primary/5 px-4 py-2 rounded-md hover:bg-primary/20 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-primary disabled:text-white"
+              className="bg-[#3d490b]/5 px-4 py-2 rounded-md hover:bg-[#3d490b]/20 transition-colors duration-200 disabled:bg-[#3d490b] disabled:text-white"
               disabled={i === page}
             >
               {i + 1}

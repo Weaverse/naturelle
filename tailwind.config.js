@@ -38,30 +38,13 @@ module.exports = {
       colors: {
         background: {
           DEFAULT: 'rgb(var(--color-background) / <alpha-value>)',
-          subtle: {
-            1: 'rgb(var(--color-background-subtle) / <alpha-value>)',
-            2: 'rgb(var(--color-background-subtle-2) / <alpha-value>)',
-          },
-          basic: 'rgb(var(--color-background-basic) / <alpha-value>)',
         },
-        foreground: {
-          DEFAULT: 'rgb(var(--color-foreground) / <alpha-value>)',
-          subtle: 'rgb(var(--color-foreground-subtle) / <alpha-value>)',
-          basic: 'rgb(var(--color-foreground-basis) / <alpha-value>)',
+        text: {
+          primary: 'rgb(var(--color-text-primary) / <alpha-value>)',
+          subtle: 'rgb(var(--color-text-subtle) / <alpha-value>)',
+          inverse: 'rgb(var(--color-text-inverse) / <alpha-value>)',
         },
-        primary: {
-          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
-          foreground: 'rgb(var(--color-primary-foreground) / <alpha-value>)',
-        },
-        secondary: {
-          DEFAULT: 'rgb(var(--color-secondary) / <alpha-value>)',
-          foreground: 'rgb(var(--color-secondary-foreground) / <alpha-value>)',
-        },
-        outline: {
-          DEFAULT: 'rgb(var(--color-outline) / <alpha-value>)',
-          foreground: 'rgb(var(--color-outline-foreground) / <alpha-value>)',
-        },
-        bar: {
+        border: {
           DEFAULT: 'rgb(var(--color-border) / <alpha-value>)',
           subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
         },

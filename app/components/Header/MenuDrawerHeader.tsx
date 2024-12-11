@@ -47,9 +47,9 @@ export function UseMenuDrawerHeader({
       className={clsx(
         enableTransparent ? "fixed w-screen" : "sticky",
         isTransparent
-          ? "border-secondary bg-transparent text-secondary"
-          : "shadow-header border-foreground bg-background-subtle-1 text-primary",
-        "top-0 z-40 border-b border-foreground",
+          ? "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]"
+          : "shadow-header border-[var(--color-header-text)] bg-[var(--color-header-bg)] text-[var(--color-header-text)]",
+        "top-0 z-40 border-b",
         className
       )}
       style={{ ["--announcement-bar-height" as string]: `${top}px` }}
@@ -59,7 +59,7 @@ export function UseMenuDrawerHeader({
       <div className="z-40 flex h-nav items-center justify-between gap-3 px-6 md:px-8 lg:px-6 py-4 transition-all duration-300 container">
         <div
           className={clsx(
-            "absolute inset-0 z-20 bg-background-subtle-1",
+            "absolute inset-0 z-20 bg-[var(--color-header-bg)",
             "transition-all duration-300 ease-in-out",
             isTransparent ? "opacity-0" : "opacity-100"
           )}

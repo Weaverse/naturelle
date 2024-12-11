@@ -17,7 +17,7 @@ export function ProductDetail({
       {({ open }) => (
         <>
           <Disclosure.Button className="text-left">
-            <div className="flex justify-between items-center bg-background-subtle-1 py-3 px-4">
+            <div className="flex justify-between items-center bg-[#e0e5d6] py-3 px-4">
               <Text as="span" className="font-normal text-base uppercase">
                 {title}
               </Text>

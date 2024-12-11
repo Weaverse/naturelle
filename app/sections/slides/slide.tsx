@@ -52,6 +52,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
             <div className='h-full w-full sm:px-0'>
                 <div className={clsx('flex flex-col justify-center items-center h-full w-full', AlignImageClasses[imageAlignment!])}>
                     <div
+                        data-motion="zoom-in"
                         className="w-full h-1/2 sm:h-full flex flex-1 items-center justify-center sm:w-1/2 aspect-square overflow-hidden"
                     >
                         {backgroundImage ? (
@@ -63,7 +64,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                                 )}
                             />
                         ) : (
-                            <div className="flex justify-center items-center bg-background-subtle-1 w-full h-full">
+                            <div className="flex justify-center items-center bg-[#e5e6d4] w-full h-full">
                                 <IconImageBlank
                                     className="w-96 h-96 opacity-80"
                                     viewBox="0 0 526 526"
@@ -78,7 +79,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                         )}>
                             {children}
                         </div>
-                        <div className='sm:flex gap-4 justify-center items-center hidden'>
+                        <div data-motion="fade-up" className='sm:flex gap-4 justify-center items-center hidden'>
                             <IconArrowLeft onClick={() => swiper.slidePrev()} className='w-8 h-8 cursor-pointer' viewBox='0 0 32 32' />
                             <IconArrowRight onClick={() => swiper.slideNext()} className='w-8 h-8 cursor-pointer' viewBox='0 0 32 32' />
                         </div>

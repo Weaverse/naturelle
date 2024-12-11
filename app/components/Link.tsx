@@ -44,7 +44,7 @@ export function Link(props: LinkProps) {
   if (typeof className === 'function') {
     return (
       <RemixNavLink
-        unstable_viewTransition={enableViewTransition}
+        viewTransition={enableViewTransition}
         to={toWithLocale}
         className={className}
         {...resOfProps}
@@ -54,7 +54,7 @@ export function Link(props: LinkProps) {
 
   return (
     <RemixLink
-      unstable_viewTransition={enableViewTransition}
+      viewTransition={enableViewTransition}
       to={toWithLocale}
       className={className}
       {...resOfProps}
