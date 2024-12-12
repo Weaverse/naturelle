@@ -27,7 +27,8 @@ const buttonVariants = cva(
       },
       shape: {
         default: 'rounded',
-        round: 'rounded-md',
+        round: 'rounded-full',
+        customs: 'rounded-[var(--radius)]',
       },
       fontFamily: {
         body: 'font-body',
