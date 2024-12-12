@@ -152,7 +152,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                           <Money
                             withoutTrailingZeros
                             data={selectedVariant.compareAtPrice}
-                            className="text-label-sale line-through"
+                            className="text-[#AB2E2E] line-through"
                             as="span"
                           />
                         )}

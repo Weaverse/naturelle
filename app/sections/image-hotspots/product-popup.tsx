@@ -118,7 +118,7 @@ export function ProductPopup({
                     withoutTrailingZeros
                     data={compareAtPrice}
                     as="div"
-                    className="text-base font-medium line-through text-label-sale"
+                    className="text-base font-medium line-through text-[#AB2E2E]"
                   />
                 )}
                 <Money

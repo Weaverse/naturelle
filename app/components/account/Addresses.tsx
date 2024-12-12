@@ -26,7 +26,7 @@ function AddressCard(props: {
   return (
     <div className="space-y-2 border border-bar-subtle p-5">
       {defaultAddress && (
-        <div className="w-fit rounded bg-label-soldout px-2.5 py-1 text-white">
+        <div className="w-fit rounded bg-label-soldout-background px-2.5 py-1 text-white">
           Default
         </div>
       )}
