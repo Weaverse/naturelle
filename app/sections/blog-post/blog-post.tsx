@@ -31,7 +31,7 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
               />
             )}
             <div className="h-full flex items-center lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm pt-16 pb-6 flex-col gap-4 mx-auto px-4 md:px-6 lg:px-0">
-              <h5 className='py-1 px-4 bg-label-new text-white rounded'>Product guidelines</h5>
+              <h5 className='py-1 px-4 bg-label-new-background text-white rounded'>Product guidelines</h5>
               <h1 className="font-bold text-center">{title}</h1>
             </div>
           </div>

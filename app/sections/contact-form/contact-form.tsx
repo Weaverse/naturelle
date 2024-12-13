@@ -6,7 +6,7 @@ import { forwardRef, CSSProperties } from "react";
 import { Form } from "@remix-run/react";
 import { Input } from "~/components/input";
 import { Button } from "~/components/button";
-import { useMotion } from "~/hooks/use-motion";
+import { useMotion } from "~/hooks/use-animation";
 
 interface ContactFormProps extends HydrogenComponentProps {
   backgroundColor: string;

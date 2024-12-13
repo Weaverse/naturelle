@@ -8,7 +8,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import clsx from 'clsx';
-import { useMotion } from '~/hooks/use-motion';
+import { useMotion } from '~/hooks/use-animation';
 
 interface SlidesProps extends HydrogenComponentProps {
   sectionHeight: number;

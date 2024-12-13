@@ -71,7 +71,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
     ? unavailableText
     : soldOutText;
   return (
-    <div className="p-10 rounded-md bg-background w-[80vw] max-w-[1000px]">
+    <div className="p-10 rounded-2xl bg-background w-[80vw] max-w-[1000px]">
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">
         <ProductMedia
           media={product?.media.nodes}
@@ -102,7 +102,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                     <Money
                       withoutTrailingZeros
                       data={selectedVariant.compareAtPrice}
-                      className="text-label-sale line-through"
+                      className="text-[#AB2E2E] line-through"
                       as="span"
                     />
                   )}

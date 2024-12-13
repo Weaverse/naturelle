@@ -354,7 +354,7 @@ function OrderItem({ order }: { order: OrderItemFragment }) {
           <p>{new Date(order.processedAt).toDateString()}</p>
         </div>
 
-        <p className="w-fit rounded bg-label-soldout p-2 text-white">
+        <p className="w-fit rounded bg-label-soldout-background p-2 text-white">
           {order.financialStatus}
         </p>
         {/* <Money data={order.totalPrice} /> */}

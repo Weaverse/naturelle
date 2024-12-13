@@ -10,7 +10,7 @@ import type { CollectionDetailsQuery } from "storefrontapi.generated";
 import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
 import { Button } from "~/components/button";
 import { cva, VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 
 interface CollectionFiltersProps extends VariantProps<typeof variants> {}
 let variants = cva("relative lg:pb-20 pb-12", {

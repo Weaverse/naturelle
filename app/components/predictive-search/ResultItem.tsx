@@ -54,7 +54,7 @@ export function SearchResultItem({
           )}
           <div className="flex gap-2">
             {item?.compareAtPrice && (
-              <span className="text-label-sale line-through">
+              <span className="text-[#AB2E2E] line-through">
                 <Money data={item.compareAtPrice} />
               </span>
             )}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {cn} from '@/lib/utils';
+import { cn } from "~/lib/utils";
 import { cva, VariantProps } from 'class-variance-authority';
 import { useState } from 'react';
 import { IconClose } from '~/components/Icon';

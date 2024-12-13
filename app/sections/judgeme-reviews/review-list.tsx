@@ -52,7 +52,7 @@ export function ReviewList({judgemeReviews}: {judgemeReviews: JudgemeReviewsData
             <button
               key={i}
               onClick={() => setPage(i)}
-              className="bg-[#3d490b]/5 px-4 py-2 rounded-md hover:bg-[#3d490b]/20 transition-colors duration-200 disabled:bg-[#3d490b] disabled:text-white"
+              className="bg-[#3d490b]/5 px-4 py-2 rounded-full hover:bg-[#3d490b]/20 transition-colors duration-200 disabled:bg-[#3d490b] disabled:text-white"
               disabled={i === page}
             >
               {i + 1}

@@ -13,7 +13,7 @@ import type {SlideshowArrowsProps} from './arrows';
 import {Arrows} from './arrows';
 import type {SlideshowDotsProps} from './dots';
 import {Dots} from './dots';
-import { useMotion } from '~/hooks/use-motion';
+import { useMotion } from '~/hooks/use-animation';
 
 let variants = cva('group [&_.swiper]:h-full', {
   variants: {

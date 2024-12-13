@@ -17,7 +17,7 @@ import {
 } from 'react';
 import {useInView} from 'react-intersection-observer';
 import {Overlay, overlayInputs, OverlayProps} from '../atoms/Overlay';
-import { useMotion } from '~/hooks/use-motion';
+import { useMotion } from '~/hooks/use-animation';
 
 const SECTION_HEIGHTS = {
   small: {

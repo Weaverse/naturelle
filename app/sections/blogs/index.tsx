@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 import { Image } from "@shopify/hydrogen";
 import type {
   ComponentLoaderArgs,
@@ -12,7 +12,7 @@ import { BLOG_QUERY } from "~/data/queries";
 import { cva, VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import { CSSProperties, forwardRef } from "react";
-import { useMotion } from "~/hooks/use-motion";
+import { useMotion } from "~/hooks/use-animation";
 
 let fontSizeVariants = cva("", {
   variants: {
