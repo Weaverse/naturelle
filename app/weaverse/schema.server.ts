@@ -523,8 +523,8 @@ export const themeSchema: HydrogenThemeSchema = {
         {type: "heading", label: "Label"},
         {
           type: "color",
-          label: "Label text (sale)",
-          name: "labelTextSale",
+          label: "Label text",
+          name: "labelText",
           defaultValue: "#FFFFFF",
         },
         {
@@ -535,21 +535,9 @@ export const themeSchema: HydrogenThemeSchema = {
         },
         {
           type: "color",
-          label: "Label text (new)",
-          name: "labelTextNew",
-          defaultValue: "#FFFFFF",
-        },
-        {
-          type: "color",
           label: "Label background (new)",
           name: "labelBgNew",
           defaultValue: "#87A473",
-        },
-        {
-          type: "color",
-          label: "Label text (sold out)",
-          name: "labelTextSoldOut",
-          defaultValue: "#FFFFFF",
         },
         {
           type: "color",
@@ -682,6 +670,7 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Quick view",
       inputs: [
+        {type: "heading", label: "Product form"},
         {
           type: "text",
           label: "Add to cart text",
@@ -738,12 +727,7 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "switch",
           name: "hideUnavailableOptions",
         },
-        {
-          label: "Show thumbnails",
-          name: "showThumbnails",
-          type: "switch",
-          defaultValue: true,
-        },
+        {type: "heading", label: "Product media"},
         {
           type: "select",
           name: "imageAspectRatio",
@@ -757,7 +741,18 @@ export const themeSchema: HydrogenThemeSchema = {
               { value: "16/9", label: "Widescreen (16/9)" },
             ],
           },
-          condition: "showThumbnails.eq.true",
+        },
+        {
+          label: "Show slide counter",
+          name: "showSlideCounter",
+          type: "switch",
+          defaultValue: true,
+        },
+        {
+          label: "Show thumbnails",
+          name: "showThumbnails",
+          type: "switch",
+          defaultValue: true,
         },
         {
           label: "Gap between images",
