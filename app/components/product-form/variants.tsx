@@ -19,6 +19,7 @@ interface ProductVariantsProps {
     swatches: any;
   };
   hideUnavailableOptions?: boolean;
+  isDisabled?: boolean;
 }
 
 export function ProductVariants(props: ProductVariantsProps) {
@@ -30,6 +31,7 @@ export function ProductVariants(props: ProductVariantsProps) {
     handle,
     swatch,
     hideUnavailableOptions,
+    isDisabled,
   } = props;
 
   let selectedOptions = selectedVariant?.selectedOptions;
@@ -112,6 +114,7 @@ export function ProductVariants(props: ProductVariantsProps) {
               selectedOptionValue={selectedValue}
               onSelectOptionValue={handleSelectOptionValue}
               swatches={swatch?.swatches}
+              isDisabled={isDisabled}
             />
           );
         }}
