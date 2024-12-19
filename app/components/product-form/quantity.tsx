@@ -1,11 +1,13 @@
+import clsx from "clsx";
 import { Input } from "~/components/input";
 
 interface QuantityProps {
   value: number;
+  isDisabled?: boolean;
   onChange: (value: number) => void;
 }
 export function Quantity(props: QuantityProps) {
-  let {value, onChange} = props;
+  let {value, onChange, isDisabled} = props;
   let handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Prevent the user from entering non-numeric characters
     if (
@@ -23,12 +25,12 @@ export function Quantity(props: QuantityProps) {
       <legend className="whitespace-pre-wrap max-w-prose text-base font-body font-semibold leading-snug">
         Quantity
       </legend>
-      <div className="w-fit flex gap-2">
+      <div className={clsx("w-fit flex gap-2", isDisabled && "opacity-50 cursor-not-allowed")}>
         <button
           name="decrease-quantity"
           aria-label="Decrease quantity"
           className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
-          disabled={value <= 1}
+          disabled={ isDisabled || value <= 1}
           onClick={() => onChange(value - 1)}
         >
           <span>&#8722;</span>
@@ -38,12 +40,14 @@ export function Quantity(props: QuantityProps) {
           value={value}
           onKeyDown={handleKeyDown}
           onChange={(e) => onChange(Number(e.currentTarget.value))}
+          disabled={isDisabled}
         />
         <button
           className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
           name="increase-quantity"
           aria-label="Increase quantity"
           onClick={() => onChange(value + 1)}
+          disabled={isDisabled}
         >
           <span>&#43;</span>
         </button>

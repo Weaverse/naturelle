@@ -225,13 +225,14 @@ export default function Search() {
                   key={product.id}
                   product={product}
                   loading={getImageLoadingPriority(i)}
+                  quickAdd
                 />
               ));
 
               return (
                 <>
-                  <div className="my-6 flex w-full items-center justify-center">
-                    <Button as={PreviousLink} variant="secondary">
+                  <div className="my-11 flex w-full items-center justify-center">
+                    <Button as={PreviousLink} variant="outline">
                       {isLoading ? 'Loading...' : 'Previous'}
                     </Button>
                   </div>
@@ -242,8 +243,8 @@ export default function Search() {
                   >
                     {itemsMarkup}
                   </Grid>
-                  <div className="my-6 flex w-full items-center justify-center">
-                    <Button as={NextLink} variant="secondary">
+                  <div className="my-11 flex w-full items-center justify-center">
+                    <Button as={NextLink} variant="outline">
                       {isLoading ? 'Loading...' : 'Show more +'}
                     </Button>
                   </div>

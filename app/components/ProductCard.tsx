@@ -50,14 +50,14 @@ export function ProductCard({
           (parseFloat(price.amount) / parseFloat(compareAtPrice?.amount)) * 100,
         );
       cardLabel = `Save ${discount}%`;
-      labelClass = 'bg-label-sale-background text-label-sale-text';
+      labelClass = 'bg-label-sale-background text-label-text';
     }
   } else if (isNewArrival(product.publishedAt)) {
     cardLabel = 'New Arrival';
-    labelClass = 'bg-label-new-background text-label-new-text';
+    labelClass = 'bg-label-new-background text-label-text';
   } else if (!product.variants.nodes[0].availableForSale) {
     cardLabel = 'Out of Stock';
-    labelClass = 'bg-label-soldout-background text-label-soldout-text';
+    labelClass = 'bg-label-soldout-background text-label-text';
   }
 
   const productAnalytics: ShopifyAnalyticsProduct = {

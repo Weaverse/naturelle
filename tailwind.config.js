@@ -49,17 +49,15 @@ module.exports = {
           subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
         },
         label: {
+          text: 'rgb(var(--color-label-text) / <alpha-value>)',
           sale: {
             background: 'rgb(var(--color-label-bg-sale) / <alpha-value>)',
-            text: 'rgb(var(--color-label-text-sale) / <alpha-value>)',
           },
           new: {
             background: 'rgb(var(--color-label-bg-new) / <alpha-value>)',
-            text: 'rgb(var(--color-label-text-new) / <alpha-value>)',
           },
           soldout: {
             background: 'rgb(var(--color-label-bg-soldout) / <alpha-value>)',
-            text: 'rgb(var(--color-label-text-soldout) / <alpha-value>)',
           },
         },
       },

@@ -10,13 +10,15 @@ type CollectionsLoadedOnScrollProps = {
   collectionsPerRow: number;
   lazyLoadImage: boolean;
   inView: boolean;
+  previousPageUrl: string;
+  hasPreviousPage: boolean;
   nextPageUrl: string;
   hasNextPage: boolean;
   state: any;
 };
 
 export function CollectionsLoadedOnScroll(props: CollectionsLoadedOnScrollProps) {
-  let {nodes, collectionsPerRow, lazyLoadImage, inView, nextPageUrl, hasNextPage, state} = props;
+  let {nodes, collectionsPerRow, lazyLoadImage, inView, previousPageUrl, hasPreviousPage, nextPageUrl, hasNextPage, state} = props;
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +29,14 @@ export function CollectionsLoadedOnScroll(props: CollectionsLoadedOnScrollProps)
         state,
       });
     }
-  }, [inView, navigate, state, nextPageUrl, hasNextPage]);
+    if (inView && hasPreviousPage) {
+      navigate(previousPageUrl, {
+        replace: true,
+        preventScrollReset: true,
+        state,
+      });
+    }
+  }, [inView, navigate, state, nextPageUrl, hasNextPage, previousPageUrl, hasPreviousPage]);
 
   return (
     <Grid

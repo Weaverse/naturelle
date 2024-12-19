@@ -36,12 +36,8 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
             ));
 
             return (
-              <div className="flex flex-col items-center justify-center">
-                <Button
-                  as={PreviousLink}
-                  variant="outline"
-                  className="!mb-9 lg:!mb-16 lg:!mt-16 !mt-9"
-                >
+              <div className="flex flex-col items-center justify-center gap-11">
+                <Button as={PreviousLink} variant="outline">
                   <span className="font-heading font-light">
                     {isLoading ? "Loading..." : "Load previous"}
                   </span>
@@ -53,11 +49,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
                 >
                   {itemsMarkup}
                 </Grid>
-                <Button
-                  as={NextLink}
-                  variant="outline"
-                  className="!mb-5 lg:!mt-20 !mt-12"
-                >
+                <Button as={NextLink} variant="outline">
                   <span className="font-heading font-light">
                     {isLoading ? "Loading..." : "Show more +"}
                   </span>

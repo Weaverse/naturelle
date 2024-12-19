@@ -57,7 +57,7 @@ const NewsletterInput = forwardRef<HTMLDivElement, InputEmailProps>((props, ref)
       <fetcher.Form
         method="POST"
         action="/api/customer"
-        className="flex w-[var(--max-width-content)] items-center justify-center gap-2"
+        className="flex sm:w-[var(--max-width-content)] w-full items-center justify-center gap-2"
       >
         <Input
           className="w-2/3 bg-transparent"

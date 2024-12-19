@@ -10,7 +10,7 @@ import {WeaverseContent} from '~/weaverse';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 16,
   });
 
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
@@ -42,6 +42,11 @@ const COLLECTIONS_QUERY = `#graphql
     id
     title
     handle
+    description
+    seo {
+      title
+      description
+    }
     image {
       id
       url

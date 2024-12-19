@@ -4,7 +4,7 @@ import { ForwardedRef, useEffect } from "react";
 
 type MotionType = "fade-up" | "fade-in" | "zoom-in" | "slide-in";
 
-const animations: Record<MotionType, any> = {
+const ANIMATIONS: Record<MotionType, any> = {
   "fade-up": { opacity: [0, 1], y: [20, 0] },
   "fade-in": { opacity: [0, 1] },
   "zoom-in": { opacity: [0, 1], scale: [0.8, 1], y: [20, 0] },
@@ -13,36 +13,38 @@ const animations: Record<MotionType, any> = {
 
 export function useMotion(ref?: ForwardedRef<any>) {
   let { enableScrollReveal } = useThemeSettings();
-  const [scope] = useAnimate();
+  let [scope] = useAnimate();
+
   useEffect(() => {
     if (!scope.current || !ref) return;
     Object.assign(ref, { current: scope.current });
   }, [scope, ref]);
+
   useEffect(() => {
     if (!enableScrollReveal) {
       return;
     }
-    scope.current?.classList.add("animated-scope");
-    scope.current
-      .querySelectorAll("[data-motion]")
-      .forEach((el: HTMLElement, index: number) => {
+    if (scope.current) {
+      scope.current.classList.add("animated-scope");
+      const elems = scope.current.querySelectorAll("[data-motion]");
+      elems.forEach((elem: HTMLElement, idx: number) => {
         inView(
-          el,
-          (info) => {
-            const dataDelay = Number.parseInt(el.dataset.delay as string);
-            const motionType = (el.dataset.motion || "fade-up") as MotionType;
-            const motionSettings = animations[motionType];
-            const delay = dataDelay || index * 0.15;
-            animate(info.target, motionSettings, {
+          elem,
+          ({ target }) => {
+            let { motion, delay } = elem.dataset;
+            animate(target, ANIMATIONS[motion as MotionType || "fade-up"], {
+              delay: Number(delay) || idx * 0.15,
               duration: 0.5,
-              delay,
             });
+            if (idx === elems.length - 1) {
+              scope.current.classList.remove("animated-scope");
+            }
           },
-          {
-            amount: 0.3,
-          }
+          { amount: 0.3 }
         );
       });
+    }
   }, []);
+
   return [scope] as const;
 }
