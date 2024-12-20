@@ -27,6 +27,8 @@ let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
             nodes,
             isLoading,
             PreviousLink,
+            previousPageUrl,
+            hasPreviousPage,
             NextLink,
             nextPageUrl,
             hasNextPage,
@@ -34,7 +36,7 @@ let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
           }) => (
             <>
               <div className="mb-6 flex items-center justify-center">
-                <Button as={PreviousLink} variant="outline">
+                <Button ref={ref} as={PreviousLink} variant="outline">
                   {isLoading ? 'Loading...' : 'Previous collections'}
                 </Button>
               </div>
@@ -43,6 +45,8 @@ let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
                 collectionsPerRow={collectionsPerRow}
                 lazyLoadImage={lazyLoadImage}
                 inView={inView}
+                previousPageUrl={previousPageUrl}
+                hasPreviousPage={hasPreviousPage}
                 nextPageUrl={nextPageUrl}
                 hasNextPage={hasNextPage}
                 state={state}

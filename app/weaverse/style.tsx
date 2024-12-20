@@ -53,11 +53,9 @@ export function GlobalStyle() {
       buttonBorderColorOutline,
       buttonTextHoverOutline,
       buttonBorderHoverOutline,
-      labelTextSale,
+      labelText,
       labelBgSale,
-      labelTextNew,
       labelBgNew,
-      labelTextSoldOut,
       labelBgSoldOut,
     } = settings;
     const {
@@ -78,11 +76,9 @@ export function GlobalStyle() {
     colorTextInverse = hexToRgbString(colorTextInverse);
     borderColor = hexToRgbString(borderColor);
     borderSubtleColor = hexToRgbString(borderSubtleColor);
-    labelTextSale = hexToRgbString(labelTextSale);
+    labelText = hexToRgbString(labelText);
     labelBgSale = hexToRgbString(labelBgSale);
-    labelTextNew = hexToRgbString(labelTextNew);
     labelBgNew = hexToRgbString(labelBgNew);
-    labelTextSoldOut = hexToRgbString(labelTextSoldOut);
     labelBgSoldOut = hexToRgbString(labelBgSoldOut);
     return (
       <style
@@ -112,11 +108,9 @@ export function GlobalStyle() {
               --color-border-subtle: ${borderSubtleColor};
               --color-drawer-bg: ${drawerBgColor};
 
-              --color-label-text-sale: ${labelTextSale};
+              --color-label-text: ${labelText};
               --color-label-bg-sale: ${labelBgSale};
-              --color-label-text-new: ${labelTextNew};
               --color-label-bg-new: ${labelBgNew};
-              --color-label-text-soldout: ${labelTextSoldOut};
               --color-label-bg-soldout: ${labelBgSoldOut};
               
 

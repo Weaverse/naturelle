@@ -29,13 +29,13 @@ export function SearchTypeHeaderResults() {
 
   if (!totalResults) {
     return (
-      <div className="absolute top-20 z-10 flex w-full items-center justify-center">
+      <div className="absolute top-24 z-10 flex w-full items-center justify-center">
         <NoPredictiveSearchResults searchTerm={searchTerm} />
       </div>
     );
   }
   return (
-    <div className="absolute left-1/2 top-20 z-10 flex w-fit -translate-x-1/2 items-center justify-center">
+    <div className="absolute left-1/2 top-24 z-10 flex w-fit -translate-x-1/2 items-center justify-center">
       <div className="grid max-h-[80vh] w-screen min-w-[430px] max-w-[720px] grid-cols-1 gap-6 overflow-y-auto border bg-[var(--color-drawer-bg)] p-6 lg:grid-cols-[1fr_2fr]">
         <div className="space-y-8">
           {queries && (
@@ -77,6 +77,7 @@ export function SearchTypeHeaderResults() {
                   <Link
                     onClick={goToSearchResult}
                     to={`/search?q=${searchTerm.current}`}
+                    className="z-30"
                   >
                     Show All Results ({totalResultsCount})
                   </Link>

@@ -1,34 +1,36 @@
-import type { CartLineInput } from '@shopify/hydrogen/storefront-api-types';
-import type { ShopifyAddToCartPayload } from '@shopify/hydrogen';
+import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
+import type { ShopifyAddToCartPayload } from "@shopify/hydrogen";
 import {
   AnalyticsEventName,
   CartForm,
   getClientBrowserParameters,
   sendShopifyAnalytics,
-} from '@shopify/hydrogen';
-import type { FetcherWithComponents } from '@remix-run/react';
-import { useEffect } from 'react';
+} from "@shopify/hydrogen";
+import type { FetcherWithComponents } from "@remix-run/react";
+import { useEffect } from "react";
 
-import { Button } from '~/components/button';
-import { usePageAnalytics } from '~/hooks/usePageAnalytics';
+import { Button } from "~/components/button";
+import { usePageAnalytics } from "~/hooks/usePageAnalytics";
 
 export function AddToCartButton({
   children,
   lines,
-  className = '',
-  variant = 'primary',
-  width = 'full',
+  className = "",
+  variant = "primary",
+  width = "full",
   disabled,
   analytics,
+  onFetchingStateChange,
   ...props
 }: {
   children: React.ReactNode;
   lines: CartLineInput[];
   className?: string;
-  variant?: 'primary' | 'secondary' | 'outline';
-  width?: 'auto' | 'full';
+  variant?: "primary" | "secondary" | "outline";
+  width?: "auto" | "full";
   disabled?: boolean;
   analytics?: unknown;
+  onFetchingStateChange?: (state: string) => void;
   [key: string]: any;
 }) {
   return (
@@ -40,6 +42,12 @@ export function AddToCartButton({
       action={CartForm.ACTIONS.LinesAdd}
     >
       {(fetcher: FetcherWithComponents<any>) => {
+        useEffect(() => {
+          if (onFetchingStateChange) {
+            onFetchingStateChange(fetcher.state);
+          }
+        }, [fetcher.state]);
+
         return (
           <AddToCartAnalytics fetcher={fetcher}>
             <input
@@ -52,8 +60,8 @@ export function AddToCartButton({
               type="submit"
               size="lg"
               className={className}
-              disabled={disabled ?? fetcher.state !== 'idle'}
-              loading={fetcher.state === 'submitting'}
+              disabled={disabled ?? fetcher.state !== "idle"}
+              loading={fetcher.state === "submitting"}
               variant={variant}
               {...props}
             >
@@ -85,7 +93,7 @@ function AddToCartAnalytics({
       try {
         if (cartInputs.inputs.analytics) {
           const dataInForm: unknown = JSON.parse(
-            String(cartInputs.inputs.analytics),
+            String(cartInputs.inputs.analytics)
           );
           Object.assign(cartData, dataInForm);
         }
