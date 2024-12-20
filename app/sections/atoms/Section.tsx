@@ -12,8 +12,8 @@ import { backgroundInputs } from "./BackgroundImage";
 import type { OverlayProps } from "./Overlay";
 import { overlayInputs } from "./Overlay";
 import { OverlayAndBackground } from "./OverlayAndBackground";
-import { cn } from "@/lib/utils";
-import { useMotion } from "~/hooks/use-motion";
+import { cn } from "~/lib/utils";
+import { useMotion } from "~/hooks/use-animation";
 
 export type BackgroundProps = BackgroundImageProps & {
   backgroundFor: "section" | "content";

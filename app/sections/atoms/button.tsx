@@ -6,6 +6,7 @@ import {CSSProperties, forwardRef} from 'react';
 interface OriginalButtonProps extends ButtonProps {
   href?: string;
   target?: string;
+  radius?: number;
   textColorDecor?: string;
   backgroundColor?: string;
   textColor?: string;
@@ -17,7 +18,7 @@ interface OriginalButtonProps extends ButtonProps {
 
 const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
   (props, ref) => {
-    const {href, target, value, variant, shape, fontFamily, textColorDecor, textColor, backgroundColor, borderColor, backgroundColorHover, textColorHover, borderColorHover, ...rest} = props;
+    const {href, target, value, variant, shape, radius, fontFamily, textColorDecor, textColor, backgroundColor, borderColor, backgroundColorHover, textColorHover, borderColorHover, ...rest} = props;
     const Component = href ? 'a' : 'button';
     let style = {
       color: textColorDecor,
@@ -27,6 +28,7 @@ const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
       '--background-color-hover': backgroundColorHover,
       '--text-color-hover': textColorHover,
       '--border-color-hover': borderColorHover,
+      '--radius': `${radius}px`,
     } as CSSProperties;
     let styleButton = ""
     if (variant === 'custom') {
@@ -70,7 +72,7 @@ export const schema: HydrogenComponentSchema = {
   type: 'button',
   inspector: [
     {
-      group: 'Settings',
+      group: 'Button',
       inputs: [
         {
           type: 'text',
@@ -155,9 +157,23 @@ export const schema: HydrogenComponentSchema = {
             options: [
               {label: 'Default', value: 'default'},
               {label: 'Round', value: 'round'},
+              {label: 'Customs', value: 'customs'},
             ],
           },
           condition: `variant.ne.decor`,
+        },
+        {
+          type: 'range',
+          label: 'Radius',
+          name: 'radius',
+          configs: {
+            min: 0,
+            max: 40,
+            step: 2,
+            unit: 'px',
+          },
+          defaultValue: 0,
+          condition: "shape.eq.customs",
         },
         {
           type: 'color',

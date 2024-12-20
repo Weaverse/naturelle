@@ -3,14 +3,14 @@ import { UseMenuDrawerHeader } from "./MenuDrawerHeader";
 import { UseMenuMegaHeader } from "./MenuMegaHeader";
 import type { LayoutProps } from "../Layout";
 import { AnnouncementBar } from "./AnnouncementBar";
-import { CartApiQueryFragment } from "storefrontapi.generated";
 import { Drawer, useDrawer } from "../Drawer";
 import { Suspense } from "react";
 import { CartLoading } from "../CartLoading";
-import { Await } from "@remix-run/react";
+import { Await, useRouteLoaderData } from "@remix-run/react";
 import { CartMain } from "../Cart";
 import { useCartFetchers } from "~/hooks/useCartFetchers";
-import { CartForm } from "@shopify/hydrogen";
+import { CartForm, CartReturn } from "@shopify/hydrogen";
+import { RootLoader } from "~/root";
 
 type HeaderProps = Pick<LayoutProps, "headerMenu" | "cart">;
 
@@ -26,7 +26,7 @@ export function Header({ headerMenu, cart }: HeaderProps) {
   useCartFetchers(CartForm.ACTIONS.LinesAdd, openCart);
   return (
     <>
-    <CartDrawer isOpen={isCartOpen} onClose={closeCart} cart={cart} />
+    <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
       {enableTrialShipping && <AnnouncementBar />}
       {typeMenu === "mega" && (
         <UseMenuMegaHeader
@@ -51,12 +51,11 @@ export function Header({ headerMenu, cart }: HeaderProps) {
 function CartDrawer({
   isOpen,
   onClose,
-  cart,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  cart: Promise<CartApiQueryFragment | null>;
 }) {
+  let rootData = useRouteLoaderData<RootLoader>("root");
   return (
     <Drawer
       open={isOpen}
@@ -67,12 +66,12 @@ function CartDrawer({
     >
       <div>
         <Suspense fallback={<CartLoading />}>
-          <Await resolve={cart}>
+          <Await resolve={rootData?.cart}>
             {(cart) => (
               <CartMain
                 layout="aside"
                 // onClose={onClose}
-                cart={cart}
+                cart={cart as CartReturn}
               />
             )}
           </Await>

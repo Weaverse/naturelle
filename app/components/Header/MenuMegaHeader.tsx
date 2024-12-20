@@ -1,6 +1,6 @@
 import {Await} from '@remix-run/react';
 import {useThemeSettings} from '@weaverse/hydrogen';
-import {EnhancedMenu, useIsHomePath} from '~/lib/utils';
+import {cn, EnhancedMenu, useIsHomePath} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';
 import {Suspense, useEffect, useState} from 'react';
@@ -12,6 +12,22 @@ import {Logo} from '../Logo';
 import {CartCount} from './CartCount';
 import {MegaMenu} from './menu/MegaMenu';
 import {SearchToggle} from './SearchToggle';
+import { cva } from 'class-variance-authority';
+
+let variants = cva("", {
+  variants: {
+    width: {
+      full: "w-full h-full",
+      stretch: "w-full h-full",
+      fixed: "w-full h-full container mx-auto",
+    },
+    padding: {
+      full: "",
+      stretch: "px-3 md:px-10 lg:px-16",
+      fixed: "px-3 md:px-4 lg:px-6 mx-auto",
+    },
+  },
+});
 
 export function UseMenuMegaHeader({
   header,
@@ -22,7 +38,7 @@ export function UseMenuMegaHeader({
   className?: string;
   openCart: () => void;
 }) {
-  let {stickyAnnouncementBar, announcementBarHeight} = useThemeSettings();
+  let {stickyAnnouncementBar, announcementBarHeight, headerWidth} = useThemeSettings();
   const isHome = useIsHomePath();
   const {y} = useWindowScroll();
   let settings = useThemeSettings();
@@ -44,19 +60,20 @@ export function UseMenuMegaHeader({
   return (
     <header
       role="banner"
-      className={clsx(
+      className={cn(
         enableTransparent ? 'fixed w-screen' : 'sticky',
         isTransparent
           ? 'border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]'
           : 'shadow-header border-[var(--color-header-text)] bg-[var(--color-header-bg)] text-[var(--color-header-text)]',
         'top-0 z-40 border-b',
+        variants({ padding: headerWidth }),
         className,
       )}
       style={{['--announcement-bar-height' as string]: `${top}px`}}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="container px-6 md:px-8 lg:px-6 z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300">
+      <div className={cn("z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300", variants({ width: headerWidth }))}>
         <div
           className={clsx(
             'absolute inset-0 z-20 bg-[var(--color-header-bg)]',

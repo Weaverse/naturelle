@@ -19,6 +19,7 @@ import { Link } from "./Link";
 export function QuickView(props: { data: Jsonify<ProductData> }) {
   const { data } = props;
   let themeSettings = useThemeSettings();
+  const [isLoading, setIsLoading] = useState(false);
   let swatches = themeSettings?.swatches || {
     configs: [],
     swatches: {
@@ -47,6 +48,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
     showThumbnails,
     imageAspectRatio,
     spacing,
+    showSlideCounter,
   } = themeSettings;
   let handleSelectedVariantChange = (variant: any) => {
     setSelectedVariant(variant);
@@ -71,7 +73,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
     ? unavailableText
     : soldOutText;
   return (
-    <div className="p-10 rounded-md bg-background w-[80vw] max-w-[1000px]">
+    <div className="p-10 rounded-2xl bg-background w-[80vw] max-w-[1000px]">
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">
         <ProductMedia
           media={product?.media.nodes}
@@ -79,6 +81,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           showThumbnails={showThumbnails}
           imageAspectRatio={imageAspectRatio}
           spacing={spacing}
+          showSlideCounter={showSlideCounter}
         />
         <div
           style={
@@ -102,7 +105,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                     <Money
                       withoutTrailingZeros
                       data={selectedVariant.compareAtPrice}
-                      className="text-label-sale line-through"
+                      className="text-[#AB2E2E] line-through"
                       as="span"
                     />
                   )}
@@ -117,6 +120,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                 </h4>
               </div>
               <ProductVariants
+                isDisabled={isLoading}
                 product={product}
                 selectedVariant={selectedVariant}
                 onSelectedVariantChange={handleSelectedVariantChange}
@@ -127,7 +131,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                 hideUnavailableOptions={hideUnavailableOptions}
               />
             </div>
-            <Quantity value={quantity} onChange={setQuantity} />
+            <Quantity isDisabled={isLoading} value={quantity} onChange={setQuantity} />
             <div className="flex flex-col gap-3">
               <AddToCartButton
                 disabled={!selectedVariant?.availableForSale}
@@ -137,6 +141,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                     quantity,
                   },
                 ]}
+                onFetchingStateChange={(state) => setIsLoading(state === "submitting")}
                 data-test="add-to-cart"
                 className="w-[360px]"
               >
@@ -158,14 +163,14 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
             </div>
             <div className="flex flex-col gap-3">
               <p
-                className="prose text-base font-normal text-foreground-subtle line-clamp-3"
+                className="prose text-base font-normal text-text-subtle line-clamp-3"
                 dangerouslySetInnerHTML={{
-                  __html: descriptionHtml,
+                  __html: descriptionHtml.replace(/(<br\s*\/?>\s*)+/g, "").trim(),
                 }}
               />
               <Link
                 to={`/products/${product?.handle}`}
-                className="underline font-body text-foreground font-normal"
+                className="underline font-body text-text-primary font-normal"
               >
                 View full details
               </Link>

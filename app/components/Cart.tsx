@@ -1,23 +1,29 @@
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { cn } from "@/lib/utils";
 import { Link } from "@remix-run/react";
-import { CartForm, Image, Money } from "@shopify/hydrogen";
+import { CartForm, Image, Money, OptimisticCart, OptimisticInput, useOptimisticCart, useOptimisticData } from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
 import { IconRemove } from "./Icon";
+import { cn } from "~/lib/utils";
 
-type CartLine = CartApiQueryFragment["lines"]["nodes"][0];
+type CartLine = OptimisticCart<CartApiQueryFragment>["lines"]["nodes"][0];
 
 type CartMainProps = {
-  cart: CartApiQueryFragment | null;
+  cart: CartApiQueryFragment;
   layout: "page" | "aside";
 };
 
+type OptimisticData = {
+  action?: string;
+  quantity?: number;
+};
+
 export function CartMain({ layout, cart }: CartMainProps) {
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
+  let optimisticCart = useOptimisticCart<CartApiQueryFragment>(cart);
+  const linesCount = Boolean(optimisticCart?.lines?.nodes?.length || 0);
   const withDiscount =
     cart &&
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
@@ -28,7 +34,7 @@ export function CartMain({ layout, cart }: CartMainProps) {
   return (
     <div className={styles[layout]}>
       <CartEmpty hidden={linesCount} layout={layout} />
-      <CartDetails cart={cart} layout={layout} />
+      <CartDetails cart={optimisticCart} layout={layout} />
     </div>
   );
 }
@@ -104,6 +110,7 @@ function CartLineItem({
   layout: CartMainProps["layout"];
   line: CartLine;
 }) {
+  let optimisticData = useOptimisticData<OptimisticData>(line?.id);
   const { id, merchandise } = line;
   const { product, title, image, selectedOptions } = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
@@ -120,7 +127,11 @@ function CartLineItem({
   let cellClass = cellStyles[layout];
 
   return (
-    <tr key={id} className={styles[layout]}>
+    <tr key={id} className={styles[layout]} style={{
+      // Hide the line item if the optimistic data action is remove
+      // Do not remove the form from the DOM
+      display: optimisticData?.action === "remove" ? "none" : "",
+    }}>
       <td className="row-start-1 row-end-3">
         {image && (
           <Image
@@ -158,7 +169,7 @@ function CartLineItem({
             </p>
           </Link>
           <div className={layout === "page" ? "md:hidden" : ""}>
-            <CartLineRemoveButton lineIds={[line.id]} />
+            <CartLineRemoveButton lineId={line.id} />
           </div>
         </div>
         <ul className="space-y-1">
@@ -190,7 +201,7 @@ function CartLineItem({
             <CartLinePrice line={line} as="span" />
           </td>
           <td className="py-2 md:p-4 text-center md:table-cell hidden">
-            <CartLineRemoveButton lineIds={[line.id]} />
+            <CartLineRemoveButton lineId={line.id} />
           </td>
         </>
       )}
@@ -325,16 +336,17 @@ export function CartSummary({
   );
 }
 
-function CartLineRemoveButton({ lineIds }: { lineIds: string[] }) {
+function CartLineRemoveButton({ lineId }: { lineId: CartLine["id"] }) {
   return (
     <CartForm
       route="/cart"
       action={CartForm.ACTIONS.LinesRemove}
-      inputs={{ lineIds }}
+      inputs={{ lineIds: [lineId] }}
     >
       <button type="submit">
         <IconRemove />
       </button>
+      <OptimisticInput id={lineId} data={{ action: "remove" }} />
     </CartForm>
   );
 }
@@ -346,10 +358,15 @@ function CartLineQuantity({
   line: CartLine;
   layout: CartMainProps["layout"];
 }) {
+  let optimisticId = line?.id;
+  let optimisticData = useOptimisticData<OptimisticData>(optimisticId);
+
   if (!line || typeof line?.quantity === "undefined") return null;
+
+  let optimisticQuantity = optimisticData?.quantity || line.quantity;
   const { id: lineId, quantity } = line;
-  const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
-  const nextQuantity = Number((quantity + 1).toFixed(0));
+  let prevQuantity = Number(Math.max(0, optimisticQuantity - 1).toFixed(0));
+  let nextQuantity = Number((optimisticQuantity + 1).toFixed(0));
   let buttonStyles = {
     page: "w-10 h-10 transition",
     aside: "w-10 h-[35px] transition",
@@ -365,9 +382,13 @@ function CartLineQuantity({
           value={prevQuantity}
         >
           <span>&#8722; </span>
+          <OptimisticInput
+              id={optimisticId}
+              data={{ quantity: prevQuantity }}
+            />
         </button>
       </CartLineUpdateButton>
-      <div className="px-2 w-8 text-center">{quantity}</div>
+      <div className="px-2 w-8 text-center">{optimisticQuantity}</div>
       <CartLineUpdateButton lines={[{ id: lineId, quantity: nextQuantity }]}>
         <button
           className={buttonStyles[layout]}
@@ -376,6 +397,10 @@ function CartLineQuantity({
           value={nextQuantity}
         >
           <span>&#43;</span>
+          <OptimisticInput
+              id={optimisticId}
+              data={{ quantity: nextQuantity }}
+            />
         </button>
       </CartLineUpdateButton>
     </div>

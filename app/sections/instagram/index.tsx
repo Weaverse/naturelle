@@ -11,7 +11,7 @@ import 'swiper/css/pagination';
 import {IconImageBlank, IconInstagram} from '~/components/Icon';
 import clsx from 'clsx';
 import {Pagination} from 'swiper/modules';
-import { useMotion } from '~/hooks/use-motion';
+import { useMotion } from '~/hooks/use-animation';
 
 type InstagramData = {
   instagramToken: string;

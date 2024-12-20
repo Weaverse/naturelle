@@ -50,14 +50,14 @@ export function ProductCard({
           (parseFloat(price.amount) / parseFloat(compareAtPrice?.amount)) * 100,
         );
       cardLabel = `Save ${discount}%`;
-      labelClass = 'bg-label-sale';
+      labelClass = 'bg-label-sale-background text-label-text';
     }
   } else if (isNewArrival(product.publishedAt)) {
     cardLabel = 'New Arrival';
-    labelClass = 'bg-label-new';
+    labelClass = 'bg-label-new-background text-label-text';
   } else if (!product.variants.nodes[0].availableForSale) {
     cardLabel = 'Out of Stock';
-    labelClass = 'bg-label-soldout';
+    labelClass = 'bg-label-soldout-background text-label-text';
   }
 
   const productAnalytics: ShopifyAnalyticsProduct = {
@@ -119,16 +119,14 @@ export function ProductCard({
               )}
             </Link>
           )}
-          <Text
-            as="h6"
-            size="copy"
+          <span
             className={clsx(
-              'text-notice absolute right-2 top-2 px-3 py-2 text-right font-body text-secondary empty:hidden',
+              'text-notice absolute text-sm right-2 top-2 px-3 py-2 text-right font-body empty:hidden',
               labelClass,
             )}
           >
             {cardLabel}
-          </Text>
+          </span>
           {quickAdd && variants.length > 1 && (
             <QuickViewTrigger productHandle={product.handle} />
           )}
@@ -161,7 +159,7 @@ export function ProductCard({
             )}
         </div>
         <div className="grid gap-2">
-          <p className="text-foreground-subtle">{product.vendor}</p>
+          <p className="text-text-subtle">{product.vendor}</p>
           <h4 className="w-full space-x-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-medium">
             <Link
               onClick={onClick}
@@ -179,7 +177,7 @@ export function ProductCard({
             <Text className="flex gap-2">
               {isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                 <CompareAtPrice
-                  className="text-label-sale line-through"
+                  className="text-[#AB2E2E] line-through"
                   data={compareAtPrice as MoneyV2}
                 />
               )}

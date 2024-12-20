@@ -82,76 +82,8 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
-      group: "Header",
+      group: "Announcement bar",
       inputs: [
-        {
-          type: "toggle-group",
-          label: "Header menu type for desktop",
-          name: "typeMenuHeader",
-          configs: {
-            options: [
-              { value: "mega", label: "Mega" },
-              { value: "drawer", label: "Drawer" },
-            ],
-          },
-          defaultValue: "mega",
-        },
-        {
-          type: "switch",
-          label: "Enable transparent header",
-          name: "enableTransparentHeader",
-          defaultValue: true,
-        },
-        {
-          type: "image",
-          name: "logoData",
-          label: "Logo",
-          defaultValue: {
-            altText: "Logo",
-            url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle_logo.png?v=1705045487",
-            width: 320,
-            height: 116,
-          },
-        },
-        {
-          type: "image",
-          name: "transparentLogoData",
-          label: "Transparent Logo",
-          defaultValue: {
-            altText: "Logo",
-            url: "https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Property_1_White.png?v=1720064102",
-            width: 320,
-            height: 116,
-          },
-        },
-        {
-          type: "range",
-          name: "logoWidth",
-          label: "Logo width",
-          configs: {
-            min: 50,
-            max: 500,
-            step: 1,
-            unit: "px",
-          },
-          defaultValue: 150,
-        },
-        {
-          type: "toggle-group",
-          label: "Search type for desktop",
-          name: "searchType",
-          configs: {
-            options: [
-              { value: "popupSearch", label: "Popup search" },
-              { value: "drawerSearch", label: "Drawer search" },
-            ],
-          },
-          defaultValue: "headerSearch",
-        },
-        {
-          type: "heading",
-          label: "Trial shipping",
-        },
         {
           type: "textarea",
           name: "content",
@@ -230,8 +162,103 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
+      group: "Header",
+      inputs: [
+        {
+          type: "select",
+          name: "headerWidth",
+          label: "Header width",
+          configs: {
+            options: [
+              { value: "full", label: "Full page" },
+              { value: "stretch", label: "Stretch" },
+              { value: "fixed", label: "Fixed" },
+            ],
+          },
+          defaultValue: "fixed",
+        },
+        {
+          type: "toggle-group",
+          label: "Header menu type for desktop",
+          name: "typeMenuHeader",
+          configs: {
+            options: [
+              { value: "mega", label: "Mega" },
+              { value: "drawer", label: "Drawer" },
+            ],
+          },
+          defaultValue: "mega",
+        },
+        {
+          type: "switch",
+          label: "Enable transparent header",
+          name: "enableTransparentHeader",
+          defaultValue: true,
+        },
+        {
+          type: "image",
+          name: "logoData",
+          label: "Logo",
+          defaultValue: {
+            altText: "Logo",
+            url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle_logo.png?v=1705045487",
+            width: 320,
+            height: 116,
+          },
+        },
+        {
+          type: "image",
+          name: "transparentLogoData",
+          label: "Transparent Logo",
+          defaultValue: {
+            altText: "Logo",
+            url: "https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Property_1_White.png?v=1720064102",
+            width: 320,
+            height: 116,
+          },
+        },
+        {
+          type: "range",
+          name: "logoWidth",
+          label: "Logo width",
+          configs: {
+            min: 50,
+            max: 500,
+            step: 1,
+            unit: "px",
+          },
+          defaultValue: 150,
+        },
+        {
+          type: "toggle-group",
+          label: "Search type for desktop",
+          name: "searchType",
+          configs: {
+            options: [
+              { value: "popupSearch", label: "Popup search" },
+              { value: "drawerSearch", label: "Drawer search" },
+            ],
+          },
+          defaultValue: "headerSearch",
+        },
+      ],
+    },
+    {
       group: "Footer",
       inputs: [
+        {
+          type: "select",
+          name: "footerWidth",
+          label: "Footer width",
+          configs: {
+            options: [
+              { value: "full", label: "Full page" },
+              { value: "stretch", label: "Stretch" },
+              { value: "fixed", label: "Fixed" },
+            ],
+          },
+          defaultValue: "fixed",
+        },
         {
           type: "text",
           label: "Footer text Copyright @",
@@ -493,6 +520,31 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "buttonBorderHoverOutline",
           defaultValue: "#25490B",
         },
+        {type: "heading", label: "Label"},
+        {
+          type: "color",
+          label: "Label text",
+          name: "labelText",
+          defaultValue: "#FFFFFF",
+        },
+        {
+          type: "color",
+          label: "Label background (sale)",
+          name: "labelBgSale",
+          defaultValue: "#AB2E2E",
+        },
+        {
+          type: "color",
+          label: "Label background (new)",
+          name: "labelBgNew",
+          defaultValue: "#87A473",
+        },
+        {
+          type: "color",
+          label: "Label background (sold out)",
+          name: "labelBgSoldOut",
+          defaultValue: "#A8A79C",
+        },
       ],
     },
     {
@@ -599,23 +651,6 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
-      group: "Buttons",
-      inputs: [
-        {
-          type: "range",
-          label: "Corner radius",
-          name: "radius",
-          configs: {
-            min: 0,
-            max: 2,
-            step: 0.1,
-            unit: "rem",
-          },
-          defaultValue: 2,
-        },
-      ],
-    },
-    {
       group: "Animations and effects",
       inputs: [
         {
@@ -635,6 +670,7 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Quick view",
       inputs: [
+        {type: "heading", label: "Product form"},
         {
           type: "text",
           label: "Add to cart text",
@@ -691,12 +727,7 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "switch",
           name: "hideUnavailableOptions",
         },
-        {
-          label: "Show thumbnails",
-          name: "showThumbnails",
-          type: "switch",
-          defaultValue: true,
-        },
+        {type: "heading", label: "Product media"},
         {
           type: "select",
           name: "imageAspectRatio",
@@ -710,7 +741,18 @@ export const themeSchema: HydrogenThemeSchema = {
               { value: "16/9", label: "Widescreen (16/9)" },
             ],
           },
-          condition: "showThumbnails.eq.true",
+        },
+        {
+          label: "Show slide counter",
+          name: "showSlideCounter",
+          type: "switch",
+          defaultValue: true,
+        },
+        {
+          label: "Show thumbnails",
+          name: "showThumbnails",
+          type: "switch",
+          defaultValue: true,
         },
         {
           label: "Gap between images",

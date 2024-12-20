@@ -53,6 +53,10 @@ export function GlobalStyle() {
       buttonBorderColorOutline,
       buttonTextHoverOutline,
       buttonBorderHoverOutline,
+      labelText,
+      labelBgSale,
+      labelBgNew,
+      labelBgSoldOut,
     } = settings;
     const {
       bodyBaseSize,
@@ -63,7 +67,6 @@ export function GlobalStyle() {
       headingBaseLineHeight,
       navHeightDesktop,
       navHeightTablet,
-      radius,
       footerMenuBackgroundColor,
       pageWidth,
     } = settings;
@@ -73,6 +76,10 @@ export function GlobalStyle() {
     colorTextInverse = hexToRgbString(colorTextInverse);
     borderColor = hexToRgbString(borderColor);
     borderSubtleColor = hexToRgbString(borderSubtleColor);
+    labelText = hexToRgbString(labelText);
+    labelBgSale = hexToRgbString(labelBgSale);
+    labelBgNew = hexToRgbString(labelBgNew);
+    labelBgSoldOut = hexToRgbString(labelBgSoldOut);
     return (
       <style
         id="global-theme-style"
@@ -85,17 +92,26 @@ export function GlobalStyle() {
               --color-text-primary: ${colorTextPrimary};
               --color-text-subtle: ${colorTextSubtle};
               --color-text-inverse: ${colorTextInverse};
+
               --color-topbar-text: ${topbarTextColor};
               --color-topbar-border: ${topbarBorderColor};
               --color-topbar-bg: ${topbarBgColor};
+
               --color-header-text: ${headerText};
               --color-transparent-header: ${transparentHeader};
               --color-header-bg: ${headerBgColor};
+
               --color-footer-text: ${footerText};
               --color-footer-bg: ${footerBgColor};
+
               --color-border: ${borderColor};
               --color-border-subtle: ${borderSubtleColor};
               --color-drawer-bg: ${drawerBgColor};
+
+              --color-label-text: ${labelText};
+              --color-label-bg-sale: ${labelBgSale};
+              --color-label-bg-new: ${labelBgNew};
+              --color-label-bg-soldout: ${labelBgSoldOut};
               
 
               /* Typography */
@@ -105,9 +121,6 @@ export function GlobalStyle() {
               --heading-base-size: ${headingBaseSize}px;
               --heading-base-spacing: ${headingBaseSpacing};
               --heading-base-line-height: ${headingBaseLineHeight};
-
-              /* Button */
-              --radius: ${radius}rem;
 
               /* Layout */
               --height-nav: ${settings.navHeightMobile}rem;

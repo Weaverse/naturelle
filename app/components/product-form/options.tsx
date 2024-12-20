@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Image } from "@shopify/hydrogen";
 import type { WeaverseImage } from "@weaverse/hydrogen";
-import { cn } from "@/lib/utils";
+import { cn } from "~/lib/utils";
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
@@ -24,6 +24,7 @@ interface VariantOptionProps {
     value: string;
     image?: any;
   }[];
+  isDisabled?: boolean;
 }
 
 let SIZE_MAP = {
@@ -46,6 +47,7 @@ export function VariantOption(props: VariantOptionProps) {
     onSelectOptionValue,
     swatches,
     config,
+    isDisabled,
   } = props;
 
   let {
@@ -74,7 +76,7 @@ export function VariantOption(props: VariantOptionProps) {
   let disabledClassName = "diagonal opacity-50";
   // show value by Type
   return (
-    <div className="flex flex-col gap-2">
+    <div className={clsx("flex flex-col gap-2", isDisabled && "opacity-50 cursor-not-allowed")}>
       <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-[4rem]">
         <span className="font-semibold text-base">{displayName || name}:</span>
         <span className="ml-2 font-semibold text-base">{selectedOptionValue}</span>

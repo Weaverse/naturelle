@@ -31,6 +31,7 @@ interface ProductInformationProps extends HydrogenComponentProps {
   showThumbnails: boolean;
   imageAspectRatio: string;
   spacing: number;
+  showSlideCounter: boolean;
 }
 
 let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
@@ -46,6 +47,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
         storeDomain: string;
       }
     >();
+    const [isLoading, setIsLoading] = useState(false);
     let variants = _variants?.product?.variants;
     let [selectedVariant, setSelectedVariant] = useState<any>(
       product?.selectedVariant
@@ -63,6 +65,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       showThumbnails,
       imageAspectRatio,
       spacing,
+      showSlideCounter,
       children,
       ...rest
     } = props;
@@ -120,6 +123,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                 showThumbnails={showThumbnails}
                 imageAspectRatio={imageAspectRatio}
                 spacing={spacing}
+                showSlideCounter={showSlideCounter}
               />
               <div
                 style={
@@ -152,7 +156,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                           <Money
                             withoutTrailingZeros
                             data={selectedVariant.compareAtPrice}
-                            className="text-label-sale line-through"
+                            className="text-[#AB2E2E] line-through"
                             as="span"
                           />
                         )}
@@ -167,6 +171,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                       </p>
                     </div>
                     <ProductVariants
+                      isDisabled={isLoading}
                       product={product}
                       selectedVariant={selectedVariant}
                       onSelectedVariantChange={handleSelectedVariantChange}
@@ -177,7 +182,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                       hideUnavailableOptions={hideUnavailableOptions}
                     />
                   </div>
-                  <Quantity value={quantity} onChange={setQuantity} />
+                  <Quantity value={quantity} isDisabled={isLoading} onChange={setQuantity} />
                   <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
                     <AddToCartButton
                       disabled={!selectedVariant?.availableForSale}
@@ -187,6 +192,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                           quantity,
                         },
                       ]}
+                      onFetchingStateChange={(state) => setIsLoading(state === "submitting")}
                       variant="primary"
                       data-test="add-to-cart"
                       className="w-full"
@@ -314,12 +320,6 @@ export let schema: HydrogenComponentSchema = {
       group: "Product Media",
       inputs: [
         {
-          label: "Show thumbnails",
-          name: "showThumbnails",
-          type: "switch",
-          defaultValue: true,
-        },
-        {
           type: "select",
           name: "imageAspectRatio",
           label: "Aspect ratio",
@@ -332,7 +332,18 @@ export let schema: HydrogenComponentSchema = {
               { value: "16/9", label: "Widescreen (16/9)" },
             ],
           },
-          condition: "showThumbnails.eq.true",
+        },
+        {
+          label: "Show slide counter",
+          name: "showSlideCounter",
+          type: "switch",
+          defaultValue: true,
+        },
+        {
+          label: "Show thumbnails",
+          name: "showThumbnails",
+          type: "switch",
+          defaultValue: true,
         },
         {
           label: "Gap between images",

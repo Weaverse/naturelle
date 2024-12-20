@@ -49,15 +49,17 @@ module.exports = {
           subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
         },
         label: {
-          sale: '#AB2E2E',
-          new: '#9AA473',
-          soldout: '#A8A79C',
+          text: 'rgb(var(--color-label-text) / <alpha-value>)',
+          sale: {
+            background: 'rgb(var(--color-label-bg-sale) / <alpha-value>)',
+          },
+          new: {
+            background: 'rgb(var(--color-label-bg-new) / <alpha-value>)',
+          },
+          soldout: {
+            background: 'rgb(var(--color-label-bg-soldout) / <alpha-value>)',
+          },
         },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
       },
       height: {
         screen: 'var(--screen-height, 100vh)',

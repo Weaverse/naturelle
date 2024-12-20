@@ -5,11 +5,27 @@ import {NavLink, useFetcher} from '@remix-run/react';
 import {useThemeSettings} from '@weaverse/hydrogen';
 import {getMaxDepth} from '~/lib/menu';
 import {SingleMenuItem} from '~/lib/type';
-import {EnhancedMenu} from '~/lib/utils';
+import {cn, EnhancedMenu} from '~/lib/utils';
 import React from 'react';
 import {CountrySelector} from './CountrySelector';
 import {IconPlusLinkFooter} from './Icon';
 import {LayoutProps} from './Layout';
+import { cva } from 'class-variance-authority';
+
+let variants = cva("", {
+  variants: {
+    width: {
+      full: "w-full h-full",
+      stretch: "w-full h-full",
+      fixed: "w-full h-full container mx-auto",
+    },
+    padding: {
+      full: "",
+      stretch: "px-3 md:px-10 lg:px-16",
+      fixed: "px-3 md:px-4 lg:px-6 mx-auto",
+    },
+  },
+});
 
 type FooterProps = Pick<LayoutProps, 'footerMenu'>;
 export function Footer({footerMenu}: FooterProps) {
@@ -17,6 +33,7 @@ export function Footer({footerMenu}: FooterProps) {
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
   const settings = useThemeSettings();
   let {
+    footerWidth,
     footerTextCopyright,
     newsletterTitle,
     newsletterDescription,
@@ -25,8 +42,8 @@ export function Footer({footerMenu}: FooterProps) {
     tagNameTitle: Tag = 'h6',
   } = settings;
   return (
-    <footer className="footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]">
-      <div className="container flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16">
+    <footer className={cn("footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]", variants({ padding: footerWidth }))}>
+      <div className={cn("flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16", variants({ width: footerWidth }))}>
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
             {newsletterTitle && <Tag className='font-semibold'>{newsletterTitle}</Tag>}
