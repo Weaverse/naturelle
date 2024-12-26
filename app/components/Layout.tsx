@@ -8,14 +8,12 @@ import {Header} from '~/components/Header/Header';
 import { EnhancedMenu } from '~/lib/utils';
 
 export type LayoutProps = {
-  cart: Promise<CartApiQueryFragment | null>;
   children?: React.ReactNode;
   footerMenu: EnhancedMenu | undefined | null;
   headerMenu: EnhancedMenu | undefined | null;
 };
 
 export function Layout({
-  cart,
   children = null,
   footerMenu,
   headerMenu,
@@ -26,7 +24,7 @@ export function Layout({
       {/* <CartAside cart={cart} /> */}
       {/* <SearchAside /> */}
       {/* <MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
-      {headerMenu && <Header headerMenu={headerMenu} cart={cart} />}
+      {headerMenu && <Header headerMenu={headerMenu} />}
       <main>{children}</main>
       <Suspense>
         <Await resolve={footerMenu}>
