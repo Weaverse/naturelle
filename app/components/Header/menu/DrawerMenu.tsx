@@ -2,10 +2,39 @@ import {Disclosure} from '@headlessui/react';
 import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {Drawer, useDrawer} from '../../Drawer';
-import {IconCaret} from '../../Icon';
+import {IconCaret, IconListMenu} from '../../Icon';
 import { getMaxDepth } from '~/lib/menu';
 import { SingleMenuItem } from '~/lib/type';
 import { EnhancedMenu } from '~/lib/utils';
+import { SearchToggle } from '../SearchToggle';
+
+export function HeaderMenuDrawer({
+  menu,
+}: {
+  menu?: EnhancedMenu | null | undefined;
+}) {
+  let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
+  return (
+    <nav
+      className="z-30 flex items-center justify-start gap-3"
+      role="navigation"
+    >
+      <button className="text-left" onClick={openDrawer}>
+        <IconListMenu />
+      </button>
+      <SearchToggle isOpenDrawerHearder={true} />
+      <Drawer
+        open={showMenu}
+        onClose={closeDrawer}
+        openFrom="left"
+        heading="MENU"
+        isForm="menu"
+      >
+        <DrawerMenu menu={menu} />
+      </Drawer>
+    </nav>
+  );
+}
 
 export function DrawerMenu({ menu }: { menu: EnhancedMenu | null | undefined }) {
   let items = menu?.items as unknown as SingleMenuItem[];

@@ -12,9 +12,9 @@ import { useCartFetchers } from "~/hooks/useCartFetchers";
 import { CartForm, CartReturn } from "@shopify/hydrogen";
 import { RootLoader } from "~/root";
 
-type HeaderProps = Pick<LayoutProps, "headerMenu" | "cart">;
+type HeaderProps = Pick<LayoutProps, "headerMenu" >;
 
-export function Header({ headerMenu, cart }: HeaderProps) {
+export function Header({ headerMenu }: HeaderProps) {
   let settings = useThemeSettings();
   let typeMenu = settings?.typeMenuHeader;
   let enableTrialShipping = settings?.enableTrialShipping;
