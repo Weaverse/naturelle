@@ -46,7 +46,7 @@ export function ProductMedia(props: ProductMediaProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
-      <div className="relative">
+      <div data-motion="zoom-in" className="relative">
         <Swiper
           loop={false}
           modules={[FreeMode, Thumbs, Pagination]}
@@ -64,10 +64,10 @@ export function ProductMedia(props: ProductMediaProps) {
               : undefined
           }
           onSwiper={setSwiperInstance}
-          className="vt-product-image max-w-full pb-4 md:pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
+          className="vt-product-image max-w-full !pb-5 !md:pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
           style={
             {
-              "--swiper-pagination-bottom": "-6px",
+              "--swiper-pagination-bottom": "-8px",
               "--swiper-pagination-color": "#3D490B",
             } as React.CSSProperties
           }
@@ -94,38 +94,41 @@ export function ProductMedia(props: ProductMediaProps) {
         )}
       </div>
       {showThumbnails && (
-        <Swiper
-          onSwiper={setThumbsSwiper}
-          loop={false}
-          direction="horizontal"
-          spaceBetween={spacing}
-          freeMode={true}
-          slidesPerView={"auto"}
-          modules={[FreeMode, Thumbs]}
-          watchSlidesProgress={true}
-          className="w-full overflow-visible hidden md:block mySwiper"
-        >
-          {media.map((med, i) => {
-            let image = { ...med.image, altText: med.alt || "Product image" };
-            return (
-              <SwiperSlide
-                key={med.id}
-                className={clsx(
-                  "!h-fit !w-fit border-2 transition-colors cursor-pointer rounded",
-                  activeIndex === i ? "border-border" : "border-transparent"
-                )}
-              >
-                <Image
-                  data={image}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  className="fadeIn object-cover !h-[100px] rounded"
-                  aspectRatio={imageAspectRatio}
-                  sizes="auto"
-                />
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
+        <div className="hidden sm:block">
+          <Swiper
+            onSwiper={setThumbsSwiper}
+            loop={false}
+            direction="horizontal"
+            spaceBetween={spacing}
+            freeMode={true}
+            slidesPerView={"auto"}
+            modules={[FreeMode, Thumbs]}
+            watchSlidesProgress={true}
+            data-motion="fade-up"
+            className="w-full overflow-visible mySwiper"
+          >
+            {media.map((med, i) => {
+              let image = { ...med.image, altText: med.alt || "Product image" };
+              return (
+                <SwiperSlide
+                  key={med.id}
+                  className={clsx(
+                    "!h-fit !w-fit border-2 transition-colors cursor-pointer rounded",
+                    activeIndex === i ? "border-border" : "border-transparent"
+                  )}
+                >
+                  <Image
+                    data={image}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    className="fadeIn object-cover !h-[100px] rounded"
+                    aspectRatio={imageAspectRatio}
+                    sizes="auto"
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </div>
       )}
     </div>
   );

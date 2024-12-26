@@ -74,7 +74,7 @@ export function ProductVariants(props: ProductVariantsProps) {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div data-motion="fade-up" className="flex flex-col gap-6">
       <VariantSelector handle={handle} variants={nodes} options={options}>
         {({option}) => {
           let optionName = option.name;

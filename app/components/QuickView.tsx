@@ -94,9 +94,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           <div className="flex flex-col justify-start gap-4">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                <h2 className="font-medium tracking-tighter">
-                  {title}
-                </h2>
+                <h2 className="font-medium tracking-tighter">{title}</h2>
                 {showVendor && vendor && (
                   <Text className={"opacity-50 font-medium"}>{vendor}</Text>
                 )}
@@ -131,7 +129,11 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                 hideUnavailableOptions={hideUnavailableOptions}
               />
             </div>
-            <Quantity isDisabled={isLoading} value={quantity} onChange={setQuantity} />
+            <Quantity
+              isDisabled={isLoading}
+              value={quantity}
+              onChange={setQuantity}
+            />
             <div className="flex flex-col gap-3">
               <AddToCartButton
                 disabled={!selectedVariant?.availableForSale}
@@ -141,7 +143,9 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                     quantity,
                   },
                 ]}
-                onFetchingStateChange={(state) => setIsLoading(state === "submitting")}
+                onFetchingStateChange={(state) =>
+                  setIsLoading(state === "submitting")
+                }
                 data-test="add-to-cart"
                 className="w-[360px]"
               >
@@ -162,12 +166,16 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
               )}
             </div>
             <div className="flex flex-col gap-3">
-              <p
-                className="prose text-base font-normal text-text-subtle line-clamp-3"
-                dangerouslySetInnerHTML={{
-                  __html: descriptionHtml.replace(/(<br\s*\/?>\s*)+/g, "").trim(),
-                }}
-              />
+              {showDetails && (
+                <p
+                  className="prose text-base font-normal text-text-subtle line-clamp-3"
+                  dangerouslySetInnerHTML={{
+                    __html: descriptionHtml
+                      .replace(/(<br\s*\/?>\s*)+/g, "")
+                      .trim(),
+                  }}
+                />
+              )}
               <Link
                 to={`/products/${product?.handle}`}
                 className="underline font-body text-text-primary font-normal"
