@@ -34,7 +34,7 @@ const SECTION_HEIGHTS = {
   },
   full: {
     desktop: 'calc(var(--screen-height, 100vh)',
-    mobile: 'calc(var(--screen-height, 80vh)',
+    mobile: 'calc(var(--screen-height, 80vh))',
   },
   custom: null,
 };
