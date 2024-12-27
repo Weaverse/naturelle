@@ -104,8 +104,8 @@ export function ProductPopup({
     >
       <div className="p-2.5 bg-white shadow-lg flex flex-col sm:flex-row gap-3">
         {featuredImage && (
-          <div className="w-full sm:w-28 h-auto">
-            <Image data={featuredImage} alt={product.title} />
+          <div className="w-full sm:w-28">
+            <Image data={featuredImage} alt={product.title} aspectRatio="1/1" />
           </div>
         )}
         <div className="flex flex-col gap-2 py-2 font-sans">

@@ -136,11 +136,11 @@ function SingleMenu(props: SingleMenuItem & {isShowIconCaret?: boolean}) {
       >
         <div className="min-w-48 p-6">
           <div>
-            <h5 className="mb-4 font-medium uppercase">
+            {/* <h5 className="mb-4 font-medium uppercase">
               <Link to={to} prefetch="intent">
                 <span className="text-animation">{title}</span>
               </Link>
-            </h5>
+            </h5> */}
             <ul className="space-y-1.5">
               {items.map((subItem, ind) => (
                 <li key={ind} className="leading-6">

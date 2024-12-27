@@ -29,7 +29,7 @@ export function Quantity(props: QuantityProps) {
         <button
           name="decrease-quantity"
           aria-label="Decrease quantity"
-          className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
+          className={clsx("transition py-2.5 px-5 border-2 rounded border-border-subtle", value <= 1 && "opacity-50 cursor-not-allowed")}
           disabled={ isDisabled || value <= 1}
           onClick={() => onChange(value - 1)}
         >

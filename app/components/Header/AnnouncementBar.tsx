@@ -67,8 +67,8 @@ export function AnnouncementBar() {
       </button>
       {shouldScroll && (
         <>
-          <div className="absolute right-0 z-10 h-full w-11 bg-[var(--background-color)]" />
-          <div className="absolute left-0 z-10 h-full w-11 bg-[var(--background-color)]" />
+          <div className="absolute right-0 z-10 h-full w-11 bg-[var(--color-topbar-bg)]" />
+          <div className="absolute left-0 z-10 h-full w-11 bg-[var(--color-topbar-bg)]" />
           <ul className="inline-flex list-none">
             {Array.from({length: 15}).map((_, i) => (
               <li
