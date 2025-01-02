@@ -13,7 +13,7 @@ import type {
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {routeHeaders} from '~/data/cache';
 import {COLLECTION_QUERY} from '~/data/queries';
-import {FILTER_URL_PREFIX, PAGINATION_SIZE} from '~/lib/const';
+import {FILTER_URL_PREFIX, PAGINATION_SIZE} from '~/lib/utils/const';
 import {SortParam} from '~/lib/filter';
 import {seoPayload} from '~/lib/seo.server';
 import {parseAsCurrency} from '~/lib/utils';
