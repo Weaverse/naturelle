@@ -22,7 +22,7 @@ import {
   getSortLink,
   SortParam,
   type AppliedFilter,
-} from '~/lib/filter';
+} from '~/lib/utils/filter';
 import type {SyntheticEvent} from 'react';
 import {useMemo, useState} from 'react';
 import useDebounce from 'react-use/esm/useDebounce';

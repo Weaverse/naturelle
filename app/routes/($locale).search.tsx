@@ -27,7 +27,7 @@ import {
   getImageLoadingPriority,
   PAGINATION_SIZE,
 } from '~/lib/utils/const';
-import {SortParam} from '~/lib/filter';
+import {SortParam} from '~/lib/utils/filter';
 import {seoPayload} from '~/lib/seo.server';
 import {parseAsCurrency} from '~/lib/utils';
 import {Suspense} from 'react';
