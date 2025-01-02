@@ -14,8 +14,8 @@ import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types
 import clsx from "clsx";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
-import { IconRemove } from "./Icon";
 import { cn } from "~/lib/utils";
+import { IconRemove } from "../Icon";
 
 type CartLine = OptimisticCart<CartApiQueryFragment>["lines"]["nodes"][0];
 
