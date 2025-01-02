@@ -2,7 +2,7 @@ import type {
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
 import type {Location, useLocation} from '@remix-run/react';
-import { FILTER_URL_PREFIX } from "./const";
+import { FILTER_URL_PREFIX } from "./utils/const";
 
 export type AppliedFilter = {
   label: string;
