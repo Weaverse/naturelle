@@ -5,7 +5,7 @@ import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import { Text } from "~/components/Text";
-import { ProductData } from "~/lib/products";
+import { ProductData } from "~/lib/utils/products";
 import { getExcerpt } from "~/lib/utils";
 import { ProductDetail } from "~/sections/product-information/product-detail";
 import { AddToCartButton } from "./AddToCartButton";
