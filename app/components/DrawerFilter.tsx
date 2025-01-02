@@ -14,7 +14,7 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import {IconCaret, IconXMark} from '~/components/Icon';
 import {Heading} from '~/components/Text';
-import {FILTER_URL_PREFIX} from '~/lib/const';
+import {FILTER_URL_PREFIX} from '~/lib/utils/const';
 import {
   filterInputToParams,
   getAppliedFilterLink,
