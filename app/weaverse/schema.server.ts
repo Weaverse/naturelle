@@ -190,6 +190,19 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: "mega",
         },
         {
+          type: "toggle-group",
+          label: "Type open menu",
+          name: "typeOpenMenu",
+          configs: {
+            options: [
+              { value: "mouseHover", label: "Mouse hover" },
+              { value: "mouseClick", label: "Mouse click" },
+            ],
+          },
+          defaultValue: "mouseHover",
+          condition: "typeMenuHeader.eq.mega",
+        },
+        {
           type: "switch",
           label: "Enable transparent header",
           name: "enableTransparentHeader",
