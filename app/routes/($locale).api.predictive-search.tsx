@@ -8,8 +8,8 @@ import type {
   PredictiveQueryFragment,
   PredictiveSearchQuery,
 } from 'storefrontapi.generated';
-import { NormalizedPredictiveSearch, NormalizedPredictiveSearchResults } from "~/components/predictive-search/types";
-import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/components/predictive-search/usePredictiveSearch";
+import { NormalizedPredictiveSearch, NormalizedPredictiveSearchResults } from "~/lib/types/search-types";
+import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/hooks/usePredictiveSearch";
 
 type PredictiveSearchResultItem =
   | PredictiveArticleFragment

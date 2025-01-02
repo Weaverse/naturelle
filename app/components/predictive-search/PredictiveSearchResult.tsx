@@ -4,7 +4,7 @@ import {
   NormalizedPredictiveSearchResultItem,
   NormalizedPredictiveSearchResults,
   SearchResultTypeProps,
-} from './types';
+} from '../../lib/types/search-types';
 import clsx from "clsx";
 
 export function PredictiveSearchResult({

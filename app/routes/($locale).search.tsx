@@ -26,7 +26,7 @@ import {
   FILTER_URL_PREFIX,
   getImageLoadingPriority,
   PAGINATION_SIZE,
-} from '~/lib/const';
+} from '~/lib/utils/const';
 import {SortParam} from '~/lib/filter';
 import {seoPayload} from '~/lib/seo.server';
 import {parseAsCurrency} from '~/lib/utils';
