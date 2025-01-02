@@ -82,11 +82,25 @@ module.exports = {
           from: { transform: 'translateX(0)' },
           to: { transform: 'translateX(-100%)' },
         },
+        "slide-left": {
+          from: {
+            opacity: 0,
+            transform: "translateX(var(--slide-left-from))",
+          },
+          to: { opacity: 1, transform: "translateX(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'scrollContent': 'scrollContent linear infinite',
+        "slide-left":
+          "slide-left var(--slide-left-duration) cubic-bezier(.165,.84,.44,1) forwards",
+        "fade-in": "fade-in var(--fade-in-duration, .5s) ease-in forwards",
       },
     },
   },
