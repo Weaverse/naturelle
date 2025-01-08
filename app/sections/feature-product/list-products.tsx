@@ -12,7 +12,7 @@ import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { ProductCard } from "~/components/ProductCard";
-import { getImageLoadingPriority } from "~/lib/const";
+import { getImageLoadingPriority } from "~/lib/utils/const";
 import { Navigation } from "swiper/modules";
 import { Arrows, SlideshowArrowsProps } from "./arrows";
 import { Number } from "./number";

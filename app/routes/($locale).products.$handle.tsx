@@ -19,9 +19,9 @@ import {
   RECOMMENDED_PRODUCTS_QUERY,
   VARIANTS_QUERY,
 } from '~/data/queries';
-import {createJudgemeReview, getJudgemeReviews} from '~/lib/judgeme';
+import {createJudgemeReview, getJudgemeReviews} from '~/lib/utils/judgeme';
 import {seoPayload} from '~/lib/seo.server';
-import type {Storefront} from '~/lib/type';
+import type {Storefront} from '~/lib/types/type-locale';
 import {WeaverseContent} from '~/weaverse';
 import {useEffect} from 'react';
 import type {ProductRecommendationsQuery} from 'storefrontapi.generated';

@@ -2,10 +2,40 @@ import {Disclosure} from '@headlessui/react';
 import {Link} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {Drawer, useDrawer} from '../../Drawer';
-import {IconCaret} from '../../Icon';
-import { getMaxDepth } from '~/lib/menu';
-import { SingleMenuItem } from '~/lib/type';
-import { EnhancedMenu } from '~/lib/utils';
+import {IconCaret, IconListMenu} from '../../Icon';
+import { EnhancedMenu, getMaxDepth, SingleMenuItem } from '~/lib/types/menu';
+import { SearchToggle } from '../SearchToggle';
+import clsx from 'clsx';
+
+export function HeaderMenuDrawer({
+  menu,
+  className,
+}: {
+  menu?: EnhancedMenu | null | undefined;
+  className?: string;
+}) {
+  let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
+  return (
+    <nav
+      className={clsx("z-30 flex items-center justify-start gap-3", className)}
+      role="navigation"
+    >
+      <button className="text-left" onClick={openDrawer}>
+        <IconListMenu />
+      </button>
+      <SearchToggle isOpenDrawerHearder={true} />
+      <Drawer
+        open={showMenu}
+        onClose={closeDrawer}
+        openFrom="left"
+        heading="MENU"
+        isForm="menu"
+      >
+        <DrawerMenu menu={menu} />
+      </Drawer>
+    </nav>
+  );
+}
 
 export function DrawerMenu({ menu }: { menu: EnhancedMenu | null | undefined }) {
   let items = menu?.items as unknown as SingleMenuItem[];

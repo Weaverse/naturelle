@@ -5,7 +5,7 @@ import type {MoneyV2, Product} from '@shopify/hydrogen/storefront-api-types';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {Link} from '~/components/Link';
 import {Text} from '~/components/Text';
-import {getProductPlaceholder} from '~/lib/placeholders';
+import {getProductPlaceholder} from '~/lib/utils/placeholders';
 import {isDiscounted, isNewArrival} from '~/lib/utils';
 import clsx from 'clsx';
 import type {ProductCardFragment} from 'storefrontapi.generated';
@@ -86,7 +86,7 @@ export function ProductCard({
               {hasTwoImages && (
                 <>
                   <Image
-                    className="fadeIn w-full object-cover absolute rounded opacity-100 transition-opacity duration-300 group-hover/productCard:opacity-0"
+                    className="fadeIn w-full object-cover absolute rounded opacity-100 transition-opacity duration-300 md:group-hover/productCard:opacity-0"
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio="1/1"
                     data={productImages[0]}
@@ -96,7 +96,7 @@ export function ProductCard({
                     loading={loading}
                   />
                   <Image
-                    className="fadeIn w-full object-cover absolute rounded opacity-0 transition-opacity duration-300 group-hover/productCard:opacity-100"
+                    className="fadeIn w-full object-cover absolute rounded opacity-0 transition-opacity duration-300 md:group-hover/productCard:opacity-100"
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio="1/1"
                     data={productImages[1]}
@@ -121,7 +121,7 @@ export function ProductCard({
           )}
           <span
             className={clsx(
-              'text-notice absolute text-sm right-2 top-2 px-3 py-2 text-right font-body empty:hidden',
+              'text-notice absolute text-sm right-2 top-2 px-3 py-2 text-right font-body',
               labelClass,
             )}
           >

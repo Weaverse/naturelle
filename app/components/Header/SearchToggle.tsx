@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 type TypeOpenFrom = 'top' | 'right' | 'left';
 
-export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boolean}) {
+export function SearchToggle({isOpenDrawerHearder, className}: {isOpenDrawerHearder?: boolean, className?: string}) {
   const {isOpen, closeDrawer, openDrawer} = useDrawer();
   let settings = useThemeSettings();
   const [searchType, setSearchType] = useState(settings?.searchType);
@@ -36,7 +36,7 @@ export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boole
     return () => window.removeEventListener('resize', handleResize);
   }, [settings?.searchType, isOpenDrawerHearder]);
   return (
-    <>
+    <div className={className}>
       <button
         onClick={openDrawer}
         className="relative flex h-6 w-6 items-center justify-center focus:ring-primary/5"
@@ -53,6 +53,6 @@ export function SearchToggle({isOpenDrawerHearder}: {isOpenDrawerHearder?: boole
         {searchType === 'popupSearch' && <SearchTypeHeader isOpen={isOpen} />}
         {searchType === 'drawerSearch' && <SearchTypeDrawer isOpen={isOpen} />}
       </Drawer>
-    </>
+    </div>
   );
 }

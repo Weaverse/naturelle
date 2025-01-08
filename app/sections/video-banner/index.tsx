@@ -34,7 +34,7 @@ const SECTION_HEIGHTS = {
   },
   full: {
     desktop: 'calc(var(--screen-height, 100vh)',
-    mobile: 'calc(var(--screen-height, 100vh)',
+    mobile: 'calc(var(--screen-height, 80vh))',
   },
   custom: null,
 };
@@ -181,13 +181,20 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
           <Suspense fallback={<div className='w-full h-full bg-background'></div>}>
             <ReactPlayer
               url={videoURL2 || videoURL.url}
-              playing
-              muted
               loop={true}
               width={size.width}
               height={size.height}
               controls={false}
               className="aspect-video"
+              config={{
+                file: {
+                  attributes: {
+                    playsInline: true,
+                    autoPlay: true,
+                    muted: true
+                  }
+                }
+              }}
             />
           </Suspense>
         )}

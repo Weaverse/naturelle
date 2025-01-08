@@ -3,8 +3,9 @@ import {Suspense} from 'react';
 import type {CartQueryDataReturn} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
-import {CartMain} from '~/components/Cart';
 import {useRootLoaderData} from '~/root';
+import { CartApiQueryFragment } from 'storefrontapi.generated';
+import { CartMain } from '~/components/cart/Cart';
 
 export const meta: MetaFunction = () => {
   return [{title: `Hydrogen | Cart`}];
@@ -90,7 +91,7 @@ export default function Cart() {
   const cartPromise = rootData.cart;
 
   return (
-    <div className="cart mb-16">
+    <div className="cart mb-16 h-full">
       <div className="bg-slate-300 h-48 flex items-center justify-center">
         <h1 className="font-bold p-4 text-center">Cart</h1>
       </div>
@@ -100,7 +101,7 @@ export default function Cart() {
           errorElement={<div>An error occurred</div>}
         >
           {(cart) => {
-            return <CartMain layout="page" cart={cart} />;
+            return <CartMain layout="page" cart={cart as CartApiQueryFragment} />;
           }}
         </Await>
       </Suspense>

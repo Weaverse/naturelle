@@ -17,7 +17,8 @@ import { ProductVariants } from "../../components/product-form/variants";
 import { ProductDetail } from "./product-detail";
 import { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { StarRating } from "~/components/StarRating";
-interface ProductInformationProps extends HydrogenComponentProps {
+import { layoutInputs, Section, SectionProps } from "../atoms/Section";
+interface ProductInformationProps extends SectionProps {
   addToCartText: string;
   soldOutText: string;
   unavailableText: string;
@@ -114,76 +115,96 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       const { title, vendor, descriptionHtml } = product;
       const { shippingPolicy, refundPolicy } = shop;
       return (
-        <section ref={ref} {...rest}>
-          <div className="container p-6 md:p-8 lg:p-12 lg:px-12 px-4 md:px-6 mx-auto">
-            <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-12">
-              <ProductMedia
-                media={product?.media.nodes}
-                selectedVariant={selectedVariant}
-                showThumbnails={showThumbnails}
-                imageAspectRatio={imageAspectRatio}
-                spacing={spacing}
-                showSlideCounter={showSlideCounter}
-              />
-              <div
-                style={
-                  {
-                    "--shop-pay-button-border-radius": "9999px",
-                    "--shop-pay-button-height": "56px",
-                  } as React.CSSProperties
-                }
-              >
-                <div className="flex flex-col justify-start gap-4 lg:gap-6">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-4 sm:gap-5">
-                      <h2 className="font-medium tracking-tighter">
-                        {title}
-                      </h2>
-                      {judgemeReviews?.rating === 0 && (
-                        <div className="flex items-center gap-0.5">
-                          <StarRating rating={judgemeReviews.rating} />
-                          <span className="ml-1">({judgemeReviews.rating.toFixed(1)})</span>
-                        </div>
+        <Section ref={ref} {...rest}>
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-12">
+            <ProductMedia
+              media={product?.media.nodes}
+              selectedVariant={selectedVariant}
+              showThumbnails={showThumbnails}
+              imageAspectRatio={imageAspectRatio}
+              spacing={spacing}
+              showSlideCounter={showSlideCounter}
+            />
+            <div
+              style={
+                {
+                  "--shop-pay-button-border-radius": "9999px",
+                  "--shop-pay-button-height": "56px",
+                } as React.CSSProperties
+              }
+            >
+              <div className="flex flex-col justify-start gap-4 lg:gap-6">
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 sm:gap-5">
+                    <h2
+                      data-motion="fade-up"
+                      className="font-medium tracking-tighter"
+                    >
+                      {title}
+                    </h2>
+                    {judgemeReviews?.rating === 0 && (
+                      <div
+                        data-motion="fade-up"
+                        className="flex items-center gap-0.5"
+                      >
+                        <StarRating rating={judgemeReviews.rating} />
+                        <span className="ml-1">
+                          ({judgemeReviews.rating.toFixed(1)})
+                        </span>
+                      </div>
+                    )}
+                    {showVendor && vendor && (
+                      <Text
+                        data-motion="fade-up"
+                        className={"opacity-50 font-medium"}
+                      >
+                        {vendor}
+                      </Text>
+                    )}
+                    {children}
+                    <p
+                      data-motion="fade-up"
+                      className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium flex gap-3"
+                    >
+                      {selectedVariant && selectedVariant.compareAtPrice && (
+                        <Money
+                          withoutTrailingZeros
+                          data={selectedVariant.compareAtPrice}
+                          className="text-[#AB2E2E] line-through"
+                          as="span"
+                        />
                       )}
-                      {showVendor && vendor && (
-                        <Text className={"opacity-50 font-medium"}>
-                          {vendor}
-                        </Text>
-                      )}
-                      {children}
-                      <p className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium flex gap-3">
-                        {selectedVariant && selectedVariant.compareAtPrice && (
-                          <Money
-                            withoutTrailingZeros
-                            data={selectedVariant.compareAtPrice}
-                            className="text-[#AB2E2E] line-through"
-                            as="span"
-                          />
-                        )}
 
-                        {selectedVariant ? (
-                          <Money
-                            withoutTrailingZeros
-                            data={selectedVariant.price}
-                            as="span"
-                          />
-                        ) : null}
-                      </p>
-                    </div>
-                    <ProductVariants
-                      isDisabled={isLoading}
-                      product={product}
-                      selectedVariant={selectedVariant}
-                      onSelectedVariantChange={handleSelectedVariantChange}
-                      swatch={swatches}
-                      variants={variants}
-                      options={product?.options}
-                      handle={product?.handle}
-                      hideUnavailableOptions={hideUnavailableOptions}
-                    />
+                      {selectedVariant ? (
+                        <Money
+                          withoutTrailingZeros
+                          data={selectedVariant.price}
+                          as="span"
+                        />
+                      ) : null}
+                    </p>
                   </div>
-                  <Quantity value={quantity} isDisabled={isLoading} onChange={setQuantity} />
-                  <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
+                  <ProductVariants
+                    isDisabled={isLoading}
+                    product={product}
+                    selectedVariant={selectedVariant}
+                    onSelectedVariantChange={handleSelectedVariantChange}
+                    swatch={swatches}
+                    variants={variants}
+                    options={product?.options}
+                    handle={product?.handle}
+                    hideUnavailableOptions={hideUnavailableOptions}
+                    data-motion="fade-up"
+                  />
+                </div>
+                <Quantity
+                  data-motion="fade-up"
+                  value={quantity}
+                  isDisabled={isLoading}
+                  onChange={setQuantity}
+                />
+                <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
+                  <div data-motion="fade-up">
                     <AddToCartButton
                       disabled={!selectedVariant?.availableForSale}
                       lines={[
@@ -192,14 +213,18 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                           quantity,
                         },
                       ]}
-                      onFetchingStateChange={(state) => setIsLoading(state === "submitting")}
+                      onFetchingStateChange={(state) =>
+                        setIsLoading(state === "submitting")
+                      }
                       variant="primary"
                       data-test="add-to-cart"
                       className="w-full"
                     >
                       <span> {atcText}</span>
                     </AddToCartButton>
-                    {selectedVariant?.availableForSale && (
+                  </div>
+                  {selectedVariant?.availableForSale && (
+                    <div data-motion="fade-up">
                       <ShopPayButton
                         width="100%"
                         variantIdsAndQuantities={[
@@ -209,35 +234,39 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                           },
                         ]}
                         storeDomain={storeDomain}
+                        data-motion="fade-up"
                       />
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-4 mt-20 w-full">
-              {descriptionHtml && (
-                <ProductDetail title="Description" content={descriptionHtml} />
+          </div>
+          <div
+            data-motion="fade-up"
+            className="flex flex-col gap-4 mt-20 w-full"
+          >
+            {descriptionHtml && (
+              <ProductDetail title="Description" content={descriptionHtml} />
+            )}
+            <div className="grid gap-4 py-4">
+              {showShippingPolicy && shippingPolicy?.body && (
+                <ProductDetail
+                  title="Shipping"
+                  content={getExcerpt(shippingPolicy.body)}
+                  learnMore={`/policies/${shippingPolicy.handle}`}
+                />
               )}
-              <div className="grid gap-4 py-4">
-                {showShippingPolicy && shippingPolicy?.body && (
-                  <ProductDetail
-                    title="Shipping"
-                    content={getExcerpt(shippingPolicy.body)}
-                    learnMore={`/policies/${shippingPolicy.handle}`}
-                  />
-                )}
-                {showRefundPolicy && refundPolicy?.body && (
-                  <ProductDetail
-                    title="Returns"
-                    content={getExcerpt(refundPolicy.body)}
-                    learnMore={`/policies/${refundPolicy.handle}`}
-                  />
-                )}
-              </div>
+              {showRefundPolicy && refundPolicy?.body && (
+                <ProductDetail
+                  title="Returns"
+                  content={getExcerpt(refundPolicy.body)}
+                  learnMore={`/policies/${refundPolicy.handle}`}
+                />
+              )}
             </div>
           </div>
-        </section>
+        </Section>
       );
     }
     return <div ref={ref} {...rest} />;
@@ -255,6 +284,10 @@ export let schema: HydrogenComponentSchema = {
     pages: ["PRODUCT"],
   },
   inspector: [
+    {
+      group: "Layout",
+      inputs: layoutInputs.filter(({ name }) => name !== "borderRadius"),
+    },
     {
       group: "Product form",
       inputs: [

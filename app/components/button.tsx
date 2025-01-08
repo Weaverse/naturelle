@@ -3,7 +3,6 @@ import {Link} from '@remix-run/react';
 import {cva, type VariantProps} from 'class-variance-authority';
 
 import { cn } from "~/lib/utils";
-import { Spinner } from "./spinner";
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap font-normal transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
@@ -84,7 +83,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <Spinner size={20} />
+            <div className="w-7 h-7 border-4 border-t-transparent border-border rounded-full animate-spin"></div>
           </div>
         )}
         <span className={cn(classNameContainer, loading ? 'invisible' : '')}>{children}</span>

@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { Image, Money } from "@shopify/hydrogen";
-import { SearchResultItemProps } from "./types";
+import { SearchResultItemProps } from "../../lib/types/search-types";
 import clsx from "clsx";
 
 export function SearchResultItem({

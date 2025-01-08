@@ -1,13 +1,21 @@
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 import { Link } from "@remix-run/react";
-import { CartForm, Image, Money, OptimisticCart, OptimisticInput, useOptimisticCart, useOptimisticData } from "@shopify/hydrogen";
+import {
+  CartForm,
+  Image,
+  Money,
+  OptimisticCart,
+  OptimisticInput,
+  useOptimisticCart,
+  useOptimisticData,
+} from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
-import { useVariantUrl } from "~/lib/variants";
-import { IconRemove } from "./Icon";
+import { useVariantUrl } from "~/lib/utils/variants";
 import { cn } from "~/lib/utils";
+import { IconRemove } from "../Icon";
 
 type CartLine = OptimisticCart<CartApiQueryFragment>["lines"]["nodes"][0];
 
@@ -127,11 +135,15 @@ function CartLineItem({
   let cellClass = cellStyles[layout];
 
   return (
-    <tr key={id} className={styles[layout]} style={{
-      // Hide the line item if the optimistic data action is remove
-      // Do not remove the form from the DOM
-      display: optimisticData?.action === "remove" ? "none" : "",
-    }}>
+    <tr
+      key={id}
+      className={styles[layout]}
+      style={{
+        // Hide the line item if the optimistic data action is remove
+        // Do not remove the form from the DOM
+        display: optimisticData?.action === "remove" ? "none" : "",
+      }}
+    >
       <td className="row-start-1 row-end-3">
         {image && (
           <Image
@@ -228,7 +240,7 @@ function CartCheckout({
       {cartHasItems && (
         <CartSummary cost={cart.cost} layout={layout}>
           <CartDiscounts discountCodes={cart.discountCodes} />
-          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} layout={layout} />
         </CartSummary>
       )}
       {!isDrawer && (
@@ -282,15 +294,25 @@ function CartCheckout({
   );
 }
 
-function CartCheckoutActions({ checkoutUrl }: { checkoutUrl: string }) {
+function CartCheckoutActions({
+  checkoutUrl,
+  layout,
+}: {
+  checkoutUrl: string;
+  layout: string;
+}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <a href={checkoutUrl} target="_self">
         <Button className="w-full">Continue to Checkout</Button>
       </a>
-      <br />
+      {layout === "aside" && (
+        <Button to="/cart" variant={"link"} className="underline">
+          View cart
+        </Button>
+      )}
     </div>
   );
 }
@@ -372,38 +394,43 @@ function CartLineQuantity({
     aside: "w-10 h-[35px] transition",
   };
   return (
-    <div className="flex items-center border border-border-subtle rounded w-fit">
-      <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
-        <button
-          className={buttonStyles[layout]}
-          aria-label="Decrease quantity"
-          disabled={quantity <= 1}
-          name="decrease-quantity"
-          value={prevQuantity}
-        >
-          <span>&#8722; </span>
-          <OptimisticInput
+    <>
+      <label htmlFor={`quantity-${lineId}`} className="sr-only">
+        Quantity, {optimisticQuantity}
+      </label>
+      <div className="flex items-center border border-border-subtle rounded w-fit">
+        <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
+          <button
+            className={cn(buttonStyles[layout], quantity <= 1 && "opacity-50 cursor-not-allowed")}
+            aria-label="Decrease quantity"
+            disabled={quantity <= 1}
+            name="decrease-quantity"
+            value={prevQuantity}
+          >
+            <span>&#8722; </span>
+            <OptimisticInput
               id={optimisticId}
               data={{ quantity: prevQuantity }}
             />
-        </button>
-      </CartLineUpdateButton>
-      <div className="px-2 w-8 text-center">{optimisticQuantity}</div>
-      <CartLineUpdateButton lines={[{ id: lineId, quantity: nextQuantity }]}>
-        <button
-          className={buttonStyles[layout]}
-          aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
-        >
-          <span>&#43;</span>
-          <OptimisticInput
+          </button>
+        </CartLineUpdateButton>
+        <div className="px-2 w-8 text-center" data-test="item-quantity">{optimisticQuantity}</div>
+        <CartLineUpdateButton lines={[{ id: lineId, quantity: nextQuantity }]}>
+          <button
+            className={buttonStyles[layout]}
+            aria-label="Increase quantity"
+            name="increase-quantity"
+            value={nextQuantity}
+          >
+            <span>&#43;</span>
+            <OptimisticInput
               id={optimisticId}
               data={{ quantity: nextQuantity }}
             />
-        </button>
-      </CartLineUpdateButton>
-    </div>
+          </button>
+        </CartLineUpdateButton>
+      </div>
+    </>
   );
 }
 
@@ -492,7 +519,12 @@ function CartDiscounts({
       {/* Show an input to apply a discount */}
       <UpdateDiscountForm discountCodes={codes}>
         <div className="flex gap-2">
-          <Input type="text" name="discountCode" variant={"default"} placeholder="Promotion code" />
+          <Input
+            type="text"
+            name="discountCode"
+            variant={"default"}
+            placeholder="Promotion code"
+          />
           <Button type="submit" variant="link">
             Apply
           </Button>

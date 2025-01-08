@@ -3,34 +3,15 @@ import type { FulfillmentStatus } from "@shopify/hydrogen/customer-account-api-t
 import type { MoneyV2 } from "@shopify/hydrogen/storefront-api-types";
 import type { LinkHTMLAttributes } from "react";
 import type {
-  ChildMenuItemFragment,
   MenuFragment,
-  ParentMenuItemFragment,
 } from "storefrontapi.generated";
 import typographicBase from "typographic-base/index";
 import { countries } from "~/data/countries";
 import type { RootLoader } from "~/root";
-import type { I18nLocale } from "./type";
+import type { I18nLocale } from "./types/type-locale";
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
-
-type EnhancedMenuItemProps = {
-  to: string;
-  target: string;
-  isExternal?: boolean;
-};
-
-export type ChildEnhancedMenuItem = ChildMenuItemFragment &
-  EnhancedMenuItemProps;
-
-export type ParentEnhancedMenuItem = (ParentMenuItemFragment &
-  EnhancedMenuItemProps) & {
-  items: ChildEnhancedMenuItem[];
-};
-
-export type EnhancedMenu = Pick<MenuFragment, "id"> & {
-  items: ParentEnhancedMenuItem[];
-};
+import { EnhancedMenu } from "./types/menu";
 
 export function missingClass(string?: string, prefix?: string) {
   if (!string) {

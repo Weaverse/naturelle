@@ -7,7 +7,7 @@ import type {
 } from "@weaverse/hydrogen";
 import { Grid } from "~/components/Grid";
 import { ProductCard } from "~/components/ProductCard";
-import { getImageLoadingPriority } from "~/lib/const";
+import { getImageLoadingPriority } from "~/lib/utils/const";
 import { Children, forwardRef } from "react";
 import type { AllProductsQuery } from "storefrontapi.generated";
 import { layoutInputs, Section, SectionProps } from "../atoms/Section";

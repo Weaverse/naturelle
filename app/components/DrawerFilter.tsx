@@ -14,7 +14,7 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import {IconCaret, IconXMark} from '~/components/Icon';
 import {Heading} from '~/components/Text';
-import {FILTER_URL_PREFIX} from '~/lib/const';
+import {FILTER_URL_PREFIX} from '~/lib/utils/const';
 import {
   filterInputToParams,
   getAppliedFilterLink,
@@ -22,7 +22,7 @@ import {
   getSortLink,
   SortParam,
   type AppliedFilter,
-} from '~/lib/filter';
+} from '~/lib/utils/filter';
 import type {SyntheticEvent} from 'react';
 import {useMemo, useState} from 'react';
 import useDebounce from 'react-use/esm/useDebounce';

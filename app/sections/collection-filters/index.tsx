@@ -3,7 +3,7 @@ import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { DrawerFilter } from "~/components/DrawerFilter";
-import type { AppliedFilter } from "~/lib/filter";
+import type { AppliedFilter } from "~/lib/utils/filter";
 import { forwardRef } from "react";
 import { useInView } from "react-intersection-observer";
 import type { CollectionDetailsQuery } from "storefrontapi.generated";

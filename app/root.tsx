@@ -26,7 +26,6 @@ import {
   defer,
 } from "@shopify/remix-oxygen";
 import { withWeaverse } from "@weaverse/hydrogen";
-import { Layout as LayoutComponent } from "~/components/Layout";
 import tailwind from "./styles/tailwind.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/cormorant";
@@ -37,8 +36,10 @@ import { CustomAnalytics } from "~/components/Analytics";
 import { seoPayload } from "~/lib/seo.server";
 import { GlobalLoading } from "./components/global-loading";
 import { Preloader } from "./components/Preloader";
-import { getErrorMessage } from "./lib/defineMessageError";
+import { getErrorMessage } from "./lib/utils/defineMessageError";
 import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
+import { Footer } from "~/components/Footer";
+import { Header } from "~/components/Header/Header";
 
 export type RootLoader = typeof loader;
 
@@ -169,13 +170,9 @@ export function Layout({ children }: { children?: React.ReactNode }) {
             shop={data.shop}
             consent={data.consent}
           >
-            <LayoutComponent
-              {...data}
-              footerMenu={data.layout.footerMenu}
-              headerMenu={data.layout.headerMenu}
-            >
-              {children}
-            </LayoutComponent>
+            <Header />
+            <main>{children}</main>
+            <Footer />
             <CustomAnalytics />
           </Analytics.Provider>
         ) : (
