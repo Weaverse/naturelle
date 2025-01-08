@@ -62,7 +62,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   <Menubar.Content
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
-                      "bg-[--color-header-bg] shadow-md border-t border-border-subtle",
+                      "bg-[--color-header-bg] shadow-md border-t border-border-subtle mt-1.5",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >
@@ -96,7 +96,7 @@ function DropdownSubMenu({ items }: { items: SingleMenuItem[] }) {
           prefetch="intent"
           className="transition-none block"
         >
-          <span className="text-animation">{title}</span>
+          <span className="text-animation line-clamp-2">{title}</span>
         </Link>
       ))}
     </ul>

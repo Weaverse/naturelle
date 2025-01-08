@@ -13,6 +13,7 @@ import { AccountLink } from "../account/AccountLink";
 import { CartDrawer } from "../cart/CartDrawer";
 import { HeaderMenuDrawer } from "./menu/DrawerMenu";
 import { useShopMenu } from "~/hooks/use-menu-shop";
+import { useRouteError } from "@remix-run/react";
 
 
 let variants = cva("", {
@@ -38,19 +39,21 @@ export function Header() {
     stickyAnnouncementBar,
     announcementBarHeight,
     headerWidth,
+    enableTransparentHeader
   } = useThemeSettings();
   const isHome = useIsHomePath();
   const { y } = useWindowScroll();
-  let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
   const [top, setCalculatedTop] = useState(0);
-  let { isOpen } = useDrawer();
+  let routeError = useRouteError();
 
   let onHover = () => setHovered(true);
   let onLeave = () => setHovered(false);
 
-  let enableTransparent = settings?.enableTransparentHeader && isHome;
-  let isTransparent = enableTransparent && y < 50 && !isOpen && !hovered;
+  let scrolled = y < 50;
+
+  let enableTransparent = enableTransparentHeader && isHome && !routeError;
+  let isTransparent = enableTransparent && scrolled && !hovered;
   useEffect(() => {
     let calculatedTop = stickyAnnouncementBar
       ? announcementBarHeight
@@ -67,7 +70,7 @@ export function Header() {
           enableTransparent ? "fixed w-full" : "sticky",
           isTransparent
             ? "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]"
-            : "shadow-header border-[var(--color-header-text)] bg-[var(--color-header-bg)] text-[var(--color-header-text)]",
+            : " border-[var(--color-header-text)] bg-[var(--color-header-bg)] text-[var(--color-header-text)]",
           "top-0 z-40 border-b",
           variants({ padding: headerWidth })
         )}
@@ -77,7 +80,7 @@ export function Header() {
       >
         <div
           className={cn(
-            "z-40 flex h-nav items-center justify-between gap-3 transition-all duration-300",
+            "z-40 flex h-nav py-1.5 items-center justify-between gap-3 transition-all duration-300",
             variants({ width: headerWidth })
           )}
         >
