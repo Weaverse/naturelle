@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { PredictiveSearchResult } from "../../PredictiveSearchResult";
-import { usePredictiveSearch } from "../../usePredictiveSearch";
+import { usePredictiveSearch } from "../../../../hooks/usePredictiveSearch";
 import { Button } from "~/components/button";
 
 export function SearchTypeDrawerResults() {

@@ -1,5 +1,5 @@
 import { useFetcher, useParams } from "@remix-run/react";
-import { NormalizedPredictiveSearchResults, SearchFromProps } from "./types";
+import { NormalizedPredictiveSearchResults, SearchFromProps } from "../../lib/types/search-types";
 import { useEffect, useRef } from "react";
 
 /**

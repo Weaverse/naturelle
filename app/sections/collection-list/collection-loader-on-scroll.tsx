@@ -3,7 +3,7 @@ import {useNavigate} from '@remix-run/react';
 import {useEffect} from 'react';
 import {Grid} from '~/components/Grid';
 import {CollectionCard} from './collection-card';
-import {getImageLoadingPriority} from '~/lib/const';
+import {getImageLoadingPriority} from '~/lib/utils/const';
 
 type CollectionsLoadedOnScrollProps = {
   nodes: any;

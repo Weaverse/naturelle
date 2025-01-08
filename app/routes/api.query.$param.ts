@@ -1,5 +1,5 @@
 import { LoaderFunction, json } from '@remix-run/server-runtime';
-import { getProductData } from "~/lib/products";
+import { getProductData } from "~/lib/utils/products";
 
 function getRequestQueries<T = Record<string, string>>(request: Request) {
   let url = new URL(request.url);

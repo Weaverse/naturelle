@@ -1,4 +1,4 @@
-import type {Localizations} from '~/lib/type';
+import type {Localizations} from '~/lib/types/type-locale';
 
 export const countries: Localizations = {
   default: {

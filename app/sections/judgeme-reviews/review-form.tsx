@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { IconFilledStar, IconStarReview } from "~/components/Icon";
 import { StarRating } from "~/components/StarRating";
-import { JudgemeReviewsData } from "~/lib/judgeme";
+import { JudgemeReviewsData } from "~/lib/utils/judgeme";
 import { ProductLoaderType } from "~/routes/($locale).products.$handle";
 
 export function ReviewForm({

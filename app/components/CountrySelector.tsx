@@ -2,7 +2,7 @@ import {useFetcher, useLocation, useRouteLoaderData} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import type {CartBuyerIdentityInput} from '@shopify/hydrogen/storefront-api-types';
 import {IconCaret, IconCheck} from '~/components/Icon';
-import type {Locale, Localizations} from '~/lib/type';
+import type {Locale, Localizations} from '~/lib/types/type-locale';
 import {DEFAULT_LOCALE} from '~/lib/utils';
 import {useRootLoaderData} from '~/root';
 import clsx from 'clsx';

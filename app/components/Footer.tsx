@@ -3,14 +3,13 @@ import {Input} from '~/components/input';
 import {Disclosure} from '@headlessui/react';
 import {NavLink, useFetcher} from '@remix-run/react';
 import {useThemeSettings} from '@weaverse/hydrogen';
-import {getMaxDepth} from '~/lib/menu';
-import {SingleMenuItem} from '~/lib/type';
-import {cn, EnhancedMenu} from '~/lib/utils';
+import {EnhancedMenu, getMaxDepth, SingleMenuItem} from '~/lib/types/menu';
+import {cn} from '~/lib/utils';
 import React from 'react';
 import {CountrySelector} from './CountrySelector';
 import {IconPlusLinkFooter} from './Icon';
-import {LayoutProps} from './Layout';
 import { cva } from 'class-variance-authority';
+import { useShopMenu } from '~/hooks/use-menu-shop';
 
 let variants = cva("", {
   variants: {
@@ -27,8 +26,8 @@ let variants = cva("", {
   },
 });
 
-type FooterProps = Pick<LayoutProps, 'footerMenu'>;
-export function Footer({footerMenu}: FooterProps) {
+export function Footer() {
+  let { footerMenu } = useShopMenu();
   let fetcher = useFetcher<any>();
   let isError = fetcher.state === 'idle' && fetcher.data?.errors;
   const settings = useThemeSettings();

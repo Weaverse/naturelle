@@ -88,7 +88,7 @@ export function ProductMedia(props: ProductMediaProps) {
           })}
         </Swiper>
         {showSlideCounter && (
-          <span className="absolute bottom-7 sm:bottom-2 right-2 text-text-primary text-sm z-10 font-heading">
+          <span className="absolute bottom-7 sm:bottom-6 right-2 text-text-primary text-sm sm:text-base z-10 font-heading">
             {activeIndex + 1}/{media.length}
           </span>
         )}
