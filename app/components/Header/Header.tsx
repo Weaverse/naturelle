@@ -33,14 +33,15 @@ let variants = cva("", {
 
 export function Header() {
   let { headerMenu } = useShopMenu();
-  let {
+  const settings = useThemeSettings();
+  const {
     typeMenuHeader,
     enableTrialShipping,
     stickyAnnouncementBar,
     announcementBarHeight,
     headerWidth,
-    enableTransparentHeader
-  } = useThemeSettings();
+    enableTransparentHeader,
+  } = settings;
   const isHome = useIsHomePath();
   const { y } = useWindowScroll();
   let [hovered, setHovered] = useState(false);
