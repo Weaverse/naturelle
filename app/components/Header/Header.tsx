@@ -32,16 +32,17 @@ let variants = cva("", {
 
 export function Header() {
   let { headerMenu } = useShopMenu();
-  let {
+  const settings = useThemeSettings();
+  const {
     typeMenuHeader,
     enableTrialShipping,
     stickyAnnouncementBar,
     announcementBarHeight,
     headerWidth,
-  } = useThemeSettings();
+    enableTransparentHeader,
+  } = settings;
   const isHome = useIsHomePath();
   const { y } = useWindowScroll();
-  let settings = useThemeSettings();
   let [hovered, setHovered] = useState(false);
   const [top, setCalculatedTop] = useState(0);
   let { isOpen } = useDrawer();
