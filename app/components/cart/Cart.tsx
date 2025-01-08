@@ -42,7 +42,7 @@ export function CartMain({ layout, cart }: CartMainProps) {
   return (
     <div className={styles[layout]}>
       <CartEmpty hidden={linesCount} layout={layout} />
-      <CartDetails cart={optimisticCart} layout={layout} />
+      {linesCount && <CartDetails cart={optimisticCart} layout={layout} />}
     </div>
   );
 }
@@ -483,6 +483,7 @@ export function CartEmpty({
             window.location.href = "/collections";
           }
         }}
+        className="text-animation"
       >
         Continue shopping →
       </Link>
