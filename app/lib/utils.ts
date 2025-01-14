@@ -1,7 +1,7 @@
 import { useLocation, useRouteLoaderData } from "@remix-run/react";
 import type { FulfillmentStatus } from "@shopify/hydrogen/customer-account-api-types";
 import type { MoneyV2 } from "@shopify/hydrogen/storefront-api-types";
-import type { LinkHTMLAttributes } from "react";
+import { useEffect, useState, type LinkHTMLAttributes } from "react";
 import type {
   MenuFragment,
 } from "storefrontapi.generated";
@@ -349,4 +349,29 @@ export function loadCSS(attrs: LinkHTMLAttributes<HTMLLinkElement>) {
     link.onerror = reject;
     document.head.appendChild(link);
   });
+}
+
+export function prefixClassNames(contentHtml: string, prefix: string) {
+  const [articleContent, setArticleContent] = useState<string>("");
+  const prefixClassNames = (html: string, prefix: string) => {
+    html = html.replace(/class="([^"]*)"/g, (match, classNames) => {
+      const prefixedClassNames = classNames
+        .split(' ')
+        .map((className: string) => `${prefix}${className}`)
+        .join(' ');
+      return `class="${prefixedClassNames}"`;
+    });
+    html = html.replace(/(\.[a-zA-Z0-9_-]+)\s*{/g, (match, className) => {
+      return `.${prefix}${className.slice(1)} {`;
+    });
+  
+    return html;
+  };
+  useEffect(() => {
+    if (contentHtml) {
+      const prefixedContent = prefixClassNames(contentHtml, prefix);
+      setArticleContent(prefixedContent);
+    }
+  }, [contentHtml]);
+  return articleContent;
 }
