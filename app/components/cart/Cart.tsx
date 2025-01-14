@@ -16,6 +16,7 @@ import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/utils/variants";
 import { cn } from "~/lib/utils";
 import { IconRemove } from "../Icon";
+import { CartPopularCollections } from "./CartPopularCollections";
 
 type CartLine = OptimisticCart<CartApiQueryFragment>["lines"]["nodes"][0];
 
@@ -487,6 +488,8 @@ export function CartEmpty({
       >
         Continue shopping →
       </Link>
+      <br />
+      <CartPopularCollections layout={layout} />
     </div>
   );
 }
