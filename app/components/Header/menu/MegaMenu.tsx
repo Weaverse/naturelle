@@ -4,7 +4,6 @@ import * as Menubar from "@radix-ui/react-menubar";
 import { cn } from "~/lib/utils";
 import clsx from "clsx";
 import React, { useState } from "react";
-import { IconCaret } from "../../Icon";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
 
@@ -35,7 +34,6 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   asChild={!hasSubmenu}
                   className={clsx([
                     "cursor-pointer px-3 py-2 h-full flex items-center gap-1.5",
-                    '[&>svg]:data-[state="open"]:rotate-90',
                     "focus:outline-none uppercase",
                   ])}
                   onMouseEnter={() => {
@@ -46,15 +44,11 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 >
                   {hasSubmenu ? (
                     <>
-                      <span>{title}</span>
-                      <IconCaret
-                        direction="right"
-                        className="h-4 w-4 transition-transform"
-                      />
+                      <span className='text-animation'>{title}</span>
                     </>
                   ) : (
                     <Link to={to} className="transition-none">
-                      {title}
+                      <span className="text-animation">{title}</span>
                     </Link>
                   )}
                 </Menubar.Trigger>
