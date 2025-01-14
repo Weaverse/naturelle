@@ -3,7 +3,7 @@ import {flattenConnection, getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {type RouteLoaderArgs} from '@weaverse/hydrogen';
 import {routeHeaders} from '~/data/cache';
-import {BLOGS_PAGE_QUERY} from '~/data/queries';
+import {BLOGS_PAGE_QUERY} from '~/graphql/data/queries';
 import {PAGINATION_SIZE} from '~/lib/utils/const';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';

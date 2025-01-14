@@ -7,7 +7,7 @@ import {
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {json} from '@shopify/remix-oxygen';
 import {routeHeaders} from '~/data/cache';
-import {ALL_PRODUCTS_QUERY} from '~/data/queries';
+import {ALL_PRODUCTS_QUERY} from '~/graphql/data/queries';
 import {PAGINATION_SIZE} from '~/lib/utils/const';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
