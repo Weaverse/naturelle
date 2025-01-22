@@ -229,6 +229,7 @@ export const themeSchema: HydrogenThemeSchema = {
             width: 320,
             height: 116,
           },
+          condition: "enableTransparentHeader.eq.true",
         },
         {
           type: "range",
