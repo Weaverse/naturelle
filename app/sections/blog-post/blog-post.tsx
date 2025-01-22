@@ -6,6 +6,7 @@ import type {
 } from '@weaverse/hydrogen';
 import {forwardRef} from 'react';
 import { layoutInputs, Section, SectionProps } from '../atoms/Section';
+import { prefixClassNames } from '~/lib/utils';
 
 type BlogPostProps = SectionProps;
 
@@ -16,11 +17,13 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
     formattedDate: string;
   }>();
   let {title, image, contentHtml, author, tags} = article;
+
+  let articleContent = prefixClassNames(contentHtml, "wv-");
+  
   if (article) {
     return (
       <Section ref={ref} {...rest} className='h-fit'>
         <div
-          data-motion="fade-in"
           className='flex flex-col h-fit'
         >
           <div className="h-full flex flex-col">
@@ -36,7 +39,7 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
             </div>
           </div>
             <div className="lg:max-w-screen-lg lg:pb-10 md:pb-8 pb-6 md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
-              <article className='prose-lg' dangerouslySetInnerHTML={{__html: contentHtml}} />
+              <article className='prose-lg' dangerouslySetInnerHTML={{__html: articleContent}} />
               <p className="font-semibold opacity-45 text-foreground-subtle mt-9">{formattedDate}</p>
             </div>
         </div>

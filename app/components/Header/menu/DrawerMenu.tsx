@@ -1,11 +1,11 @@
-import {Disclosure} from '@headlessui/react';
-import {Link} from '@remix-run/react';
-import {Image} from '@shopify/hydrogen';
-import {Drawer, useDrawer} from '../../Drawer';
-import {IconCaret, IconListMenu} from '../../Icon';
-import { EnhancedMenu, getMaxDepth, SingleMenuItem } from '~/lib/types/menu';
-import { SearchToggle } from '../SearchToggle';
-import clsx from 'clsx';
+import { Disclosure } from "@headlessui/react";
+import { Link } from "@remix-run/react";
+import { Image } from "@shopify/hydrogen";
+import { Drawer, useDrawer } from "../../Drawer";
+import { IconCaret, IconListMenu } from "../../Icon";
+import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
+import { SearchToggle } from "../SearchToggle";
+import clsx from "clsx";
 
 export function HeaderMenuDrawer({
   menu,
@@ -31,13 +31,19 @@ export function HeaderMenuDrawer({
         heading="MENU"
         isForm="menu"
       >
-        <DrawerMenu menu={menu} />
+        <DrawerMenu menu={menu} closeDrawer={closeDrawer} />
       </Drawer>
     </nav>
   );
 }
 
-export function DrawerMenu({ menu }: { menu: EnhancedMenu | null | undefined }) {
+function DrawerMenu({
+  menu,
+  closeDrawer,
+}: {
+  menu: EnhancedMenu | null | undefined;
+  closeDrawer: () => void;
+}) {
   let items = menu?.items as unknown as SingleMenuItem[];
   return (
     <nav className="grid text-text-subtle overflow-auto border-t border-border-subtle px-6 pb-16 pt-8">
@@ -46,37 +52,60 @@ export function DrawerMenu({ menu }: { menu: EnhancedMenu | null | undefined }) 
         let level = getMaxDepth(item);
         let isResourceType =
           item.items.length &&
-          item.items.every((item) => item?.resource?.image && item.items.length === 0);
-        let Comp: React.FC<SingleMenuItem> = isResourceType
-          ? ImageMenu
-          : level > 2
+          item.items.every(
+            (item) => item?.resource?.image && item.items.length === 0
+          );
+        let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
+          isResourceType
+            ? ImageMenu
+            : level > 2
             ? MultiMenu
             : level === 2
-              ? SingleMenu
-              : ItemHeader;
-        return <Comp key={id} title={title} {...rest} />;
+            ? SingleMenu
+            : ItemHeader;
+        return (
+          <Comp key={id} title={title} closeDrawer={closeDrawer} {...rest} />
+        );
       })}
     </nav>
   );
 }
 
-function ItemHeader({title, to}: {title: string; to: string}) {
+function ItemHeader({
+  title,
+  to,
+  closeDrawer,
+}: {
+  title: string;
+  to: string;
+  closeDrawer: () => void;
+}) {
   return (
-    <div className="flex items-center justify-between py-3" role="button">
+    <div
+      className="flex items-center justify-between py-3"
+      role="button"
+      onClick={closeDrawer}
+    >
       <Link to={to}>
-        <h5 className="font-medium text-xl uppercase hover:text-text-primary">{title}</h5>
+        <h5 className="font-medium text-xl uppercase hover:text-text-primary">
+          {title}
+        </h5>
       </Link>
     </div>
   );
 }
 
-function MultiMenu(props: SingleMenuItem) {
+function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
   const {
     isOpen: isMenuOpen,
     openDrawer: openMenu,
     closeDrawer: closeMenu,
   } = useDrawer();
-  let {title, items, to} = props;
+  let { title, items, to, closeDrawer } = props;
+  const handleCloseAll = () => {
+    closeMenu();
+    closeDrawer();
+  };
   let content = (
     <Drawer
       open={isMenuOpen}
@@ -90,17 +119,29 @@ function MultiMenu(props: SingleMenuItem) {
         {items.map((item, id) => (
           <div key={id}>
             <Disclosure>
-              {({open}) => (
+              {({ open }) => (
                 <>
                   <Disclosure.Button className="w-full text-left">
                     <h5 className="flex w-full text-xl justify-between py-3 font-medium uppercase text-text-subtle hover:text-text-primary">
-                      {item.title}
-                      {item.items.length > 0 && <span className="">
-                        <IconCaret
-                          className="h-4 w-4"
-                          direction={open ? 'down' : 'right'}
-                        />
-                      </span>}
+                      {item.items.length > 0 ? (
+                        <span>{item.title}</span>
+                      ) : (
+                        <Link
+                          to={item.to}
+                          prefetch="intent"
+                          onClick={handleCloseAll}
+                        >
+                          {item.title}
+                        </Link>
+                      )}
+                      {item.items.length > 0 && (
+                        <span className="">
+                          <IconCaret
+                            className="h-4 w-4"
+                            direction={open ? "down" : "right"}
+                          />
+                        </span>
+                      )}
                     </h5>
                   </Disclosure.Button>
                   {item?.items?.length > 0 ? (
@@ -116,10 +157,13 @@ function MultiMenu(props: SingleMenuItem) {
                               <Link
                                 key={ind}
                                 to={subItem.to}
+                                onClick={handleCloseAll}
                                 prefetch="intent"
                                 className="text-text-subtle"
                               >
-                                <span className='font-body hover:text-text-primary text-base font-normal'>{subItem.title}</span>
+                                <span className="font-body hover:text-text-primary text-base font-normal">
+                                  {subItem.title}
+                                </span>
                               </Link>
                             </li>
                           ))}
@@ -142,9 +186,7 @@ function MultiMenu(props: SingleMenuItem) {
         role="button"
         onClick={openMenu}
       >
-        <Link to={to} prefetch="intent">
-          <h5 className="font-medium text-xl uppercase">{title}</h5>
-        </Link>
+        <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
       </div>
       {content}
@@ -152,12 +194,21 @@ function MultiMenu(props: SingleMenuItem) {
   );
 }
 
-function ImageMenu({title, items, to}: SingleMenuItem) {
+function ImageMenu({
+  title,
+  items,
+  to,
+  closeDrawer,
+}: SingleMenuItem & { closeDrawer: () => void }) {
   const {
     isOpen: isMenuOpen,
     openDrawer: openMenu,
     closeDrawer: closeMenu,
   } = useDrawer();
+  const handleCloseAll = () => {
+    closeMenu();
+    closeDrawer();
+  };
   let content = (
     <Drawer
       open={isMenuOpen}
@@ -169,17 +220,24 @@ function ImageMenu({title, items, to}: SingleMenuItem) {
     >
       <div className="grid grid-cols-2 gap-3 px-6 pb-16 pt-8 border-t border-border-subtle">
         {items.map((item, id) => (
-          <Link to={item.to} prefetch="intent" key={id}>
+          <Link
+            to={item.to}
+            prefetch="intent"
+            key={id}
+            onClick={handleCloseAll}
+          >
             <div className="relative aspect-square w-full group">
               <Image
                 data={item.resource?.image}
                 className="h-full w-full rounded object-cover"
                 sizes="auto"
               />
-              <div className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center z-30">
-                <h4 className='font-medium text-center text-white transition-all duration-300 text-2xl group-hover:underline'>{item.title}</h4>
+              <div className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center z-30 px-2">
+                <span className="font-medium font-heading text-center text-white transition-all duration-300 text-2xl group-hover:underline line-clamp-1">
+                  {item.title}
+                </span>
               </div>
-              <div className='absolute inset-0 opacity-0 group-hover:opacity-30 bg-background transition-opacity duration-300'/>
+              <div className="absolute inset-0 bg-[#5546124D]/20 group-hover:bg-[#5546124D]/40 transition-opacity duration-300" />
             </div>
           </Link>
         ))}
@@ -193,9 +251,7 @@ function ImageMenu({title, items, to}: SingleMenuItem) {
         role="button"
         onClick={openMenu}
       >
-        <Link to={to} prefetch="intent">
-          <h5 className="font-medium text-xl uppercase">{title}</h5>
-        </Link>
+        <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
       </div>
       {content}
@@ -203,13 +259,17 @@ function ImageMenu({title, items, to}: SingleMenuItem) {
   );
 }
 
-function SingleMenu(props: SingleMenuItem) {
+function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
   const {
     isOpen: isMenuOpen,
     openDrawer: openMenu,
     closeDrawer: closeMenu,
   } = useDrawer();
-  let {title, items, to} = props;
+  let { title, items, to, closeDrawer } = props;
+  const handleCloseAll = () => {
+    closeMenu();
+    closeDrawer();
+  };
   let content = (
     <Drawer
       open={isMenuOpen}
@@ -222,14 +282,16 @@ function SingleMenu(props: SingleMenuItem) {
       <div className="grid overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
         <ul className="space-y-3 pb-3 pt-2">
           {items.map((subItem, ind) => (
-            <li key={ind} className="leading-6">
+            <li key={ind} className="leading-6" onClick={handleCloseAll}>
               <Link
                 key={ind}
                 to={subItem.to}
                 prefetch="intent"
                 className="text-text-subtle"
               >
-                <span className='font-body hover:text-text-primary text-base font-normal'>{subItem.title}</span>
+                <span className="font-body hover:text-text-primary text-base font-normal">
+                  {subItem.title}
+                </span>
               </Link>
             </li>
           ))}
@@ -244,9 +306,7 @@ function SingleMenu(props: SingleMenuItem) {
         role="button"
         onClick={openMenu}
       >
-        <Link to={to} prefetch="intent">
-          <h5 className="font-medium text-xl uppercase">{title}</h5>
-        </Link>
+        <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
       </div>
       {content}

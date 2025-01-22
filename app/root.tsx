@@ -38,7 +38,7 @@ import { GlobalLoading } from "./components/global-loading";
 import { Preloader } from "./components/Preloader";
 import { getErrorMessage } from "./lib/utils/defineMessageError";
 import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
-import { Footer } from "~/components/Footer";
+import { Footer } from "~/components/footer/Footer";
 import { Header } from "~/components/Header/Header";
 
 export type RootLoader = typeof loader;
@@ -72,7 +72,7 @@ export function links() {
       rel: "preconnect",
       href: "https://shop.app",
     },
-    { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+    { rel: "icon", type: "image/svg+xml", href: "/favicon.ico" },
   ];
 }
 

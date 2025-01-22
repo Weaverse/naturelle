@@ -1,5 +1,5 @@
 import { Storefront } from "@shopify/hydrogen";
-import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/data/queries";
+import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/data/queries";
 
 export let getProductData = async (storefront: Storefront, handle: string) => {
   const {shop, product} = await storefront.query(PRODUCT_QUERY, {

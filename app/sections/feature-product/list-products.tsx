@@ -5,7 +5,7 @@ import type {
   WeaverseCollection,
 } from "@weaverse/hydrogen";
 import { IconImageBlank } from "~/components/Icon";
-import { FEATURED_PRODUCTS_QUERY } from "~/data/queries";
+import { FEATURED_PRODUCTS_QUERY } from "~/graphql/data/queries";
 import { forwardRef, useState } from "react";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";

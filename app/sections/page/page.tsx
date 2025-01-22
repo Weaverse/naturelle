@@ -6,6 +6,7 @@ import type {
 import {forwardRef} from 'react';
 import type {PageDetailsQuery} from 'storefrontapi.generated';
 import {PageHeader, Section} from '~/components/Text';
+import { prefixClassNames } from '~/lib/utils';
 
 interface PageProps extends HydrogenComponentProps {
   paddingTop: number;
@@ -15,6 +16,8 @@ interface PageProps extends HydrogenComponentProps {
 let Page = forwardRef<HTMLElement, PageProps>((props, ref) => {
   let {page} = useLoaderData<PageDetailsQuery>();
   let {paddingTop, paddingBottom, ...rest} = props;
+
+  let pageContent = prefixClassNames(page?.body ?? "", "wv-");
 
   if (page) {
     return (
@@ -29,7 +32,7 @@ let Page = forwardRef<HTMLElement, PageProps>((props, ref) => {
           <PageHeader heading={page.title}/>
           <Section as="div" padding="all">
             <div className="lg:max-w-screen-lg md:max-w-screen-md max-w-screen-sm px-4 mx-auto space-y-8 md:space-y-16">
-              <article className='prose-lg' dangerouslySetInnerHTML={{__html: page.body}} />
+              <article className='prose-lg' dangerouslySetInnerHTML={{__html: pageContent}} />
             </div>
           </Section>
         </div>

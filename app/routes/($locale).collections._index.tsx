@@ -5,6 +5,7 @@ import {
   type SeoConfig,
 } from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { COLLECTIONS_QUERY } from '~/graphql/data/queries';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
 
@@ -36,48 +37,3 @@ export default function Collections() {
 
   return <WeaverseContent />;
 }
-
-const COLLECTIONS_QUERY = `#graphql
-  fragment Collection on Collection {
-    id
-    title
-    handle
-    description
-    seo {
-      title
-      description
-    }
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-  query StoreCollections(
-    $country: CountryCode
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    collections(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor
-    ) {
-      nodes {
-        ...Collection
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-    }
-  }
-` as const;

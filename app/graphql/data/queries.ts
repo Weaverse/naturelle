@@ -1,9 +1,10 @@
 import {
   COLLECTION_CONTENT_FRAGMENT,
+  FEATURED_COLLECTION_FRAGMENT,
   MEDIA_FRAGMENT,
   PRODUCT_CARD_FRAGMENT,
   PRODUCT_VARIANT_FRAGMENT,
-} from '~/data/fragments';
+} from '~/graphql/data/fragments';
 
 export const BLOG_QUERY = `#graphql
 query BlogSingle(
@@ -242,6 +243,51 @@ export let COLLECTION_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
 
+export const COLLECTIONS_QUERY = `#graphql
+  fragment Collection on Collection {
+    id
+    title
+    handle
+    description
+    seo {
+      title
+      description
+    }
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+  }
+  query StoreCollections(
+    $country: CountryCode
+    $endCursor: String
+    $first: Int
+    $language: LanguageCode
+    $last: Int
+    $startCursor: String
+  ) @inContext(country: $country, language: $language) {
+    collections(
+      first: $first,
+      last: $last,
+      before: $startCursor,
+      after: $endCursor
+    ) {
+      nodes {
+        ...Collection
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+` as const;
+
 export let BLOGS_PAGE_QUERY = `#graphql
   query Blog(
     $language: LanguageCode
@@ -341,3 +387,82 @@ export let ARTICLE_QUERY = `#graphql
     title
   }
 `;
+
+export const SEARCH_QUERY = `#graphql
+  query PaginatedSearch(
+    $endCursor: String
+    $first: Int
+    $last: Int
+    $searchTerm: String!
+    $sortKey: SearchSortKeys!
+    $reverse: Boolean
+    $productFilters: [ProductFilter!]
+    $startCursor: String
+  ) {
+    search(
+      first: $first,
+      last: $last,
+      before: $startCursor,
+      after: $endCursor,
+      sortKey: $sortKey,
+      reverse: $reverse,
+      query: $searchTerm
+      types: [PRODUCT]
+      productFilters: $productFilters
+    ) {
+      nodes {
+        ...ProductCard
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      totalCount
+    }
+  }
+
+  ${PRODUCT_CARD_FRAGMENT}
+` as const;
+
+export const FILTER_QUERY = `#graphql
+query SearchFilter($query: String!)
+{
+  search(first: 0, query: $query) {
+    productFilters {
+      id
+      label
+      type
+      values {
+        id
+        label
+        count
+        input
+      }
+    }
+  }
+}
+`;
+
+export const FEATURED_ITEMS_QUERY = `#graphql
+  query FeaturedItems(
+    $country: CountryCode
+    $language: LanguageCode
+    $pageBy: Int = 12
+  ) @inContext(country: $country, language: $language) {
+    featuredCollections: collections(first: 3, sortKey: UPDATED_AT) {
+      nodes {
+        ...FeaturedCollectionDetails
+      }
+    }
+    featuredProducts: products(first: $pageBy) {
+      nodes {
+        ...ProductCard
+      }
+    }
+  }
+
+  ${PRODUCT_CARD_FRAGMENT}
+  ${FEATURED_COLLECTION_FRAGMENT}
+` as const;

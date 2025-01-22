@@ -7,7 +7,7 @@ import type {
 import type { CSSProperties } from "react";
 import { forwardRef } from "react";
 import type { ProductQuery } from "storefrontapi.generated";
-import { PRODUCT_QUERY } from "~/data/queries";
+import { PRODUCT_QUERY } from "~/graphql/data/queries";
 import { ProductPopup } from "./product-popup";
 import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/Icon";
 

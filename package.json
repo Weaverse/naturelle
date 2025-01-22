@@ -20,6 +20,7 @@
         "@fontsource-variable/open-sans": "^5.1.0",
         "@headlessui/react": "^2.2.0",
         "@radix-ui/react-checkbox": "^1.1.2",
+        "@radix-ui/react-dialog": "^1.1.4",
         "@radix-ui/react-menubar": "^1.1.4",
         "@radix-ui/react-slot": "^1.1.0",
         "@remix-run/css-bundle": "^2.14.0",

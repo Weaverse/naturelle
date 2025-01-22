@@ -153,17 +153,24 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .text-animation {
-  background-image: linear-gradient(to right, rgb(15, 15, 15), rgb(15, 15, 15));
-  background-size: 0% 1px;
-  background-repeat: no-repeat;
-  display: inline;
-  padding-bottom: 3px;
-  transition: all 0.2s ease;
-  background-position: left calc(1em + 4px);
+  position: relative;
+  display: inline-block;
 }
 
-.text-animation:hover {
-  background-size: 100% 1px;
+.text-animation::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: var(--underline-size, 1px);
+  background: var(--underline-color, #386E4A);
+  transition: all 0.3s ease;
+}
+
+.text-animation:hover::after {
+  left: 0;
+  width: 100%;
 }
 
 #announcement-bar ~ header {

@@ -21,7 +21,6 @@ import {IconSearch} from '~/components/Icon';
 import {ProductCard} from '~/components/ProductCard';
 import {ProductSwimlane} from '~/components/ProductSwimlane';
 import {PageHeader, Text} from '~/components/Text';
-import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {
   FILTER_URL_PREFIX,
   getImageLoadingPriority,
@@ -37,6 +36,7 @@ import {
   type FeaturedData,
 } from './($locale).featured-products';
 import { Input } from '~/components/input';
+import { FILTER_QUERY, SEARCH_QUERY } from '~/graphql/data/queries';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -307,93 +307,3 @@ export function getNoResultRecommendations(
 ) {
   return getFeaturedData(storefront, {pageBy: PAGINATION_SIZE});
 }
-
-const SEARCH_QUERYOLD = `#graphql
-  query PaginatedProductsSearch(
-    $country: CountryCode
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $searchTerm: String
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    products(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor,
-      sortKey: RELEVANCE,
-      query: $searchTerm
-    ) {
-      nodes {
-        ...ProductCard
-      }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-    }
-  }
-
-  ${PRODUCT_CARD_FRAGMENT}
-` as const;
-
-const SEARCH_QUERY = `#graphql
-  query PaginatedSearch(
-    $endCursor: String
-    $first: Int
-    $last: Int
-    $searchTerm: String!
-    $sortKey: SearchSortKeys!
-    $reverse: Boolean
-    $productFilters: [ProductFilter!]
-    $startCursor: String
-  ) {
-    search(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor,
-      sortKey: $sortKey,
-      reverse: $reverse,
-      query: $searchTerm
-      types: [PRODUCT]
-      productFilters: $productFilters
-    ) {
-      nodes {
-        ...ProductCard
-      }
-      pageInfo {
-        startCursor
-        endCursor
-        hasNextPage
-        hasPreviousPage
-      }
-      totalCount
-    }
-  }
-
-  ${PRODUCT_CARD_FRAGMENT}
-` as const;
-
-const FILTER_QUERY = `#graphql
-query SearchFilter($query: String!)
-{
-  search(first: 0, query: $query) {
-    productFilters {
-      id
-      label
-      type
-      values {
-        id
-        label
-        count
-        input
-      }
-    }
-  }
-}
-`;
