@@ -1,6 +1,6 @@
 import { createHydrogenContext } from "@shopify/hydrogen";
 import { WeaverseClient } from "@weaverse/hydrogen";
-import { CART_QUERY_FRAGMENT } from "~/data/fragments";
+import { CART_QUERY_FRAGMENT } from "~/graphql/data/fragments";
 import { AppSession } from "~/lib/session";
 import { getLocaleFromRequest } from "~/lib/utils";
 import { components } from "~/weaverse/components";

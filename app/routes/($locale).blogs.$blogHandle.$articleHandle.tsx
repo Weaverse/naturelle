@@ -3,7 +3,7 @@ import {getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {type RouteLoaderArgs} from '@weaverse/hydrogen';
 import {routeHeaders} from '~/data/cache';
-import {ARTICLE_QUERY} from '~/data/queries';
+import {ARTICLE_QUERY} from '~/graphql/data/queries';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
 import type {ArticleDetailsQuery} from 'storefrontapi.generated';

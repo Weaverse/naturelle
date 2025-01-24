@@ -8,7 +8,7 @@ import type {
 } from "@weaverse/hydrogen";
 import { IconImageBlank } from "~/components/Icon";
 import { Link } from "~/components/Link";
-import { BLOG_QUERY } from "~/data/queries";
+import { BLOG_QUERY } from "~/graphql/data/queries";
 import { cva, VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import { CSSProperties, forwardRef } from "react";

@@ -12,7 +12,7 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {routeHeaders} from '~/data/cache';
-import {COLLECTION_QUERY} from '~/data/queries';
+import {COLLECTION_QUERY} from '~/graphql/data/queries';
 import {FILTER_URL_PREFIX, PAGINATION_SIZE} from '~/lib/utils/const';
 import {SortParam} from '~/lib/utils/filter';
 import {seoPayload} from '~/lib/seo.server';

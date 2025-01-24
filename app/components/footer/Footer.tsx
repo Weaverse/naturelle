@@ -1,15 +1,15 @@
-import {Button} from '~/components/button';
-import {Input} from '~/components/input';
-import {Disclosure} from '@headlessui/react';
-import {NavLink, useFetcher} from '@remix-run/react';
-import {useThemeSettings} from '@weaverse/hydrogen';
-import {EnhancedMenu, getMaxDepth, SingleMenuItem} from '~/lib/types/menu';
-import {cn} from '~/lib/utils';
-import React from 'react';
-import {CountrySelector} from './CountrySelector';
-import {IconPlusLinkFooter} from './Icon';
-import { cva } from 'class-variance-authority';
-import { useShopMenu } from '~/hooks/use-menu-shop';
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
+import { Disclosure } from "@headlessui/react";
+import { NavLink, useFetcher } from "@remix-run/react";
+import { useThemeSettings } from "@weaverse/hydrogen";
+import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
+import { cn } from "~/lib/utils";
+import React from "react";
+import { cva } from "class-variance-authority";
+import { useShopMenu } from "~/hooks/use-menu-shop";
+import { CountrySelector } from "./CountrySelector";
+import { IconPlusLinkFooter } from "../Icon";
 
 let variants = cva("", {
   variants: {
@@ -29,7 +29,7 @@ let variants = cva("", {
 export function Footer() {
   let { footerMenu } = useShopMenu();
   let fetcher = useFetcher<any>();
-  let isError = fetcher.state === 'idle' && fetcher.data?.errors;
+  let isError = fetcher.state === "idle" && fetcher.data?.errors;
   const settings = useThemeSettings();
   let {
     footerWidth,
@@ -38,14 +38,31 @@ export function Footer() {
     newsletterDescription,
     newsletterPlaceholder,
     newsletterButtonText,
-    tagNameTitle: Tag = 'h6',
+    tagNameTitle: Tag = "h6",
   } = settings;
   return (
-    <footer className={cn("footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]", variants({ padding: footerWidth }))}>
-      <div className={cn("flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16", variants({ width: footerWidth }))}>
+    <footer
+      className={cn(
+        "footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]",
+        variants({ padding: footerWidth })
+      )}
+      style={
+        {
+          "--underline-color": "var(--color-footer-text)",
+        } as React.CSSProperties
+      }
+    >
+      <div
+        className={cn(
+          "flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16",
+          variants({ width: footerWidth })
+        )}
+      >
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">
           <div className="flex w-full flex-col items-start gap-6 border-b border-foreground pb-6 md:h-fit md:border-none md:pb-0">
-            {newsletterTitle && <Tag className='font-semibold'>{newsletterTitle}</Tag>}
+            {newsletterTitle && (
+              <Tag className="font-semibold">{newsletterTitle}</Tag>
+            )}
             <div className="flex w-fit flex-col gap-4 md:h-fit">
               {newsletterDescription && <p>{newsletterDescription}</p>}
               {newsletterButtonText && (
@@ -62,7 +79,7 @@ export function Footer() {
                     required
                   />
                   <Button
-                    loading={fetcher.state === 'submitting'}
+                    loading={fetcher.state === "submitting"}
                     type="submit"
                   >
                     {newsletterButtonText}
@@ -87,7 +104,7 @@ export function Footer() {
   );
 }
 
-function FooterMenu({menu}: {menu: EnhancedMenu | undefined | null}) {
+function FooterMenu({ menu }: { menu: EnhancedMenu | undefined | null }) {
   let items = menu?.items as unknown as SingleMenuItem[];
   if (!items) return null;
   return (
@@ -97,7 +114,7 @@ function FooterMenu({menu}: {menu: EnhancedMenu | undefined | null}) {
         role="navigation"
       >
         {items.map((item, id) => {
-          let {title, ...rest} = item;
+          let { title, ...rest } = item;
           let level = getMaxDepth(item);
           let Comp: React.FC<SingleMenuItem>;
           if (level === 2) {
@@ -115,15 +132,13 @@ function FooterMenu({menu}: {menu: EnhancedMenu | undefined | null}) {
 }
 
 function MenuLink(props: SingleMenuItem) {
-  let {title, items, to} = props;
+  let { title, items, to } = props;
   const settings = useThemeSettings();
-  let {tagNameTitle: Tag = 'h6'} = settings || {};
+  let { tagNameTitle: Tag = "h6" } = settings || {};
   return (
     <>
       <div className="hidden flex-col gap-6 md:flex">
-        <Tag className="font-semibold uppercase">
-          {title}
-        </Tag>
+        <Tag className="font-semibold uppercase">{title}</Tag>
         <ul className="space-y-1.5">
           {items.map((subItem, ind) => (
             <li key={ind} className="leading-6">
@@ -138,7 +153,7 @@ function MenuLink(props: SingleMenuItem) {
       </div>
       <div className="block border-b border-foreground pb-4 md:hidden">
         <Disclosure>
-          {({open}) => (
+          {({ open }) => (
             <>
               <Disclosure.Button className="w-full text-left">
                 <Tag className="flex justify-between font-semibold uppercase">
@@ -146,7 +161,9 @@ function MenuLink(props: SingleMenuItem) {
                   <span>
                     <IconPlusLinkFooter
                       open={open}
-                      className={`trasition-transform h-5 w-5 duration-300 ${open ? 'rotate-90' : 'rotate-0'}`}
+                      className={`trasition-transform h-5 w-5 duration-300 ${
+                        open ? "rotate-90" : "rotate-0"
+                      }`}
                     />
                   </span>
                 </Tag>
@@ -178,8 +195,8 @@ function MenuLink(props: SingleMenuItem) {
   );
 }
 
-function HeaderText({title, to}: {title: string; to: string}) {
+function HeaderText({ title, to }: { title: string; to: string }) {
   const settings = useThemeSettings();
-  let {tagNameTitle: Tag = 'h6'} = settings || {};
+  let { tagNameTitle: Tag = "h6" } = settings || {};
   return <Tag className="font-semibold uppercase">{title}</Tag>;
 }
