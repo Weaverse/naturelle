@@ -756,6 +756,18 @@ export const themeSchema: HydrogenThemeSchema = {
             ],
           },
         },
+        { 
+          label: "Media direction",
+          name: "mediaDirection",
+          type: "toggle-group",
+          defaultValue: "horizontal",
+          configs: {
+            options: [
+              { value: "horizontal", label: "Horizontal" },
+              { value: "vertical", label: "Vertical" },
+            ],
+          },
+        },
         {
           label: "Show slide counter",
           name: "showSlideCounter",
