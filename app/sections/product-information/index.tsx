@@ -14,10 +14,11 @@ import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
-import { ProductDetail } from "./product-detail";
+import { ProductDetail } from "../../components/product-form/product-detail";
 import { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { StarRating } from "~/components/StarRating";
 import { layoutInputs, Section, SectionProps } from "../atoms/Section";
+import clsx from "clsx";
 interface ProductInformationProps extends SectionProps {
   addToCartText: string;
   soldOutText: string;
@@ -31,6 +32,7 @@ interface ProductInformationProps extends SectionProps {
   // product media props
   showThumbnails: boolean;
   imageAspectRatio: string;
+  mediaDirection: "horizontal" | "vertical";
   spacing: number;
   showSlideCounter: boolean;
 }
@@ -65,6 +67,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       hideUnavailableOptions,
       showThumbnails,
       imageAspectRatio,
+      mediaDirection,
       spacing,
       showSlideCounter,
       children,
@@ -116,7 +119,11 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       const { shippingPolicy, refundPolicy } = shop;
       return (
         <Section ref={ref} {...rest}>
-          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-12">
+          <div className={clsx(
+            "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
+            "lg:gap-[clamp(30px,5%,60px)]",
+            "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
+          )}>
             <ProductMedia
               media={product?.media.nodes}
               selectedVariant={selectedVariant}
@@ -124,6 +131,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
               imageAspectRatio={imageAspectRatio}
               spacing={spacing}
               showSlideCounter={showSlideCounter}
+              direction={mediaDirection}
             />
             <div
               style={
@@ -363,6 +371,18 @@ export let schema: HydrogenComponentSchema = {
               { value: "3/4", label: "Portrait (3/4)" },
               { value: "4/3", label: "Landscape (4/3)" },
               { value: "16/9", label: "Widescreen (16/9)" },
+            ],
+          },
+        },
+        { 
+          label: "Media direction",
+          name: "mediaDirection",
+          type: "toggle-group",
+          defaultValue: "horizontal",
+          configs: {
+            options: [
+              { value: "horizontal", label: "Horizontal" },
+              { value: "vertical", label: "Vertical" },
             ],
           },
         },
