@@ -29,28 +29,22 @@ export function ProductMedia(props: ProductMediaProps) {
     direction = "horizontal",
     enableZoom,
   } = props;
+  
   let media = _media.filter((med) => med.__typename === "MediaImage");
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
-  const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
-    null
-  );
+  let [swiper, setSwiper] = useState<SwiperClass | null>(null);
+  let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [zoomMediaId, setZoomMediaId] = useState<string | null>(null);
   let [zoomModalOpen, setZoomModalOpen] = useState(false);
-  let [activeIndex, setActiveIndex] = useState(0);
+  let [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    if (swiperInstance && thumbsSwiper) {
-      if (swiperInstance.thumbs) {
-        swiperInstance.thumbs.swiper = thumbsSwiper;
-        swiperInstance.thumbs.init();
+    if (selectedVariant && swiper) {
+      let index = getSelectedVariantMediaIndex(media, selectedVariant);
+      if (index !== swiper.activeIndex) {
+        swiper.slideTo(index);
       }
-      swiperInstance.on("slideChange", () => {
-        const realIndex = swiperInstance.realIndex;
-        setActiveIndex(realIndex);
-        thumbsSwiper.slideTo(realIndex);
-      });
     }
-  }, [swiperInstance, thumbsSwiper]);
+  }, [selectedVariant]);
 
   return (
     <div className="overflow-hidden product-media-slider">
@@ -74,18 +68,9 @@ export function ProductMedia(props: ProductMediaProps) {
             modules={[FreeMode, Thumbs, Pagination]}
             pagination={{ type: "bullets" }}
             spaceBetween={10}
-            onSlideChange={(swiper) => {
-              setActiveIndex(swiper.activeIndex);
-            }}
-            thumbs={
-              thumbsSwiper
-                ? {
-                    swiper: thumbsSwiper,
-                    slideThumbActiveClass: "thumb-active",
-                  }
-                : undefined
-            }
-            onSwiper={setSwiperInstance}
+            thumbs={{ swiper: thumbsSwiper }}
+            onSwiper={setSwiper}
+            onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
             className="vt-product-image max-w-full !pb-5 md:!pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
             style={
               {
@@ -112,7 +97,7 @@ export function ProductMedia(props: ProductMediaProps) {
                       "absolute top-2 right-2 md:right-6 md:top-6",
                       "p-2 text-center border border-transparent rounded-full",
                       "transition-all duration-200",
-                      "text-gray-900 bg-transparent hover:bg-[#2e6a53] hover:text-white",
+                      "text-gray-900 bg-background hover:bg-[#2e6a53] hover:text-white",
                     )}
                     onClick={() => {
                       setZoomMediaId(med.id);
@@ -128,7 +113,7 @@ export function ProductMedia(props: ProductMediaProps) {
           </Swiper>
           {showSlideCounter && (
             <span className="absolute bottom-7 sm:bottom-5 right-2 text-text-primary text-sm sm:text-base z-10 font-heading">
-              {activeIndex + 1}/{media.length}
+              {currentIndex + 1}/{media.length}
             </span>
           )}
         </div>
@@ -137,7 +122,7 @@ export function ProductMedia(props: ProductMediaProps) {
             className={clsx(
               "hidden sm:block",
               direction === "vertical" &&
-                "w-[calc(var(--thumbs-width,0px)-1rem)] h-[450px]"
+                "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]"
             )}
           >
             <Swiper
@@ -162,8 +147,8 @@ export function ProductMedia(props: ProductMediaProps) {
                   <SwiperSlide
                     key={med.id}
                     className={clsx(
-                      "!h-fit !w-fit border-2 transition-colors cursor-pointer rounded p-0.5",
-                      activeIndex === i ? "border-border" : "border-transparent"
+                      "!h-fit !w-fit border-2 transition-colors cursor-pointer border-transparent rounded p-0.5",
+                      "[&.swiper-slide-thumb-active]:border-border",
                     )}
                   >
                     <Image
@@ -191,4 +176,13 @@ export function ProductMedia(props: ProductMediaProps) {
       )}
     </div>
   );
+}
+
+function getSelectedVariantMediaIndex(
+  media: MediaFragment[],
+  selectedVariant: any,
+) {
+  if (!selectedVariant) return 0;
+  let mediaUrl = selectedVariant.image?.url;
+  return media.findIndex((med) => med.previewImage?.url === mediaUrl);
 }
