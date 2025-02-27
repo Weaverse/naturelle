@@ -1,9 +1,10 @@
-import {VariantSelector} from '@shopify/hydrogen';
+import { VariantSelector } from "@shopify/hydrogen";
 import type {
   ProductQuery,
   ProductVariantFragmentFragment,
-} from 'storefrontapi.generated';
-import {VariantOption} from './options';
+} from "storefrontapi.generated";
+import { VariantOption } from "./options";
+import clsx from "clsx";
 
 interface ProductVariantsProps {
   selectedVariant: ProductVariantFragmentFragment;
@@ -12,8 +13,8 @@ interface ProductVariantsProps {
     nodes: ProductVariantFragmentFragment[];
   };
   handle: string;
-  product: NonNullable<ProductQuery['product']>;
-  options: NonNullable<ProductQuery['product']>['options'];
+  product: NonNullable<ProductQuery["product"]>;
+  options: NonNullable<ProductQuery["product"]>["options"];
   swatch: {
     configs: any[];
     swatches: any;
@@ -76,7 +77,7 @@ export function ProductVariants(props: ProductVariantsProps) {
   return (
     <div data-motion="fade-up" className="flex flex-col gap-6">
       <VariantSelector handle={handle} variants={nodes} options={options}>
-        {({option}) => {
+        {({ option }) => {
           let optionName = option.name;
           let clonedSelectedOptionMap = new Map(selectedOptionMap);
           let values = option.values
@@ -100,22 +101,33 @@ export function ProductVariants(props: ProductVariantsProps) {
           let handleSelectOptionValue = (value: string) =>
             handleSelectOption(optionName, value);
           let config = swatch?.configs.find((config) => {
-            return config.name.toLowerCase() === optionName.toLowerCase();
+            return (
+              config.name.trim().toLowerCase() ===
+              optionName.trim().toLowerCase()
+            );
           });
           let selectedValue = selectedOptions?.find(
-            (opt) => opt.name === optionName,
+            (opt) => opt.name === optionName
           )?.value!;
 
           return (
-            <VariantOption
-              name={optionName}
-              config={config}
-              values={values}
-              selectedOptionValue={selectedValue}
-              onSelectOptionValue={handleSelectOptionValue}
-              swatches={swatch?.swatches}
-              isDisabled={isDisabled}
-            />
+            <div className={clsx("flex flex-col gap-2", isDisabled && "opacity-50 cursor-not-allowed")}>
+              <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-[4rem]">
+                <span className="font-semibold text-base">
+                  {config?.displayName || optionName}:
+                </span>
+                <span className="ml-2 font-semibold text-base">
+                  {selectedValue}
+                </span>
+              </legend>
+              <VariantOption
+                name={optionName}
+                values={values}
+                selectedOptionValue={selectedValue}
+                onSelectOptionValue={handleSelectOptionValue}
+                swatches={swatch?.swatches}
+              />
+            </div>
           );
         }}
       </VariantSelector>
