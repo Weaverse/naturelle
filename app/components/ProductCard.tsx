@@ -1,6 +1,6 @@
 import {Button} from '~/components/button';
 import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
-import {flattenConnection, Image, Money, useMoney} from '@shopify/hydrogen';
+import {flattenConnection, Money, useMoney} from '@shopify/hydrogen';
 import type {MoneyV2, Product} from '@shopify/hydrogen/storefront-api-types';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {Link} from '~/components/Link';
@@ -10,6 +10,7 @@ import {isDiscounted, isNewArrival} from '~/lib/utils';
 import clsx from 'clsx';
 import type {ProductCardFragment} from 'storefrontapi.generated';
 import {QuickViewTrigger} from './QuickView';
+import { Image } from "~/components/image";
 
 export function ProductCard({
   product,

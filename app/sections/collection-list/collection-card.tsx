@@ -1,4 +1,4 @@
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { CSSProperties } from "react";

@@ -1,4 +1,4 @@
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import type {
   WeaverseImage,
