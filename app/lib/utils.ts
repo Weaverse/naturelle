@@ -12,6 +12,8 @@ import type { I18nLocale } from "./types/type-locale";
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import { EnhancedMenu } from "./types/menu";
+import { colord, extend } from "colord";
+import namesPlugin from "colord/plugins/names";
 
 export function missingClass(string?: string, prefix?: string) {
   if (!string) {
@@ -374,4 +376,11 @@ export function prefixClassNames(contentHtml: string, prefix: string) {
     }
   }, [contentHtml]);
   return articleContent;
+}
+
+extend([namesPlugin]);
+
+export function isLightColor(color: string, threshold = 0.8) {
+  let c = colord(color);
+  return c.isValid() && c.brightness() > threshold;
 }
