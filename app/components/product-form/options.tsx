@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { Image } from "~/components/image";
-import type { WeaverseImage } from "@weaverse/hydrogen";
 import { cn } from "~/lib/utils";
 export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
