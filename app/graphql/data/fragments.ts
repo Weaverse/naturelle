@@ -37,6 +37,65 @@ export const MEDIA_FRAGMENT = `#graphql
   }
 `;
 
+export const PRODUCT_VARIANT_FRAGMENT = `#graphql
+  fragment ProductVariantFragment on ProductVariant {
+    id
+    availableForSale
+    quantityAvailable
+    selectedOptions {
+      name
+      value
+    }
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+    price {
+      amount
+      currencyCode
+    }
+    compareAtPrice {
+      amount
+      currencyCode
+    }
+    sku
+    title
+    unitPrice {
+      amount
+      currencyCode
+    }
+    product {
+      title
+      handle
+    }
+  }
+`;
+
+export const PRODUCT_OPTION_FRAGMENT = `#graphql
+  fragment ProductOption on ProductOption {
+    name
+    optionValues {
+      name
+      firstSelectableVariant {
+        ...ProductVariantFragment
+      }
+      swatch {
+        color
+        image {
+          previewImage {
+            url
+            altText
+          }
+        }
+      }
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
+` as const;
+
 export const PRODUCT_CARD_FRAGMENT = `#graphql
   fragment ProductCard on Product {
     id
@@ -44,7 +103,7 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     publishedAt
     handle
     vendor
-    images(first: 2) {
+    images(first: 50) {
       nodes {
         id
         url
@@ -53,36 +112,16 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
         height
       }
     }
+    options {
+      ...ProductOption
+    }
     variants(first: 10) {
       nodes {
-        id
-        availableForSale
-        image {
-          url
-          altText
-          width
-          height
-        }
-        price {
-          amount
-          currencyCode
-        }
-        compareAtPrice {
-          amount
-          currencyCode
-        }
-        selectedOptions {
-          name
-          value
-        }
-        product {
-          handle
-          title
-        }
-        sku
+        ...ProductVariantFragment
       }
     }
   }
+  ${PRODUCT_OPTION_FRAGMENT}
 `;
 
 export const FEATURED_COLLECTION_FRAGMENT = `#graphql
@@ -127,43 +166,6 @@ export let COLLECTION_CONTENT_FRAGMENT = `#graphql
   }
 ${MEDIA_FRAGMENT}
 ` as const;
-
-export let PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariantFragment on ProductVariant {
-    id
-    availableForSale
-    quantityAvailable
-    selectedOptions {
-      name
-      value
-    }
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-  }
-`;
 
 // NOTE: https://shopify.dev/docs/api/storefront/latest/queries/cart
 export const CART_QUERY_FRAGMENT = `#graphql
