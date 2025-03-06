@@ -756,6 +756,18 @@ export const themeSchema: HydrogenThemeSchema = {
             ],
           },
         },
+        { 
+          label: "Media direction",
+          name: "mediaDirection",
+          type: "toggle-group",
+          defaultValue: "horizontal",
+          configs: {
+            options: [
+              { value: "horizontal", label: "Horizontal" },
+              { value: "vertical", label: "Vertical" },
+            ],
+          },
+        },
         {
           label: "Show slide counter",
           name: "showSlideCounter",
@@ -782,5 +794,101 @@ export const themeSchema: HydrogenThemeSchema = {
         },
       ],
     },
+    {
+      group: "Product card",
+      inputs: [
+        {type: "heading", label: "Image"},
+        {
+          type: "range",
+          name: "pcardBorderRadius",
+          label: "Border radius",
+          configs: {
+            min: 0,
+            max: 40,
+            step: 2,
+            unit: "px",
+          },
+          defaultValue: 4,
+        },
+        {
+          type: "switch",
+          name: "pcardShowImageOnHover",
+          label: "Show second image on hover",
+          defaultValue: true,
+        },
+        {
+          type: "select",
+          name: "pcardImageRatio",
+          label: "Image aspect ratio",
+          defaultValue: "1/1",
+          configs: {
+            options: [
+              { value: "1/1", label: "Square (1/1)" },
+              { value: "3/4", label: "Portrait (3/4)" },
+              { value: "4/3", label: "Landscape (4/3)" },
+              { value: "16/9", label: "Widescreen (16/9)" },
+            ],
+          },
+          helpText:
+            'Learn more about image <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio" target="_blank" rel="noopener noreferrer">aspect ratio</a> property.',
+        },
+        {type: "heading", label: "Content"},
+        {
+          type: "toggle-group",
+          name: "pcardAlignment",
+          label: "Content alignment",
+          configs: {
+            options: [
+              { value: "left", label: "Left", icon: "align-start-vertical" },
+              {
+                value: "center",
+                label: "Center",
+                icon: "align-center-vertical",
+              },
+              { value: "right", label: "Right", icon: "align-end-vertical" },
+            ],
+          },
+          defaultValue: "center",
+        },
+        {
+          type: "switch",
+          label: "Show vendor",
+          name: "pcardShowVendor",
+          defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show sale price",
+          name: "pcardShowSalePrice",
+          defaultValue: true,
+          condition: "pcardShowLowestPrice.ne.true",
+        },
+        {
+          type: "switch",
+          label: "Show option values",
+          name: "pcardShowOptionValues",
+          defaultValue: true,
+        },
+        {
+          type: "text",
+          label: "Option to show",
+          name: "pcardOptionToShow",
+          defaultValue: "Color",
+          placeholder: "Color",
+          condition: "pcardShowOptionValues.eq.true",
+        },
+        {
+          type: "range",
+          label: "Max option values to show",
+          name: "pcardMaxOptionValues",
+          configs: {
+            min: 2,
+            max: 10,
+          },
+          defaultValue: 2,
+          condition: "pcardShowOptionValues.eq.true",
+        },
+      ]
+    }
   ],
 };

@@ -24,6 +24,7 @@ import * as CollectionList from '~/sections/collection-list/index';
 import * as CollectionListItem from '~/sections/collection-list/collection-list';
 import * as AllProducts from '~/sections/all-products/index';
 import * as ProductInformation from '~/sections/product-information/index';
+import * as SingleProduct from '~/sections/single-product/index';
 import * as HeaderImage from '~/sections/image-banner/index';
 import * as CollectionFilters from '~/sections/collection-filters/index';
 import * as Page from '~/sections/page/page';
@@ -73,6 +74,7 @@ export const components: HydrogenComponent[] = [
     CollectionListItem,
     AllProducts,
     ProductInformation,
+    SingleProduct,
     HeaderImage,
     CollectionFilters,
     Page,

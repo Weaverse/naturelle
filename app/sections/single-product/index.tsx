@@ -1,8 +1,10 @@
 import { useLoaderData } from "@remix-run/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import {
+  ComponentLoaderArgs,
+  HydrogenComponentProps,
   useThemeSettings,
-  type HydrogenComponentProps,
+  WeaverseProduct,
   type HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
 import { forwardRef, useEffect, useState } from "react";
@@ -14,12 +16,16 @@ import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
-import { ProductDetail } from "../../components/product-form/product-detail";
 import { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { StarRating } from "~/components/StarRating";
 import { layoutInputs, Section, SectionProps } from "../atoms/Section";
+import { ProductDetail } from "~/components/product-form/product-detail";
+import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/data/queries";
 import clsx from "clsx";
-interface ProductInformationProps extends SectionProps {
+import { Link } from "~/components/Link";
+interface SingleProductData extends SectionProps {
+  product: WeaverseProduct;
+  // product information props
   addToCartText: string;
   soldOutText: string;
   unavailableText: string;
@@ -35,26 +41,16 @@ interface ProductInformationProps extends SectionProps {
   mediaDirection: "horizontal" | "vertical";
   spacing: number;
   showSlideCounter: boolean;
+  enableZoom: boolean;
 }
 
-let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
+type SingleProductProps = HydrogenComponentProps<
+  Awaited<ReturnType<typeof loader>>
+> &
+  SingleProductData;
+
+let SingleProduct = forwardRef<HTMLDivElement, SingleProductProps>(
   (props, ref) => {
-    let {
-      product,
-      shop,
-      variants: _variants,
-      storeDomain,
-    } = useLoaderData<
-      ProductQuery & {
-        variants: VariantsQuery;
-        storeDomain: string;
-      }
-    >();
-    const [isLoading, setIsLoading] = useState(false);
-    let variants = _variants?.product?.variants;
-    let [selectedVariant, setSelectedVariant] = useState<any>(
-      product?.selectedVariant
-    );
     let {
       addToCartText,
       soldOutText,
@@ -70,9 +66,17 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       mediaDirection,
       spacing,
       showSlideCounter,
+      enableZoom,
       children,
+      loaderData,
       ...rest
     } = props;
+    let { storeDomain, product, shop, variants: _variants } = loaderData || {};
+    const [isLoading, setIsLoading] = useState(false);
+    let variants = _variants?.product?.variants;
+    let [selectedVariant, setSelectedVariant] = useState<any>(
+      product?.selectedVariant
+    );
     let [quantity, setQuantity] = useState<number>(1);
     const { judgemeReviews } = useLoaderData<ProductLoaderType>();
     let atcText = selectedVariant?.availableForSale
@@ -119,11 +123,13 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       const { shippingPolicy, refundPolicy } = shop;
       return (
         <Section ref={ref} {...rest}>
-          <div className={clsx(
-            "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
-            "lg:gap-[clamp(30px,5%,60px)]",
-            "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
-          )}>
+          <div
+            className={clsx(
+              "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
+              "lg:gap-[clamp(30px,5%,60px)]",
+              "lg:grid-cols-[1fr_clamp(360px,45%,480px)]"
+            )}
+          >
             <ProductMedia
               media={product?.media.nodes}
               selectedVariant={selectedVariant}
@@ -132,6 +138,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
               spacing={spacing}
               showSlideCounter={showSlideCounter}
               direction={mediaDirection}
+              enableZoom={enableZoom}
             />
             <div
               style={
@@ -248,30 +255,47 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   )}
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            data-motion="fade-up"
-            className="flex flex-col gap-4 mt-20 w-full"
-          >
-            {descriptionHtml && (
-              <ProductDetail title="Description" content={descriptionHtml} />
-            )}
-            <div className="grid gap-4 py-4">
-              {showShippingPolicy && shippingPolicy?.body && (
-                <ProductDetail
-                  title="Shipping"
-                  content={getExcerpt(shippingPolicy.body)}
-                  learnMore={`/policies/${shippingPolicy.handle}`}
-                />
-              )}
-              {showRefundPolicy && refundPolicy?.body && (
-                <ProductDetail
-                  title="Returns"
-                  content={getExcerpt(refundPolicy.body)}
-                  learnMore={`/policies/${refundPolicy.handle}`}
-                />
-              )}
+              <div
+                data-motion="fade-up"
+                className="flex flex-col gap-4 mt-20 w-full"
+              >
+                {descriptionHtml && (
+                  <div className="flex flex-col gap-3">
+                    {showDetails && (
+                      <p
+                        className="prose text-base font-normal line-clamp-4"
+                        dangerouslySetInnerHTML={{
+                          __html: descriptionHtml
+                            .replace(/(<br\s*\/?>\s*)+/g, "")
+                            .trim(),
+                        }}
+                      />
+                    )}
+                    <Link
+                      to={`/products/${product?.handle}`}
+                      className="underline font-body text-text-primary font-normal"
+                    >
+                      View full details
+                    </Link>
+                  </div>
+                )}
+                <div className="grid gap-4 py-4">
+                  {showShippingPolicy && shippingPolicy?.body && (
+                    <ProductDetail
+                      title="Shipping"
+                      content={getExcerpt(shippingPolicy.body)}
+                      learnMore={`/policies/${shippingPolicy.handle}`}
+                    />
+                  )}
+                  {showRefundPolicy && refundPolicy?.body && (
+                    <ProductDetail
+                      title="Returns"
+                      content={getExcerpt(refundPolicy.body)}
+                      learnMore={`/policies/${refundPolicy.handle}`}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </Section>
@@ -281,17 +305,55 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
   }
 );
 
-export default ProductInformation;
+export default SingleProduct;
+
+export let loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
+  let { weaverse, data } = args;
+  let { storefront } = weaverse;
+  if (!data.product) {
+    return null;
+  }
+  let productHandle = data.product.handle;
+  let { product, shop } = await storefront.query<ProductQuery>(PRODUCT_QUERY, {
+    variables: {
+      handle: productHandle,
+      selectedOptions: [],
+      language: storefront.i18n.language,
+      country: storefront.i18n.country,
+    },
+  });
+  let variants = await storefront.query<VariantsQuery>(VARIANTS_QUERY, {
+    variables: {
+      handle: productHandle,
+      language: storefront.i18n.language,
+      country: storefront.i18n.country,
+    },
+  });
+
+  return {
+    product,
+    shop,
+    variants,
+    storeDomain: shop.primaryDomain.url,
+  };
+};
 
 export let schema: HydrogenComponentSchema = {
-  type: "product-information",
-  title: "Product information",
+  type: "single-product",
+  title: "Single product",
   childTypes: ["judgeme"],
-  limit: 1,
-  enabledOn: {
-    pages: ["PRODUCT"],
-  },
   inspector: [
+    {
+      group: "Single product",
+      inputs: [
+        {
+          label: "Choose product",
+          type: "product",
+          name: "product",
+          shouldRevalidate: true,
+        },
+      ],
+    },
     {
       group: "Layout",
       inputs: layoutInputs.filter(({ name }) => name !== "borderRadius"),
@@ -374,7 +436,7 @@ export let schema: HydrogenComponentSchema = {
             ],
           },
         },
-        { 
+        {
           label: "Media direction",
           name: "mediaDirection",
           type: "toggle-group",
@@ -409,6 +471,12 @@ export let schema: HydrogenComponentSchema = {
           },
           defaultValue: 10,
           condition: "showThumbnails.eq.true",
+        },
+        {
+          label: "Enable zoom",
+          name: "enableZoom",
+          type: "switch",
+          defaultValue: true,
         },
       ],
     },

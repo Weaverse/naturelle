@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import * as Menubar from "@radix-ui/react-menubar";
 import { cn } from "~/lib/utils";
 import clsx from "clsx";

@@ -1,15 +1,38 @@
-import {Button} from '~/components/button';
-import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
-import {flattenConnection, Image, Money, useMoney} from '@shopify/hydrogen';
-import type {MoneyV2, Product} from '@shopify/hydrogen/storefront-api-types';
-import {AddToCartButton} from '~/components/AddToCartButton';
-import {Link} from '~/components/Link';
-import {Text} from '~/components/Text';
-import {getProductPlaceholder} from '~/lib/utils/placeholders';
-import {isDiscounted, isNewArrival} from '~/lib/utils';
-import clsx from 'clsx';
-import type {ProductCardFragment} from 'storefrontapi.generated';
-import {QuickViewTrigger} from './QuickView';
+import { Button } from "~/components/button";
+import type { ShopifyAnalyticsProduct } from "@shopify/hydrogen";
+import {
+  flattenConnection,
+  mapSelectedProductOptionToObject,
+  Money,
+  useMoney,
+} from "@shopify/hydrogen";
+import type { MoneyV2, Product } from "@shopify/hydrogen/storefront-api-types";
+import { AddToCartButton } from "~/components/AddToCartButton";
+import { Link } from "~/components/Link";
+import { Text } from "~/components/Text";
+import { getProductPlaceholder } from "~/lib/utils/placeholders";
+import { isDiscounted, isNewArrival } from "~/lib/utils";
+import clsx from "clsx";
+import type {
+  ProductCardFragment,
+  ProductVariantFragmentFragment,
+} from "storefrontapi.generated";
+import { QuickViewTrigger } from "./QuickView";
+import { Image } from "~/components/image";
+import { ProductCardOptions } from "./product-card-options";
+import { useState } from "react";
+import { useThemeSettings } from "@weaverse/hydrogen";
+import { cva } from "class-variance-authority";
+
+let styleVariants = cva("", {
+  variants: {
+    alignment: {
+      left: "",
+      center: "text-center items-center justify-center",
+      right: "text-right items-end justify-end",
+    },
+  },
+});
 
 export function ProductCard({
   product,
@@ -22,23 +45,48 @@ export function ProductCard({
   product: ProductCardFragment;
   label?: string;
   className?: string;
-  loading?: HTMLImageElement['loading'];
+  loading?: HTMLImageElement["loading"];
   onClick?: () => void;
   quickAdd?: boolean;
 }) {
+  let {
+    pcardBorderRadius,
+    pcardShowImageOnHover,
+    pcardImageRatio,
+    pcardAlignment,
+    pcardShowVendor,
+    pcardShowSalePrice,
+  } = useThemeSettings();
   let cardLabel, labelClass;
   const cardProduct: Product = product?.variants
     ? (product as Product)
     : getProductPlaceholder();
   if (!cardProduct?.variants?.nodes?.length) return null;
+  let [selectedVariant, setSelectedVariant] =
+    useState<ProductVariantFragmentFragment | null>(null);
 
   const variants = flattenConnection(cardProduct.variants);
   const firstVariant = flattenConnection(cardProduct.variants)[0];
   if (!firstVariant) return null;
-  const {image, price, compareAtPrice} = firstVariant;
-
-  const productImages = product.images?.nodes || [];
-  const hasTwoImages = productImages.length >= 2;
+  const { price, compareAtPrice } = firstVariant;
+  let params = new URLSearchParams(
+    mapSelectedProductOptionToObject(
+      (selectedVariant || firstVariant).selectedOptions
+    )
+  );
+  let [image, secondImage] = product.images.nodes;
+  if (selectedVariant) {
+    if (selectedVariant.image) {
+      image = selectedVariant.image;
+      let imageUrl = image.url;
+      let imageIndex = product.images.nodes.findIndex(
+        ({ url }) => url === imageUrl
+      );
+      if (imageIndex > 0 && imageIndex < product.images.nodes.length - 1) {
+        secondImage = product.images.nodes[imageIndex + 1];
+      }
+    }
+  }
 
   if (label) {
     cardLabel = label;
@@ -47,17 +95,17 @@ export function ProductCard({
       let discount =
         100 -
         Math.round(
-          (parseFloat(price.amount) / parseFloat(compareAtPrice?.amount)) * 100,
+          (parseFloat(price.amount) / parseFloat(compareAtPrice?.amount)) * 100
         );
       cardLabel = `Save ${discount}%`;
-      labelClass = 'bg-label-sale-background text-label-text';
+      labelClass = "bg-label-sale-background text-label-text";
     }
   } else if (isNewArrival(product.publishedAt)) {
-    cardLabel = 'New Arrival';
-    labelClass = 'bg-label-new-background text-label-text';
+    cardLabel = "New Arrival";
+    labelClass = "bg-label-new-background text-label-text";
   } else if (!product.variants.nodes[0].availableForSale) {
-    cardLabel = 'Out of Stock';
-    labelClass = 'bg-label-soldout-background text-label-text';
+    cardLabel = "Out of Stock";
+    labelClass = "bg-label-soldout-background text-label-text";
   }
 
   const productAnalytics: ShopifyAnalyticsProduct = {
@@ -71,47 +119,61 @@ export function ProductCard({
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className={clsx('grid gap-4', className)}>
-        <div className="card-image group/productCard relative aspect-[1/1] bg-primary/5">
+    <div
+      className="flex flex-col gap-2 w-full"
+      style={
+        {
+          "--card-border-radius": `${pcardBorderRadius}px`,
+          "--card-image-ratio": `${pcardImageRatio}`,
+        } as React.CSSProperties
+      }
+    >
+      <div className={clsx("grid gap-4", className)}>
+        <div className="card-image group/productCard relative aspect-[var(--card-image-ratio)] bg-primary/5">
           {image && (
             <Link
               onClick={onClick}
-              to={`/products/${product.handle}`}
+              to={`/products/${product.handle}?${params.toString()}`}
               prefetch="intent"
-              className={({isTransitioning}) => {
-                return isTransitioning ? 'vt-product-image' : '';
+              className={({ isTransitioning }) => {
+                return isTransitioning ? "vt-product-image" : "";
               }}
             >
-              {hasTwoImages && (
+              {secondImage && pcardShowImageOnHover ? (
                 <>
                   <Image
-                    className="fadeIn w-full object-cover absolute rounded opacity-100 transition-opacity duration-300 md:group-hover/productCard:opacity-0"
+                    className={clsx(
+                      "fadeIn w-full absolute",
+                      "opacity-100 transition-opacity duration-300 md:group-hover/productCard:opacity-0",
+                      "rounded-[var(--card-border-radius)] object-cover"
+                    )}
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                    aspectRatio="1/1"
-                    data={productImages[0]}
-                    alt={
-                      productImages[0]?.altText || `Picture of ${product.title}`
-                    }
+                    aspectRatio={pcardImageRatio}
+                    data={image}
+                    alt={image?.altText || `Picture of ${product.title}`}
                     loading={loading}
                   />
                   <Image
-                    className="fadeIn w-full object-cover absolute rounded opacity-0 transition-opacity duration-300 md:group-hover/productCard:opacity-100"
+                    className={clsx(
+                      "fadeIn w-full absolute",
+                      "opacity-0 transition-opacity duration-300 md:group-hover/productCard:opacity-100",
+                      "rounded-[var(--card-border-radius)] object-cover"
+                    )}
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                    aspectRatio="1/1"
-                    data={productImages[1]}
-                    alt={
-                      productImages[1]?.altText || `Picture of ${product.title}`
-                    }
+                    aspectRatio={pcardImageRatio}
+                    data={secondImage}
+                    alt={secondImage?.altText || `Picture of ${product.title}`}
                     loading={loading}
                   />
                 </>
-              )}
-              {!hasTwoImages && productImages[0] && (
+              ) : (
                 <Image
-                  className="fadeIn w-full object-cover rounded"
+                  className={clsx(
+                    "fadeIn w-full",
+                    "rounded-[var(--card-border-radius)] object-cover"
+                  )}
                   sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
-                  aspectRatio="1/1"
+                  aspectRatio={pcardImageRatio}
                   data={image}
                   alt={image.altText || `Picture of ${product.title}`}
                   loading={loading}
@@ -121,8 +183,8 @@ export function ProductCard({
           )}
           <span
             className={clsx(
-              'text-notice absolute text-sm right-2 top-2 px-3 py-2 text-right font-body',
-              labelClass,
+              "text-notice absolute text-sm right-2 top-2 px-3 py-2 text-right font-body",
+              labelClass
             )}
           >
             {cardLabel}
@@ -158,29 +220,37 @@ export function ProductCard({
               </div>
             )}
         </div>
-        <div className="grid gap-2">
-          <p className="text-text-subtle">{product.vendor}</p>
+        <div
+          className={clsx(
+            "grid gap-2",
+            styleVariants({ alignment: pcardAlignment })
+          )}
+        >
+          {pcardShowVendor && (
+            <p className="text-text-subtle">{product.vendor}</p>
+          )}
           <h4 className="w-full space-x-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-medium">
             <Link
               onClick={onClick}
               to={`/products/${product.handle}`}
               prefetch="intent"
-              className={({isTransitioning}) => {
-                return isTransitioning ? 'vt-product-image block' : '';
+              className={({ isTransitioning }) => {
+                return isTransitioning ? "vt-product-image block" : "";
               }}
             >
               <span>{product.title}</span>
               {firstVariant.sku && <span>({firstVariant.sku})</span>}
             </Link>
           </h4>
-          <div className="flex">
+          <div className={clsx("flex", styleVariants({ alignment: pcardAlignment }))}>
             <Text className="flex gap-2">
-              {isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
-                <CompareAtPrice
-                  className="text-[#AB2E2E] line-through"
-                  data={compareAtPrice as MoneyV2}
-                />
-              )}
+              {pcardShowSalePrice &&
+                isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
+                  <CompareAtPrice
+                    className="text-[#AB2E2E] line-through"
+                    data={compareAtPrice as MoneyV2}
+                  />
+                )}
               <Money withoutTrailingZeros data={price!} />
             </Text>
           </div>
@@ -222,6 +292,11 @@ export function ProductCard({
           </Text>
         </Button>
       )}
+      <ProductCardOptions
+        product={product}
+        selectedVariant={selectedVariant as ProductVariantFragmentFragment}
+        setSelectedVariant={setSelectedVariant}
+      />
     </div>
   );
 }
@@ -233,10 +308,10 @@ function CompareAtPrice({
   data: MoneyV2;
   className?: string;
 }) {
-  const {currencyNarrowSymbol, withoutTrailingZerosAndCurrency} =
+  const { currencyNarrowSymbol, withoutTrailingZerosAndCurrency } =
     useMoney(data);
 
-  const styles = clsx('strike', className);
+  const styles = clsx("strike", className);
 
   return (
     <span className={styles}>

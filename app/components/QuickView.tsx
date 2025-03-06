@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Text } from "~/components/Text";
 import { ProductData } from "~/lib/utils/products";
 import { getExcerpt } from "~/lib/utils";
-import { ProductDetail } from "~/sections/product-information/product-detail";
+import { ProductDetail } from "~/components/product-form/product-detail";
 import { AddToCartButton } from "./AddToCartButton";
 import { Modal } from "./Modal";
 import { ProductMedia } from "./product-form/product-media";
@@ -47,6 +47,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
     hideUnavailableOptions,
     showThumbnails,
     imageAspectRatio,
+    mediaDirection,
     spacing,
     showSlideCounter,
   } = themeSettings;
@@ -82,6 +83,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           imageAspectRatio={imageAspectRatio}
           spacing={spacing}
           showSlideCounter={showSlideCounter}
+          direction={mediaDirection}
         />
         <div
           style={

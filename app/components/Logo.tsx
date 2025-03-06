@@ -1,4 +1,4 @@
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { Link } from "./Link";

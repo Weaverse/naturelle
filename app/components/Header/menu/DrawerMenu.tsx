@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Link } from "@remix-run/react";
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import { Drawer, useDrawer } from "../../Drawer";
 import { IconCaret, IconListMenu } from "../../Icon";
 import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
