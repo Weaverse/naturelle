@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,

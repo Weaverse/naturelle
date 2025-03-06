@@ -1,4 +1,4 @@
-import { Image } from "@shopify/hydrogen";
+import { Image } from "~/components/image";
 import type { InspectorGroup, WeaverseImage } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";

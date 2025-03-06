@@ -36,6 +36,7 @@
         "@weaverse/hydrogen": "^4.0.0",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
+        "colord": "^2.9.3",
         "framer-motion": "^11.11.17",
         "graphql": "^16.9.0",
         "graphql-tag": "^2.12.6",
