@@ -614,8 +614,8 @@ export function IconListMenu(props: IconProps){
 export function IconPlusLinkFooter({open, ...props}: IconProps & {open?: boolean}) {
   return (
     <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'} viewBox="0 0 20 21">
-      {!open && <path d="M3.125 10.3301H16.875" stroke-linecap="round" stroke-linejoin="round"/>}
-      <path d="M10 3.45508V17.2051" stroke-linecap="round" stroke-linejoin="round"/>
+      {!open && <path d="M3.125 10.3301H16.875" strokeLinecap="round" strokeLinejoin="round" />}
+      <path d="M10 3.45508V17.2051" strokeLinecap="round" strokeLinejoin="round" />
     </Icon>
   );
 }
