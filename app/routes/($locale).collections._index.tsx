@@ -4,7 +4,7 @@ import {
   getSeoMeta,
   type SeoConfig,
 } from '@shopify/hydrogen';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { data, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import { COLLECTIONS_QUERY } from '~/graphql/data/queries';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
@@ -22,7 +22,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     collections,
     url: request.url,
   });
-  return json({
+  return data({
     collections,
     seo,
     weaverseData: await context.weaverse.loadPage({type: 'COLLECTION_LIST'}),

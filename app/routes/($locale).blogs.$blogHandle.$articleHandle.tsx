@@ -1,6 +1,6 @@
 import type {MetaFunction} from '@remix-run/react';
 import {getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
-import {json} from '@shopify/remix-oxygen';
+import { data } from '@shopify/remix-oxygen';
 import {type RouteLoaderArgs} from '@weaverse/hydrogen';
 import {routeHeaders} from '~/data/cache';
 import {ARTICLE_QUERY} from '~/graphql/data/queries';
@@ -46,7 +46,7 @@ export async function loader(args: RouteLoaderArgs) {
 
   const seo = seoPayload.article({article, url: request.url});
 
-  return json({
+  return data({
     article,
     blog: {
       handle: params.blogHandle,

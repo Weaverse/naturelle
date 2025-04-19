@@ -17,7 +17,7 @@ import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-ap
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
-  json,
+  data,
 } from "@shopify/remix-oxygen";
 import type {
   CustomerFragment,
@@ -56,7 +56,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     throw Error("Customer orders not found");
   }
 
-  return json({ customer: data.customer });
+  return data({ customer: data.customer });
 }
 
 export async function action({ request, context, params }: ActionFunctionArgs) {
@@ -75,11 +75,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     // this will ensure redirecting to login never happen for mutatation
     const isLoggedIn = await customerAccount.isLoggedIn();
     if (!isLoggedIn) {
-      return json(
+      return data(
         { error: { [addressId]: "Unauthorized" } },
-        {
-          status: 401,
-        },
+        { status: 401 }
       );
     }
 
@@ -130,25 +128,21 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error("Customer address create failed.");
           }
 
-          return json({
+          return data({
             error: null,
             createdAddress: data?.customerAddressCreate?.customerAddress,
             defaultAddress,
           });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return json(
+            return data(
               { error: { [addressId]: error.message } },
-              {
-                status: 400,
-              },
+              { status: 400 }
             );
           }
-          return json(
+          return data(
             { error: { [addressId]: error } },
-            {
-              status: 400,
-            },
+            { status: 400 }
           );
         }
       }
@@ -182,25 +176,21 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
 
           // });
 
-          return json({
+          return data({
             error: null,
             updatedAddress: address,
             defaultAddress,
           });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return json(
+            return data(
               { error: { [addressId]: error.message } },
-              {
-                status: 400,
-              },
+              { status: 400 }
             );
           }
-          return json(
+          return data(
             { error: { [addressId]: error } },
-            {
-              status: 400,
-            },
+            { status: 400 }
           );
         }
       }
@@ -227,48 +217,38 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error("Customer address delete failed.");
           }
 
-          return json({ error: null, deletedAddress: addressId });
+          return data({ error: null, deletedAddress: addressId });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return json(
+            return data(
               { error: { [addressId]: error.message } },
-              {
-                status: 400,
-              },
+              { status: 400 }
             );
           }
-          return json(
+          return data(
             { error: { [addressId]: error } },
-            {
-              status: 400,
-            },
+            { status: 400 }
           );
         }
       }
 
       default: {
-        return json(
+        return data(
           { error: { [addressId]: "Method not allowed" } },
-          {
-            status: 405,
-          },
+          { status: 405 }
         );
       }
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return json(
+      return data(
         { error: error.message },
-        {
-          status: 400,
-        },
+        { status: 400 }
       );
     }
-    return json(
+    return data(
       { error },
-      {
-        status: 400,
-      },
+      { status: 400 }
     );
   }
 }

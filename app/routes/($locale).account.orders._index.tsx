@@ -5,7 +5,7 @@ import {
   flattenConnection,
   getPaginationVariables,
 } from "@shopify/hydrogen";
-import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
+import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
 import type {
   CustomerOrdersFragment,
   OrderItemFragment,
@@ -36,7 +36,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     throw Error("Customer orders not found");
   }
 
-  return json({ customer: data.customer });
+  return data({ customer: data.customer });
 }
 
 export default function Orders() {

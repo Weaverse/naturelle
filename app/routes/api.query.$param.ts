@@ -1,4 +1,4 @@
-import { LoaderFunction, json } from '@remix-run/server-runtime';
+import { type LoaderFunction, data } from "@shopify/remix-oxygen";
 import { getProductData } from "~/lib/utils/products";
 
 function getRequestQueries<T = Record<string, string>>(request: Request) {
@@ -15,18 +15,18 @@ export let loader: LoaderFunction = async ({request, params, context}) => {
     switch (params.param) {
       case 'products': {
         let handle = queries.handle;
-        if (!handle) return json(null, {status: 404});
+        if (!handle) return data(null, { status: 404 });
         let productData = await getProductData(
           context.storefront,
           String(handle),
         );
-        return json(productData);
+        return data(productData);
       }
       default:
-        return json(null, {status: 404});
+        return data(null, { status: 404 });
     }
   } catch (error) {
     console.error(error);
-    return json({error: 'An error occurred'}, {status: 500});
+    return data({ error: "An error occurred" }, { status: 500 });
   }
 };

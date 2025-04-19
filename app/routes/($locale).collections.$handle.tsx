@@ -10,7 +10,7 @@ import type {
   ProductCollectionSortKeys,
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { data, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import {routeHeaders} from '~/data/cache';
 import {COLLECTION_QUERY} from '~/graphql/data/queries';
 import {FILTER_URL_PREFIX, PAGINATION_SIZE} from '~/lib/utils/const';
@@ -117,7 +117,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     })
     .filter((filter): filter is NonNullable<typeof filter> => filter !== null);
 
-  return json({
+  return data({
     collection,
     appliedFilters,
     collections: flattenConnection(collections),

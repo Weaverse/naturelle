@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { data, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import { Link, useLoaderData, type MetaFunction } from '@remix-run/react';
 import { Pagination, getPaginationVariables } from '@shopify/hydrogen';
 import { WeaverseContent } from '~/weaverse';
@@ -21,7 +21,7 @@ export const loader = async ({
     },
   });
 
-  return json({ blogs, weaverseData: await context.weaverse.loadPage({ type: 'BLOG' }), });
+  return data({ blogs, weaverseData: await context.weaverse.loadPage({ type: 'BLOG' }), });
 };
 
 export default function Blogs() {
