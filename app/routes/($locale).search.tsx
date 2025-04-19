@@ -14,7 +14,7 @@ import {
   type SeoConfig,
 } from '@shopify/hydrogen';
 import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import {DrawerFilter} from '~/components/DrawerFilter';
 import {Grid} from '~/components/Grid';
 import {IconSearch} from '~/components/Icon';
@@ -147,16 +147,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     },
   });
 
-  return defer({
+  return {
     productfilters: search?.productFilters,
     appliedFilters,
     seo,
     searchTerm,
     products,
     noResultRecommendations: shouldGetRecommendations
-      ? getNoResultRecommendations(storefront)
-      : Promise.resolve(null),
-  });
+      ? await getNoResultRecommendations(storefront)
+      : null,
+  };
 }
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {

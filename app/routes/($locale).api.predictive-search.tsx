@@ -1,4 +1,4 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { data, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 
 import type {
   PredictiveArticleFragment,
@@ -46,7 +46,7 @@ export async function action({request, params, context}: LoaderFunctionArgs) {
     context,
   });
 
-  return json(search);
+  return data(search);
 }
 
 async function fetchPredictiveSearchResults({

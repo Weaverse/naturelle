@@ -1,6 +1,6 @@
 import {type MetaFunction} from '@remix-run/react';
 import {getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import {seoPayload} from '~/lib/seo.server';
 import {WeaverseContent} from '~/weaverse';
 
@@ -11,11 +11,11 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
   let seo = seoPayload.home();
 
-  return defer({
+  return {
     recommendedProducts,
     weaverseData: await context.weaverse.loadPage(),
     seo,
-  });
+  };
 }
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {

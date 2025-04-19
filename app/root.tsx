@@ -23,7 +23,6 @@ import {
   type LoaderFunctionArgs,
   type MetaArgs,
   type SerializeFrom,
-  defer,
 } from "@shopify/remix-oxygen";
 import { withWeaverse } from "@weaverse/hydrogen";
 import tailwind from "./styles/tailwind.css?url";
@@ -90,10 +89,10 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return defer({
+  return {
     ...deferredData,
     ...criticalData,
-  });
+  };
 }
 
 /**

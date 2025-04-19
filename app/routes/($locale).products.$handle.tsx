@@ -10,8 +10,7 @@ import {
   type SeoConfig,
 } from '@shopify/hydrogen';
 import type {SelectedOptionInput} from '@shopify/hydrogen/storefront-api-types';
-import type {ActionFunctionArgs, LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {defer, json} from '@shopify/remix-oxygen';
+import { type ActionFunctionArgs, type LoaderFunctionArgs, type HeadersFunction, data } from '@shopify/remix-oxygen';
 import {getSelectedProductOptions} from '@weaverse/hydrogen';
 import {routeHeaders} from '~/data/cache';
 import {
@@ -27,7 +26,13 @@ import {useEffect} from 'react';
 import type {ProductRecommendationsQuery} from 'storefrontapi.generated';
 import invariant from 'tiny-invariant';
 
-export const headers = routeHeaders;
+export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
+  return {
+    ...routeHeaders,
+    ...(loaderHeaders || {}),
+    ...(actionHeaders || {}),
+  };
+};
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {handle} = params;
@@ -100,7 +105,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     context.weaverse
   );
 
-  return defer({
+  return {
     variants,
     product,
     shop,
@@ -118,7 +123,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       handle: handle,
     }),
     judgemeReviews,
-  });
+  };
 }
 
 export type ProductLoaderType = typeof loader;
@@ -137,7 +142,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     formData
   );
   const { status, ...rest } = response;
-  return json(rest, { status });
+  return data(rest, { status });
 }
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {

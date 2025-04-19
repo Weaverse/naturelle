@@ -1,4 +1,4 @@
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { data, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Money, Image, flattenConnection} from '@shopify/hydrogen';
 import type {OrderLineItemFullFragment} from 'customer-accountapi.generated';
@@ -14,18 +14,18 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
   }
 
   const orderId = atob(params.id);
-  const {data, errors} = await context.customerAccount.query(
+  const { data: orderData, errors } = await context.customerAccount.query(
     CUSTOMER_ORDER_QUERY,
     {
       variables: {orderId},
     },
   );
 
-  if (errors?.length || !data?.order) {
+  if (errors?.length || !orderData?.order) {
     throw new Error('Order not found');
   }
 
-  const {order} = data;
+  const { order } = orderData;
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
@@ -40,7 +40,7 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
     firstDiscount?.__typename === 'PricingPercentageValue' &&
     firstDiscount?.percentage;
 
-  return json(
+  return data(
     {
       order,
       lineItems,
