@@ -1,6 +1,6 @@
-import {useThemeSettings} from '@weaverse/hydrogen';
-import clsx from 'clsx';
-import {CSSProperties, useEffect, useRef, useState} from 'react';
+import { useThemeSettings } from "@weaverse/hydrogen";
+import clsx from "clsx";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 export function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(true);
@@ -18,9 +18,9 @@ export function AnnouncementBar() {
     enableScrollingText,
   } = settings;
   let style: CSSProperties = {
-    '--height-bar': `${announcementBarHeight}px`,
-    '--speed': `${speed}s`,
-    '--gap': `${gap}px`,
+    "--height-bar": `${announcementBarHeight}px`,
+    "--speed": `${speed}s`,
+    "--gap": `${gap}px`,
   } as CSSProperties;
 
   const handleClose = () => {
@@ -40,9 +40,9 @@ export function AnnouncementBar() {
       }
     };
     setTimeout(checkScrollCondition, 0);
-    window.addEventListener('resize', checkScrollCondition);
+    window.addEventListener("resize", checkScrollCondition);
     return () => {
-      window.removeEventListener('resize', checkScrollCondition);
+      window.removeEventListener("resize", checkScrollCondition);
     };
   }, [content, enableScrollingText]);
 
@@ -53,10 +53,10 @@ export function AnnouncementBar() {
       ref={containerRef}
       style={style}
       className={clsx(
-        'h-[var(--height-bar)] bg-[var(--color-topbar-bg)] py-[var(--vertical-padding)]',
-        'border-y border-y-[var(--color-topbar-border)]',
-        'flex w-full items-center justify-center overflow-hidden',
-        stickyAnnouncementBar ? 'sticky top-0 z-40' : 'relative',
+        "h-[var(--height-bar)] bg-[var(--color-topbar-bg)] py-[var(--vertical-padding)]",
+        "border-y border-y-[var(--color-topbar-border)]",
+        "flex w-full items-center justify-center overflow-hidden",
+        stickyAnnouncementBar ? "sticky top-0 z-40" : "relative",
       )}
     >
       <button
@@ -70,7 +70,7 @@ export function AnnouncementBar() {
           <div className="absolute right-0 z-10 h-full w-11 bg-[var(--color-topbar-bg)]" />
           <div className="absolute left-0 z-10 h-full w-11 bg-[var(--color-topbar-bg)]" />
           <ul className="inline-flex list-none">
-            {Array.from({length: 15}).map((_, i) => (
+            {Array.from({ length: 15 }).map((_, i) => (
               <li
                 key={i}
                 className="animate-scrollContent whitespace-nowrap pr-[var(--gap)] font-body font-normal text-[var(--color-topbar-text)]"
@@ -87,10 +87,10 @@ export function AnnouncementBar() {
       )}
       <div
         className={clsx(
-          'flex items-center justify-center',
-          !shouldScroll ? 'w-full' : 'w-0',
+          "flex items-center justify-center",
+          !shouldScroll ? "w-full" : "w-0",
         )}
-        style={{fontSize: `${textSize}px`}}
+        style={{ fontSize: `${textSize}px` }}
       >
         <div
           ref={contentRef}

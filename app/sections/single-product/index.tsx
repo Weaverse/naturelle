@@ -1,28 +1,28 @@
 import { useLoaderData } from "@remix-run/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import {
-  ComponentLoaderArgs,
-  HydrogenComponentProps,
-  useThemeSettings,
-  WeaverseProduct,
+  type ComponentLoaderArgs,
+  type HydrogenComponentProps,
   type HydrogenComponentSchema,
+  type WeaverseProduct,
+  useThemeSettings,
 } from "@weaverse/hydrogen";
+import clsx from "clsx";
 import { forwardRef, useEffect, useState } from "react";
 import type { ProductQuery, VariantsQuery } from "storefrontapi.generated";
 import { AddToCartButton } from "~/components/AddToCartButton";
+import { Link } from "~/components/Link";
+import { StarRating } from "~/components/StarRating";
 import { Text } from "~/components/Text";
+import { ProductDetail } from "~/components/product-form/product-detail";
+import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/data/queries";
 import { getExcerpt } from "~/lib/utils";
+import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
-import { ProductLoaderType } from "~/routes/($locale).products.$handle";
-import { StarRating } from "~/components/StarRating";
-import { layoutInputs, Section, SectionProps } from "../atoms/Section";
-import { ProductDetail } from "~/components/product-form/product-detail";
-import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/data/queries";
-import clsx from "clsx";
-import { Link } from "~/components/Link";
+import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
 interface SingleProductData extends SectionProps {
   product: WeaverseProduct;
   // product information props
@@ -75,15 +75,15 @@ let SingleProduct = forwardRef<HTMLDivElement, SingleProductProps>(
     const [isLoading, setIsLoading] = useState(false);
     let variants = _variants?.product?.variants;
     let [selectedVariant, setSelectedVariant] = useState<any>(
-      product?.selectedVariant
+      product?.selectedVariant,
     );
     let [quantity, setQuantity] = useState<number>(1);
     const { judgemeReviews } = useLoaderData<ProductLoaderType>();
     let atcText = selectedVariant?.availableForSale
       ? addToCartText
       : selectedVariant?.quantityAvailable === -1
-      ? unavailableText
-      : soldOutText;
+        ? unavailableText
+        : soldOutText;
     useEffect(() => {
       if (!selectedVariant) {
         setSelectedVariant(variants?.nodes?.[0]);
@@ -127,7 +127,7 @@ let SingleProduct = forwardRef<HTMLDivElement, SingleProductProps>(
             className={clsx(
               "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
               "lg:gap-[clamp(30px,5%,60px)]",
-              "lg:grid-cols-[1fr_clamp(360px,45%,480px)]"
+              "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
             )}
           >
             <ProductMedia
@@ -302,7 +302,7 @@ let SingleProduct = forwardRef<HTMLDivElement, SingleProductProps>(
       );
     }
     return <div ref={ref} {...rest} />;
-  }
+  },
 );
 
 export default SingleProduct;

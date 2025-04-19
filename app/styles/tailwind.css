@@ -158,13 +158,13 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .text-animation::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   bottom: 0;
   width: 0;
   height: var(--underline-size, 1px);
-  background: var(--underline-color, #386E4A);
+  background: var(--underline-color, #386e4a);
   transition: all 0.3s ease;
 }
 

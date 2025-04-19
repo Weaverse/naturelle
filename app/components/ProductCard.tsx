@@ -1,28 +1,28 @@
-import { Button } from "~/components/button";
 import type { ShopifyAnalyticsProduct } from "@shopify/hydrogen";
 import {
+  Money,
   flattenConnection,
   mapSelectedProductOptionToObject,
-  Money,
   useMoney,
 } from "@shopify/hydrogen";
 import type { MoneyV2, Product } from "@shopify/hydrogen/storefront-api-types";
-import { AddToCartButton } from "~/components/AddToCartButton";
-import { Link } from "~/components/Link";
-import { Text } from "~/components/Text";
-import { getProductPlaceholder } from "~/lib/utils/placeholders";
-import { isDiscounted, isNewArrival } from "~/lib/utils";
+import { useThemeSettings } from "@weaverse/hydrogen";
+import { cva } from "class-variance-authority";
 import clsx from "clsx";
+import { useState } from "react";
 import type {
   ProductCardFragment,
   ProductVariantFragmentFragment,
 } from "storefrontapi.generated";
-import { QuickViewTrigger } from "./QuickView";
+import { AddToCartButton } from "~/components/AddToCartButton";
+import { Link } from "~/components/Link";
+import { Text } from "~/components/Text";
+import { Button } from "~/components/button";
 import { Image } from "~/components/image";
+import { isDiscounted, isNewArrival } from "~/lib/utils";
+import { getProductPlaceholder } from "~/lib/utils/placeholders";
+import { QuickViewTrigger } from "./QuickView";
 import { ProductCardOptions } from "./product-card-options";
-import { useState } from "react";
-import { useThemeSettings } from "@weaverse/hydrogen";
-import { cva } from "class-variance-authority";
 
 let styleVariants = cva("", {
   variants: {
@@ -71,8 +71,8 @@ export function ProductCard({
   const { price, compareAtPrice } = firstVariant;
   let params = new URLSearchParams(
     mapSelectedProductOptionToObject(
-      (selectedVariant || firstVariant).selectedOptions
-    )
+      (selectedVariant || firstVariant).selectedOptions,
+    ),
   );
   let [image, secondImage] = product.images.nodes;
   if (selectedVariant) {
@@ -80,7 +80,7 @@ export function ProductCard({
       image = selectedVariant.image;
       let imageUrl = image.url;
       let imageIndex = product.images.nodes.findIndex(
-        ({ url }) => url === imageUrl
+        ({ url }) => url === imageUrl,
       );
       if (imageIndex > 0 && imageIndex < product.images.nodes.length - 1) {
         secondImage = product.images.nodes[imageIndex + 1];
@@ -95,7 +95,9 @@ export function ProductCard({
       let discount =
         100 -
         Math.round(
-          (parseFloat(price.amount) / parseFloat(compareAtPrice?.amount)) * 100
+          (Number.parseFloat(price.amount) /
+            Number.parseFloat(compareAtPrice?.amount)) *
+            100,
         );
       cardLabel = `Save ${discount}%`;
       labelClass = "bg-label-sale-background text-label-text";
@@ -145,7 +147,7 @@ export function ProductCard({
                     className={clsx(
                       "fadeIn w-full absolute",
                       "opacity-100 transition-opacity duration-300 md:group-hover/productCard:opacity-0",
-                      "rounded-[var(--card-border-radius)] object-cover"
+                      "rounded-[var(--card-border-radius)] object-cover",
                     )}
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio={pcardImageRatio}
@@ -157,7 +159,7 @@ export function ProductCard({
                     className={clsx(
                       "fadeIn w-full absolute",
                       "opacity-0 transition-opacity duration-300 md:group-hover/productCard:opacity-100",
-                      "rounded-[var(--card-border-radius)] object-cover"
+                      "rounded-[var(--card-border-radius)] object-cover",
                     )}
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio={pcardImageRatio}
@@ -170,7 +172,7 @@ export function ProductCard({
                 <Image
                   className={clsx(
                     "fadeIn w-full",
-                    "rounded-[var(--card-border-radius)] object-cover"
+                    "rounded-[var(--card-border-radius)] object-cover",
                   )}
                   sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                   aspectRatio={pcardImageRatio}
@@ -184,7 +186,7 @@ export function ProductCard({
           <span
             className={clsx(
               "text-notice absolute text-sm right-2 top-2 px-3 py-2 text-right font-body",
-              labelClass
+              labelClass,
             )}
           >
             {cardLabel}
@@ -207,7 +209,7 @@ export function ProductCard({
                   variant="secondary"
                   analytics={{
                     products: [productAnalytics],
-                    totalValue: parseFloat(productAnalytics.price),
+                    totalValue: Number.parseFloat(productAnalytics.price),
                   }}
                 >
                   <Text
@@ -223,7 +225,7 @@ export function ProductCard({
         <div
           className={clsx(
             "grid gap-2",
-            styleVariants({ alignment: pcardAlignment })
+            styleVariants({ alignment: pcardAlignment }),
           )}
         >
           {pcardShowVendor && (
@@ -242,7 +244,12 @@ export function ProductCard({
               {firstVariant.sku && <span>({firstVariant.sku})</span>}
             </Link>
           </h4>
-          <div className={clsx("flex", styleVariants({ alignment: pcardAlignment }))}>
+          <div
+            className={clsx(
+              "flex",
+              styleVariants({ alignment: pcardAlignment }),
+            )}
+          >
             <Text className="flex gap-2">
               {pcardShowSalePrice &&
                 isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
@@ -268,7 +275,7 @@ export function ProductCard({
           className="mt-4 w-full lg:hidden"
           analytics={{
             products: [productAnalytics],
-            totalValue: parseFloat(productAnalytics.price),
+            totalValue: Number.parseFloat(productAnalytics.price),
           }}
         >
           <Text as="span" className="flex items-center justify-center gap-2">

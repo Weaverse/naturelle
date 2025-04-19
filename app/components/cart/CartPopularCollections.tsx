@@ -1,12 +1,12 @@
 import { useFetcher } from "@remix-run/react";
-import { Grid } from "../Grid";
-import { Link } from "../Link";
-import { Image } from "~/components/image";
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import { CSSProperties, useEffect } from "react";
-import { getImageLoadingPriority } from "~/lib/utils/const";
+import { type CSSProperties, useEffect } from "react";
+import { Image } from "~/components/image";
 import { cn, usePrefixPathWithLocale } from "~/lib/utils";
+import { getImageLoadingPriority } from "~/lib/utils/const";
+import { Grid } from "../Grid";
+import { Link } from "../Link";
 
 type CollectionResponse = {
   collections: {
@@ -23,12 +23,12 @@ export function CartPopularCollections({ layout }: { layout?: string }) {
   if (!data) return null;
   let { collections } = data;
   let nodes = collections.nodes.slice(0, layout === "aside" ? 4 : 6);
-  
+
   return (
     <div
       className={cn(
         "flex flex-col gap-4",
-        layout === "aside" ? "mt-8 overflow-auto" : "mt-16"
+        layout === "aside" ? "mt-8 overflow-auto" : "mt-16",
       )}
     >
       <h5>Popular collections</h5>
@@ -66,10 +66,11 @@ function PopularCard({
       .map((_, i) =>
         Math.max(
           0,
-          parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) - [177, 166, 223][i]
+          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
+            [177, 166, 223][i],
         )
           .toString(16)
-          .padStart(2, "0")
+          .padStart(2, "0"),
       )
       .join("")}`;
 

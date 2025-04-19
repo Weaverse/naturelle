@@ -7,9 +7,9 @@ import type {
 import type { CSSProperties } from "react";
 import { forwardRef } from "react";
 import type { ProductQuery } from "storefrontapi.generated";
+import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/Icon";
 import { PRODUCT_QUERY } from "~/graphql/data/queries";
 import { ProductPopup } from "./product-popup";
-import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/Icon";
 
 export interface HotspotsItemData {
   icon: "circle" | "plus" | "bag" | "tag";

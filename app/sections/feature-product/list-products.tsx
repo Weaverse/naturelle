@@ -4,17 +4,17 @@ import type {
   HydrogenComponentSchema,
   WeaverseCollection,
 } from "@weaverse/hydrogen";
+import { forwardRef, useState } from "react";
+import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import { IconImageBlank } from "~/components/Icon";
 import { FEATURED_PRODUCTS_QUERY } from "~/graphql/data/queries";
-import { forwardRef, useState } from "react";
-import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
 import { ProductCard } from "~/components/ProductCard";
 import { getImageLoadingPriority } from "~/lib/utils/const";
-import { Navigation } from "swiper/modules";
-import { Arrows, SlideshowArrowsProps } from "./arrows";
+import { Arrows, type SlideshowArrowsProps } from "./arrows";
 import { Number } from "./number";
 
 type FeaturedProductsData = {
@@ -78,11 +78,11 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
       } else {
         return displayedProducts.map((product, i) => (
           <SwiperSlide key={product.id}>
-              <ProductCard
-                quickAdd
-                product={product}
-                loading={getImageLoadingPriority(i)}
-              />
+            <ProductCard
+              quickAdd
+              product={product}
+              loading={getImageLoadingPriority(i)}
+            />
           </SwiperSlide>
         ));
       }
@@ -90,7 +90,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
     let id = rest["data-wv-id"];
     let key = `slideshow-${id}`;
     let [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
-      null
+      null,
     );
     return (
       <div
@@ -135,7 +135,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         {showNumber && <Number {...props} instance={swiperInstance} />}
       </div>
     );
-  }
+  },
 );
 
 export default ListProducts;

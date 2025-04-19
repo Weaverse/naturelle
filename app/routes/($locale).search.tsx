@@ -1,55 +1,57 @@
-import {Button} from '~/components/button';
 import {
   Await,
   Form,
+  type MetaFunction,
   useLoaderData,
   useLocation,
   useNavigate,
-  type MetaFunction,
-} from '@remix-run/react';
+} from "@remix-run/react";
 import {
-  getPaginationVariables,
-  getSeoMeta,
   Pagination,
   type SeoConfig,
-} from '@shopify/hydrogen';
-import {ProductFilter} from '@shopify/hydrogen/storefront-api-types';
-import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import {DrawerFilter} from '~/components/DrawerFilter';
-import {Grid} from '~/components/Grid';
-import {IconSearch} from '~/components/Icon';
-import {ProductCard} from '~/components/ProductCard';
-import {ProductSwimlane} from '~/components/ProductSwimlane';
-import {PageHeader, Text} from '~/components/Text';
+  getPaginationVariables,
+  getSeoMeta,
+} from "@shopify/hydrogen";
+import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
+import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
+import { Suspense } from "react";
+import { DrawerFilter } from "~/components/DrawerFilter";
+import { Grid } from "~/components/Grid";
+import { IconSearch } from "~/components/Icon";
+import { ProductCard } from "~/components/ProductCard";
+import { ProductSwimlane } from "~/components/ProductSwimlane";
+import { PageHeader, Text } from "~/components/Text";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
+import { FILTER_QUERY, SEARCH_QUERY } from "~/graphql/data/queries";
+import { seoPayload } from "~/lib/seo.server";
+import { parseAsCurrency } from "~/lib/utils";
 import {
   FILTER_URL_PREFIX,
-  getImageLoadingPriority,
   PAGINATION_SIZE,
-} from '~/lib/utils/const';
-import {SortParam} from '~/lib/utils/filter';
-import {seoPayload} from '~/lib/seo.server';
-import {parseAsCurrency} from '~/lib/utils';
-import {Suspense} from 'react';
-import {getSortValuesFromParam} from './($locale).collections.$handle';
+  getImageLoadingPriority,
+} from "~/lib/utils/const";
+import type { SortParam } from "~/lib/utils/filter";
+import { getSortValuesFromParam } from "./($locale).collections.$handle";
 import {
-  getFeaturedData,
   type FeaturedData,
-} from './($locale).featured-products';
-import { Input } from '~/components/input';
-import { FILTER_QUERY, SEARCH_QUERY } from '~/graphql/data/queries';
+  getFeaturedData,
+} from "./($locale).featured-products";
 
-export async function loader({request, context}: LoaderFunctionArgs) {
-  const {storefront} = context;
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const { storefront } = context;
   const searchParams = new URL(request.url).searchParams;
-  const searchTerm = searchParams.get('q')! || '';
-  const variables = getPaginationVariables(request, {pageBy: PAGINATION_SIZE});
-  const {search} = await storefront.query(FILTER_QUERY, {
+  const searchTerm = searchParams.get("q")! || "";
+  const variables = getPaginationVariables(request, {
+    pageBy: PAGINATION_SIZE,
+  });
+  const { search } = await storefront.query(FILTER_QUERY, {
     variables: {
-      query: '',
+      query: "",
     },
   });
-  const {sortKey, reverse} = getSortValuesFromParam(
-    searchParams.get('sort') as SortParam,
+  const { sortKey, reverse } = getSortValuesFromParam(
+    searchParams.get("sort") as SortParam,
   );
 
   const filters = [...searchParams.entries()].reduce(
@@ -65,7 +67,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     [] as ProductFilter[],
   );
 
-  const {search: productSearch} = await storefront.query(SEARCH_QUERY, {
+  const { search: productSearch } = await storefront.query(SEARCH_QUERY, {
     variables: {
       searchTerm,
       productFilters: filters,
@@ -77,7 +79,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     },
   });
   let products = productSearch;
-  console.log('🚀 ~ productSearch:', productSearch);
+  console.log("🚀 ~ productSearch:", productSearch);
 
   const locale = context.storefront.i18n;
   const allFilterValues = search.productFilters.flatMap(
@@ -102,18 +104,18 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       });
       if (!foundValue) {
         // eslint-disable-next-line no-console
-        console.error('Could not find filter value for filter', filter);
+        console.error("Could not find filter value for filter", filter);
         return null;
       }
 
-      if (foundValue.id === 'filter.v.price') {
+      if (foundValue.id === "filter.v.price") {
         // Special case for price, we want to show the min and max values as the label.
         const input = JSON.parse(foundValue.input as string) as ProductFilter;
         const min = parseAsCurrency(input.price?.min ?? 0, locale);
         const max = input.price?.max
           ? parseAsCurrency(input.price.max, locale)
-          : '';
-        const label = min && max ? `${min} - ${max}` : 'Price';
+          : "";
+        const label = min && max ? `${min} - ${max}` : "Price";
 
         return {
           filter,
@@ -132,13 +134,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const seo = seoPayload.collection({
     url: request.url,
     collection: {
-      id: 'search',
-      title: 'Search',
-      handle: 'search',
-      descriptionHtml: 'Search results',
-      description: 'Search results',
+      id: "search",
+      title: "Search",
+      handle: "search",
+      descriptionHtml: "Search results",
+      description: "Search results",
       seo: {
-        title: 'Search',
+        title: "Search",
         description: `Showing ${products.nodes.length} search results for "${searchTerm}"`,
       },
       metafields: [],
@@ -159,7 +161,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   };
 }
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return getSeoMeta(data!.seo as SeoConfig);
 };
 export default function Search() {
@@ -180,7 +182,7 @@ export default function Search() {
         <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
           {searchTerm
             ? `Search results for “${searchTerm}”`
-            : 'Search our site'}
+            : "Search our site"}
         </h1>
         <Form
           method="get"
@@ -219,7 +221,7 @@ export default function Search() {
           />
         ) : (
           <Pagination connection={products}>
-            {({nodes, isLoading, NextLink, PreviousLink}) => {
+            {({ nodes, isLoading, NextLink, PreviousLink }) => {
               const itemsMarkup = nodes.map((product: any, i: number) => (
                 <ProductCard
                   key={product.id}
@@ -233,7 +235,7 @@ export default function Search() {
                 <>
                   <div className="my-11 flex w-full items-center justify-center">
                     <Button as={PreviousLink} variant="outline">
-                      {isLoading ? 'Loading...' : 'Previous'}
+                      {isLoading ? "Loading..." : "Previous"}
                     </Button>
                   </div>
                   <Grid
@@ -245,7 +247,7 @@ export default function Search() {
                   </Grid>
                   <div className="my-11 flex w-full items-center justify-center">
                     <Button as={NextLink} variant="outline">
-                      {isLoading ? 'Loading...' : 'Show more +'}
+                      {isLoading ? "Loading..." : "Show more +"}
                     </Button>
                   </div>
                 </>
@@ -281,7 +283,7 @@ function NoResults({
         >
           {(result) => {
             if (!result) return null;
-            const {featuredCollections, featuredProducts} = result;
+            const { featuredCollections, featuredProducts } = result;
 
             return (
               <>
@@ -303,7 +305,7 @@ function NoResults({
 }
 
 export function getNoResultRecommendations(
-  storefront: LoaderFunctionArgs['context']['storefront'],
+  storefront: LoaderFunctionArgs["context"]["storefront"],
 ) {
-  return getFeaturedData(storefront, {pageBy: PAGINATION_SIZE});
+  return getFeaturedData(storefront, { pageBy: PAGINATION_SIZE });
 }

@@ -26,7 +26,7 @@ let variants = cva(
     defaultVariants: {
       alignment: "center",
     },
-  }
+  },
 );
 
 interface ImageWithTextContentProps
@@ -39,7 +39,11 @@ let ImageWithTextContent = forwardRef<
 >((props, ref) => {
   let { alignment, verticalPadding, children, ...rest } = props;
   return (
-    <div ref={ref} {...rest} className={clsx(variants({ alignment, verticalPadding }))}>
+    <div
+      ref={ref}
+      {...rest}
+      className={clsx(variants({ alignment, verticalPadding }))}
+    >
       {children}
     </div>
   );

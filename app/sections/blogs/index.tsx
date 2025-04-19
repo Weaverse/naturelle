@@ -1,18 +1,18 @@
-import { cn } from "~/lib/utils";
-import { Image } from "~/components/image";
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
   HydrogenComponentSchema,
   WeaverseBlog,
 } from "@weaverse/hydrogen";
+import { type VariantProps, cva } from "class-variance-authority";
+import clsx from "clsx";
+import { type CSSProperties, forwardRef } from "react";
 import { IconImageBlank } from "~/components/Icon";
 import { Link } from "~/components/Link";
+import { Image } from "~/components/image";
 import { BLOG_QUERY } from "~/graphql/data/queries";
-import { cva, VariantProps } from "class-variance-authority";
-import clsx from "clsx";
-import { CSSProperties, forwardRef } from "react";
 import { useMotion } from "~/hooks/use-animation";
+import { cn } from "~/lib/utils";
 
 let fontSizeVariants = cva("", {
   variants: {
@@ -123,10 +123,11 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
       .map((_, i) =>
         Math.max(
           0,
-          parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) - [19, 18, 28][i]
+          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
+            [19, 18, 28][i],
         )
           .toString(16)
-          .padStart(2, "0")
+          .padStart(2, "0"),
       )
       .join("")}`;
 
@@ -162,7 +163,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
         <div
           className={clsx(
             "flex flex-col gap-[var(--gap-row)] sm:grid sm:gap-0 sm:justify-self-center sm:gap-y-[var(--gap-row)]",
-            articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)]
+            articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)],
           )}
         >
           {res?.map((idx, i) => (
@@ -195,7 +196,7 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                     className={cn(
                       size === "custom" &&
                         fontSizeVariants({ mobileSize, desktopSize }),
-                      variants({ size, weight })
+                      variants({ size, weight }),
                     )}
                   >
                     {idx.title}

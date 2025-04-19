@@ -6,8 +6,8 @@ import type {
   ProductVariantFragmentFragment,
 } from "storefrontapi.generated";
 import { Button } from "~/components/button";
-import { Link } from "./Link";
 import { isLightColor } from "~/lib/utils";
+import { Link } from "./Link";
 
 export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
@@ -36,9 +36,10 @@ export function ProductCardOptions({
 
   let selectedValue = "";
   if (selectedVariant) {
-    selectedValue = selectedVariant.selectedOptions?.find(
-      ({ name }) => name === pcardOptionToShow,
-    )?.value ?? "";
+    selectedValue =
+      selectedVariant.selectedOptions?.find(
+        ({ name }) => name === pcardOptionToShow,
+      )?.value ?? "";
   }
   let asSwatch = OPTIONS_AS_COLOR.includes(pcardOptionToShow);
 
@@ -49,41 +50,41 @@ export function ProductCardOptions({
         .map(({ name, swatch, firstSelectableVariant }) => {
           if (asSwatch) {
             return (
-                  <button
-                    type="button"
+              <button
+                type="button"
+                className={clsx(
+                  "size-4 flex aspect-square rounded-full",
+                  "transition-[outline-color] outline outline-offset-2 outline-1",
+                  selectedValue === name
+                    ? "outline-border"
+                    : "outline-transparent hover:outline-border",
+                )}
+                onClick={() => {
+                  if (firstSelectableVariant) {
+                    setSelectedVariant(firstSelectableVariant);
+                  }
+                }}
+              >
+                {swatch?.image?.previewImage ? (
+                  <Image
+                    data={swatch.image.previewImage}
+                    className="w-full h-full object-cover object-center rounded-full"
+                    width={200}
+                    sizes="auto"
+                  />
+                ) : (
+                  <span
                     className={clsx(
-                      "size-4 flex aspect-square rounded-full",
-                      "transition-[outline-color] outline outline-offset-2 outline-1",
-                      selectedValue === name
-                        ? "outline-border"
-                        : "outline-transparent hover:outline-border",
+                      "w-full h-full inline-block text-[0px] rounded-full",
+                      isLightColor(swatch?.color || name) &&
+                        "border border-line-subtle",
                     )}
-                    onClick={() => {
-                      if (firstSelectableVariant) {
-                        setSelectedVariant(firstSelectableVariant);
-                      }
-                    }}
+                    style={{ backgroundColor: swatch?.color || name }}
                   >
-                    {swatch?.image?.previewImage ? (
-                      <Image
-                        data={swatch.image.previewImage}
-                        className="w-full h-full object-cover object-center rounded-full"
-                        width={200}
-                        sizes="auto"
-                      />
-                    ) : (
-                      <span
-                        className={clsx(
-                          "w-full h-full inline-block text-[0px] rounded-full",
-                          isLightColor(swatch?.color || name) &&
-                            "border border-line-subtle",
-                        )}
-                        style={{ backgroundColor: swatch?.color || name }}
-                      >
-                        {name}
-                      </span>
-                    )}
-                  </button>
+                    {name}
+                  </span>
+                )}
+              </button>
             );
           }
           return (

@@ -2,15 +2,15 @@ import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { DrawerFilter } from "~/components/DrawerFilter";
-import type { AppliedFilter } from "~/lib/utils/filter";
+import { type VariantProps, cva } from "class-variance-authority";
 import { forwardRef } from "react";
 import { useInView } from "react-intersection-observer";
 import type { CollectionDetailsQuery } from "storefrontapi.generated";
-import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
+import { DrawerFilter } from "~/components/DrawerFilter";
 import { Button } from "~/components/button";
-import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "~/lib/utils";
+import type { AppliedFilter } from "~/lib/utils/filter";
+import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
 
 interface CollectionFiltersProps extends VariantProps<typeof variants> {}
 let variants = cva("relative lg:pb-20 pb-12", {
@@ -109,7 +109,7 @@ let CollectionFilters = forwardRef<HTMLElement, CollectionFiltersProps>(
       );
     }
     return <section ref={ref} {...rest} />;
-  }
+  },
 );
 
 export default CollectionFilters;

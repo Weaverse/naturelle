@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 import { IconPlusLinkFooter } from "~/components/Icon";
-import { Text } from "~/components/Text";
 import { Link } from "~/components/Link";
+import { Text } from "~/components/Text";
 
 export function ProductDetail({
   title,
@@ -13,7 +13,12 @@ export function ProductDetail({
   learnMore?: string;
 }) {
   return (
-    <Disclosure key={title} as="div" className="grid w-full gap-2" defaultOpen={true}>
+    <Disclosure
+      key={title}
+      as="div"
+      className="grid w-full gap-2"
+      defaultOpen={true}
+    >
       {({ open }) => (
         <>
           <Disclosure.Button className="text-left">
@@ -30,8 +35,12 @@ export function ProductDetail({
             </div>
           </Disclosure.Button>
 
-          <Disclosure.Panel className={"pt-4 lg:px-6 px-1.5 flex flex-col lg:flex-row gap-6"}>
-            <p className="font-semibold text-base w-full lg:w-1/3">About this product</p>
+          <Disclosure.Panel
+            className={"pt-4 lg:px-6 px-1.5 flex flex-col lg:flex-row gap-6"}
+          >
+            <p className="font-semibold text-base w-full lg:w-1/3">
+              About this product
+            </p>
             <p
               className="lg:w-2/3 w-full"
               dangerouslySetInnerHTML={{ __html: content }}

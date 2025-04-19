@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { SwiperClass } from "swiper/react";
+import type { SwiperClass } from "swiper/react";
 
 export interface SlideshowDotsProps {
   className?: string;
@@ -41,7 +41,12 @@ export function Number(props: SlideshowDotsProps) {
   }, [instance]);
   let currentSlide = isMobile ? currentSlideIndex + 1 : currentSlideIndex + 3;
   return (
-    <div className={clsx(className, "z-10 flex justify-center items-center px-2.5 gap-4")}>
+    <div
+      className={clsx(
+        className,
+        "z-10 flex justify-center items-center px-2.5 gap-4",
+      )}
+    >
       <span className="font-heading font-normal text-xl">
         {currentSlide}/{totalSlides}
       </span>

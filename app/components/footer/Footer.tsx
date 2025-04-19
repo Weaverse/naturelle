@@ -1,15 +1,19 @@
-import { Button } from "~/components/button";
-import { Input } from "~/components/input";
 import { Disclosure } from "@headlessui/react";
 import { NavLink, useFetcher } from "@remix-run/react";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
-import { cn } from "~/lib/utils";
-import React from "react";
 import { cva } from "class-variance-authority";
+import type React from "react";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { useShopMenu } from "~/hooks/use-menu-shop";
-import { CountrySelector } from "./CountrySelector";
+import {
+  type EnhancedMenu,
+  type SingleMenuItem,
+  getMaxDepth,
+} from "~/lib/types/menu";
+import { cn } from "~/lib/utils";
 import { IconPlusLinkFooter } from "../Icon";
+import { CountrySelector } from "./CountrySelector";
 
 let variants = cva("", {
   variants: {
@@ -44,7 +48,7 @@ export function Footer() {
     <footer
       className={cn(
         "footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]",
-        variants({ padding: footerWidth })
+        variants({ padding: footerWidth }),
       )}
       style={
         {
@@ -55,7 +59,7 @@ export function Footer() {
       <div
         className={cn(
           "flex h-fit flex-col gap-6 px-4 pb-10 pt-6 md:gap-10 md:px-6 md:py-10 lg:gap-8 lg:px-0 lg:py-16",
-          variants({ width: footerWidth })
+          variants({ width: footerWidth }),
         )}
       >
         <div className="flex flex-col justify-center gap-4 md:flex-row md:gap-4 lg:gap-10">

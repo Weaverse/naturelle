@@ -1,11 +1,16 @@
-import { Link } from "@remix-run/react";
-import { Image } from "~/components/image";
 import * as Menubar from "@radix-ui/react-menubar";
-import { cn } from "~/lib/utils";
-import clsx from "clsx";
-import React, { useState } from "react";
+import { Link } from "@remix-run/react";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
+import clsx from "clsx";
+import type React from "react";
+import { useState } from "react";
+import { Image } from "~/components/image";
+import {
+  type EnhancedMenu,
+  type SingleMenuItem,
+  getMaxDepth,
+} from "~/lib/types/menu";
+import { cn } from "~/lib/utils";
 
 export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let { menu } = props;
@@ -44,7 +49,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 >
                   {hasSubmenu ? (
                     <>
-                      <span className='text-animation'>{title}</span>
+                      <span className="text-animation">{title}</span>
                     </>
                   ) : (
                     <Link to={to} className="transition-none">
@@ -136,7 +141,9 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
               prefetch="intent"
               className="uppercase inline transition-none"
             >
-              <span className="text-animation font-semibold text-xl font-heading">{title}</span>
+              <span className="text-animation font-semibold text-xl font-heading">
+                {title}
+              </span>
             </Link>
             <div className="flex flex-col gap-1.5">
               {children.map((cItem) => (
@@ -151,7 +158,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
               ))}
             </div>
           </SlideIn>
-        )
+        ),
       )}
     </div>
   );
@@ -167,7 +174,7 @@ function SlideIn(props: {
     <div
       className={cn(
         "opacity-0 animate-slide-left [animation-delay:calc(var(--idx)*0.1s+0.1s)]",
-        className
+        className,
       )}
       style={
         {

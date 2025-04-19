@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { StarRating } from "~/components/StarRating";
-import { JudgemeReviewsData } from "~/lib/utils/judgeme";
+import type { JudgemeReviewsData } from "~/lib/utils/judgeme";
 
 const reviewPerPage = 5;
 
-export function ReviewList({judgemeReviews}: {judgemeReviews: JudgemeReviewsData}) {
+export function ReviewList({
+  judgemeReviews,
+}: { judgemeReviews: JudgemeReviewsData }) {
   const pageNumber = Math.ceil(judgemeReviews.reviews.length / reviewPerPage);
   const [page, setPage] = useState(0);
   const reviews = judgemeReviews.reviews.slice(
     page * reviewPerPage,
-    (page + 1) * reviewPerPage
+    (page + 1) * reviewPerPage,
   );
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -30,16 +32,26 @@ export function ReviewList({judgemeReviews}: {judgemeReviews: JudgemeReviewsData
                   <StarRating rating={review?.rating} />
                 </div>
                 <div className="flex flex-col">
-                  <p className="font-semibold font-heading text-xl">{review.reviewer.name}</p>
-                  <p className=" font-normal text-sm text-foreground-subtle">{review.reviewer.email}</p>
+                  <p className="font-semibold font-heading text-xl">
+                    {review.reviewer.name}
+                  </p>
+                  <p className=" font-normal text-sm text-foreground-subtle">
+                    {review.reviewer.email}
+                  </p>
                 </div>
               </div>
               <div className="md:w-3/4 w-full flex flex-col gap-4">
                 <div className="flex justify-between items-center">
-                  <p className="font-semibold font-heading text-xl">{review.title}</p>
-                  <p className="font-normal text-sm text-foreground-subtle">{formatDate(review.created_at)}</p>
+                  <p className="font-semibold font-heading text-xl">
+                    {review.title}
+                  </p>
+                  <p className="font-normal text-sm text-foreground-subtle">
+                    {formatDate(review.created_at)}
+                  </p>
                 </div>
-                <p className="font-normal text-base line-clamp-4">{review.body}</p>
+                <p className="font-normal text-base line-clamp-4">
+                  {review.body}
+                </p>
               </div>
             </div>
             <hr className="border-t border-border-subtle" />

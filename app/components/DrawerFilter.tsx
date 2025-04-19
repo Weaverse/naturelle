@@ -1,38 +1,38 @@
-import {Button} from '~/components/button';
-import {Checkbox} from '~/components/checkbox';
-import {Input} from '~/components/input';
-import {Disclosure, Menu} from '@headlessui/react';
+import { Disclosure, Menu } from "@headlessui/react";
 import {
   Link,
   useLocation,
   useNavigate,
   useSearchParams,
-} from '@remix-run/react';
+} from "@remix-run/react";
 import type {
   Filter,
   ProductFilter,
-} from '@shopify/hydrogen/storefront-api-types';
-import {IconCaret, IconXMark} from '~/components/Icon';
-import {Heading} from '~/components/Text';
-import {FILTER_URL_PREFIX} from '~/lib/utils/const';
+} from "@shopify/hydrogen/storefront-api-types";
+import type { SyntheticEvent } from "react";
+import { useMemo, useState } from "react";
+import useDebounce from "react-use/esm/useDebounce";
+import { IconCaret, IconXMark } from "~/components/Icon";
+import { Heading } from "~/components/Text";
+import { Button } from "~/components/button";
+import { Checkbox } from "~/components/checkbox";
+import { Input } from "~/components/input";
+import { FILTER_URL_PREFIX } from "~/lib/utils/const";
 import {
+  type AppliedFilter,
+  type SortParam,
   filterInputToParams,
   getAppliedFilterLink,
   getFilterLink,
   getSortLink,
-  SortParam,
-  type AppliedFilter,
-} from '~/lib/utils/filter';
-import type {SyntheticEvent} from 'react';
-import {useMemo, useState} from 'react';
-import useDebounce from 'react-use/esm/useDebounce';
-import {Drawer, useDrawer} from './Drawer';
+} from "~/lib/utils/filter";
+import { Drawer, useDrawer } from "./Drawer";
 
 type DrawerFilterProps = {
   productNumber?: number;
   filters: Filter[];
   appliedFilters?: AppliedFilter[];
-  collections?: Array<{handle: string; title: string}>;
+  collections?: Array<{ handle: string; title: string }>;
   showSearchSort?: boolean;
 };
 
@@ -42,7 +42,7 @@ export function DrawerFilter({
   productNumber = 0,
   showSearchSort = false,
 }: DrawerFilterProps) {
-  const {openDrawer, isOpen, closeDrawer} = useDrawer();
+  const { openDrawer, isOpen, closeDrawer } = useDrawer();
   return (
     <>
       <div className="border-y border-border-subtle py-4 px-3 md:px-4 lg:px-0">
@@ -53,14 +53,14 @@ export function DrawerFilter({
           <div className="flex gap-2">
             <SortMenu showSearchSort={showSearchSort} />
             <Button onClick={openDrawer} shape="default" variant="outline">
-              <span className='font-heading text-xl font-normal'>Filter</span>
+              <span className="font-heading text-xl font-normal">Filter</span>
             </Button>
             <Drawer
               open={isOpen}
               onClose={closeDrawer}
               openFrom="left"
               heading="FILTER"
-              isForm='filter'
+              isForm="filter"
             >
               <div className="w-96 px-6">
                 <FiltersDrawer
@@ -80,7 +80,7 @@ function ListItemFilter({
   option,
   appliedFilters,
 }: {
-  option: Filter['values'][0];
+  option: Filter["values"][0];
   appliedFilters: AppliedFilter[];
 }) {
   const navigate = useNavigate();
@@ -115,14 +115,14 @@ function ListItemFilter({
 export function FiltersDrawer({
   filters = [],
   appliedFilters = [],
-}: Omit<DrawerFilterProps, 'children'>) {
+}: Omit<DrawerFilterProps, "children">) {
   const [params] = useSearchParams();
-  const filterMarkup = (filter: Filter, option: Filter['values'][0]) => {
+  const filterMarkup = (filter: Filter, option: Filter["values"][0]) => {
     switch (filter.type) {
-      case 'PRICE_RANGE':
+      case "PRICE_RANGE":
         const priceFilter = params.get(`${FILTER_URL_PREFIX}price`);
         const price = priceFilter
-          ? (JSON.parse(priceFilter) as ProductFilter['price'])
+          ? (JSON.parse(priceFilter) as ProductFilter["price"])
           : undefined;
         const min = isNaN(Number(price?.min)) ? undefined : Number(price?.min);
         const max = isNaN(Number(price?.max)) ? undefined : Number(price?.max);
@@ -140,13 +140,13 @@ export function FiltersDrawer({
       <div className="divide-y divide-border-subtle">
         {filters.map((filter: Filter) => (
           <Disclosure as="div" key={filter.id} className="w-full pb-6 pt-5">
-            {({open}) => (
+            {({ open }) => (
               <>
                 <Disclosure.Button className="flex w-full items-center justify-between">
                   <span className="font-heading text-xl font-medium">
                     {filter.label}
                   </span>
-                  <IconCaret direction={open ? 'down' : 'right'} />
+                  <IconCaret direction={open ? "down" : "right"} />
                 </Disclosure.Button>
                 <Disclosure.Panel key={filter.id}>
                   <ul key={filter.id} className="space-y-4 pt-4">
@@ -166,7 +166,7 @@ export function FiltersDrawer({
   );
 }
 
-function AppliedFilters({filters = []}: {filters: AppliedFilter[]}) {
+function AppliedFilters({ filters = [] }: { filters: AppliedFilter[] }) {
   const [params] = useSearchParams();
   const location = useLocation();
   return (
@@ -196,7 +196,7 @@ function AppliedFilters({filters = []}: {filters: AppliedFilter[]}) {
 
 const PRICE_RANGE_FILTER_DEBOUNCE = 500;
 
-function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
+function PriceRangeFilter({ max, min }: { max?: number; min?: number }) {
   const location = useLocation();
   const params = useMemo(
     () => new URLSearchParams(location.search),
@@ -216,10 +216,10 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
       }
 
       const price = {
-        ...(minPrice === undefined ? {} : {min: minPrice}),
-        ...(maxPrice === undefined ? {} : {max: maxPrice}),
+        ...(minPrice === undefined ? {} : { min: minPrice }),
+        ...(maxPrice === undefined ? {} : { max: maxPrice }),
       };
-      const newParams = filterInputToParams({price}, params);
+      const newParams = filterInputToParams({ price }, params);
       navigate(`${location.pathname}?${newParams.toString()}`);
     },
     PRICE_RANGE_FILTER_DEBOUNCE,
@@ -228,17 +228,17 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
 
   const onChangeMax = (event: SyntheticEvent) => {
     const value = (event.target as HTMLInputElement).value;
-    const newMaxPrice = Number.isNaN(parseFloat(value))
+    const newMaxPrice = Number.isNaN(Number.parseFloat(value))
       ? undefined
-      : parseFloat(value);
+      : Number.parseFloat(value);
     setMaxPrice(newMaxPrice);
   };
 
   const onChangeMin = (event: SyntheticEvent) => {
     const value = (event.target as HTMLInputElement).value;
-    const newMinPrice = Number.isNaN(parseFloat(value))
+    const newMinPrice = Number.isNaN(Number.parseFloat(value))
       ? undefined
-      : parseFloat(value);
+      : Number.parseFloat(value);
     setMinPrice(newMinPrice);
   };
 
@@ -249,7 +249,7 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
         <Input
           name="minPrice"
           type="number"
-          value={minPrice ?? ''}
+          value={minPrice ?? ""}
           placeholder="From"
           onChange={onChangeMin}
         />
@@ -259,7 +259,7 @@ function PriceRangeFilter({max, min}: {max?: number; min?: number}) {
         <Input
           name="maxPrice"
           type="number"
-          value={maxPrice ?? ''}
+          value={maxPrice ?? ""}
           placeholder="To"
           onChange={onChangeMax}
         />
@@ -273,45 +273,45 @@ export default function SortMenu({
 }: {
   showSearchSort?: boolean;
 }) {
-  const productShortItems: {label: string; key: SortParam}[] = [
-    {label: 'Featured', key: 'featured'},
+  const productShortItems: { label: string; key: SortParam }[] = [
+    { label: "Featured", key: "featured" },
     {
-      label: 'Price: Low - High',
-      key: 'price-low-high',
+      label: "Price: Low - High",
+      key: "price-low-high",
     },
     {
-      label: 'Price: High - Low',
-      key: 'price-high-low',
+      label: "Price: High - Low",
+      key: "price-high-low",
     },
     {
-      label: 'Best Selling',
-      key: 'best-selling',
+      label: "Best Selling",
+      key: "best-selling",
     },
     {
-      label: 'Newest',
-      key: 'newest',
+      label: "Newest",
+      key: "newest",
     },
   ];
 
-  const searchSortItems: {label: string; key: SortParam}[] = [
+  const searchSortItems: { label: string; key: SortParam }[] = [
     {
-      label: 'Price: Low - High',
-      key: 'price-low-high',
+      label: "Price: Low - High",
+      key: "price-low-high",
     },
     {
-      label: 'Price: High - Low',
-      key: 'price-high-low',
+      label: "Price: High - Low",
+      key: "price-high-low",
     },
     {
-      label: 'Relevance',
-      key: 'relevance',
+      label: "Relevance",
+      key: "relevance",
     },
   ];
   const items = showSearchSort ? searchSortItems : productShortItems;
   const [params] = useSearchParams();
   const location = useLocation();
   const activeItem =
-    items.find((item) => item.key === params.get('sort')) || items[0];
+    items.find((item) => item.key === params.get("sort")) || items[0];
 
   return (
     <Menu as="div" className="relative z-30">
@@ -329,7 +329,7 @@ export default function SortMenu({
               <Link to={getSortLink(item.key, params, location)}>
                 <p
                   className={`block text-base ${
-                    activeItem?.key === item.key ? 'font-bold' : 'font-normal'
+                    activeItem?.key === item.key ? "font-bold" : "font-normal"
                   }`}
                 >
                   {item.label}

@@ -1,11 +1,15 @@
 import { Disclosure } from "@headlessui/react";
 import { Link } from "@remix-run/react";
+import clsx from "clsx";
 import { Image } from "~/components/image";
+import {
+  type EnhancedMenu,
+  type SingleMenuItem,
+  getMaxDepth,
+} from "~/lib/types/menu";
 import { Drawer, useDrawer } from "../../Drawer";
 import { IconCaret, IconListMenu } from "../../Icon";
-import { EnhancedMenu, getMaxDepth, SingleMenuItem } from "~/lib/types/menu";
 import { SearchToggle } from "../SearchToggle";
-import clsx from "clsx";
 
 export function HeaderMenuDrawer({
   menu,
@@ -53,16 +57,16 @@ function DrawerMenu({
         let isResourceType =
           item.items.length &&
           item.items.every(
-            (item) => item?.resource?.image && item.items.length === 0
+            (item) => item?.resource?.image && item.items.length === 0,
           );
         let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
           isResourceType
             ? ImageMenu
             : level > 2
-            ? MultiMenu
-            : level === 2
-            ? SingleMenu
-            : ItemHeader;
+              ? MultiMenu
+              : level === 2
+                ? SingleMenu
+                : ItemHeader;
         return (
           <Comp key={id} title={title} closeDrawer={closeDrawer} {...rest} />
         );

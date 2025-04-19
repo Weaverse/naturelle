@@ -1,45 +1,45 @@
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {CSSProperties, forwardRef, useEffect, useState} from 'react';
-import {EffectFade, Pagination} from 'swiper/modules';
-import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/effect-fade';
-import clsx from 'clsx';
-import { useMotion } from '~/hooks/use-animation';
+} from "@weaverse/hydrogen";
+import { type CSSProperties, forwardRef, useEffect, useState } from "react";
+import { EffectFade, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/effect-fade";
+import clsx from "clsx";
+import { useMotion } from "~/hooks/use-animation";
 
 interface SlidesProps extends HydrogenComponentProps {
   sectionHeight: number;
   width: string;
 }
 
-let widthClasses: {[item: string]: string} = {
-  full: '',
-  fixed: 'container',
+let widthClasses: { [item: string]: string } = {
+  full: "",
+  fixed: "container",
 };
 
 const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
-  let {sectionHeight, width, children, ...rest} = props;
+  let { sectionHeight, width, children, ...rest } = props;
   const [isMobile, setIsMobile] = useState(false);
   const [scope] = useMotion(ref);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
     };
-    handleResize(); 
-    window.addEventListener('resize', handleResize);
+    handleResize();
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   let sectionStyle: CSSProperties = {
-    '--section-height': `${sectionHeight}px`,
-    '--swiper-pagination-bottom': '50%',
-    '--swiper-pagination-top': '50%',
-    '--swiper-theme-color': '#3D490B',
+    "--section-height": `${sectionHeight}px`,
+    "--swiper-pagination-bottom": "50%",
+    "--swiper-pagination-top": "50%",
+    "--swiper-theme-color": "#3D490B",
   } as CSSProperties;
 
   return (
@@ -48,7 +48,7 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
       {...rest}
       style={sectionStyle}
       className={clsx(
-        'relative w-full sm:h-[var(--section-height)]',
+        "relative w-full sm:h-[var(--section-height)]",
         widthClasses[width],
       )}
     >
@@ -56,13 +56,15 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
         loop={true}
         slidesPerView={1}
         className="mySwiper h-full"
-        effect={'fade'}
+        effect={"fade"}
         fadeEffect={{
           crossFade: true,
         }}
-        pagination={isMobile && {
-          clickable: true,
-        }}
+        pagination={
+          isMobile && {
+            clickable: true,
+          }
+        }
         modules={[EffectFade, Pagination]}
       >
         {children?.map((child, index) => (
@@ -76,45 +78,45 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
 export default Slides;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'slides-index',
-  title: 'Slides',
-  toolbar: ['general-settings', ['duplicate', 'delete']],
+  type: "slides-index",
+  title: "Slides",
+  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
-      group: 'Slides',
+      group: "Slides",
       inputs: [
         {
-          type: 'range',
-          name: 'sectionHeight',
-          label: 'Section height',
+          type: "range",
+          name: "sectionHeight",
+          label: "Section height",
           defaultValue: 450,
           configs: {
             min: 400,
             max: 700,
             step: 10,
-            unit: 'px',
+            unit: "px",
           },
         },
         {
-          type: 'select',
-          name: 'width',
-          label: 'Content width',
+          type: "select",
+          name: "width",
+          label: "Content width",
           configs: {
             options: [
-              {value: 'full', label: 'Full page'},
-              {value: 'fixed', label: 'Fixed'},
+              { value: "full", label: "Full page" },
+              { value: "fixed", label: "Fixed" },
             ],
           },
-          defaultValue: 'fixed',
+          defaultValue: "fixed",
         },
       ],
     },
   ],
-  childTypes: ['slides-item'],
+  childTypes: ["slides-item"],
   presets: {
     children: [
       {
-        type: 'slides-item',
+        type: "slides-item",
       },
     ],
   },

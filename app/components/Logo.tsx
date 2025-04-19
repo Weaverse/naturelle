@@ -1,6 +1,6 @@
-import { Image } from "~/components/image";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
+import { Image } from "~/components/image";
 import { Link } from "./Link";
 
 export function Logo({ className }: { className?: string }) {
@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
     <Link
       className={clsx(
         "flex items-center justify-center w-full h-full lg:w-fit lg:h-fit z-30",
-        className
+        className,
       )}
       to="/"
       prefetch="intent"
@@ -27,7 +27,7 @@ export function Logo({ className }: { className?: string }) {
               className={clsx(
                 "main-logo",
                 "w-full h-full object-cover",
-                "group-hover/header:opacity-100"
+                "group-hover/header:opacity-100",
               )}
             />
           )}
@@ -38,7 +38,7 @@ export function Logo({ className }: { className?: string }) {
               className={clsx(
                 "transparent-logo",
                 "absolute top-0 left-0 w-full h-full object-cover",
-                "group-hover/header:opacity-0"
+                "group-hover/header:opacity-0",
               )}
             />
           )}

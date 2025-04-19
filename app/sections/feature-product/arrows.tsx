@@ -52,7 +52,7 @@ let variants = cva(
         className: "right-0",
       },
     ],
-  }
+  },
 );
 
 export interface SlideshowArrowsProps extends VariantProps<typeof variants> {
@@ -93,7 +93,7 @@ export function Arrows(props: SlideshowArrowsProps) {
             showArrowsOnHover,
             disabled: !canPrev,
             side: "left",
-          })
+          }),
         )}
         disabled={!canPrev}
       >
@@ -116,7 +116,7 @@ export function Arrows(props: SlideshowArrowsProps) {
             showArrowsOnHover,
             disabled: !canNext,
             side: "right",
-          })
+          }),
         )}
         disabled={!canNext}
       >

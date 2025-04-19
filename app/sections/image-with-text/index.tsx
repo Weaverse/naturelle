@@ -1,7 +1,7 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { forwardRef } from "react";
-import { layoutInputs, Section, SectionProps } from "../atoms/Section";
 import { backgroundInputs } from "../atoms/BackgroundImage";
+import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
 
 type ImageWithTextProps = SectionProps;
 

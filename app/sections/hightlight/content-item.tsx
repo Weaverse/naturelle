@@ -1,35 +1,37 @@
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import clsx from 'clsx';
-import React, {forwardRef, CSSProperties} from 'react';
+} from "@weaverse/hydrogen";
+import clsx from "clsx";
+import React, { forwardRef, type CSSProperties } from "react";
 
 interface ContentProps extends HydrogenComponentProps {
-    itemPerRow: number;
-    gap: number;
-    borderColor: string;
+  itemPerRow: number;
+  gap: number;
+  borderColor: string;
 }
 
 let itemsPerRowClasses: { [item: number]: string } = {
-    1: 'sm:grid-cols-1',
-    2: 'sm:grid-cols-2',
-    3: 'sm:grid-cols-3',
-    4: 'sm:grid-cols-4',
+  1: "sm:grid-cols-1",
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-4",
 };
 
 const HighlightContent = forwardRef<HTMLDivElement, ContentProps>(
   (props, ref) => {
-    let {itemPerRow, gap, borderColor, children, ...rest} = props;
+    let { itemPerRow, gap, borderColor, children, ...rest } = props;
     let style: CSSProperties = {
-        '--item-gap': `${gap}px`,
-        '--border-color': borderColor,
+      "--item-gap": `${gap}px`,
+      "--border-color": borderColor,
     } as CSSProperties;
     let actualItemPerRow = Math.min(itemPerRow, React.Children.count(children));
     return (
-      <div ref={ref} {...rest}
+      <div
+        ref={ref}
+        {...rest}
         className={clsx(
-          'flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)]',
+          "flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)]",
           itemsPerRowClasses[actualItemPerRow],
         )}
         style={style}
@@ -43,17 +45,17 @@ const HighlightContent = forwardRef<HTMLDivElement, ContentProps>(
 export default HighlightContent;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'highlight-content--item',
-  title: 'List items',
-  toolbar: ['general-settings', ['duplicate', 'delete']],
+  type: "highlight-content--item",
+  title: "List items",
+  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
-      group: 'Highlights',
+      group: "Highlights",
       inputs: [
         {
-          type: 'range',
-          name: 'itemPerRow',
-          label: 'Items per row',
+          type: "range",
+          name: "itemPerRow",
+          label: "Items per row",
           defaultValue: 3,
           configs: {
             min: 1,
@@ -62,9 +64,9 @@ export let schema: HydrogenComponentSchema = {
           },
         },
         {
-          type: 'range',
-          label: 'Gap',
-          name: 'gap',
+          type: "range",
+          label: "Gap",
+          name: "gap",
           configs: {
             min: 16,
             max: 40,
@@ -73,26 +75,26 @@ export let schema: HydrogenComponentSchema = {
           defaultValue: 16,
         },
         {
-          type: 'color',
-          label: 'Border color',
-          name: 'borderColor',
-          defaultValue: '#9AA473',
-      },
+          type: "color",
+          label: "Border color",
+          name: "borderColor",
+          defaultValue: "#9AA473",
+        },
       ],
     },
   ],
-  childTypes: ['highlight--item'],
-    presets: {
-        children: [
-            {
-                type: 'highlight--item',
-            },
-            {
-                type: 'highlight--item',
-            },
-            {
-                type: 'highlight--item',
-            }
-        ],
-    },
+  childTypes: ["highlight--item"],
+  presets: {
+    children: [
+      {
+        type: "highlight--item",
+      },
+      {
+        type: "highlight--item",
+      },
+      {
+        type: "highlight--item",
+      },
+    ],
+  },
 };

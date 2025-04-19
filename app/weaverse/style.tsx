@@ -1,7 +1,7 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 
 const hexToPercent = (hex: string) => {
-  const num = parseInt(hex, 16);
+  const num = Number.parseInt(hex, 16);
   return Math.floor((num / 255) * 100);
 };
 
@@ -10,9 +10,9 @@ function hexToRgbString(hexColor = ""): string {
   if (hexColor.length === 3) {
     hexColor = hexColor.replace(/(.)/g, "$1$1");
   }
-  const r = parseInt(hexColor.substring(0, 2), 16) || "";
-  const g = parseInt(hexColor.substring(2, 4), 16) || "";
-  const b = parseInt(hexColor.substring(4, 6), 16) || "";
+  const r = Number.parseInt(hexColor.substring(0, 2), 16) || "";
+  const g = Number.parseInt(hexColor.substring(2, 4), 16) || "";
+  const b = Number.parseInt(hexColor.substring(4, 6), 16) || "";
   const a = hexToPercent(hexColor.substring(6, 8)) || "";
   const val = `${r} ${g} ${b}`;
   return `${val}${a ? ` / ${a}%` : ""}`.trim();

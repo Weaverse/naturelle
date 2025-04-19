@@ -1,8 +1,8 @@
-import { Image } from "~/components/image";
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import { Link } from "~/components/Link";
+import { Image } from "~/components/image";
 
 export function CollectionCard({
   collection,
@@ -20,10 +20,11 @@ export function CollectionCard({
       .map((_, i) =>
         Math.max(
           0,
-          parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) - [177, 166, 223][i]
+          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
+            [177, 166, 223][i],
         )
           .toString(16)
-          .padStart(2, "0")
+          .padStart(2, "0"),
       )
       .join("")}`;
 
@@ -37,9 +38,7 @@ export function CollectionCard({
       style={style}
       data-motion="slide-in"
     >
-      <div
-        className="w-full h-full flex justify-center items-center rounded"
-      >
+      <div className="w-full h-full flex justify-center items-center rounded">
         <div className="card-image bg-primary/5 w-full h-full rounded">
           {collection?.image && (
             <Image

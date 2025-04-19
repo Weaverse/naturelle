@@ -1,61 +1,68 @@
-import * as React from 'react';
+import { type VariantProps, cva } from "class-variance-authority";
+import clsx from "clsx";
+import * as React from "react";
+import { useState } from "react";
+import { IconClose } from "~/components/Icon";
 import { cn } from "~/lib/utils";
-import { cva, VariantProps } from 'class-variance-authority';
-import { useState } from 'react';
-import { IconClose } from '~/components/Icon';
-import clsx from 'clsx';
 
 const inputVariants = cva(
-  'w-full !shadow-none focus:ring-0 focus-visible:outline-none placeholder-text-subtle bg-transparent',
+  "w-full !shadow-none focus:ring-0 focus-visible:outline-none placeholder-text-subtle bg-transparent",
   {
     variants: {
       variant: {
-        default: 'flex w-full rounded border-2 border-border-subtle text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-border hover:border-border disabled:cursor-not-allowed disabled:opacity-50',
+        default:
+          "flex w-full rounded border-2 border-border-subtle text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-border hover:border-border disabled:cursor-not-allowed disabled:opacity-50",
         search:
-          'px-0 py-2 text-sm placeholder-text-subtle w-full focus:ring-0 border-x-0 border-t-0 transition border-b-2 border-border/10 focus:border-border/50',
+          "px-0 py-2 text-sm placeholder-text-subtle w-full focus:ring-0 border-x-0 border-t-0 transition border-b-2 border-border/10 focus:border-border/50",
         minisearch:
-          'hidden md:inline-block text-left lg:text-right border-b transition border-transparent -mb-px border-x-0 border-t-0 appearance-none px-0 py-1 focus:ring-transparent placeholder:opacity-20 placeholder-text-subtle focus:border-bar/50',
-        error: 'border-red-500',
-        custom: '',
+          "hidden md:inline-block text-left lg:text-right border-b transition border-transparent -mb-px border-x-0 border-t-0 appearance-none px-0 py-1 focus:ring-transparent placeholder:opacity-20 placeholder-text-subtle focus:border-bar/50",
+        error: "border-red-500",
+        custom: "",
       },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: "default",
     },
   },
 );
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariants> {
-    suffix?: React.ReactNode;
-    prefixElement?: React.ReactNode;
-    onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  }
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {
+  suffix?: React.ReactNode;
+  prefixElement?: React.ReactNode;
+  onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({className,
-    type,
-    variant = 'default',
-    prefixElement,
-    suffix,
-    onFocus,
-    onBlur,
-    onClear,
-    ...rest}, ref) => {
-      let [focused, setFocused] = useState(false);
+  (
+    {
+      className,
+      type,
+      variant = "default",
+      prefixElement,
+      suffix,
+      onFocus,
+      onBlur,
+      onClear,
+      ...rest
+    },
+    ref,
+  ) => {
+    let [focused, setFocused] = useState(false);
     let commonClasses = cn(
-      'w-full rounded-sm border px-3 py-3',
-      focused ? 'border-border' : 'border-border-subtle',
+      "w-full rounded-sm border px-3 py-3",
+      focused ? "border-border" : "border-border-subtle",
       className,
     );
 
     let handleClear = (e: any) => {
       e.preventDefault();
       e.stopPropagation();
-      e.currentTarget.previousSibling.value = '';
+      e.currentTarget.previousSibling.value = "";
       if (onClear) onClear(e);
     };
-    if (type === 'search') {
+    if (type === "search") {
       suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
     }
     let hasChild = Boolean(prefixElement || suffix);
@@ -66,10 +73,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         autoComplete="off"
         className={cn(
-          hasChild
-            ? 'relatvie grow border-none p-0'
-            : commonClasses,
-          inputVariants({variant}),
+          hasChild ? "relatvie grow border-none p-0" : commonClasses,
+          inputVariants({ variant }),
         )}
         onFocus={(e) => {
           setFocused(true);
@@ -87,7 +92,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div
         className={clsx(
           commonClasses,
-          'flex items-center gap-2 overflow-hidden border p-2.5',
+          "flex items-center gap-2 overflow-hidden border p-2.5",
         )}
       >
         {prefixElement}
@@ -99,6 +104,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
-Input.displayName = 'Input';
+Input.displayName = "Input";
 
-export {Input};
+export { Input };

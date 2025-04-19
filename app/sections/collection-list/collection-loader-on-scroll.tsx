@@ -1,9 +1,9 @@
-import type { Collection } from '@shopify/hydrogen/storefront-api-types';
-import {useNavigate} from '@remix-run/react';
-import {useEffect} from 'react';
-import {Grid} from '~/components/Grid';
-import {CollectionCard} from './collection-card';
-import {getImageLoadingPriority} from '~/lib/utils/const';
+import { useNavigate } from "@remix-run/react";
+import type { Collection } from "@shopify/hydrogen/storefront-api-types";
+import { useEffect } from "react";
+import { Grid } from "~/components/Grid";
+import { getImageLoadingPriority } from "~/lib/utils/const";
+import { CollectionCard } from "./collection-card";
 
 type CollectionsLoadedOnScrollProps = {
   nodes: any;
@@ -17,8 +17,20 @@ type CollectionsLoadedOnScrollProps = {
   state: any;
 };
 
-export function CollectionsLoadedOnScroll(props: CollectionsLoadedOnScrollProps) {
-  let {nodes, collectionsPerRow, lazyLoadImage, inView, previousPageUrl, hasPreviousPage, nextPageUrl, hasNextPage, state} = props;
+export function CollectionsLoadedOnScroll(
+  props: CollectionsLoadedOnScrollProps,
+) {
+  let {
+    nodes,
+    collectionsPerRow,
+    lazyLoadImage,
+    inView,
+    previousPageUrl,
+    hasPreviousPage,
+    nextPageUrl,
+    hasNextPage,
+    state,
+  } = props;
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +48,15 @@ export function CollectionsLoadedOnScroll(props: CollectionsLoadedOnScrollProps)
         state,
       });
     }
-  }, [inView, navigate, state, nextPageUrl, hasNextPage, previousPageUrl, hasPreviousPage]);
+  }, [
+    inView,
+    navigate,
+    state,
+    nextPageUrl,
+    hasNextPage,
+    previousPageUrl,
+    hasPreviousPage,
+  ]);
 
   return (
     <Grid
@@ -48,7 +68,7 @@ export function CollectionsLoadedOnScroll(props: CollectionsLoadedOnScrollProps)
         <CollectionCard
           key={collection.id}
           collection={collection as Collection}
-          imageAspectRatio={'1/1'}
+          imageAspectRatio={"1/1"}
           loading={lazyLoadImage ? getImageLoadingPriority(i, 2) : undefined}
         />
       ))}

@@ -1,15 +1,15 @@
 import {
   Link as RemixLink,
+  type LinkProps as RemixLinkProps,
   NavLink as RemixNavLink,
   type NavLinkProps as RemixNavLinkProps,
-  type LinkProps as RemixLinkProps,
-} from '@remix-run/react';
+} from "@remix-run/react";
 
-import {useRootLoaderData} from '~/root';
-import {useThemeSettings} from '@weaverse/hydrogen';
+import { useThemeSettings } from "@weaverse/hydrogen";
+import { useRootLoaderData } from "~/root";
 
-type LinkProps = Omit<RemixLinkProps, 'className'> & {
-  className?: RemixNavLinkProps['className'] | RemixLinkProps['className'];
+type LinkProps = Omit<RemixLinkProps, "className"> & {
+  className?: RemixNavLinkProps["className"] | RemixLinkProps["className"];
 };
 
 /**
@@ -28,20 +28,20 @@ type LinkProps = Omit<RemixLinkProps, 'className'> & {
  * Ultimately, it is up to you to decide how to implement this behavior.
  */
 export function Link(props: LinkProps) {
-  const {to, className, ...resOfProps} = props;
+  const { to, className, ...resOfProps } = props;
   const rootData = useRootLoaderData();
-  let {enableViewTransition} = useThemeSettings();
+  let { enableViewTransition } = useThemeSettings();
   const selectedLocale = rootData?.selectedLocale;
 
   let toWithLocale = to;
 
-  if (typeof toWithLocale === 'string' && selectedLocale?.pathPrefix) {
+  if (typeof toWithLocale === "string" && selectedLocale?.pathPrefix) {
     if (!toWithLocale.toLowerCase().startsWith(selectedLocale.pathPrefix)) {
       toWithLocale = `${selectedLocale.pathPrefix}${to}`;
     }
   }
 
-  if (typeof className === 'function') {
+  if (typeof className === "function") {
     return (
       <RemixNavLink
         viewTransition={enableViewTransition}

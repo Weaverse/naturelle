@@ -1,8 +1,8 @@
-import {IconSearch} from '~/components/Icon';
-import {PredictiveSearchForm} from '../../SearchForm';
-import { SearchTypeHeaderResults } from './SearchTypeHeaderResults';
-import { Input } from '~/components/input';
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from "@remix-run/react";
+import { IconSearch } from "~/components/Icon";
+import { Input } from "~/components/input";
+import { PredictiveSearchForm } from "../../SearchForm";
+import { SearchTypeHeaderResults } from "./SearchTypeHeaderResults";
 
 interface PredictiveSearchProps {
   // Predictive search props
@@ -10,11 +10,11 @@ interface PredictiveSearchProps {
 }
 
 export function SearchTypeHeader(props: PredictiveSearchProps) {
-  let {isOpen} = props;
+  let { isOpen } = props;
   let navigate = useNavigate();
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       let searchQuery = (event.target as HTMLInputElement).value.trim();
       if (searchQuery) {
@@ -25,7 +25,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
   return (
     <div className="relative border-t border-border-subtle">
       <PredictiveSearchForm>
-        {({fetchResults, inputRef}) => (
+        {({ fetchResults, inputRef }) => (
           <div className="flex justify-center items-center p-6">
             <Input
               name="q"
@@ -36,7 +36,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               onKeyDown={handleKeyDown}
               ref={inputRef}
               className="rounded border-2 md:w-96 lg:w-[560px] w-full"
-              type='search'
+              type="search"
               variant="search"
               prefixElement={
                 <button type="submit" className="cursor-pointer">

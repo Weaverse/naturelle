@@ -7,13 +7,13 @@ import { cva } from "class-variance-authority";
 import type { HTMLAttributes } from "react";
 import type React from "react";
 import { forwardRef } from "react";
+import { useMotion } from "~/hooks/use-animation";
+import { cn } from "~/lib/utils";
 import type { BackgroundImageProps } from "./BackgroundImage";
 import { backgroundInputs } from "./BackgroundImage";
 import type { OverlayProps } from "./Overlay";
 import { overlayInputs } from "./Overlay";
 import { OverlayAndBackground } from "./OverlayAndBackground";
-import { cn } from "~/lib/utils";
-import { useMotion } from "~/hooks/use-animation";
 
 export type BackgroundProps = BackgroundImageProps & {
   backgroundFor: "section" | "content";
@@ -119,7 +119,7 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
       style={style}
       className={cn(
         variants({ padding: width, overflow, className }),
-        hasBackground && !isBgForContent && "has-background"
+        hasBackground && !isBgForContent && "has-background",
       )}
     >
       {!isBgForContent && <OverlayAndBackground {...props} />}
@@ -127,7 +127,7 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
         className={cn(
           variants({ gap, width, verticalPadding, overflow }),
           hasBackground && isBgForContent && "has-background px-4 sm:px-8",
-          containerClassName
+          containerClassName,
         )}
       >
         {isBgForContent && <OverlayAndBackground {...props} />}

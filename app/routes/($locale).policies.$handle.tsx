@@ -1,19 +1,19 @@
-import { data, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { Link, useLoaderData, type MetaFunction } from '@remix-run/react';
-import { type Shop } from '@shopify/hydrogen/storefront-api-types';
+import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
+import type { Shop } from "@shopify/hydrogen/storefront-api-types";
+import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
 
 type SelectedPolicies = keyof Pick<
   Shop,
-  'privacyPolicy' | 'shippingPolicy' | 'termsOfService' | 'refundPolicy'
+  "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy"
 >;
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.policy.title ?? ''}`}];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Hydrogen | ${data?.policy.title ?? ""}` }];
 };
 
-export async function loader({params, context}: LoaderFunctionArgs) {
+export async function loader({ params, context }: LoaderFunctionArgs) {
   if (!params.handle) {
-    throw new Response('No handle was passed in', {status: 404});
+    throw new Response("No handle was passed in", { status: 404 });
   }
 
   const policyName = params.handle.replace(
@@ -35,7 +35,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   const policy = data.shop?.[policyName];
 
   if (!policy) {
-    throw new Response('Could not find the policy', {status: 404});
+    throw new Response("Could not find the policy", { status: 404 });
   }
 
   return data({ policy });
@@ -53,7 +53,7 @@ export default function Policy() {
       </div>
       <br />
       <h1>{policy.title}</h1>
-      <div dangerouslySetInnerHTML={{__html: policy.body}} />
+      <div dangerouslySetInnerHTML={{ __html: policy.body }} />
     </div>
   );
 }

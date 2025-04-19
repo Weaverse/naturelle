@@ -1,16 +1,13 @@
-import { data, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { Link, useLoaderData, type MetaFunction } from '@remix-run/react';
-import { Pagination, getPaginationVariables } from '@shopify/hydrogen';
-import { WeaverseContent } from '~/weaverse';
+import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
+import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
+import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import { WeaverseContent } from "~/weaverse";
 
 export const meta: MetaFunction = () => {
   return [{ title: `Hydrogen | Blogs` }];
 };
 
-export const loader = async ({
-  request,
-  context,
-}: LoaderFunctionArgs) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 10,
   });
@@ -21,7 +18,10 @@ export const loader = async ({
     },
   });
 
-  return data({ blogs, weaverseData: await context.weaverse.loadPage({ type: 'BLOG' }), });
+  return data({
+    blogs,
+    weaverseData: await context.weaverse.loadPage({ type: "BLOG" }),
+  });
 };
 
 export default function Blogs() {
@@ -37,7 +37,7 @@ export default function Blogs() {
               return (
                 <>
                   <PreviousLink>
-                    {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                    {isLoading ? "Loading..." : <span>↑ Load previous</span>}
                   </PreviousLink>
                   {nodes.map((blog) => {
                     return (
@@ -52,7 +52,7 @@ export default function Blogs() {
                     );
                   })}
                   <NextLink>
-                    {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                    {isLoading ? "Loading..." : <span>Load more ↓</span>}
                   </NextLink>
                 </>
               );

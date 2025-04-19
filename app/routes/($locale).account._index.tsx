@@ -75,10 +75,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     // this will ensure redirecting to login never happen for mutatation
     const isLoggedIn = await customerAccount.isLoggedIn();
     if (!isLoggedIn) {
-      return data(
-        { error: { [addressId]: "Unauthorized" } },
-        { status: 401 }
-      );
+      return data({ error: { [addressId]: "Unauthorized" } }, { status: 401 });
     }
 
     const defaultAddress = form.has("defaultAddress")
@@ -137,13 +134,10 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
           if (error instanceof Error) {
             return data(
               { error: { [addressId]: error.message } },
-              { status: 400 }
+              { status: 400 },
             );
           }
-          return data(
-            { error: { [addressId]: error } },
-            { status: 400 }
-          );
+          return data({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
@@ -185,13 +179,10 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
           if (error instanceof Error) {
             return data(
               { error: { [addressId]: error.message } },
-              { status: 400 }
+              { status: 400 },
             );
           }
-          return data(
-            { error: { [addressId]: error } },
-            { status: 400 }
-          );
+          return data({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
@@ -222,34 +213,25 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
           if (error instanceof Error) {
             return data(
               { error: { [addressId]: error.message } },
-              { status: 400 }
+              { status: 400 },
             );
           }
-          return data(
-            { error: { [addressId]: error } },
-            { status: 400 }
-          );
+          return data({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
       default: {
         return data(
           { error: { [addressId]: "Method not allowed" } },
-          { status: 405 }
+          { status: 405 },
         );
       }
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return data(
-        { error: error.message },
-        { status: 400 }
-      );
+      return data({ error: error.message }, { status: 400 });
     }
-    return data(
-      { error },
-      { status: 400 }
-    );
+    return data({ error }, { status: 400 });
   }
 }
 

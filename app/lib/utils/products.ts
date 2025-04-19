@@ -1,8 +1,8 @@
-import { Storefront } from "@shopify/hydrogen";
+import type { Storefront } from "@shopify/hydrogen";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/data/queries";
 
 export let getProductData = async (storefront: Storefront, handle: string) => {
-  const {shop, product} = await storefront.query(PRODUCT_QUERY, {
+  const { shop, product } = await storefront.query(PRODUCT_QUERY, {
     variables: {
       handle: handle,
       selectedOptions: [],

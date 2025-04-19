@@ -37,7 +37,10 @@ export function ZoomModal({
     let { id: mediaId } = parseGid(id);
     let mediaElement = document.getElementById(`zoom-media--${mediaId}`);
     if (mediaElement) {
-      if (scrollAreaRef.current && !isVisibleInParent(mediaElement, scrollAreaRef.current)) {
+      if (
+        scrollAreaRef.current &&
+        !isVisibleInParent(mediaElement, scrollAreaRef.current)
+      ) {
         mediaElement.scrollIntoView({ behavior: "smooth" });
       }
     }
@@ -137,7 +140,7 @@ export function ZoomModal({
             </Dialog.Close>
             <div className="flex items-center gap-2 justify-center absolute bottom-10 left-10 md:left-auto right-10">
               <Button
-                shape={'default'}
+                shape={"default"}
                 variant="primary"
                 className="border-border-subtle"
                 onClick={() => {
@@ -148,7 +151,7 @@ export function ZoomModal({
                 <ArrowLeft className="w-4.5 h-4.5" />
               </Button>
               <Button
-                shape={'default'}
+                shape={"default"}
                 variant="primary"
                 className="border-border-subtle"
                 onClick={() => {
@@ -203,5 +206,3 @@ function isVisibleInParent(child: HTMLElement, parent: HTMLElement) {
     childRect.right <= parentRect.right
   );
 }
-
-

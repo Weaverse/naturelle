@@ -1,11 +1,9 @@
-import { Button } from "~/components/button";
-import { Input } from "~/components/input";
 import { Link } from "@remix-run/react";
 import {
   CartForm,
   Image,
   Money,
-  OptimisticCart,
+  type OptimisticCart,
   OptimisticInput,
   useOptimisticCart,
   useOptimisticData,
@@ -13,8 +11,10 @@ import {
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
-import { useVariantUrl } from "~/lib/utils/variants";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { cn } from "~/lib/utils";
+import { useVariantUrl } from "~/lib/utils/variants";
 import { IconRemove } from "../Icon";
 import { CartPopularCollections } from "./CartPopularCollections";
 
@@ -175,7 +175,7 @@ function CartLineItem({
                 "line-clamp-1",
                 layout === "page"
                   ? "text-base font-normal"
-                  : "text-base font-semibold"
+                  : "text-base font-semibold",
               )}
             >
               {product.title}
@@ -340,7 +340,7 @@ export function CartSummary({
       <div
         className={clsx(
           "flex items-center justify-between font-medium",
-          totalStyles[layout]
+          totalStyles[layout],
         )}
       >
         <span className="font-semibold">Subtotal</span>
@@ -402,7 +402,10 @@ function CartLineQuantity({
       <div className="flex items-center border border-border-subtle rounded w-fit">
         <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
           <button
-            className={cn(buttonStyles[layout], quantity <= 1 && "opacity-50 cursor-not-allowed")}
+            className={cn(
+              buttonStyles[layout],
+              quantity <= 1 && "opacity-50 cursor-not-allowed",
+            )}
             aria-label="Decrease quantity"
             disabled={quantity <= 1}
             name="decrease-quantity"
@@ -415,7 +418,9 @@ function CartLineQuantity({
             />
           </button>
         </CartLineUpdateButton>
-        <div className="px-2 w-8 text-center" data-test="item-quantity">{optimisticQuantity}</div>
+        <div className="px-2 w-8 text-center" data-test="item-quantity">
+          {optimisticQuantity}
+        </div>
         <CartLineUpdateButton lines={[{ id: lineId, quantity: nextQuantity }]}>
           <button
             className={buttonStyles[layout]}

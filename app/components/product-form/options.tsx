@@ -46,8 +46,8 @@ export function VariantOption(props: VariantOptionProps) {
                 value.isAvailable && selectedOptionValue === value.value
                   ? "border-border/90 bg-[#E5E6D4]"
                   : value.isAvailable
-                  ? "border-border-subtle"
-                  : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`
+                    ? "border-border-subtle"
+                    : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
               )}
               onClick={() => onSelectOptionValue(value.value)}
             >
@@ -74,8 +74,8 @@ export function VariantOption(props: VariantOptionProps) {
               value.isAvailable && selectedOptionValue === value.value
                 ? "border-border/90 bg-[#E5E6D4]"
                 : value.isAvailable
-                ? "border-border-subtle"
-                : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`
+                  ? "border-border-subtle"
+                  : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
             )}
             onClick={() => onSelectOptionValue(value.value)}
           >
@@ -97,8 +97,8 @@ export function VariantOption(props: VariantOptionProps) {
                 selectedOptionValue === value.value
                   ? "border-border/90 bg-[#E5E6D4]"
                   : value.isAvailable
-                  ? "border-border-subtle"
-                  : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`
+                    ? "border-border-subtle"
+                    : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
               )}
               onClick={() => onSelectOptionValue(value.value)}
             >
@@ -143,8 +143,8 @@ export function VariantOption(props: VariantOptionProps) {
             value.isAvailable && selectedOptionValue === value.value
               ? "border-border/90 bg-[#E5E6D4]"
               : value.isAvailable
-              ? "border-border-subtle"
-              : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`
+                ? "border-border-subtle"
+                : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
           )}
           onClick={() => onSelectOptionValue(value.value)}
         >

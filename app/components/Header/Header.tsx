@@ -1,17 +1,17 @@
+import { useRouteError } from "@remix-run/react";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import { AnnouncementBar } from "./AnnouncementBar";
 import { cva } from "class-variance-authority";
-import { cn, useIsHomePath } from "~/lib/utils";
-import useWindowScroll from "react-use/lib/useWindowScroll";
 import { useEffect, useState } from "react";
+import useWindowScroll from "react-use/lib/useWindowScroll";
+import { useShopMenu } from "~/hooks/use-menu-shop";
+import { cn, useIsHomePath } from "~/lib/utils";
 import { Logo } from "../Logo";
-import { MegaMenu } from "./menu/MegaMenu";
-import { SearchToggle } from "./SearchToggle";
 import { AccountLink } from "../account/AccountLink";
 import { CartDrawer } from "../cart/CartDrawer";
+import { AnnouncementBar } from "./AnnouncementBar";
+import { SearchToggle } from "./SearchToggle";
 import { HeaderMenuDrawer } from "./menu/DrawerMenu";
-import { useShopMenu } from "~/hooks/use-menu-shop";
-import { useRouteError } from "@remix-run/react";
+import { MegaMenu } from "./menu/MegaMenu";
 
 let variants = cva("", {
   variants: {
@@ -68,15 +68,13 @@ export function Header() {
           "hover:border-[var(--color-header-text)]",
           enableTransparent ? "fixed w-full group/header" : "sticky",
           scrolled ? "shadow-header" : "shadow-none",
-          isTransparent ? 
-          [
-            "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]",
-            "[&_.main-logo]:opacity-0",
-            "[&_.transparent-logo]:opacity-100",
-          ] : [
-            "[&_.main-logo]:opacity-100",
-            "[&_.transparent-logo]:opacity-0",
-          ],
+          isTransparent
+            ? [
+                "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]",
+                "[&_.main-logo]:opacity-0",
+                "[&_.transparent-logo]:opacity-100",
+              ]
+            : ["[&_.main-logo]:opacity-100", "[&_.transparent-logo]:opacity-0"],
           variants({ padding: headerWidth }),
         )}
         style={{ ["--announcement-bar-height" as string]: `${top}px` }}
@@ -84,7 +82,7 @@ export function Header() {
         <div
           className={cn(
             "z-40 flex h-nav py-1.5 items-center justify-between gap-3",
-            variants({ width: headerWidth })
+            variants({ width: headerWidth }),
           )}
         >
           {typeMenuHeader === "drawer" ? (
@@ -92,9 +90,7 @@ export function Header() {
           ) : (
             <HeaderMenuDrawer menu={headerMenu} className="xl:hidden block" />
           )}
-          <Logo
-            className="z-30 flex justify-start"
-          />
+          <Logo className="z-30 flex justify-start" />
           {typeMenuHeader === "mega" && <MegaMenu menu={headerMenu} />}
           <div className="z-30 flex items-center justify-end gap-2">
             {typeMenuHeader === "mega" && (

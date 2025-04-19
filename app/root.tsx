@@ -18,27 +18,27 @@ import {
   getShopAnalytics,
   useNonce,
 } from "@shopify/hydrogen";
-import {
-  type AppLoadContext,
-  type LoaderFunctionArgs,
-  type MetaArgs,
-  type SerializeFrom,
+import type {
+  AppLoadContext,
+  LoaderFunctionArgs,
+  MetaArgs,
+  SerializeFrom,
 } from "@shopify/remix-oxygen";
 import { withWeaverse } from "@weaverse/hydrogen";
 import tailwind from "./styles/tailwind.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/cormorant";
 import "@fontsource-variable/nunito-sans";
-import { Button } from "~/components/button";
 import invariant from "tiny-invariant";
 import { CustomAnalytics } from "~/components/Analytics";
-import { seoPayload } from "~/lib/seo.server";
-import { GlobalLoading } from "./components/global-loading";
-import { Preloader } from "./components/Preloader";
-import { getErrorMessage } from "./lib/utils/defineMessageError";
-import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
-import { Footer } from "~/components/footer/Footer";
 import { Header } from "~/components/Header/Header";
+import { Button } from "~/components/button";
+import { Footer } from "~/components/footer/Footer";
+import { seoPayload } from "~/lib/seo.server";
+import { Preloader } from "./components/Preloader";
+import { GlobalLoading } from "./components/global-loading";
+import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
+import { getErrorMessage } from "./lib/utils/defineMessageError";
 
 export type RootLoader = typeof loader;
 
@@ -340,7 +340,7 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
         data.headerMenu,
         data.shop.primaryDomain.url,
         env,
-        customPrefixes
+        customPrefixes,
       )
     : undefined;
 
@@ -349,7 +349,7 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
         data.footerMenu,
         data.shop.primaryDomain.url,
         env,
-        customPrefixes
+        customPrefixes,
       )
     : undefined;
 

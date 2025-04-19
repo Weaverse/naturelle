@@ -1,7 +1,7 @@
-import {Input} from '~/components/input';
-import {Button} from '~/components/button';
-import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
-import {forwardRef} from 'react';
+import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { forwardRef } from "react";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 
 const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
   return (
@@ -84,17 +84,17 @@ const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
 });
 
 export const schema: HydrogenComponentSchema = {
-  title: 'Style guide',
-  type: 'test',
+  title: "Style guide",
+  type: "test",
   inspector: [
     {
-      group: 'Settings',
+      group: "Settings",
       inputs: [
         {
-          type: 'text',
-          name: 'value',
-          label: 'Text',
-          defaultValue: 'Test',
+          type: "text",
+          name: "value",
+          label: "Text",
+          defaultValue: "Test",
         },
       ],
     },

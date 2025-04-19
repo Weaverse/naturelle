@@ -1,13 +1,13 @@
 import { Await, useRouteLoaderData } from "@remix-run/react";
-import { Drawer, useDrawer } from "../Drawer";
-import { RootLoader } from "~/root";
-import { CartLoading } from "./CartLoading";
+import { CartForm, type CartReturn } from "@shopify/hydrogen";
 import { Suspense } from "react";
-import { CartForm, CartReturn } from "@shopify/hydrogen";
-import { Link } from "../Link";
-import { IconBag } from "../Icon";
 import { useCartFetchers } from "~/hooks/useCartFetchers";
+import type { RootLoader } from "~/root";
+import { Drawer, useDrawer } from "../Drawer";
+import { IconBag } from "../Icon";
+import { Link } from "../Link";
 import { CartMain } from "./Cart";
+import { CartLoading } from "./CartLoading";
 
 export function CartDrawer() {
   const {

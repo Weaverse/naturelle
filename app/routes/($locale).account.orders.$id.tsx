@@ -1,28 +1,28 @@
-import { data, redirect, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Money, Image, flattenConnection} from '@shopify/hydrogen';
-import type {OrderLineItemFullFragment} from 'customer-accountapi.generated';
-import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
+import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
+import { Image, Money, flattenConnection } from "@shopify/hydrogen";
+import { type LoaderFunctionArgs, data, redirect } from "@shopify/remix-oxygen";
+import type { OrderLineItemFullFragment } from "customer-accountapi.generated";
+import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/CustomerOrderQuery";
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Order ${data?.order?.name}`}];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Order ${data?.order?.name}` }];
 };
 
-export async function loader({params, context, request}: LoaderFunctionArgs) {
+export async function loader({ params, context, request }: LoaderFunctionArgs) {
   if (!params.id) {
-    return redirect('/account/orders');
+    return redirect("/account/orders");
   }
 
   const orderId = atob(params.id);
   const { data: orderData, errors } = await context.customerAccount.query(
     CUSTOMER_ORDER_QUERY,
     {
-      variables: {orderId},
+      variables: { orderId },
     },
   );
 
   if (errors?.length || !orderData?.order) {
-    throw new Error('Order not found');
+    throw new Error("Order not found");
   }
 
   const { order } = orderData;
@@ -34,21 +34,19 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
   const firstDiscount = discountApplications[0]?.value;
 
   const discountValue =
-    firstDiscount?.__typename === 'MoneyV2' && firstDiscount;
+    firstDiscount?.__typename === "MoneyV2" && firstDiscount;
 
   const discountPercentage =
-    firstDiscount?.__typename === 'PricingPercentageValue' &&
+    firstDiscount?.__typename === "PricingPercentageValue" &&
     firstDiscount?.percentage;
 
-  return data(
-    {
-      order,
-      lineItems,
-      discountValue,
-      discountPercentage,
-      fulfillmentStatus,
-    },
-  );
+  return data({
+    order,
+    lineItems,
+    discountValue,
+    discountPercentage,
+    fulfillmentStatus,
+  });
 }
 
 export default function OrderRoute() {
@@ -142,12 +140,12 @@ export default function OrderRoute() {
               {order.shippingAddress.formatted ? (
                 <p>{order.shippingAddress.formatted}</p>
               ) : (
-                ''
+                ""
               )}
               {order.shippingAddress.formattedArea ? (
                 <p>{order.shippingAddress.formattedArea}</p>
               ) : (
-                ''
+                ""
               )}
             </address>
           ) : (
@@ -169,7 +167,7 @@ export default function OrderRoute() {
   );
 }
 
-function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
+function OrderLineRow({ lineItem }: { lineItem: OrderLineItemFullFragment }) {
   return (
     <tr key={lineItem.id}>
       <td>

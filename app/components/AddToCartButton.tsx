@@ -1,4 +1,4 @@
-import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
+import type { FetcherWithComponents } from "@remix-run/react";
 import type { ShopifyAddToCartPayload } from "@shopify/hydrogen";
 import {
   AnalyticsEventName,
@@ -6,7 +6,7 @@ import {
   getClientBrowserParameters,
   sendShopifyAnalytics,
 } from "@shopify/hydrogen";
-import type { FetcherWithComponents } from "@remix-run/react";
+import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
 import { useEffect } from "react";
 
 import { Button } from "~/components/button";
@@ -93,7 +93,7 @@ function AddToCartAnalytics({
       try {
         if (cartInputs.inputs.analytics) {
           const dataInForm: unknown = JSON.parse(
-            String(cartInputs.inputs.analytics)
+            String(cartInputs.inputs.analytics),
           );
           Object.assign(cartData, dataInForm);
         }

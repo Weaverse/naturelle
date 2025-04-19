@@ -1,24 +1,24 @@
 import { useLoaderData } from "@remix-run/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import {
-  useThemeSettings,
   type HydrogenComponentProps,
   type HydrogenComponentSchema,
+  useThemeSettings,
 } from "@weaverse/hydrogen";
+import clsx from "clsx";
 import { forwardRef, useEffect, useState } from "react";
 import type { ProductQuery, VariantsQuery } from "storefrontapi.generated";
 import { AddToCartButton } from "~/components/AddToCartButton";
+import { StarRating } from "~/components/StarRating";
 import { Text } from "~/components/Text";
 import { getExcerpt } from "~/lib/utils";
+import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
+import { ProductDetail } from "../../components/product-form/product-detail";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
-import { ProductDetail } from "../../components/product-form/product-detail";
-import { ProductLoaderType } from "~/routes/($locale).products.$handle";
-import { StarRating } from "~/components/StarRating";
-import { layoutInputs, Section, SectionProps } from "../atoms/Section";
-import clsx from "clsx";
+import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
 interface ProductInformationProps extends SectionProps {
   addToCartText: string;
   soldOutText: string;
@@ -53,7 +53,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
     const [isLoading, setIsLoading] = useState(false);
     let variants = _variants?.product?.variants;
     let [selectedVariant, setSelectedVariant] = useState<any>(
-      product?.selectedVariant
+      product?.selectedVariant,
     );
     let {
       addToCartText,
@@ -78,8 +78,8 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
     let atcText = selectedVariant?.availableForSale
       ? addToCartText
       : selectedVariant?.quantityAvailable === -1
-      ? unavailableText
-      : soldOutText;
+        ? unavailableText
+        : soldOutText;
     useEffect(() => {
       if (!selectedVariant) {
         setSelectedVariant(variants?.nodes?.[0]);
@@ -119,11 +119,13 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       const { shippingPolicy, refundPolicy } = shop;
       return (
         <Section ref={ref} {...rest}>
-          <div className={clsx(
-            "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
-            "lg:gap-[clamp(30px,5%,60px)]",
-            "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
-          )}>
+          <div
+            className={clsx(
+              "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
+              "lg:gap-[clamp(30px,5%,60px)]",
+              "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
+            )}
+          >
             <ProductMedia
               media={product?.media.nodes}
               selectedVariant={selectedVariant}
@@ -278,7 +280,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       );
     }
     return <div ref={ref} {...rest} />;
-  }
+  },
 );
 
 export default ProductInformation;
@@ -374,7 +376,7 @@ export let schema: HydrogenComponentSchema = {
             ],
           },
         },
-        { 
+        {
           label: "Media direction",
           name: "mediaDirection",
           type: "toggle-group",

@@ -9,11 +9,11 @@ function getRequestQueries<T = Record<string, string>>(request: Request) {
   }, {}) as T;
 }
 
-export let loader: LoaderFunction = async ({request, params, context}) => {
+export let loader: LoaderFunction = async ({ request, params, context }) => {
   try {
     let queries = getRequestQueries(request);
     switch (params.param) {
-      case 'products': {
+      case "products": {
         let handle = queries.handle;
         if (!handle) return data(null, { status: 404 });
         let productData = await getProductData(

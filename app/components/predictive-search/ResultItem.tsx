@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Image, Money } from "@shopify/hydrogen";
-import { SearchResultItemProps } from "../../lib/types/search-types";
 import clsx from "clsx";
+import type { SearchResultItemProps } from "../../lib/types/search-types";
 
 export function SearchResultItem({
   goToSearchResult,
@@ -46,7 +46,7 @@ export function SearchResultItem({
               className={clsx(
                 item.__typename === "Product"
                   ? "line-clamp-1 font-heading text-xl font-semibold"
-                  : "line-clamp-2 font-body text-base font-normal"
+                  : "line-clamp-2 font-body text-base font-normal",
               )}
             >
               {item.title}

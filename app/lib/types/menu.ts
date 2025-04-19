@@ -1,4 +1,8 @@
-import { ChildMenuItemFragment, MenuFragment, ParentMenuItemFragment } from "storefrontapi.generated";
+import type {
+  ChildMenuItemFragment,
+  MenuFragment,
+  ParentMenuItemFragment,
+} from "storefrontapi.generated";
 
 export function getMaxDepth(item: { items: any[] }): number {
   if (item.items?.length > 0) {
@@ -38,5 +42,5 @@ export interface SingleMenuItem {
       url: string;
       width: number;
     };
-  }
+  };
 }

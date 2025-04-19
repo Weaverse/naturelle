@@ -1,11 +1,11 @@
-import { Image } from "~/components/image";
+import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import type { MediaFragment } from "storefrontapi.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
+import { Image } from "~/components/image";
 import { ZoomModal } from "./media-zoom";
-import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 
 interface ProductMediaProps {
   selectedVariant: any;
@@ -29,7 +29,7 @@ export function ProductMedia(props: ProductMediaProps) {
     direction = "horizontal",
     enableZoom,
   } = props;
-  
+
   let media = _media.filter((med) => med.__typename === "MediaImage");
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
@@ -52,7 +52,7 @@ export function ProductMedia(props: ProductMediaProps) {
         className={clsx(
           "flex gap-4 overflow-hidden [--thumbs-width:0px]",
           direction === "horizontal" ? "flex-col" : "flex-row-reverse",
-          showThumbnails && "md:[--thumbs-width:8rem]"
+          showThumbnails && "md:[--thumbs-width:8rem]",
         )}
       >
         <div
@@ -60,7 +60,7 @@ export function ProductMedia(props: ProductMediaProps) {
           className={clsx(
             "relative",
             direction === "vertical" &&
-              "w-[calc(100%-var(--thumbs-width,0px))] h-full"
+              "w-[calc(100%-var(--thumbs-width,0px))] h-full",
           )}
         >
           <Swiper
@@ -91,22 +91,22 @@ export function ProductMedia(props: ProductMediaProps) {
                     sizes="auto"
                   />
                   {enableZoom && (
-                  <button
-                    type="button"
-                    className={clsx(
-                      "absolute top-2 right-2 md:right-6 md:top-6",
-                      "p-2 text-center border border-transparent rounded-full",
-                      "transition-all duration-200",
-                      "text-gray-900 bg-background hover:bg-[#2e6a53] hover:text-white",
-                    )}
-                    onClick={() => {
-                      setZoomMediaId(med.id);
-                      setZoomModalOpen(true);
-                    }}
-                  >
-                    <MagnifyingGlassPlus className="w-5 h-5" />
-                  </button>
-                )}
+                    <button
+                      type="button"
+                      className={clsx(
+                        "absolute top-2 right-2 md:right-6 md:top-6",
+                        "p-2 text-center border border-transparent rounded-full",
+                        "transition-all duration-200",
+                        "text-gray-900 bg-background hover:bg-[#2e6a53] hover:text-white",
+                      )}
+                      onClick={() => {
+                        setZoomMediaId(med.id);
+                        setZoomModalOpen(true);
+                      }}
+                    >
+                      <MagnifyingGlassPlus className="w-5 h-5" />
+                    </button>
+                  )}
                 </SwiperSlide>
               );
             })}
@@ -122,7 +122,7 @@ export function ProductMedia(props: ProductMediaProps) {
             className={clsx(
               "hidden sm:block",
               direction === "vertical" &&
-                "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]"
+                "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]",
             )}
           >
             <Swiper

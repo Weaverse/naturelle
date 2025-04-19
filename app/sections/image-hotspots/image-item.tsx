@@ -1,11 +1,11 @@
-import { Image } from "~/components/image";
 import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import type {
-  WeaverseImage,
-  HydrogenComponentSchema,
   HydrogenComponentProps,
+  HydrogenComponentSchema,
+  WeaverseImage,
 } from "@weaverse/hydrogen";
 import { forwardRef } from "react";
+import { Image } from "~/components/image";
 import { getImageAspectRatio } from "~/lib/utils";
 
 interface HotspotsImageProps extends HydrogenComponentProps {
@@ -13,28 +13,30 @@ interface HotspotsImageProps extends HydrogenComponentProps {
   aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
 }
 
-const HotspotsImage = forwardRef<HTMLDivElement, HotspotsImageProps>((props, ref) => {
-  let { image, aspectRatio, children, ...rest } = props;
-  let imageData: Partial<WeaverseImage> =
-    typeof image === "string"
-      ? { url: image, altText: "Hotspots image" }
-      : image;
-  return (
-    <div
-      ref={ref}
-      {...rest}
-      className="relative w-full h-full"
-      style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
-    >
-      <Image
-        data={imageData}
-        sizes="auto"
-        className="object-cover z-0 w-full h-full"
-      />
-      {children}
-    </div>
-  );
-});
+const HotspotsImage = forwardRef<HTMLDivElement, HotspotsImageProps>(
+  (props, ref) => {
+    let { image, aspectRatio, children, ...rest } = props;
+    let imageData: Partial<WeaverseImage> =
+      typeof image === "string"
+        ? { url: image, altText: "Hotspots image" }
+        : image;
+    return (
+      <div
+        ref={ref}
+        {...rest}
+        className="relative w-full h-full"
+        style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
+      >
+        <Image
+          data={imageData}
+          sizes="auto"
+          className="object-cover z-0 w-full h-full"
+        />
+        {children}
+      </div>
+    );
+  },
+);
 
 export default HotspotsImage;
 

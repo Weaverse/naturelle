@@ -39,7 +39,7 @@ async function getInternalIdByHandle(
   api_token: string,
   shop_domain: string,
   handle: string,
-  weaverseClient: WeaverseClient
+  weaverseClient: WeaverseClient,
 ) {
   let api = `https://judge.me/api/v1/products/-1?${new URLSearchParams({
     api_token,
@@ -54,7 +54,7 @@ export let getJudgemeReviews = async (
   api_token: string,
   shop_domain: string,
   handle: string,
-  weaverse: WeaverseClient
+  weaverse: WeaverseClient,
 ) => {
   const defaultData = {
     rating: 0,
@@ -68,7 +68,7 @@ export let getJudgemeReviews = async (
     api_token,
     shop_domain,
     handle,
-    weaverse
+    weaverse,
   );
   if (internalId) {
     let data = (await weaverse.fetchWithCache(
@@ -76,7 +76,7 @@ export let getJudgemeReviews = async (
         api_token,
         shop_domain,
         product_id: internalId,
-      })}`
+      })}`,
     )) as JudgemeReviewsData;
     let reviews = data.reviews;
     let rating =
@@ -95,7 +95,7 @@ const endpoint = "https://judge.me/api/v1/reviews";
 export let createJudgemeReview = async (
   api_token: string,
   shop_domain: string,
-  formData: FormData
+  formData: FormData,
 ) => {
   if (!api_token) {
     return {

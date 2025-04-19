@@ -1,14 +1,14 @@
-import {useFetcher, useLocation, useRouteLoaderData} from '@remix-run/react';
-import {CartForm} from '@shopify/hydrogen';
-import type {CartBuyerIdentityInput} from '@shopify/hydrogen/storefront-api-types';
-import {IconCaret, IconCheck} from '~/components/Icon';
-import type {Locale, Localizations} from '~/lib/types/type-locale';
-import {DEFAULT_LOCALE} from '~/lib/utils';
-import {useRootLoaderData} from '~/root';
-import clsx from 'clsx';
-import {useCallback, useEffect, useRef, useState} from 'react';
-import {useInView} from 'react-intersection-observer';
-import { Button } from '~/components/button';
+import { useFetcher, useLocation, useRouteLoaderData } from "@remix-run/react";
+import { CartForm } from "@shopify/hydrogen";
+import type { CartBuyerIdentityInput } from "@shopify/hydrogen/storefront-api-types";
+import clsx from "clsx";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import { IconCaret, IconCheck } from "~/components/Icon";
+import { Button } from "~/components/button";
+import type { Locale, Localizations } from "~/lib/types/type-locale";
+import { DEFAULT_LOCALE } from "~/lib/utils";
+import { useRootLoaderData } from "~/root";
 
 export function CountrySelector() {
   const fetcher = useFetcher();
@@ -16,19 +16,19 @@ export function CountrySelector() {
   const [isOpen, setIsOpen] = useState(false);
   const rootData = useRootLoaderData();
   const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
-  const {pathname, search} = useLocation();
+  const { pathname, search } = useLocation();
   const pathWithoutLocale = `${pathname.replace(
     selectedLocale.pathPrefix,
-    '',
+    "",
   )}${search}`;
 
   const countries = (fetcher.data ?? {}) as Localizations;
-  const defaultLocale = countries?.['default'];
+  const defaultLocale = countries?.["default"];
   const defaultLocalePrefix = defaultLocale
     ? `${defaultLocale?.language}-${defaultLocale?.country}`
-    : '';
+    : "";
 
-  const {ref, inView} = useInView({
+  const { ref, inView } = useInView({
     threshold: 0,
     triggerOnce: true,
   });
@@ -40,21 +40,25 @@ export function CountrySelector() {
 
   // Get available countries list when in view
   useEffect(() => {
-    if (!inView || fetcher.data || fetcher.state === 'loading') return;
-    fetcher.load('/api/countries');
+    if (!inView || fetcher.data || fetcher.state === "loading") return;
+    fetcher.load("/api/countries");
   }, [inView, fetcher]);
 
   const closeDropdown = useCallback(() => {
-    closeRef.current?.removeAttribute('open');
+    closeRef.current?.removeAttribute("open");
     setIsOpen(false);
   }, []);
-  
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div ref={observerRef} className="md:max-w-72 w-full" onMouseLeave={closeDropdown}>
+    <div
+      ref={observerRef}
+      className="md:max-w-72 w-full"
+      onMouseLeave={closeDropdown}
+    >
       <div className="relative">
         <details
           className="w-full overflow-hidden rounded border border-border-subtle dark:border-white"
@@ -62,13 +66,19 @@ export function CountrySelector() {
           onToggle={toggleDropdown}
         >
           <summary className="flex w-full cursor-pointer items-center justify-between px-4 py-3">
-            <span className='font-normal font-heading text-xl'>{selectedLocale.label}</span>
-            <span className={`transition-transform duration-300 ${isOpen ? '-rotate-180' : 'rotate-0'}`}>
+            <span className="font-normal font-heading text-xl">
+              {selectedLocale.label}
+            </span>
+            <span
+              className={`transition-transform duration-300 ${isOpen ? "-rotate-180" : "rotate-0"}`}
+            >
               <IconCaret direction="down" className="h-4 w-4" />
             </span>
           </summary>
-          <div className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border-t border-border-subtle bg-background dark:border-white transition-all duration-500
-            ${isOpen ? 'max-h-36' : 'max-h-0'}`}>
+          <div
+            className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border-t border-border-subtle bg-background dark:border-white transition-all duration-500
+            ${isOpen ? "max-h-36" : "max-h-0"}`}
+          >
             {countries &&
               Object.keys(countries).map((countryPath) => {
                 const countryLocale = countries[countryPath];
@@ -118,10 +128,10 @@ function Country({
     >
       <Button
         classNameContainer={clsx([
-          'flex w-full justify-start',
-          'cursor-pointer items-center px-4 py-2 text-left',
+          "flex w-full justify-start",
+          "cursor-pointer items-center px-4 py-2 text-left",
         ])}
-        className='rounded bg-background p-2 transition w-full'
+        className="rounded bg-background p-2 transition w-full"
         variant={"custom"}
         type="submit"
         onClick={closeDropdown}
@@ -171,7 +181,7 @@ function getCountryUrlPath({
   pathWithoutLocale: string;
   defaultLocalePrefix: string;
 }) {
-  let countryPrefixPath = '';
+  let countryPrefixPath = "";
   const countryLocalePrefix = `${countryLocale.language}-${countryLocale.country}`;
 
   if (countryLocalePrefix !== defaultLocalePrefix) {

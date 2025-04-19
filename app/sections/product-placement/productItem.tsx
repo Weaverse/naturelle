@@ -1,14 +1,14 @@
-import {Image} from '@shopify/hydrogen';
+import { Image } from "@shopify/hydrogen";
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
   HydrogenComponentSchema,
   WeaverseImage,
   WeaverseProduct,
-} from '@weaverse/hydrogen';
-import {IconImageBlank} from '~/components/Icon';
-import {Link} from '~/components/Link';
-import {CSSProperties, forwardRef} from 'react';
+} from "@weaverse/hydrogen";
+import { type CSSProperties, forwardRef } from "react";
+import { IconImageBlank } from "~/components/Icon";
+import { Link } from "~/components/Link";
 
 interface ProductPlacementItemProps extends HydrogenComponentProps {
   image: WeaverseImage;
@@ -19,17 +19,23 @@ const ProductPlacementItem = forwardRef<
   HTMLDivElement,
   ProductPlacementItemProps
 >((props, ref) => {
-  let {image, product, ...rest} = props;
+  let { image, product, ...rest } = props;
   let contentStyle: CSSProperties = {} as CSSProperties;
   return (
-    <div data-motion="slide-in" ref={ref} {...rest} style={contentStyle} className="h-full w-full">
+    <div
+      data-motion="slide-in"
+      ref={ref}
+      {...rest}
+      style={contentStyle}
+      className="h-full w-full"
+    >
       {image ? (
         <div className="relative h-full w-full">
           <Image
             data={image}
             sizes="auto"
             className="!aspect-[var(--item-thumbs-ratio)] !h-full !w-full cursor-pointer object-cover"
-            loading='lazy'
+            loading="lazy"
           />
           {product && (
             <Link
@@ -53,21 +59,21 @@ const ProductPlacementItem = forwardRef<
 export default ProductPlacementItem;
 
 export const schema: HydrogenComponentSchema = {
-  type: 'product-placement--item',
-  title: 'Product',
+  type: "product-placement--item",
+  title: "Product",
   inspector: [
     {
-      group: 'Product',
+      group: "Product",
       inputs: [
         {
-          type: 'image',
-          name: 'image',
-          label: 'Image',
+          type: "image",
+          name: "image",
+          label: "Image",
         },
         {
-          type: 'product',
-          name: 'product',
-          label: 'Product',
+          type: "product",
+          name: "product",
+          label: "Product",
         },
       ],
     },

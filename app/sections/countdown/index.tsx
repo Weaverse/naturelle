@@ -1,13 +1,13 @@
 import {
-  IMAGES_PLACEHOLDERS,
   type HydrogenComponentSchema,
+  IMAGES_PLACEHOLDERS,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { forwardRef } from "react";
-import { Section, SectionProps } from "../atoms/Section";
 import { backgroundInputs } from "../atoms/BackgroundImage";
 import { overlayInputs } from "../atoms/Overlay";
+import { Section, type SectionProps } from "../atoms/Section";
 
 let variants = cva("flex flex-col [&_.paragraph]:mx-[unset] px-4 sm:px-16", {
   variants: {

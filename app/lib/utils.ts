@@ -1,19 +1,17 @@
 import { useLocation, useRouteLoaderData } from "@remix-run/react";
 import type { FulfillmentStatus } from "@shopify/hydrogen/customer-account-api-types";
 import type { MoneyV2 } from "@shopify/hydrogen/storefront-api-types";
-import { useEffect, useState, type LinkHTMLAttributes } from "react";
-import type {
-  MenuFragment,
-} from "storefrontapi.generated";
+import { type ClassValue, clsx } from "clsx";
+import { colord, extend } from "colord";
+import namesPlugin from "colord/plugins/names";
+import { type LinkHTMLAttributes, useEffect, useState } from "react";
+import type { MenuFragment } from "storefrontapi.generated";
+import { twMerge } from "tailwind-merge";
 import typographicBase from "typographic-base/index";
 import { countries } from "~/data/countries";
 import type { RootLoader } from "~/root";
+import type { EnhancedMenu } from "./types/menu";
 import type { I18nLocale } from "./types/type-locale";
-import {type ClassValue, clsx} from 'clsx';
-import {twMerge} from 'tailwind-merge';
-import { EnhancedMenu } from "./types/menu";
-import { colord, extend } from "colord";
-import namesPlugin from "colord/plugins/names";
 
 export function missingClass(string?: string, prefix?: string) {
   if (!string) {
@@ -358,15 +356,15 @@ export function prefixClassNames(contentHtml: string, prefix: string) {
   const prefixClassNames = (html: string, prefix: string) => {
     html = html.replace(/class="([^"]*)"/g, (match, classNames) => {
       const prefixedClassNames = classNames
-        .split(' ')
+        .split(" ")
         .map((className: string) => `${prefix}${className}`)
-        .join(' ');
+        .join(" ");
       return `class="${prefixedClassNames}"`;
     });
     html = html.replace(/(\.[a-zA-Z0-9_-]+)\s*{/g, (match, className) => {
       return `.${prefix}${className.slice(1)} {`;
     });
-  
+
     return html;
   };
   useEffect(() => {

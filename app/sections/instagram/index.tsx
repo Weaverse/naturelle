@@ -1,17 +1,17 @@
-import {Image} from '@shopify/hydrogen';
+import { Image } from "@shopify/hydrogen";
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {CSSProperties, forwardRef} from 'react';
-import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/swiper-bundle.css';
-import 'swiper/css/pagination';
-import {IconImageBlank, IconInstagram} from '~/components/Icon';
-import clsx from 'clsx';
-import {Pagination} from 'swiper/modules';
-import { useMotion } from '~/hooks/use-animation';
+} from "@weaverse/hydrogen";
+import { type CSSProperties, forwardRef } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
+import "swiper/css/pagination";
+import clsx from "clsx";
+import { Pagination } from "swiper/modules";
+import { IconImageBlank, IconInstagram } from "~/components/Icon";
+import { useMotion } from "~/hooks/use-animation";
 
 type InstagramData = {
   instagramToken: string;
@@ -29,9 +29,9 @@ type InstagramData = {
   };
 };
 
-let widthClasses: {[item: string]: string} = {
-  full: '',
-  fixed: 'container',
+let widthClasses: { [item: string]: string } = {
+  full: "",
+  fixed: "container",
 };
 
 type InstagramProps = HydrogenComponentProps<
@@ -55,8 +55,8 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
 
   let sectionStyle: CSSProperties = {
     backgroundColor: backgroundColor,
-    '--speed': `${speed}s`,
-    '--swiper-theme-color': '#3D490B',
+    "--speed": `${speed}s`,
+    "--swiper-theme-color": "#3D490B",
   } as CSSProperties;
   const imageItemBlank = () => {
     return (
@@ -69,7 +69,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     );
   };
 
-  const defaultInstagramData = Array.from({length: 3}).map((_, i) => ({
+  const defaultInstagramData = Array.from({ length: 3 }).map((_, i) => ({
     id: i,
     media_url: null,
     username: null,
@@ -81,7 +81,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     return (
       <div
         className="hidden items-center justify-center gap-4 sm:flex sm:animate-scrollContent"
-        style={{animationDuration: `var(--speed)`}}
+        style={{ animationDuration: `var(--speed)` }}
       >
         {displayedImages.map((item, index) => {
           return (
@@ -106,6 +106,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                       href={`https://www.instagram.com/${item.username}/`}
                       target="_blank"
                       className="flex items-center justify-center gap-2"
+                      rel="noreferrer"
                     >
                       <IconInstagram className="h-7 w-7" viewBox="0 0 24 24" />
                       <span className="font-heading text-xl font-medium text-white">
@@ -127,12 +128,12 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
     <section
       ref={scope}
       {...rest}
-      className={clsx('h-full w-full', !visibleOnMobile && 'hidden sm:block')}
+      className={clsx("h-full w-full", !visibleOnMobile && "hidden sm:block")}
       style={sectionStyle}
     >
       <div
         className={clsx(
-          'flex flex-col gap-12 px-7 py-12 sm:px-10 sm:py-20',
+          "flex flex-col gap-12 px-7 py-12 sm:px-10 sm:py-20",
           widthClasses[width],
         )}
       >
@@ -171,6 +172,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                                 href={`https://www.instagram.com/${item.username}/`}
                                 target="_blank"
                                 className="flex items-center justify-center gap-2"
+                                rel="noreferrer"
                               >
                                 <IconInstagram
                                   className="h-7 w-7"
@@ -191,7 +193,7 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
                 })}
               </Swiper>
             </div>
-            {Array.from({length: 11}).map((idx, i) => (
+            {Array.from({ length: 11 }).map((idx, i) => (
               <div key={i}>{imageItemRender()}</div>
             ))}
           </>
@@ -204,8 +206,8 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
 export default Instagram;
 
 export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
-  let {weaverse, data} = args;
-  let {fetchWithCache} = weaverse;
+  let { weaverse, data } = args;
+  let { fetchWithCache } = weaverse;
   if (data.instagramToken) {
     let API = `https://graph.instagram.com/me/media?fields=id,media_url,username&access_token=${data.instagramToken}`;
     let res = await fetchWithCache(API);
@@ -215,43 +217,43 @@ export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
 };
 
 export const schema: HydrogenComponentSchema = {
-  type: 'instagram',
-  title: 'Instagram',
-  toolbar: ['general-settings', ['duplicate', 'delete']],
+  type: "instagram",
+  title: "Instagram",
+  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
-      group: 'Instagram',
+      group: "Instagram",
       inputs: [
         {
-          type: 'text',
-          name: 'instagramToken',
-          label: 'Instagram api token',
-          placeholder: '@instagram',
+          type: "text",
+          name: "instagramToken",
+          label: "Instagram api token",
+          placeholder: "@instagram",
           helpText:
             'Learn more about how to get <a href="https://docs.oceanwp.org/article/487-how-to-get-instagram-access-token" target="_blank">API token for Instagram</a> section.',
         },
         {
-          type: 'color',
-          label: 'Background color',
-          name: 'backgroundColor',
-          defaultValue: '#F8F8F0',
+          type: "color",
+          label: "Background color",
+          name: "backgroundColor",
+          defaultValue: "#F8F8F0",
         },
         {
-          type: 'select',
-          name: 'width',
-          label: 'Content width',
+          type: "select",
+          name: "width",
+          label: "Content width",
           configs: {
             options: [
-              {value: 'full', label: 'Full page'},
-              {value: 'fixed', label: 'Fixed'},
+              { value: "full", label: "Full page" },
+              { value: "fixed", label: "Fixed" },
             ],
           },
-          defaultValue: 'fixed',
+          defaultValue: "fixed",
         },
         {
-          type: 'range',
-          name: 'imagesPerRow',
-          label: 'Images',
+          type: "range",
+          name: "imagesPerRow",
+          label: "Images",
           defaultValue: 3,
           configs: {
             min: 1,
@@ -260,32 +262,32 @@ export const schema: HydrogenComponentSchema = {
           },
         },
         {
-          type: 'range',
-          name: 'speed',
-          label: 'Scrolling speed',
+          type: "range",
+          name: "speed",
+          label: "Scrolling speed",
           defaultValue: 70,
           configs: {
             min: 10,
             max: 100,
             step: 5,
-            unit: 's',
+            unit: "s",
           },
         },
         {
-          type: 'switch',
-          name: 'visibleOnMobile',
-          label: 'Visible on mobile',
+          type: "switch",
+          name: "visibleOnMobile",
+          label: "Visible on mobile",
           defaultValue: true,
         },
       ],
     },
   ],
-  childTypes: ['heading'],
+  childTypes: ["heading"],
   presets: {
     children: [
       {
-        type: 'heading',
-        content: 'Instagram',
+        type: "heading",
+        content: "Instagram",
       },
     ],
   },

@@ -427,7 +427,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "borderSubtleColor",
           defaultValue: "#78A286",
         },
-        {type: "heading", label: "Drawer"},
+        { type: "heading", label: "Drawer" },
         {
           type: "color",
           label: "Drawer background",
@@ -435,7 +435,7 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: "#E0E5D6",
         },
         { type: "heading", label: "Buttons" },
-        {type: "heading", label: "Button primary"},
+        { type: "heading", label: "Button primary" },
         {
           type: "color",
           label: "Button text",
@@ -463,7 +463,7 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "color",
           label: "Button background (hover)",
-          name: "buttonBgHoverPrimary",          
+          name: "buttonBgHoverPrimary",
           defaultValue: "#F8F8F0",
         },
         {
@@ -472,7 +472,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "buttonBorderHoverPrimary",
           defaultValue: "#2E6A53",
         },
-        {type: "heading", label: "Button secondary"},
+        { type: "heading", label: "Button secondary" },
         {
           type: "color",
           label: "Button text",
@@ -500,7 +500,7 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "color",
           label: "Button background (hover)",
-          name: "buttonBgHoverSecondary",          
+          name: "buttonBgHoverSecondary",
           defaultValue: "#2E6A53",
         },
         {
@@ -509,7 +509,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "buttonBorderHoverSecondary",
           defaultValue: "#2E6A53",
         },
-        {type: "heading", label: "Button outlined"},
+        { type: "heading", label: "Button outlined" },
         {
           type: "color",
           label: "Button text",
@@ -534,7 +534,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "buttonBorderHoverOutline",
           defaultValue: "#25490B",
         },
-        {type: "heading", label: "Label"},
+        { type: "heading", label: "Label" },
         {
           type: "color",
           label: "Label text",
@@ -684,7 +684,7 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Quick view",
       inputs: [
-        {type: "heading", label: "Product form"},
+        { type: "heading", label: "Product form" },
         {
           type: "text",
           label: "Add to cart text",
@@ -741,7 +741,7 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "switch",
           name: "hideUnavailableOptions",
         },
-        {type: "heading", label: "Product media"},
+        { type: "heading", label: "Product media" },
         {
           type: "select",
           name: "imageAspectRatio",
@@ -756,7 +756,7 @@ export const themeSchema: HydrogenThemeSchema = {
             ],
           },
         },
-        { 
+        {
           label: "Media direction",
           name: "mediaDirection",
           type: "toggle-group",
@@ -797,7 +797,7 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Product card",
       inputs: [
-        {type: "heading", label: "Image"},
+        { type: "heading", label: "Image" },
         {
           type: "range",
           name: "pcardBorderRadius",
@@ -832,7 +832,7 @@ export const themeSchema: HydrogenThemeSchema = {
           helpText:
             'Learn more about image <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio" target="_blank" rel="noopener noreferrer">aspect ratio</a> property.',
         },
-        {type: "heading", label: "Content"},
+        { type: "heading", label: "Content" },
         {
           type: "toggle-group",
           name: "pcardAlignment",
@@ -888,7 +888,7 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: 2,
           condition: "pcardShowOptionValues.eq.true",
         },
-      ]
-    }
+      ],
+    },
   ],
 };

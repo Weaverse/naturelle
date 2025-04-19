@@ -97,7 +97,10 @@ export function Arrows(props: SlideshowArrowsProps) {
         disabled={!canPrev}
       >
         {arrowsIcon === "caret" ? (
-          <IconCaret direction="left" style={{ width: iconSize, height: iconSize }} />
+          <IconCaret
+            direction="left"
+            style={{ width: iconSize, height: iconSize }}
+          />
         ) : (
           <IconArrowLeft style={{ width: iconSize, height: iconSize }} />
         )}
@@ -117,7 +120,10 @@ export function Arrows(props: SlideshowArrowsProps) {
         disabled={!canNext}
       >
         {arrowsIcon === "caret" ? (
-          <IconCaret direction="right" style={{ width: iconSize, height: iconSize }} />
+          <IconCaret
+            direction="right"
+            style={{ width: iconSize, height: iconSize }}
+          />
         ) : (
           <IconArrowRight style={{ width: iconSize, height: iconSize }} />
         )}

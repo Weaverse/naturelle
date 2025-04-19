@@ -1,12 +1,12 @@
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {useParentInstance} from '@weaverse/hydrogen';
-import {useFetcher, useLoaderData} from '@remix-run/react';
-import {forwardRef, useEffect} from 'react';
-import {usePrefixPathWithLocale} from '~/lib/utils';
-import {StarRating} from '../StarRating';
+} from "@weaverse/hydrogen";
+import { useParentInstance } from "@weaverse/hydrogen";
+import { forwardRef, useEffect } from "react";
+import { usePrefixPathWithLocale } from "~/lib/utils";
+import { StarRating } from "../StarRating";
 type JudgemeReviewsData = {
   rating: number;
   reviewNumber: number;
@@ -19,7 +19,7 @@ let JudgemeReview = forwardRef<HTMLDivElement, HydrogenComponentProps>(
       judgemeReviews: JudgemeReviewsData;
     }>();
     let judgemeReviews = loaderData?.judgemeReviews;
-    let {load, data: fetchData} = useFetcher<JudgemeReviewsData>();
+    let { load, data: fetchData } = useFetcher<JudgemeReviewsData>();
     let context = useParentInstance();
     let handle = context?.data?.product?.handle!;
     let api = usePrefixPathWithLocale(`/api/review/${handle}`);
@@ -46,7 +46,7 @@ let JudgemeReview = forwardRef<HTMLDivElement, HydrogenComponentProps>(
       <div {...props} ref={ref}>
         <div className="space-x-2">
           <StarRating rating={rating} />
-          <span className='align-top'>({reviewNumber})</span>
+          <span className="align-top">({reviewNumber})</span>
         </div>
       </div>
     );
@@ -56,12 +56,12 @@ let JudgemeReview = forwardRef<HTMLDivElement, HydrogenComponentProps>(
 export default JudgemeReview;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'judgeme',
-  title: 'Judgeme review',
-  toolbar: ['general-settings', ['duplicate', 'delete']],
+  type: "judgeme",
+  title: "Judgeme review",
+  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
-      group: 'Judgeme',
+      group: "Judgeme",
       inputs: [],
     },
   ],

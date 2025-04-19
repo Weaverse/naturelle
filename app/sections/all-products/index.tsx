@@ -1,16 +1,16 @@
-import { Button } from "~/components/button";
 import { useLoaderData } from "@remix-run/react";
 import { Pagination } from "@shopify/hydrogen";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import { Grid } from "~/components/Grid";
-import { ProductCard } from "~/components/ProductCard";
-import { getImageLoadingPriority } from "~/lib/utils/const";
 import { Children, forwardRef } from "react";
 import type { AllProductsQuery } from "storefrontapi.generated";
-import { layoutInputs, Section, SectionProps } from "../atoms/Section";
+import { Grid } from "~/components/Grid";
+import { ProductCard } from "~/components/ProductCard";
+import { Button } from "~/components/button";
+import { getImageLoadingPriority } from "~/lib/utils/const";
+import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
 
 interface AllProductsProps extends HydrogenComponentProps {
   heading: string;
@@ -60,7 +60,7 @@ let AllProducts = forwardRef<HTMLElement, AllProductsProps & SectionProps>(
         </Pagination>
       </Section>
     );
-  }
+  },
 );
 
 export default AllProducts;

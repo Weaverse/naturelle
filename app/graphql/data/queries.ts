@@ -4,7 +4,7 @@ import {
   MEDIA_FRAGMENT,
   PRODUCT_CARD_FRAGMENT,
   PRODUCT_VARIANT_FRAGMENT,
-} from '~/graphql/data/fragments';
+} from "~/graphql/data/fragments";
 
 export const BLOG_QUERY = `#graphql
 query BlogSingle(

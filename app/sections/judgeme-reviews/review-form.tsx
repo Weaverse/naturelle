@@ -1,12 +1,12 @@
-import { Button } from "~/components/button";
-import { Input } from "~/components/input";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { IconFilledStar, IconStarReview } from "~/components/Icon";
 import { StarRating } from "~/components/StarRating";
-import { JudgemeReviewsData } from "~/lib/utils/judgeme";
-import { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import { Button } from "~/components/button";
+import { Input } from "~/components/input";
+import type { JudgemeReviewsData } from "~/lib/utils/judgeme";
+import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 
 export function ReviewForm({
   judgemeReviews,
@@ -49,7 +49,7 @@ export function ReviewForm({
     <div
       className={clsx(
         "w-full flex flex-col gap-5",
-        judgemeReviews.reviews.length !== 0 && "lg:w-1/3 md:w-2/5"
+        judgemeReviews.reviews.length !== 0 && "lg:w-1/3 md:w-2/5",
       )}
     >
       {judgemeReviews.reviews.length !== 0 || !isFormVisible ? (
@@ -57,7 +57,9 @@ export function ReviewForm({
           data-motion="fade-up"
           className={clsx(
             "flex flex-col gap-4 bg-[#E0E5D6] p-6 w-full",
-            judgemeReviews.reviews.length === 0 ? "items-center" : "items-start"
+            judgemeReviews.reviews.length === 0
+              ? "items-center"
+              : "items-start",
           )}
         >
           <p className="uppercase font-heading font-semibold text-xl mb-1.5">
@@ -94,20 +96,20 @@ export function ReviewForm({
           data-motion="fade-up"
           className={clsx(
             "bg-[#E0E5D6] p-6 w-full",
-            judgemeReviews.reviews.length === 0 && "flex justify-center"
+            judgemeReviews.reviews.length === 0 && "flex justify-center",
           )}
         >
           <div
             className={clsx(
               "w-full flex flex-col gap-4",
-              judgemeReviews.reviews.length === 0 && "lg:w-1/3 md:w-2/5"
+              judgemeReviews.reviews.length === 0 && "lg:w-1/3 md:w-2/5",
             )}
           >
             <div className="flex flex-col gap-6">
               <span
                 className={clsx(
                   judgemeReviews.reviews.length === 0 && "text-center",
-                  "font-heading font-semibold text-xl uppercase"
+                  "font-heading font-semibold text-xl uppercase",
                 )}
               >
                 WRITE YOUR REVIEW
@@ -242,7 +244,7 @@ export function ReviewForm({
           data-motion="fade-up"
           className={clsx(
             "flex flex-col gap-6 p-6 bg-[#E0E5D6] w-full",
-            judgemeReviews.reviews.length === 0 && "items-center"
+            judgemeReviews.reviews.length === 0 && "items-center",
           )}
           role="alert"
         >
@@ -257,7 +259,7 @@ export function ReviewForm({
               "flex items-center",
               judgemeReviews.reviews.length === 0
                 ? "justify-center"
-                : "justify-end"
+                : "justify-end",
             )}
           >
             <Button

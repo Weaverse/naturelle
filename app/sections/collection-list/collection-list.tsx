@@ -1,14 +1,14 @@
-import {Button} from '~/components/button';
-import {useLoaderData} from '@remix-run/react';
-import {Pagination} from '@shopify/hydrogen';
+import { useLoaderData } from "@remix-run/react";
+import { Pagination } from "@shopify/hydrogen";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import { forwardRef} from 'react';
-import {useInView} from 'react-intersection-observer';
-import type {StoreCollectionsQuery} from 'storefrontapi.generated';
-import {CollectionsLoadedOnScroll} from './collection-loader-on-scroll';
+} from "@weaverse/hydrogen";
+import { forwardRef } from "react";
+import { useInView } from "react-intersection-observer";
+import type { StoreCollectionsQuery } from "storefrontapi.generated";
+import { Button } from "~/components/button";
+import { CollectionsLoadedOnScroll } from "./collection-loader-on-scroll";
 
 interface CollectionListProps extends HydrogenComponentProps {
   collectionsPerRow: number;
@@ -17,9 +17,9 @@ interface CollectionListProps extends HydrogenComponentProps {
 
 let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
   (props, sectionRef) => {
-    let {ref, inView} = useInView();
-    let {collections} = useLoaderData<StoreCollectionsQuery>();
-    let {collectionsPerRow, lazyLoadImage, children, ...rest} = props;
+    let { ref, inView } = useInView();
+    let { collections } = useLoaderData<StoreCollectionsQuery>();
+    let { collectionsPerRow, lazyLoadImage, children, ...rest } = props;
     return (
       <div ref={sectionRef} {...rest}>
         <Pagination connection={collections}>
@@ -37,7 +37,7 @@ let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
             <>
               <div className="mb-6 flex items-center justify-center">
                 <Button ref={ref} as={PreviousLink} variant="outline">
-                  {isLoading ? 'Loading...' : 'Previous collections'}
+                  {isLoading ? "Loading..." : "Previous collections"}
                 </Button>
               </div>
               <CollectionsLoadedOnScroll
@@ -53,7 +53,7 @@ let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
               />
               <div className="mt-6 flex items-center justify-center">
                 <Button ref={ref} as={NextLink} variant="outline">
-                  {isLoading ? 'Loading...' : 'Next collections'}
+                  {isLoading ? "Loading..." : "Next collections"}
                 </Button>
               </div>
             </>
@@ -67,18 +67,18 @@ let CollectionListItem = forwardRef<HTMLDivElement, CollectionListProps>(
 export default CollectionListItem;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'collection-list--item',
-  title: 'Collection list',
+  type: "collection-list--item",
+  title: "Collection list",
   limit: 1,
-  toolbar: ['general-settings'],
+  toolbar: ["general-settings"],
   inspector: [
     {
-      group: 'Collection list',
+      group: "Collection list",
       inputs: [
         {
-          type: 'range',
-          name: 'collectionsPerRow',
-          label: 'Collections per row',
+          type: "range",
+          name: "collectionsPerRow",
+          label: "Collections per row",
           defaultValue: 3,
           configs: {
             min: 1,
@@ -87,9 +87,9 @@ export let schema: HydrogenComponentSchema = {
           },
         },
         {
-          type: 'switch',
-          name: 'lazyLoadImage',
-          label: 'Lazy load image',
+          type: "switch",
+          name: "lazyLoadImage",
+          label: "Lazy load image",
           defaultValue: true,
         },
       ],

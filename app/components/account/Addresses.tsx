@@ -1,6 +1,3 @@
-import { Button } from "~/components/button";
-import { Checkbox } from "~/components/checkbox";
-import { Input } from "~/components/input";
 import { Dialog } from "@headlessui/react";
 import {
   Form,
@@ -15,6 +12,9 @@ import type {
   CustomerFragment,
 } from "customer-accountapi.generated";
 import { useEffect, useState } from "react";
+import { Button } from "~/components/button";
+import { Checkbox } from "~/components/checkbox";
+import { Input } from "~/components/input";
 import { IconClose } from "../Icon";
 
 function AddressCard(props: {

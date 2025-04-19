@@ -1,20 +1,20 @@
-import { Button } from "~/components/button";
+import { Portal } from "@headlessui/react";
 import { useFetcher } from "@remix-run/react";
-import { Jsonify } from "@remix-run/server-runtime/dist/jsonify";
+import type { Jsonify } from "@remix-run/server-runtime/dist/jsonify";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import { Text } from "~/components/Text";
-import { ProductData } from "~/lib/utils/products";
-import { getExcerpt } from "~/lib/utils";
+import { Button } from "~/components/button";
 import { ProductDetail } from "~/components/product-form/product-detail";
+import { getExcerpt } from "~/lib/utils";
+import type { ProductData } from "~/lib/utils/products";
 import { AddToCartButton } from "./AddToCartButton";
+import { Link } from "./Link";
 import { Modal } from "./Modal";
 import { ProductMedia } from "./product-form/product-media";
 import { Quantity } from "./product-form/quantity";
 import { ProductVariants } from "./product-form/variants";
-import { Portal } from "@headlessui/react";
-import { Link } from "./Link";
 
 export function QuickView(props: { data: Jsonify<ProductData> }) {
   const { data } = props;
@@ -30,7 +30,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
   let { product, variants: _variants, storeDomain, shop } = data || {};
 
   let [selectedVariant, setSelectedVariant] = useState<any>(
-    product?.selectedVariant
+    product?.selectedVariant,
   );
 
   let variants = _variants?.product?.variants;
@@ -71,8 +71,8 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
   let atcText = selectedVariant?.availableForSale
     ? addToCartText
     : selectedVariant?.quantityAvailable === -1
-    ? unavailableText
-    : soldOutText;
+      ? unavailableText
+      : soldOutText;
   return (
     <div className="p-10 rounded-2xl bg-background w-[80vw] max-w-[1000px]">
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-12">

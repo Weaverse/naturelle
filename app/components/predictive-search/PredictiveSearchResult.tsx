@@ -1,11 +1,11 @@
-import {Link} from '@remix-run/react';
-import {SearchResultItem} from './ResultItem';
-import {
+import { Link } from "@remix-run/react";
+import clsx from "clsx";
+import type {
   NormalizedPredictiveSearchResultItem,
   NormalizedPredictiveSearchResults,
   SearchResultTypeProps,
-} from '../../lib/types/search-types';
-import clsx from "clsx";
+} from "../../lib/types/search-types";
+import { SearchResultItem } from "./ResultItem";
 
 export function PredictiveSearchResult({
   goToSearchResult,
@@ -13,7 +13,7 @@ export function PredictiveSearchResult({
   searchTerm,
   type,
 }: SearchResultTypeProps) {
-  const isSuggestions = type === 'queries';
+  const isSuggestions = type === "queries";
   const categoryUrl = `/search?q=${
     searchTerm.current
   }&type=${pluralToSingularSearchType(type)}`;
@@ -24,9 +24,16 @@ export function PredictiveSearchResult({
       key={type}
     >
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
-        <span className="uppercase font-semibold font-heading text-xl">{isSuggestions ? 'Suggestions' : type}</span>
+        <span className="uppercase font-semibold font-heading text-xl">
+          {isSuggestions ? "Suggestions" : type}
+        </span>
       </Link>
-      <ul className={clsx("pt-5", type === "products" ? 'space-y-4' : 'space-y-1')}>
+      <ul
+        className={clsx(
+          "pt-5",
+          type === "products" ? "space-y-4" : "space-y-1",
+        )}
+      >
         {items.map((item: NormalizedPredictiveSearchResultItem) => (
           <SearchResultItem
             goToSearchResult={goToSearchResult}
@@ -50,20 +57,20 @@ export function PredictiveSearchResult({
  */
 function pluralToSingularSearchType(
   type:
-    | NormalizedPredictiveSearchResults[number]['type']
-    | Array<NormalizedPredictiveSearchResults[number]['type']>,
+    | NormalizedPredictiveSearchResults[number]["type"]
+    | Array<NormalizedPredictiveSearchResults[number]["type"]>,
 ) {
   const plural = {
-    articles: 'ARTICLE',
-    collections: 'COLLECTION',
-    pages: 'PAGE',
-    products: 'PRODUCT',
-    queries: 'QUERY',
+    articles: "ARTICLE",
+    collections: "COLLECTION",
+    pages: "PAGE",
+    products: "PRODUCT",
+    queries: "QUERY",
   };
 
-  if (typeof type === 'string') {
+  if (typeof type === "string") {
     return plural[type];
   }
 
-  return type.map((t) => plural[t]).join(',');
+  return type.map((t) => plural[t]).join(",");
 }

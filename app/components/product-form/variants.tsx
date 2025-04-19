@@ -1,10 +1,10 @@
 import { VariantSelector } from "@shopify/hydrogen";
+import clsx from "clsx";
 import type {
   ProductQuery,
   ProductVariantFragmentFragment,
 } from "storefrontapi.generated";
 import { VariantOption } from "./options";
-import clsx from "clsx";
 
 interface ProductVariantsProps {
   selectedVariant: ProductVariantFragmentFragment;
@@ -107,11 +107,16 @@ export function ProductVariants(props: ProductVariantsProps) {
             );
           });
           let selectedValue = selectedOptions?.find(
-            (opt) => opt.name === optionName
+            (opt) => opt.name === optionName,
           )?.value!;
 
           return (
-            <div className={clsx("flex flex-col gap-2", isDisabled && "opacity-50 cursor-not-allowed")}>
+            <div
+              className={clsx(
+                "flex flex-col gap-2",
+                isDisabled && "opacity-50 cursor-not-allowed",
+              )}
+            >
               <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-[4rem]">
                 <span className="font-semibold text-base">
                   {config?.displayName || optionName}:

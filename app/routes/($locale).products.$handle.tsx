@@ -1,30 +1,35 @@
 import {
+  type MetaFunction,
   useLoaderData,
   useSearchParams,
-  type MetaFunction,
-} from '@remix-run/react';
+} from "@remix-run/react";
 import {
   AnalyticsPageType,
-  getSeoMeta,
-  ShopifyAnalyticsProduct,
   type SeoConfig,
-} from '@shopify/hydrogen';
-import type {SelectedOptionInput} from '@shopify/hydrogen/storefront-api-types';
-import { type ActionFunctionArgs, type LoaderFunctionArgs, type HeadersFunction, data } from '@shopify/remix-oxygen';
-import {getSelectedProductOptions} from '@weaverse/hydrogen';
-import {routeHeaders} from '~/data/cache';
+  type ShopifyAnalyticsProduct,
+  getSeoMeta,
+} from "@shopify/hydrogen";
+import type { SelectedOptionInput } from "@shopify/hydrogen/storefront-api-types";
+import {
+  type ActionFunctionArgs,
+  type HeadersFunction,
+  type LoaderFunctionArgs,
+  data,
+} from "@shopify/remix-oxygen";
+import { getSelectedProductOptions } from "@weaverse/hydrogen";
+import { useEffect } from "react";
+import type { ProductRecommendationsQuery } from "storefrontapi.generated";
+import invariant from "tiny-invariant";
+import { routeHeaders } from "~/data/cache";
 import {
   PRODUCT_QUERY,
   RECOMMENDED_PRODUCTS_QUERY,
   VARIANTS_QUERY,
-} from '~/graphql/data/queries';
-import {createJudgemeReview, getJudgemeReviews} from '~/lib/utils/judgeme';
-import {seoPayload} from '~/lib/seo.server';
-import type {Storefront} from '~/lib/types/type-locale';
-import {WeaverseContent} from '~/weaverse';
-import {useEffect} from 'react';
-import type {ProductRecommendationsQuery} from 'storefrontapi.generated';
-import invariant from 'tiny-invariant';
+} from "~/graphql/data/queries";
+import { seoPayload } from "~/lib/seo.server";
+import type { Storefront } from "~/lib/types/type-locale";
+import { createJudgemeReview, getJudgemeReviews } from "~/lib/utils/judgeme";
+import { WeaverseContent } from "~/weaverse";
 
 export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
   return {
@@ -34,14 +39,14 @@ export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
   };
 };
 
-export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {handle} = params;
-  console.log('productHandle', handle);
+export async function loader({ params, request, context }: LoaderFunctionArgs) {
+  const { handle } = params;
+  console.log("productHandle", handle);
 
-  invariant(handle, 'Missing productHandle param, check route filename');
+  invariant(handle, "Missing productHandle param, check route filename");
 
   const selectedOptions = getSelectedProductOptions(request);
-  const {shop, product} = await context.storefront.query(PRODUCT_QUERY, {
+  const { shop, product } = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle: handle,
       selectedOptions,
@@ -51,7 +56,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   });
 
   if (!product?.id) {
-    throw new Response('product', {status: 404});
+    throw new Response("product", { status: 404 });
   }
 
   if (!product.selectedVariant && product.options.length) {
@@ -102,7 +107,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     judgeme_API_TOKEN,
     shop_domain,
     handle,
-    context.weaverse
+    context.weaverse,
   );
 
   return {
@@ -115,11 +120,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       pageType: AnalyticsPageType.product,
       resourceId: product.id,
       products: [productAnalytics],
-      totalValue: parseFloat(selectedVariant.price.amount),
+      totalValue: Number.parseFloat(selectedVariant.price.amount),
     },
     seo,
     weaverseData: await context.weaverse.loadPage({
-      type: 'PRODUCT',
+      type: "PRODUCT",
       handle: handle,
     }),
     judgemeReviews,
@@ -139,13 +144,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
   response = await createJudgemeReview(
     judgeme_API_TOKEN,
     shop_domain,
-    formData
+    formData,
   );
   const { status, ...rest } = response;
   return data(rest, { status });
 }
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return getSeoMeta(data!.seo as SeoConfig);
 };
 // function redirectToFirstVariant({
@@ -171,7 +176,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
  * We need to handle the route change from client to keep the view transition persistent
  */
 let useApplyFirstVariant = () => {
-  let {product} = useLoaderData<typeof loader>();
+  let { product } = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -200,11 +205,11 @@ async function getRecommendedProducts(
   const products = await storefront.query<ProductRecommendationsQuery>(
     RECOMMENDED_PRODUCTS_QUERY,
     {
-      variables: {productId, count: 12},
+      variables: { productId, count: 12 },
     },
   );
 
-  invariant(products, 'No data returned from Shopify API');
+  invariant(products, "No data returned from Shopify API");
 
   const mergedProducts = (products.recommended ?? [])
     .concat(products.additional.nodes)
@@ -219,5 +224,5 @@ async function getRecommendedProducts(
 
   mergedProducts.splice(originalProduct, 1);
 
-  return {nodes: mergedProducts};
+  return { nodes: mergedProducts };
 }

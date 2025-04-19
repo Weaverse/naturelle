@@ -1,7 +1,7 @@
-import { cn } from "~/lib/utils";
 import { Dialog, Transition } from "@headlessui/react";
 import { useLocation } from "@remix-run/react";
 import { Fragment, useEffect, useState } from "react";
+import { cn } from "~/lib/utils";
 import { IconArrowLeft, IconClose } from "./Icon";
 
 /**
@@ -75,16 +75,18 @@ export function Drawer({
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
                         ? "h-fit w-screen"
-                        : `h-screen-dynamic w-screen ${maxWidth}`
+                        : `h-screen-dynamic w-screen ${maxWidth}`,
                   )}
                 >
                   <header
                     className={cn(
                       "sticky top-0 flex h-nav items-center px-6 py-5",
                       heading ? "justify-between" : "justify-items-end",
-                      openFrom === "left" || isForm === "cart" || (openFrom === "top" && !isBackMenu)
+                      openFrom === "left" ||
+                        isForm === "cart" ||
+                        (openFrom === "top" && !isBackMenu)
                         ? "flex-row-reverse"
-                        : ""
+                        : "",
                     )}
                   >
                     <button
@@ -97,7 +99,13 @@ export function Drawer({
                     </button>
                     {heading !== null && (
                       <Dialog.Title as="span">
-                        <span className={cn("font-semibold font-heading text-xl text-text-primary", isForm !== 'search' && 'uppercase')} id="cart-contents">
+                        <span
+                          className={cn(
+                            "font-semibold font-heading text-xl text-text-primary",
+                            isForm !== "search" && "uppercase",
+                          )}
+                          id="cart-contents"
+                        >
                           {heading}
                         </span>
                       </Dialog.Title>
@@ -116,7 +124,9 @@ export function Drawer({
                         />
                       </button>
                     )}
-                    {isForm !== 'cart' && isForm !== 'filter' && !isBackMenu && <div className="p-0" />}
+                    {isForm !== "cart" &&
+                      isForm !== "filter" &&
+                      !isBackMenu && <div className="p-0" />}
                   </header>
                   {children}
                 </Dialog.Panel>

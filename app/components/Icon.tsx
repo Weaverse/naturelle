@@ -1,13 +1,13 @@
 import { cn } from "~/lib/utils";
 
-type IconProps = JSX.IntrinsicElements['svg'] & {
-  direction?: 'up' | 'right' | 'down' | 'left';
+type IconProps = JSX.IntrinsicElements["svg"] & {
+  direction?: "up" | "right" | "down" | "left";
 };
 
 function Icon({
   children,
   className,
-  fill = 'currentColor',
+  fill = "currentColor",
   stroke,
   ...props
 }: IconProps) {
@@ -18,7 +18,7 @@ function Icon({
       {...props}
       fill={fill}
       stroke={stroke}
-      className={cn('h-5 w-5', className)}
+      className={cn("h-5 w-5", className)}
     >
       {children}
     </svg>
@@ -47,7 +47,12 @@ export function IconAccount(props: IconProps) {
 
 export function IconSearch(props: IconProps) {
   return (
-    <Icon {...props} viewBox='0 0 24 24' fill="none" stroke={props.stroke || 'currentColor'}>
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.stroke || "currentColor"}
+    >
       <title>Search</title>
       <path d="M10.8751 18.75C15.2244 18.75 18.7501 15.2242 18.7501 10.875C18.7501 6.52576 15.2244 3 10.8751 3C6.52588 3 3.00012 6.52576 3.00012 10.875C3.00012 15.2242 6.52588 18.75 10.8751 18.75Z" />
       <path d="M16.4438 16.4438L21.0001 21.0001" />
@@ -57,11 +62,23 @@ export function IconSearch(props: IconProps) {
 
 export function IconLogin(props: IconProps) {
   return (
-    <Icon {...props} viewBox="0 0 24 24" fill="none" stroke={props.stroke || 'currentColor'}>
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.stroke || "currentColor"}
+    >
       <title>Login</title>
-      <path d="M12 15C15.3137 15 18 12.3137 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 12.3137 8.68629 15 12 15Z" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2.90625 20.2501C3.82775 18.6537 5.15328 17.328 6.74958 16.4062C8.34588 15.4845 10.1567 14.9993 12 14.9993C13.8433 14.9993 15.6541 15.4845 17.2504 16.4062C18.8467 17.328 20.1722 18.6537 21.0938 20.2501" strokeLinecap="round" strokeLinejoin="round" />
-
+      <path
+        d="M12 15C15.3137 15 18 12.3137 18 9C18 5.68629 15.3137 3 12 3C8.68629 3 6 5.68629 6 9C6 12.3137 8.68629 15 12 15Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.90625 20.2501C3.82775 18.6537 5.15328 17.328 6.74958 16.4062C8.34588 15.4845 10.1567 14.9993 12 14.9993C13.8433 14.9993 15.6541 15.4845 17.2504 16.4062C18.8467 17.328 20.1722 18.6537 21.0938 20.2501"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </Icon>
   );
 }
@@ -88,7 +105,12 @@ export function IconBag(props: IconProps) {
 
 export function IconArrowRight(props: IconProps) {
   return (
-    <Icon {...props} fill="currentColor" stroke={props.stroke || 'currentColor'} viewBox='0 0 256 256'>
+    <Icon
+      {...props}
+      fill="currentColor"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 256 256"
+    >
       <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
     </Icon>
   );
@@ -96,7 +118,12 @@ export function IconArrowRight(props: IconProps) {
 
 export function IconArrowLeft(props: IconProps) {
   return (
-    <Icon {...props} fill="currentColor" stroke={props.stroke || 'currentColor'} viewBox='0 0 256 256'>
+    <Icon
+      {...props}
+      fill="currentColor"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 256 256"
+    >
       <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z" />
     </Icon>
   );
@@ -104,7 +131,7 @@ export function IconArrowLeft(props: IconProps) {
 
 export function IconImageBlank(props: IconProps) {
   return (
-    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="none" stroke={props.stroke || "currentColor"}>
       <path
         d="M325 212.7H203.5C201.9 212.7 200.7 214 200.7 215.5V308C200.7 309.6 202 310.8 203.5 310.8H325.1C326.7 310.8 327.9 309.5 327.9 308V215.5C327.9 213.9 326.6 212.7 325 212.7ZM326.1 308C326.1 308.6 325.6 309.1 325 309.1H203.5C202.9 309.1 202.4 308.6 202.4 308V215.5C202.4 214.9 202.9 214.4 203.5 214.4H325.1C325.7 214.4 326.2 214.9 326.2 215.5V308H326.1Z"
         fill="black"
@@ -213,7 +240,7 @@ export function IconArrowSlideLeft(props: IconProps) {
 
 export function IconClose(props: IconProps) {
   return (
-    <Icon {...props} stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} stroke={props.stroke || "currentColor"}>
       <title>Close</title>
       <line
         x1="4.44194"
@@ -238,7 +265,7 @@ export function IconFilledStar(props: IconProps) {
     <Icon
       {...props}
       viewBox="0 0 24 24"
-      stroke={props.stroke || 'currentColor'}
+      stroke={props.stroke || "currentColor"}
       strokeWidth="2"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -255,7 +282,7 @@ export function IconStarReview(props: IconProps) {
     <Icon
       {...props}
       viewBox="0 0 24 24"
-      stroke={props.stroke || 'currentColor'}
+      stroke={props.stroke || "currentColor"}
       strokeWidth="2"
       fill="none"
     >
@@ -269,7 +296,7 @@ export function IconHalfFilledStar(props: IconProps) {
     <Icon
       {...props}
       viewBox="0 0 24 24"
-      stroke={props.stroke || 'currentColor'}
+      stroke={props.stroke || "currentColor"}
       strokeWidth="2"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -284,7 +311,7 @@ export function IconHalfFilledStar(props: IconProps) {
 
 export function IconFilters(props: IconProps) {
   return (
-    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="transparent" stroke={props.stroke || "currentColor"}>
       <title>Filters</title>
       <circle cx="4.5" cy="6.5" r="2" />
       <line x1="6" y1="6.5" x2="14" y2="6.5" />
@@ -297,27 +324,27 @@ export function IconFilters(props: IconProps) {
 }
 
 export function IconCaret({
-  direction = 'down',
-  stroke = 'currentColor',
+  direction = "down",
+  stroke = "currentColor",
   ...props
 }: IconProps) {
   let rotate;
 
   switch (direction) {
-    case 'down':
-      rotate = 'rotate-90';
+    case "down":
+      rotate = "rotate-90";
       break;
-    case 'up':
-      rotate = '-rotate-90';
+    case "up":
+      rotate = "-rotate-90";
       break;
-    case 'left':
-      rotate = 'rotate-180';
+    case "left":
+      rotate = "rotate-180";
       break;
-    case 'right':
-      rotate = 'rotate-0';
+    case "right":
+      rotate = "rotate-0";
       break;
     default:
-      rotate = 'rotate-0';
+      rotate = "rotate-0";
   }
 
   return (
@@ -335,7 +362,7 @@ export function IconCaret({
 }
 
 export function IconXMark({
-  stroke = 'currentColor',
+  stroke = "currentColor",
   ...props
 }: React.ComponentProps<typeof Icon>) {
   return (
@@ -352,7 +379,7 @@ export function IconXMark({
 
 export function IconFacebook(props: IconProps) {
   return (
-    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="transparent" stroke={props.stroke || "currentColor"}>
       <path
         d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
         strokeWidth="2"
@@ -377,7 +404,7 @@ export function IconFacebook(props: IconProps) {
 
 export function IconPinterest(props: IconProps) {
   return (
-    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="transparent" stroke={props.stroke || "currentColor"}>
       <path
         d="M11.25 8.25L8.25 21"
         strokeWidth="2"
@@ -398,8 +425,8 @@ export function IconEllipse(props: IconProps) {
   return (
     <Icon
       {...props}
-      fill={props.fill || 'transparent'}
-      stroke={props.stroke || 'currentColor'}
+      fill={props.fill || "transparent"}
+      stroke={props.stroke || "currentColor"}
     >
       <path d="M79.6774 5.47561C99.8959 9.77319 117.576 16.5012 129.814 23.8896C135.935 27.585 140.67 31.431 143.685 35.1995C146.703 38.9717 147.95 42.6023 147.248 45.9078C146.545 49.2133 143.929 52.0229 139.638 54.2414C135.351 56.4578 129.461 58.0452 122.365 58.9314C108.18 60.7033 89.2924 59.6587 69.0739 55.3611C48.8554 51.0636 31.1758 44.3355 18.9376 36.9472C12.8163 33.2517 8.08095 29.4058 5.06595 25.6373C2.04802 21.8651 0.801053 18.2345 1.50366 14.929C2.20628 11.6234 4.82214 8.81389 9.11343 6.59534C13.4006 4.37894 19.2908 2.79154 26.3859 1.90531C40.5712 0.133482 59.4589 1.17803 79.6774 5.47561Z" />
     </Icon>
@@ -410,7 +437,7 @@ export function IconSpinner(props: IconProps) {
   return (
     <Icon
       {...props}
-      fill={props.fill || 'transparent'}
+      fill={props.fill || "transparent"}
       viewBox="0 0 256 256"
       className="animate-spin"
     >
@@ -498,7 +525,7 @@ export function IconSpinner(props: IconProps) {
 
 export function IconNewsletter(props: IconProps) {
   return (
-    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="transparent" stroke={props.stroke || "currentColor"}>
       <mask
         id="mask0_1610_14828"
         maskUnits="userSpaceOnUse"
@@ -532,7 +559,7 @@ export function IconNewsletter(props: IconProps) {
 
 export function IconInstagram(props: IconProps) {
   return (
-    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="none" stroke={props.stroke || "currentColor"}>
       <path
         d="M12.5 16.25C14.5711 16.25 16.25 14.5711 16.25 12.5C16.25 10.4289 14.5711 8.75 12.5 8.75C10.4289 8.75 8.75 10.4289 8.75 12.5C8.75 14.5711 10.4289 16.25 12.5 16.25Z"
         stroke="white"
@@ -556,24 +583,41 @@ export function IconInstagram(props: IconProps) {
 }
 
 export function IconArrowScrollRight(props: IconProps) {
-  return(
-    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
-      <path d="M16.9863 11.5136L16.9864 11.5136C17.0503 11.5774 17.101 11.6533 17.1356 11.7367C17.1702 11.8202 17.188 11.9097 17.188 12C17.188 12.0904 17.1702 12.1798 17.1356 12.2633C17.101 12.3467 17.0503 12.4226 16.9864 12.4864L16.9863 12.4864L9.48633 19.9864C9.35732 20.1154 9.18235 20.1879 8.9999 20.1879C8.81745 20.1879 8.64248 20.1154 8.51347 19.9864C8.38446 19.8574 8.31198 19.6824 8.31198 19.5C8.31198 19.3176 8.38446 19.1426 8.51347 19.0136L15.4838 12.0442L15.528 12L15.4838 11.9558L8.51347 4.98643C8.44959 4.92255 8.39892 4.84672 8.36435 4.76326C8.32977 4.67979 8.31198 4.59034 8.31198 4.5C8.31198 4.40966 8.32977 4.32021 8.36435 4.23675C8.39892 4.15328 8.44959 4.07745 8.51347 4.01357C8.57735 3.94969 8.65318 3.89902 8.73664 3.86445C8.82011 3.82988 8.90956 3.81208 8.9999 3.81208C9.09024 3.81208 9.17969 3.82988 9.26315 3.86445C9.34661 3.89902 9.42245 3.94969 9.48633 4.01357L16.9863 11.5136Z" fill="#1E1C1A" stroke="#696662" stroke-width="0.125"/>
+  return (
+    <Icon {...props} fill="none" stroke={props.stroke || "currentColor"}>
+      <path
+        d="M16.9863 11.5136L16.9864 11.5136C17.0503 11.5774 17.101 11.6533 17.1356 11.7367C17.1702 11.8202 17.188 11.9097 17.188 12C17.188 12.0904 17.1702 12.1798 17.1356 12.2633C17.101 12.3467 17.0503 12.4226 16.9864 12.4864L16.9863 12.4864L9.48633 19.9864C9.35732 20.1154 9.18235 20.1879 8.9999 20.1879C8.81745 20.1879 8.64248 20.1154 8.51347 19.9864C8.38446 19.8574 8.31198 19.6824 8.31198 19.5C8.31198 19.3176 8.38446 19.1426 8.51347 19.0136L15.4838 12.0442L15.528 12L15.4838 11.9558L8.51347 4.98643C8.44959 4.92255 8.39892 4.84672 8.36435 4.76326C8.32977 4.67979 8.31198 4.59034 8.31198 4.5C8.31198 4.40966 8.32977 4.32021 8.36435 4.23675C8.39892 4.15328 8.44959 4.07745 8.51347 4.01357C8.57735 3.94969 8.65318 3.89902 8.73664 3.86445C8.82011 3.82988 8.90956 3.81208 8.9999 3.81208C9.09024 3.81208 9.17969 3.82988 9.26315 3.86445C9.34661 3.89902 9.42245 3.94969 9.48633 4.01357L16.9863 11.5136Z"
+        fill="#1E1C1A"
+        stroke="#696662"
+        stroke-width="0.125"
+      />
     </Icon>
-  )
+  );
 }
 
 export function IconArrowScrollLeft(props: IconProps) {
-  return(
-    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'}>
-      <path d="M7.01367 12.4864L7.01365 12.4864C6.94972 12.4226 6.89902 12.3467 6.86442 12.2633C6.82982 12.1798 6.81201 12.0903 6.81201 12C6.81201 11.9096 6.82982 11.8202 6.86442 11.7367C6.89902 11.6533 6.94972 11.5774 7.01365 11.5136L7.01367 11.5136L14.5137 4.01357C14.6427 3.88456 14.8177 3.81208 15.0001 3.81208C15.1825 3.81208 15.3575 3.88456 15.4865 4.01357C15.6155 4.14258 15.688 4.31755 15.688 4.5C15.688 4.68244 15.6155 4.85742 15.4865 4.98643L8.51622 11.9558L8.47202 12L8.51622 12.0442L15.4865 19.0136C15.5504 19.0774 15.6011 19.1533 15.6357 19.2367C15.6702 19.3202 15.688 19.4097 15.688 19.5C15.688 19.5903 15.6702 19.6798 15.6357 19.7633C15.6011 19.8467 15.5504 19.9226 15.4865 19.9864C15.4227 20.0503 15.3468 20.101 15.2634 20.1355C15.1799 20.1701 15.0904 20.1879 15.0001 20.1879C14.9098 20.1879 14.8203 20.1701 14.7368 20.1355C14.6534 20.101 14.5775 20.0503 14.5137 19.9864L7.01367 12.4864Z" fill="#1E1C1A" stroke="#696662" stroke-width="0.125"/>
+  return (
+    <Icon {...props} fill="none" stroke={props.stroke || "currentColor"}>
+      <path
+        d="M7.01367 12.4864L7.01365 12.4864C6.94972 12.4226 6.89902 12.3467 6.86442 12.2633C6.82982 12.1798 6.81201 12.0903 6.81201 12C6.81201 11.9096 6.82982 11.8202 6.86442 11.7367C6.89902 11.6533 6.94972 11.5774 7.01365 11.5136L7.01367 11.5136L14.5137 4.01357C14.6427 3.88456 14.8177 3.81208 15.0001 3.81208C15.1825 3.81208 15.3575 3.88456 15.4865 4.01357C15.6155 4.14258 15.688 4.31755 15.688 4.5C15.688 4.68244 15.6155 4.85742 15.4865 4.98643L8.51622 11.9558L8.47202 12L8.51622 12.0442L15.4865 19.0136C15.5504 19.0774 15.6011 19.1533 15.6357 19.2367C15.6702 19.3202 15.688 19.4097 15.688 19.5C15.688 19.5903 15.6702 19.6798 15.6357 19.7633C15.6011 19.8467 15.5504 19.9226 15.4865 19.9864C15.4227 20.0503 15.3468 20.101 15.2634 20.1355C15.1799 20.1701 15.0904 20.1879 15.0001 20.1879C14.9098 20.1879 14.8203 20.1701 14.7368 20.1355C14.6534 20.101 14.5775 20.0503 14.5137 19.9864L7.01367 12.4864Z"
+        fill="#1E1C1A"
+        stroke="#696662"
+        stroke-width="0.125"
+      />
     </Icon>
-  )
+  );
 }
 
 export function IconCircle(props: IconProps) {
   return (
-    <Icon {...props} fill="currentColor" stroke={props.stroke || 'currentColor'} viewBox="0 0 256 256" width="32" height="32">
+    <Icon
+      {...props}
+      fill="currentColor"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 256 256"
+      width="32"
+      height="32"
+    >
       <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"></path>
     </Icon>
   );
@@ -581,7 +625,14 @@ export function IconCircle(props: IconProps) {
 
 export function IconPlus(props: IconProps) {
   return (
-    <Icon {...props} fill="currentColor" stroke={props.stroke || 'currentColor'} viewBox="0 0 256 256" width="32" height="32">
+    <Icon
+      {...props}
+      fill="currentColor"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 256 256"
+      width="32"
+      height="32"
+    >
       <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
     </Icon>
   );
@@ -589,7 +640,14 @@ export function IconPlus(props: IconProps) {
 
 export function IconHandBag(props: IconProps) {
   return (
-    <Icon {...props} fill="currentColor" stroke={props.stroke || 'currentColor'} viewBox="0 0 256 256" width="32" height="32">
+    <Icon
+      {...props}
+      fill="currentColor"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 256 256"
+      width="32"
+      height="32"
+    >
       <path d="M239.89,198.12l-14.26-120a16,16,0,0,0-16-14.12H176a48,48,0,0,0-96,0H46.33a16,16,0,0,0-16,14.12l-14.26,120A16,16,0,0,0,20,210.6a16.13,16.13,0,0,0,12,5.4H223.92A16.13,16.13,0,0,0,236,210.6,16,16,0,0,0,239.89,198.12ZM128,32a32,32,0,0,1,32,32H96A32,32,0,0,1,128,32ZM32,200,46.33,80H80v24a8,8,0,0,0,16,0V80h64v24a8,8,0,0,0,16,0V80h33.75l14.17,120Z"></path>
     </Icon>
   );
@@ -597,32 +655,66 @@ export function IconHandBag(props: IconProps) {
 
 export function IconTag(props: IconProps) {
   return (
-    <Icon {...props} fill="currentColor" stroke={props.stroke || 'currentColor'} viewBox="0 0 256 256" width="32" height="32">
+    <Icon
+      {...props}
+      fill="currentColor"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 256 256"
+      width="32"
+      height="32"
+    >
       <path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z"></path>
     </Icon>
   );
 }
 
-export function IconListMenu(props: IconProps){
-  return(
-    <Icon {...props} fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
-      <path d="M21 12C21 12.1989 20.921 12.3897 20.7803 12.5303C20.6397 12.671 20.4489 12.75 20.25 12.75H3.75C3.55109 12.75 3.36032 12.671 3.21967 12.5303C3.07902 12.3897 3 12.1989 3 12C3 11.8011 3.07902 11.6103 3.21967 11.4697C3.36032 11.329 3.55109 11.25 3.75 11.25H20.25C20.4489 11.25 20.6397 11.329 20.7803 11.4697C20.921 11.6103 21 11.8011 21 12ZM3.75 6.75H20.25C20.4489 6.75 20.6397 6.67098 20.7803 6.53033C20.921 6.38968 21 6.19891 21 6C21 5.80109 20.921 5.61032 20.7803 5.46967C20.6397 5.32902 20.4489 5.25 20.25 5.25H3.75C3.55109 5.25 3.36032 5.32902 3.21967 5.46967C3.07902 5.61032 3 5.80109 3 6C3 6.19891 3.07902 6.38968 3.21967 6.53033C3.36032 6.67098 3.55109 6.75 3.75 6.75ZM20.25 17.25H3.75C3.55109 17.25 3.36032 17.329 3.21967 17.4697C3.07902 17.6103 3 17.8011 3 18C3 18.1989 3.07902 18.3897 3.21967 18.5303C3.36032 18.671 3.55109 18.75 3.75 18.75H20.25C20.4489 18.75 20.6397 18.671 20.7803 18.5303C20.921 18.3897 21 18.1989 21 18C21 17.8011 20.921 17.6103 20.7803 17.4697C20.6397 17.329 20.4489 17.25 20.25 17.25Z" fill="currentColor"/>
+export function IconListMenu(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+    >
+      <path
+        d="M21 12C21 12.1989 20.921 12.3897 20.7803 12.5303C20.6397 12.671 20.4489 12.75 20.25 12.75H3.75C3.55109 12.75 3.36032 12.671 3.21967 12.5303C3.07902 12.3897 3 12.1989 3 12C3 11.8011 3.07902 11.6103 3.21967 11.4697C3.36032 11.329 3.55109 11.25 3.75 11.25H20.25C20.4489 11.25 20.6397 11.329 20.7803 11.4697C20.921 11.6103 21 11.8011 21 12ZM3.75 6.75H20.25C20.4489 6.75 20.6397 6.67098 20.7803 6.53033C20.921 6.38968 21 6.19891 21 6C21 5.80109 20.921 5.61032 20.7803 5.46967C20.6397 5.32902 20.4489 5.25 20.25 5.25H3.75C3.55109 5.25 3.36032 5.32902 3.21967 5.46967C3.07902 5.61032 3 5.80109 3 6C3 6.19891 3.07902 6.38968 3.21967 6.53033C3.36032 6.67098 3.55109 6.75 3.75 6.75ZM20.25 17.25H3.75C3.55109 17.25 3.36032 17.329 3.21967 17.4697C3.07902 17.6103 3 17.8011 3 18C3 18.1989 3.07902 18.3897 3.21967 18.5303C3.36032 18.671 3.55109 18.75 3.75 18.75H20.25C20.4489 18.75 20.6397 18.671 20.7803 18.5303C20.921 18.3897 21 18.1989 21 18C21 17.8011 20.921 17.6103 20.7803 17.4697C20.6397 17.329 20.4489 17.25 20.25 17.25Z"
+        fill="currentColor"
+      />
     </Icon>
   );
 }
 
-export function IconPlusLinkFooter({open, ...props}: IconProps & {open?: boolean}) {
+export function IconPlusLinkFooter({
+  open,
+  ...props
+}: IconProps & { open?: boolean }) {
   return (
-    <Icon {...props} fill="none" stroke={props.stroke || 'currentColor'} viewBox="0 0 20 21">
-      {!open && <path d="M3.125 10.3301H16.875" strokeLinecap="round" strokeLinejoin="round" />}
-      <path d="M10 3.45508V17.2051" strokeLinecap="round" strokeLinejoin="round" />
+    <Icon
+      {...props}
+      fill="none"
+      stroke={props.stroke || "currentColor"}
+      viewBox="0 0 20 21"
+    >
+      {!open && (
+        <path
+          d="M3.125 10.3301H16.875"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      <path
+        d="M10 3.45508V17.2051"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </Icon>
   );
 }
 
 export function IconCheck(props: IconProps) {
   return (
-    <Icon {...props} fill="transparent" stroke={props.stroke || 'currentColor'}>
+    <Icon {...props} fill="transparent" stroke={props.stroke || "currentColor"}>
       <title>Check</title>
       <circle cx="10" cy="10" r="7.25" strokeWidth="1.25" />
       <path

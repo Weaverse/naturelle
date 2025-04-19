@@ -1,30 +1,34 @@
-import {Await, type MetaFunction} from '@remix-run/react';
-import {Suspense} from 'react';
-import type {CartQueryDataReturn} from '@shopify/hydrogen';
-import {CartForm} from '@shopify/hydrogen';
-import { data, type ActionFunctionArgs, type HeadersFunction } from '@shopify/remix-oxygen';
-import {useRootLoaderData} from '~/root';
-import { CartApiQueryFragment } from 'storefrontapi.generated';
-import { CartMain } from '~/components/cart/Cart';
+import { Await, type MetaFunction } from "@remix-run/react";
+import type { CartQueryDataReturn } from "@shopify/hydrogen";
+import { CartForm } from "@shopify/hydrogen";
+import {
+  type ActionFunctionArgs,
+  type HeadersFunction,
+  data,
+} from "@shopify/remix-oxygen";
+import { Suspense } from "react";
+import type { CartApiQueryFragment } from "storefrontapi.generated";
+import { CartMain } from "~/components/cart/Cart";
+import { useRootLoaderData } from "~/root";
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{ title: `Hydrogen | Cart` }];
 };
 
 export const headers: HeadersFunction = ({ actionHeaders }) => actionHeaders;
 
-export async function action({request, context}: ActionFunctionArgs) {
-  const {cart} = context;
+export async function action({ request, context }: ActionFunctionArgs) {
+  const { cart } = context;
 
   const [formData, customerAccessToken] = await Promise.all([
     request.formData(),
     await context.customerAccount.getAccessToken(),
   ]);
 
-  const {action, inputs} = CartForm.getFormInput(formData);
+  const { action, inputs } = CartForm.getFormInput(formData);
 
   if (!action) {
-    throw new Error('No action provided');
+    throw new Error("No action provided");
   }
 
   let status = 200;
@@ -67,12 +71,12 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   const cartId = result.cart.id;
   const headers = cart.setCartId(result.cart.id);
-  const {cart: cartResult, errors} = result;
+  const { cart: cartResult, errors } = result;
 
-  const redirectTo = formData.get('redirectTo') ?? null;
-  if (typeof redirectTo === 'string') {
+  const redirectTo = formData.get("redirectTo") ?? null;
+  if (typeof redirectTo === "string") {
     status = 303;
-    headers.set('Location', redirectTo);
+    headers.set("Location", redirectTo);
   }
 
   return data(
@@ -83,7 +87,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         cartId,
       },
     },
-    {status, headers},
+    { status, headers },
   );
 }
 
@@ -102,7 +106,9 @@ export default function Cart() {
           errorElement={<div>An error occurred</div>}
         >
           {(cart) => {
-            return <CartMain layout="page" cart={cart as CartApiQueryFragment} />;
+            return (
+              <CartMain layout="page" cart={cart as CartApiQueryFragment} />
+            );
           }}
         </Await>
       </Suspense>

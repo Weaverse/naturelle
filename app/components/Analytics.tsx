@@ -1,5 +1,5 @@
-import {useAnalytics} from '@shopify/hydrogen';
-import {useEffect} from 'react';
+import { useAnalytics } from "@shopify/hydrogen";
+import { useEffect } from "react";
 
 declare global {
   interface Window {
@@ -8,13 +8,13 @@ declare global {
 }
 
 export function CustomAnalytics() {
-  const {subscribe, register} = useAnalytics();
-  const {ready} = register('Google Tag Manager');
+  const { subscribe, register } = useAnalytics();
+  const { ready } = register("Google Tag Manager");
 
   useEffect(() => {
-    subscribe('product_viewed', () => {
+    subscribe("product_viewed", () => {
       // Triggering a custom event in GTM when a product is viewed
-      window?.dataLayer?.push({event: 'viewed-product'});
+      window?.dataLayer?.push({ event: "viewed-product" });
     });
 
     ready();

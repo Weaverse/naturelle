@@ -1,8 +1,8 @@
-import { Input } from '~/components/input';
-import {IconSearch} from '../../../Icon';
-import {PredictiveSearchForm} from '../../SearchForm';
-import { SearchTypeDrawerResults } from './SearchTypeDrawerResults';
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from "@remix-run/react";
+import { Input } from "~/components/input";
+import { IconSearch } from "../../../Icon";
+import { PredictiveSearchForm } from "../../SearchForm";
+import { SearchTypeDrawerResults } from "./SearchTypeDrawerResults";
 
 interface PredictiveSearchProps {
   // Predictive search props
@@ -10,11 +10,11 @@ interface PredictiveSearchProps {
 }
 
 export function SearchTypeDrawer(props: PredictiveSearchProps) {
-  let {isOpen} = props;
+  let { isOpen } = props;
   let navigate = useNavigate();
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       let searchQuery = (event.target as HTMLInputElement).value.trim();
       if (searchQuery) {
@@ -25,7 +25,7 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
   return (
     <div className="border-t border-border-subtle flex flex-col">
       <PredictiveSearchForm>
-        {({fetchResults, inputRef}) => (
+        {({ fetchResults, inputRef }) => (
           <div className="mx-auto w-full max-w-full p-6">
             <Input
               name="q"

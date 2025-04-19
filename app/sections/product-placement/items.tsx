@@ -1,14 +1,14 @@
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
-} from '@weaverse/hydrogen';
-import {Grid} from '~/components/Grid';
-import clsx from 'clsx';
-import {CSSProperties, forwardRef} from 'react';
-import {Swiper, SwiperSlide} from 'swiper/react';
-import 'swiper/swiper-bundle.css';
-import 'swiper/css/pagination';
-import {Pagination} from 'swiper/modules';
+} from "@weaverse/hydrogen";
+import clsx from "clsx";
+import { type CSSProperties, forwardRef } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Grid } from "~/components/Grid";
+import "swiper/swiper-bundle.css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 
 interface ProductPlacementItemsProps extends HydrogenComponentProps {
   productsPerRow: number;
@@ -20,14 +20,15 @@ const ProductPlacementItems = forwardRef<
   HTMLDivElement,
   ProductPlacementItemsProps
 >((props, ref) => {
-  let {productsPerRow, thumbnailRatio, itemsSpacing, children, ...rest} = props;
+  let { productsPerRow, thumbnailRatio, itemsSpacing, children, ...rest } =
+    props;
   let contentStyle: CSSProperties = {
-    '--item-thumbs-ratio': thumbnailRatio,
-    '--items-spacing': `${itemsSpacing}px`,
-    '--swiper-theme-color': '#3D490B',
-    '--swiper-pagination-bullet-width': '12px',
-    '--swiper-pagination-bullet-height': '2px',
-    '--swiper-pagination-bullet-border-radius': '2px',
+    "--item-thumbs-ratio": thumbnailRatio,
+    "--items-spacing": `${itemsSpacing}px`,
+    "--swiper-theme-color": "#3D490B",
+    "--swiper-pagination-bullet-width": "12px",
+    "--swiper-pagination-bullet-height": "2px",
+    "--swiper-pagination-bullet-border-radius": "2px",
   } as CSSProperties;
   return (
     <div ref={ref} {...rest} style={contentStyle} className="w-full bg-inherit">
@@ -66,16 +67,16 @@ const ProductPlacementItems = forwardRef<
 export default ProductPlacementItems;
 
 export const schema: HydrogenComponentSchema = {
-  type: 'product-placement--items',
-  title: 'Items',
+  type: "product-placement--items",
+  title: "Items",
   inspector: [
     {
-      group: 'Product',
+      group: "Product",
       inputs: [
         {
-          type: 'range',
-          name: 'productsPerRow',
-          label: 'Products per row',
+          type: "range",
+          name: "productsPerRow",
+          label: "Products per row",
           defaultValue: 3,
           configs: {
             min: 1,
@@ -84,23 +85,23 @@ export const schema: HydrogenComponentSchema = {
           },
         },
         {
-          type: 'select',
-          label: 'Thumbnail ratio',
-          name: 'thumbnailRatio',
+          type: "select",
+          label: "Thumbnail ratio",
+          name: "thumbnailRatio",
           configs: {
             options: [
-              {value: '1/1', label: '1/1'},
-              {value: '3/4', label: '3/4'},
-              {value: '4/3', label: '4/3'},
-              {value: '6/4', label: '6/4'},
+              { value: "1/1", label: "1/1" },
+              { value: "3/4", label: "3/4" },
+              { value: "4/3", label: "4/3" },
+              { value: "6/4", label: "6/4" },
             ],
           },
-          defaultValue: '1/1',
+          defaultValue: "1/1",
         },
         {
-          type: 'range',
-          name: 'itemsSpacing',
-          label: 'Items spacing',
+          type: "range",
+          name: "itemsSpacing",
+          label: "Items spacing",
           defaultValue: 24,
           configs: {
             min: 0,
@@ -111,20 +112,20 @@ export const schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  childTypes: ['product-placement--item'],
+  childTypes: ["product-placement--item"],
   presets: {
     children: [
       {
-        type: 'product-placement--item',
+        type: "product-placement--item",
       },
       {
-        type: 'product-placement--item',
+        type: "product-placement--item",
       },
       {
-        type: 'product-placement--item',
+        type: "product-placement--item",
       },
       {
-        type: 'product-placement--item',
+        type: "product-placement--item",
       },
     ],
   },

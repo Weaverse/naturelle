@@ -1,6 +1,6 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { animate, inView, useAnimate } from "framer-motion";
-import { ForwardedRef, useEffect } from "react";
+import { type ForwardedRef, useEffect } from "react";
 
 type MotionType = "fade-up" | "fade-in" | "zoom-in" | "slide-in";
 
@@ -32,7 +32,7 @@ export function useMotion(ref?: ForwardedRef<any>) {
           elem,
           ({ target }) => {
             let { motion, delay } = elem.dataset;
-            animate(target, ANIMATIONS[motion as MotionType || "fade-up"], {
+            animate(target, ANIMATIONS[(motion as MotionType) || "fade-up"], {
               delay: Number(delay) || idx * 0.15,
               duration: 0.5,
             });
@@ -40,7 +40,7 @@ export function useMotion(ref?: ForwardedRef<any>) {
               scope.current.classList.remove("animated-scope");
             }
           },
-          { amount: 0.3 }
+          { amount: 0.3 },
         );
       });
     }

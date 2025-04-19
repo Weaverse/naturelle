@@ -2,8 +2,8 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import { cva, VariantProps } from "class-variance-authority";
-import { CSSProperties, forwardRef } from "react";
+import { type VariantProps, cva } from "class-variance-authority";
+import { type CSSProperties, forwardRef } from "react";
 import { cn } from "~/lib/utils";
 
 let variants = cva("", {
@@ -67,7 +67,7 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
         "border-y border-y-[var(--border-color)]",
         "overflow-hidden",
         variants({ width: scrollWidth }),
-        !visibleOnMobile && "hidden sm:block"
+        !visibleOnMobile && "hidden sm:block",
       )}
     >
       <div className="sm:hidden block text-center font-heading text-base">

@@ -1,7 +1,7 @@
-import { Image } from "~/components/image";
 import type { InspectorGroup, WeaverseImage } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
+import { Image } from "~/components/image";
 
 let variants = cva("absolute inset-0 w-full h-full z-[-1]", {
   variants: {

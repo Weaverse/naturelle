@@ -1,11 +1,11 @@
-import {type MetaFunction} from '@remix-run/react';
-import {getSeoMeta, type SeoConfig} from '@shopify/hydrogen';
-import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import {seoPayload} from '~/lib/seo.server';
-import {WeaverseContent} from '~/weaverse';
+import type { MetaFunction } from "@remix-run/react";
+import { type SeoConfig, getSeoMeta } from "@shopify/hydrogen";
+import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
+import { seoPayload } from "~/lib/seo.server";
+import { WeaverseContent } from "~/weaverse";
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront} = context;
+export async function loader({ context }: LoaderFunctionArgs) {
+  const { storefront } = context;
   const recommendedProducts = await storefront.query(
     RECOMMENDED_PRODUCTS_QUERY,
   );
@@ -18,7 +18,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   };
 }
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return getSeoMeta(data!.seo as SeoConfig);
 };
 export default function Homepage() {

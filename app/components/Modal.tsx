@@ -1,7 +1,7 @@
-import {Button} from '~/components/button';
-import {Link} from '@remix-run/react';
-import {useEffect} from 'react';
-import {IconClose} from './Icon';
+import { Link } from "@remix-run/react";
+import { useEffect } from "react";
+import { Button } from "~/components/button";
+import { IconClose } from "./Icon";
 
 export function Modal({
   children,
@@ -13,11 +13,11 @@ export function Modal({
   onClose?: () => void;
 }) {
   useEffect(() => {
-    if (!document.body.classList.contains('overflow-hidden')) {
-      document.body.classList.add('overflow-hidden');
+    if (!document.body.classList.contains("overflow-hidden")) {
+      document.body.classList.add("overflow-hidden");
     }
     return () => {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     };
   }, []);
 
@@ -30,11 +30,9 @@ export function Modal({
       id="modal-bg"
     >
       <div className="fixed inset-0 bg-black/60 bg-opacity-75 transition-opacity"></div>
-      <div
-        className="fixed inset-0 z-50 overflow-y-hidden"
-      >
+      <div className="fixed inset-0 z-50 overflow-y-hidden">
         <div className="relative flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-          <div className='absolute inset-0 z-10' onClick={onClose}/>
+          <div className="absolute inset-0 z-10" onClick={onClose} />
           <div
             className="relative z-20 flex-1 transform overflow-hidden rounded text-left transition-all sm:flex-none"
             role="dialog"

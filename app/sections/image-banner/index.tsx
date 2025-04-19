@@ -1,13 +1,13 @@
 import {
-  IMAGES_PLACEHOLDERS,
   type HydrogenComponentSchema,
+  IMAGES_PLACEHOLDERS,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { forwardRef } from "react";
-import { Section, SectionProps, layoutInputs } from "../atoms/Section";
 import { backgroundInputs } from "../atoms/BackgroundImage";
 import { overlayInputs } from "../atoms/Overlay";
+import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
 
 export interface SlideShowBannerItemProps
   extends VariantProps<typeof variants> {
@@ -54,7 +54,10 @@ let HeaderImage = forwardRef<
     "--horizontal-padding": `${horizontalPadding}px`,
   } as React.CSSProperties;
   return (
-    <div style={style} className="px-[var(--horizontal-padding)] md:px-[calc(var(--horizontal-padding) * 1.5)] lg:px-[calc(var(--horizontal-padding) * 2)]">
+    <div
+      style={style}
+      className="px-[var(--horizontal-padding)] md:px-[calc(var(--horizontal-padding) * 1.5)] lg:px-[calc(var(--horizontal-padding) * 2)]"
+    >
       <Section
         ref={ref}
         {...rest}

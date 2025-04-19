@@ -1,7 +1,7 @@
-import {flattenConnection} from '@shopify/hydrogen';
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {SitemapsQuery} from 'storefrontapi.generated';
-import invariant from 'tiny-invariant';
+import { flattenConnection } from "@shopify/hydrogen";
+import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
+import type { SitemapsQuery } from "storefrontapi.generated";
+import invariant from "tiny-invariant";
 
 const MAX_URLS = 250; // the google limit is 50K, however, SF API only allow querying for 250 resources each time
 
@@ -18,7 +18,7 @@ interface ProductEntry {
 
 export async function loader({
   request,
-  context: {storefront},
+  context: { storefront },
 }: LoaderFunctionArgs) {
   const data = await storefront.query(SITEMAP_QUERY, {
     variables: {
@@ -27,15 +27,15 @@ export async function loader({
     },
   });
 
-  invariant(data, 'Sitemap data is missing');
+  invariant(data, "Sitemap data is missing");
 
   return new Response(
-    shopSitemap({data, baseUrl: new URL(request.url).origin}),
+    shopSitemap({ data, baseUrl: new URL(request.url).origin }),
     {
       headers: {
-        'content-type': 'application/xml',
+        "content-type": "application/xml",
         // Cache for 24 hours
-        'cache-control': `max-age=${60 * 60 * 24}`,
+        "cache-control": `max-age=${60 * 60 * 24}`,
       },
     },
   );
@@ -45,7 +45,10 @@ function xmlEncode(string: string) {
   return string.replace(/[&<>'"]/g, (char) => `&#${char.charCodeAt(0)};`);
 }
 
-function shopSitemap({data, baseUrl}: {data: SitemapsQuery; baseUrl: string}) {
+function shopSitemap({
+  data,
+  baseUrl,
+}: { data: SitemapsQuery; baseUrl: string }) {
   const productsData = flattenConnection(data.products)
     .filter((product) => product.onlineStoreUrl)
     .map((product) => {
@@ -54,7 +57,7 @@ function shopSitemap({data, baseUrl}: {data: SitemapsQuery; baseUrl: string}) {
       const finalObject: ProductEntry = {
         url,
         lastMod: product.updatedAt,
-        changeFreq: 'daily',
+        changeFreq: "daily",
       };
 
       if (product.featuredImage?.url) {
@@ -82,7 +85,7 @@ function shopSitemap({data, baseUrl}: {data: SitemapsQuery; baseUrl: string}) {
       return {
         url,
         lastMod: collection.updatedAt,
-        changeFreq: 'daily',
+        changeFreq: "daily",
       };
     });
 
@@ -94,7 +97,7 @@ function shopSitemap({data, baseUrl}: {data: SitemapsQuery; baseUrl: string}) {
       return {
         url,
         lastMod: page.updatedAt,
-        changeFreq: 'weekly',
+        changeFreq: "weekly",
       };
     });
 
@@ -105,7 +108,7 @@ function shopSitemap({data, baseUrl}: {data: SitemapsQuery; baseUrl: string}) {
       xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
       xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
     >
-      ${urlsDatas.map((url) => renderUrlTag(url)).join('')}
+      ${urlsDatas.map((url) => renderUrlTag(url)).join("")}
     </urlset>`;
 }
 
@@ -134,10 +137,10 @@ function renderUrlTag({
           ? `
         <image:image>
           <image:loc>${image.url}</image:loc>
-          <image:title>${image.title ?? ''}</image:title>
-          <image:caption>${image.caption ?? ''}</image:caption>
+          <image:title>${image.title ?? ""}</image:title>
+          <image:caption>${image.caption ?? ""}</image:caption>
         </image:image>`
-          : ''
+          : ""
       }
 
     </url>

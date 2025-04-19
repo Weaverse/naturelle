@@ -1,8 +1,8 @@
-import {useNavigate} from '@remix-run/react';
-import {useEffect} from 'react';
-import {Grid} from '~/components/Grid';
-import {ProductCard} from '~/components/ProductCard';
-import {getImageLoadingPriority} from '~/lib/utils/const';
+import { useNavigate } from "@remix-run/react";
+import { useEffect } from "react";
+import { Grid } from "~/components/Grid";
+import { ProductCard } from "~/components/ProductCard";
+import { getImageLoadingPriority } from "~/lib/utils/const";
 
 type ProductsLoadedOnScrollProps = {
   nodes: any;
@@ -13,7 +13,7 @@ type ProductsLoadedOnScrollProps = {
 };
 
 export function ProductsLoadedOnScroll(props: ProductsLoadedOnScrollProps) {
-  let {nodes, inView, nextPageUrl, hasNextPage, state} = props;
+  let { nodes, inView, nextPageUrl, hasNextPage, state } = props;
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function ProductsLoadedOnScroll(props: ProductsLoadedOnScrollProps) {
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   return (
-    <Grid layout="products" className='!gap-y-10'>
+    <Grid layout="products" className="!gap-y-10">
       {nodes.map((product: any, i: number) => (
         <ProductCard
           quickAdd

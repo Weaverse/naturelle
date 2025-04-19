@@ -1,6 +1,10 @@
 import { useFetchers } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
-import { NormalizedPredictiveSearch, NormalizedPredictiveSearchResults, UseSearchReturn } from "../lib/types/search-types";
+import type {
+  NormalizedPredictiveSearch,
+  NormalizedPredictiveSearchResults,
+  UseSearchReturn,
+} from "../lib/types/search-types";
 
 export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
   { type: "queries", items: [] },

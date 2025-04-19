@@ -1,12 +1,12 @@
-import type {HydrogenComponentSchema} from '@weaverse/hydrogen';
-import {forwardRef} from 'react';
-import {layoutInputs, Section, SectionProps} from '../atoms/Section';
+import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { forwardRef } from "react";
+import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
 
 type CollectionListProps = SectionProps;
 
 let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
   (props, ref) => {
-    let {children, ...rest} = props;
+    let { children, ...rest } = props;
     return (
       <Section ref={ref} {...rest}>
         {children}
@@ -18,28 +18,30 @@ let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
 export default CollectionList;
 
 export let schema: HydrogenComponentSchema = {
-  type: 'collection-list',
-  title: 'Collection list',
+  type: "collection-list",
+  title: "Collection list",
   limit: 1,
   enabledOn: {
-    pages: ['COLLECTION_LIST'],
+    pages: ["COLLECTION_LIST"],
   },
-  toolbar: ['general-settings'],
+  toolbar: ["general-settings"],
   inspector: [
     {
-      group: 'Layout',
-      inputs: layoutInputs.filter(({ name }) => name !== 'divider' && name !== 'borderRadius'),
+      group: "Layout",
+      inputs: layoutInputs.filter(
+        ({ name }) => name !== "divider" && name !== "borderRadius",
+      ),
     },
   ],
-  childTypes: ['heading', 'collection-list--item'],
+  childTypes: ["heading", "collection-list--item"],
   presets: {
     children: [
       {
-        type: 'heading',
-        content: 'Collections',
+        type: "heading",
+        content: "Collections",
       },
       {
-        type: 'collection-list--item',
+        type: "collection-list--item",
       },
     ],
   },

@@ -1,13 +1,13 @@
-import { IconFilledStar, IconHalfFilledStar, IconStarReview } from "~/components/Icon";
+import {
+  IconFilledStar,
+  IconHalfFilledStar,
+  IconStarReview,
+} from "~/components/Icon";
 
 export function StarRating({ rating }: { rating: number }) {
-  let filledStar = (
-    <IconFilledStar className="w-4 h-4"/>
-  )
-  let halfFilledStar = (
-    <IconHalfFilledStar className="w-4 h-4" />
-  )
-  let star = <IconStarReview className="w-4 h-4" />
+  let filledStar = <IconFilledStar className="w-4 h-4" />;
+  let halfFilledStar = <IconHalfFilledStar className="w-4 h-4" />;
+  let star = <IconStarReview className="w-4 h-4" />;
   return (
     <div className="inline-flex gap-0.5">
       {rating >= 1 ? filledStar : rating >= 0.5 ? halfFilledStar : star}
@@ -16,5 +16,5 @@ export function StarRating({ rating }: { rating: number }) {
       {rating >= 4 ? filledStar : rating >= 3.5 ? halfFilledStar : star}
       {rating >= 5 ? filledStar : rating >= 4.5 ? halfFilledStar : star}
     </div>
-  )
+  );
 }
