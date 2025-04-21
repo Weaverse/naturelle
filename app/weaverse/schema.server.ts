@@ -1,4 +1,5 @@
 import type { HydrogenThemeSchema } from "@weaverse/hydrogen";
+import pkg from "../../package.json";
 let variantSwatch = {
   configs: [],
   swatches: {
@@ -8,7 +9,7 @@ let variantSwatch = {
 };
 export const themeSchema: HydrogenThemeSchema = {
   info: {
-    version: "1.0.0",
+    version: pkg.version,
     author: "Weaverse",
     name: "Naturélle",
     authorProfilePhoto:

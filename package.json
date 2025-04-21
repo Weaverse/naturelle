@@ -23,7 +23,7 @@
     "@fontsource-variable/cormorant": "^5.2.5",
     "@fontsource-variable/nunito-sans": "^5.2.5",
     "@fontsource-variable/open-sans": "^5.2.5",
-    "@headlessui/react": "^2.2.2",
+    "@headlessui/react": "^2.2.0",
     "@phosphor-icons/react": "^2.1.7",
     "@radix-ui/react-checkbox": "^1.2.2",
     "@radix-ui/react-dialog": "^1.1.10",
@@ -86,6 +86,8 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "browserslist": ["defaults"],
+  "browserslist": [
+    "defaults"
+  ],
   "type": "module"
 }

@@ -30,9 +30,9 @@ export function useMotion(ref?: ForwardedRef<any>) {
       elems.forEach((elem: HTMLElement, idx: number) => {
         inView(
           elem,
-          ({ target }) => {
+          () => {
             let { motion, delay } = elem.dataset;
-            animate(target, ANIMATIONS[(motion as MotionType) || "fade-up"], {
+            animate(elem, ANIMATIONS[(motion as MotionType) || "fade-up"], {
               delay: Number(delay) || idx * 0.15,
               duration: 0.5,
             });

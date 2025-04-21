@@ -206,11 +206,10 @@ const Instagram = forwardRef<HTMLElement, InstagramProps>((props, ref) => {
 export default Instagram;
 
 export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
-  let { weaverse, data } = args;
-  let { fetchWithCache } = weaverse;
+  let {weaverse, data} = args;
   if (data.instagramToken) {
     let API = `https://graph.instagram.com/me/media?fields=id,media_url,username&access_token=${data.instagramToken}`;
-    let res = await fetchWithCache(API);
+    let res = await weaverse.fetchWithCache(API);
     return res;
   }
   return null;
@@ -219,7 +218,6 @@ export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
 export const schema: HydrogenComponentSchema = {
   type: "instagram",
   title: "Instagram",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
       group: "Instagram",
