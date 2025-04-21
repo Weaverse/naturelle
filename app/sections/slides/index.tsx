@@ -80,7 +80,6 @@ export default Slides;
 export let schema: HydrogenComponentSchema = {
   type: "slides-index",
   title: "Slides",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
       group: "Slides",
