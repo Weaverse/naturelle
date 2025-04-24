@@ -94,7 +94,8 @@ export default HotspotsItem;
 
 export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   let { weaverse, data } = args;
-  let { storefront } = weaverse;
+  let { storefront, env } = weaverse;
+  let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
   if (!data?.product) {
     return null;
   }
@@ -103,6 +104,8 @@ export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
     variables: {
       handle: productHandle,
       selectedOptions: [],
+      namespace: metafield.split('.')[0],
+      key: metafield.split('.')[1],
       language: storefront.i18n.language,
       country: storefront.i18n.country,
     },
@@ -114,7 +117,6 @@ export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
 export let schema: HydrogenComponentSchema = {
   type: "hotspots--item",
   title: "Hotspots item",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
       group: "Icon",

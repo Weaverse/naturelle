@@ -41,15 +41,17 @@ export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
 
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { handle } = params;
-  console.log("productHandle", handle);
 
   invariant(handle, "Missing productHandle param, check route filename");
 
   const selectedOptions = getSelectedProductOptions(request);
+  let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
   const { shop, product } = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle: handle,
       selectedOptions,
+      namespace: metafield.split('.')[0],
+      key: metafield.split('.')[1],
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },

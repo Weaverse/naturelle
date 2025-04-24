@@ -22,6 +22,7 @@ declare global {
     // declare additional Env parameter use in the fetch handler and Remix loader context here
     PUBLIC_GOOGLE_GTM_ID: string;
     JUDGEME_PRIVATE_API_TOKEN: string;
+    PRODUCT_CUSTOM_DATA_METAFIELD: string;
   }
 }
 

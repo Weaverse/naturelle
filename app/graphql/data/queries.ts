@@ -85,6 +85,8 @@ export let PRODUCT_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $handle: String!
+    $namespace: String!
+    $key: String!
     $selectedOptions: [SelectedOptionInput!]!
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
@@ -98,6 +100,25 @@ export let PRODUCT_QUERY = `#graphql
         name
         values
       }
+    metafield(namespace: $namespace, key: $key) {
+      key
+      id
+      description
+      namespace
+      type
+      value
+      reference {
+        __typename
+        ... on Metaobject {
+          id
+          type
+          fields {
+            key
+            value
+          }
+        }
+      }
+    } 
       selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
         ...ProductVariantFragment
       }

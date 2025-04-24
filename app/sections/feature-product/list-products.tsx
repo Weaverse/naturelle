@@ -16,6 +16,7 @@ import { ProductCard } from "~/components/ProductCard";
 import { getImageLoadingPriority } from "~/lib/utils/const";
 import { Arrows, type SlideshowArrowsProps } from "./arrows";
 import { Number } from "./number";
+import clsx from "clsx";
 
 type FeaturedProductsData = {
   products: WeaverseCollection;
@@ -90,7 +91,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
     let id = rest["data-wv-id"];
     let key = `slideshow-${id}`;
     let [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
-      null,
+      null
     );
     return (
       <div
@@ -98,7 +99,10 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         ref={ref}
         {...rest}
         data-motion="fade-up"
-        className={"group/arrow flex flex-col gap-12 px-0 md:px-8 lg:px-12"}
+        className={clsx(
+          "group/arrow flex flex-col gap-12",
+          showArrows && "px-0 md:px-8 lg:px-12"
+        )}
       >
         <Swiper
           onSwiper={setSwiperInstance}
@@ -135,7 +139,7 @@ const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
         {showNumber && <Number {...props} instance={swiperInstance} />}
       </div>
     );
-  },
+  }
 );
 
 export default ListProducts;
@@ -267,5 +271,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
 };

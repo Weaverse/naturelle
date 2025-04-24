@@ -5,7 +5,7 @@ export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
 const OPTIONS_AS_IMAGE = ["Image", "Images"];
 const OPTIONS_AS_DROPDOWN = ["Dropdown", "Dropdowns"];
-const OPTION_AS_DEFAULT = ["Size", "Shape", "Sizes"];
+const OPTION_AS_MORPHOLOGY = ["Size", "Shape", "Sizes"];
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
@@ -133,8 +133,8 @@ export function VariantOption(props: VariantOptionProps) {
       </div>
     );
   }
-  return (
-    <div className="flex gap-3 flex-wrap">
+  if (OPTION_AS_MORPHOLOGY.includes(name)) {
+    return (<div className="flex gap-3 flex-wrap">
       {values.map((value) => (
         <div
           key={value.value}
@@ -151,6 +151,6 @@ export function VariantOption(props: VariantOptionProps) {
           {value.value}
         </div>
       ))}
-    </div>
-  );
+    </div>)
+  }
 }

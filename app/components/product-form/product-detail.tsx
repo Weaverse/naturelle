@@ -36,15 +36,19 @@ export function ProductDetail({
           </Disclosure.Button>
 
           <Disclosure.Panel
-            className={"pt-4 lg:px-6 px-1.5 flex flex-col lg:flex-row gap-6"}
+            className={
+              "pt-4 lg:px-6 px-1.5 flex flex-col justify-center items-center gap-6"
+            }
           >
-            <p className="font-semibold text-base w-full lg:w-1/3">
-              About this product
-            </p>
-            <p
-              className="lg:w-2/3 w-full"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            <div className="flex flex-col lg:flex-row gap-6">
+              <p className="font-semibold text-base w-full lg:w-1/3">
+                About this product
+              </p>
+              <p
+                className="lg:w-2/3 w-full"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </div>
             {learnMore && (
               <div className="">
                 <Link

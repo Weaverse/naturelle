@@ -96,7 +96,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           <div className="flex flex-col justify-start gap-4">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                <h2 className="font-medium tracking-tighter">{title}</h2>
+                <h2 className="font-medium tracking-tighter line-clamp-2">{title}</h2>
                 {showVendor && vendor && (
                   <Text className={"opacity-50 font-medium"}>{vendor}</Text>
                 )}
@@ -185,7 +185,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                 View full details
               </Link>
             </div>
-            {(showShippingPolicy && shippingPolicy?.body) ||
+            {/* {(showShippingPolicy && shippingPolicy?.body) ||
             (showRefundPolicy && refundPolicy?.body) ? (
               <div className="grid gap-4 py-4">
                 {showShippingPolicy && shippingPolicy?.body && (
@@ -203,7 +203,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
                   />
                 )}
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </div>
       </div>

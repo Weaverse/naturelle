@@ -76,7 +76,7 @@ export function CountrySelector() {
             </span>
           </summary>
           <div
-            className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border-t border-border-subtle bg-background dark:border-white transition-all duration-500
+            className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border border-border-subtle bg-background dark:border-white transition-all duration-500
             ${isOpen ? "max-h-36" : "max-h-0"}`}
           >
             {countries &&

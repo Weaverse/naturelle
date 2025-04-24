@@ -313,11 +313,14 @@ export let loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
   if (!data.product) {
     return null;
   }
+  let metafield = weaverse.env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
   let productHandle = data.product.handle;
   let { product, shop } = await storefront.query<ProductQuery>(PRODUCT_QUERY, {
     variables: {
       handle: productHandle,
       selectedOptions: [],
+      namespace: metafield.split('.')[0],
+      key: metafield.split('.')[1],
       language: storefront.i18n.language,
       country: storefront.i18n.country,
     },
@@ -481,5 +484,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
 };

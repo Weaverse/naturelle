@@ -19,10 +19,12 @@ import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
 import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import { MetaFieldTable } from "./metafield";
 interface ProductInformationProps extends SectionProps {
   addToCartText: string;
   soldOutText: string;
   unavailableText: string;
+  widthButton: string;
   showVendor: boolean;
   showSalePrice: boolean;
   showDetails: boolean;
@@ -59,6 +61,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
       addToCartText,
       soldOutText,
       unavailableText,
+      widthButton,
       showVendor,
       showSalePrice,
       showDetails,
@@ -140,6 +143,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                 {
                   "--shop-pay-button-border-radius": "9999px",
                   "--shop-pay-button-height": "56px",
+                  "--width-button": widthButton,
                 } as React.CSSProperties
               }
             >
@@ -213,7 +217,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   isDisabled={isLoading}
                   onChange={setQuantity}
                 />
-                <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
+                <div className="flex flex-col gap-3 sm:w-[var(--width-button)] p-4 sm:p-0">
                   <div data-motion="fade-up">
                     <AddToCartButton
                       disabled={!selectedVariant?.availableForSale}
@@ -250,6 +254,7 @@ let ProductInformation = forwardRef<HTMLDivElement, ProductInformationProps>(
                   )}
                 </div>
               </div>
+              { product?.metafield && <MetaFieldTable data={product?.metafield} />}
             </div>
           </div>
           <div
@@ -321,6 +326,20 @@ export let schema: HydrogenComponentSchema = {
           name: "unavailableText",
           defaultValue: "Unavailable",
           placeholder: "Unavailable",
+        },
+        {
+          label: "Width button",
+          name: "widthButton",
+          type: "toggle-group",
+          defaultValue: "100%",
+          configs: {
+            options: [
+              { value: "25%", label: "1/4" },
+              { value: "50%", label: "1/2" },
+              { value: "75%", label: "3/4" },
+              { value: "100%", label: "Full" },
+            ],
+          },
         },
         {
           type: "switch",
@@ -415,5 +434,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
 };
