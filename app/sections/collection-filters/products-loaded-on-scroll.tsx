@@ -27,7 +27,7 @@ export function ProductsLoadedOnScroll(props: ProductsLoadedOnScrollProps) {
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   return (
-    <Grid layout="products" className="!gap-y-10">
+    <Grid layout="products" className="!gap-y-10 !w-full">
       {nodes.map((product: any, i: number) => (
         <ProductCard
           quickAdd
