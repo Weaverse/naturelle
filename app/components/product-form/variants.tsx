@@ -74,6 +74,10 @@ export function ProductVariants(props: ProductVariantsProps) {
     selectedOptionMap.set(opt.name, opt.value);
   });
 
+  if (selectedOptions?.every(opt => opt.value === "Default Title")) {
+    return null;
+  }
+
   return (
     <div data-motion="fade-up" className="flex flex-col gap-6">
       <VariantSelector handle={handle} variants={nodes} options={options}>
