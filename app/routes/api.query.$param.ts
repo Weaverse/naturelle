@@ -16,7 +16,7 @@ export let loader: LoaderFunction = async ({ request, params, context }) => {
       case "products": {
         let handle = queries.handle;
         if (!handle) return data(null, { status: 404 });
-        let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
+        let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
         let productData = await getProductData(
           context.storefront,
           String(handle),

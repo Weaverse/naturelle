@@ -45,7 +45,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   invariant(handle, "Missing productHandle param, check route filename");
 
   const selectedOptions = getSelectedProductOptions(request);
-  let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
+  let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
   const { shop, product } = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle: handle,

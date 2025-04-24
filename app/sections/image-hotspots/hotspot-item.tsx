@@ -95,7 +95,7 @@ export default HotspotsItem;
 export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   let { weaverse, data } = args;
   let { storefront, env } = weaverse;
-  let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
+  let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
   if (!data?.product) {
     return null;
   }
