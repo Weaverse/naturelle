@@ -22,7 +22,6 @@ export let schema: HydrogenComponentSchema = {
   type: "featured-products",
   title: "Featured products",
   inspector: sectionInspector,
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   childTypes: ["heading", "featured-products--list"],
   presets: {
     children: [
