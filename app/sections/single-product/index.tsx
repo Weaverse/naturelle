@@ -313,7 +313,7 @@ export let loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
   if (!data.product) {
     return null;
   }
-  let metafield = weaverse.env.PRODUCT_CUSTOM_DATA_METAFIELD || '';
+  let metafield = weaverse.env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
   let productHandle = data.product.handle;
   let { product, shop } = await storefront.query<ProductQuery>(PRODUCT_QUERY, {
     variables: {

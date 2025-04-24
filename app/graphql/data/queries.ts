@@ -100,25 +100,25 @@ export let PRODUCT_QUERY = `#graphql
         name
         values
       }
-    metafield(namespace: $namespace, key: $key) {
-      key
-      id
-      description
-      namespace
-      type
-      value
-      reference {
-        __typename
-        ... on Metaobject {
-          id
-          type
-          fields {
-            key
-            value
+      metafield(namespace: $namespace, key: $key) {
+        key
+        id
+        description
+        namespace
+        type
+        value
+        reference {
+          __typename
+          ... on Metaobject {
+            id
+            type
+            fields {
+              key
+              value
+            }
           }
         }
-      }
-    } 
+      } 
       selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
         ...ProductVariantFragment
       }
