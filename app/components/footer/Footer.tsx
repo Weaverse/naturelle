@@ -73,10 +73,11 @@ export function Footer() {
                 <fetcher.Form
                   method="POST"
                   action="/api/customer"
-                  className="flex gap-2"
+                  className="flex gap-2 border-2 border-border-subtle py-1 pl-4 pr-1 rounded-full focus-visible:outline-none focus-visible:border-border hover:border-border"
                 >
                   <Input
-                    className="bg-transparent"
+                    variant={"custom"}
+                    className="bg-transparent border-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                     type="email"
                     name="email"
                     placeholder={newsletterPlaceholder}
