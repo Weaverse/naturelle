@@ -19,13 +19,9 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   if (!weaverseData?.page?.id || weaverseData.page.id.includes("fallback")) {
     throw new Response(null, { status: 404 });
   }
-  const recommendedProducts = await storefront.query(
-    RECOMMENDED_PRODUCTS_QUERY,
-  );
   let seo = seoPayload.home();
 
   return {
-    recommendedProducts,
     weaverseData,
     analytics: {
       pageType: AnalyticsPageType.home,
