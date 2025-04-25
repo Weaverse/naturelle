@@ -56,7 +56,7 @@ export function CountrySelector() {
   return (
     <div
       ref={observerRef}
-      className="md:max-w-72 w-full"
+      className="md:max-w-96 w-full"
       onMouseLeave={closeDropdown}
     >
       <div className="relative">

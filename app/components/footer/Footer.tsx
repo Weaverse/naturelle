@@ -102,7 +102,7 @@ export function Footer() {
         </div>
         <div className="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <CountrySelector />
-          <p className="text-xs">{footerTextCopyright}</p>
+          <p className="text-sm">{footerTextCopyright}</p>
         </div>
       </div>
     </footer>
