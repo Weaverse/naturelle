@@ -1,19 +1,31 @@
-import type { MetaFunction } from "@remix-run/react";
-import { type SeoConfig, getSeoMeta } from "@shopify/hydrogen";
+import { useLoaderData, type MetaFunction } from "@remix-run/react";
+import { AnalyticsPageType, type SeoConfig, getSeoMeta } from "@shopify/hydrogen";
 import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
+import { PageType } from "@weaverse/hydrogen";
 import { seoPayload } from "~/lib/seo.server";
 import { WeaverseContent } from "~/weaverse";
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context, params }: LoaderFunctionArgs) {
   const { storefront } = context;
-  const recommendedProducts = await storefront.query(
-    RECOMMENDED_PRODUCTS_QUERY,
-  );
+  let { pathPrefix } = context.storefront.i18n;
+  let locale = pathPrefix.slice(1);
+  let type: PageType = "INDEX";
+  
+  if (params.locale && params.locale.toLowerCase() !== locale) {
+    // Update for Weaverse: if it not locale, it probably is a custom page handle
+    type = "CUSTOM";
+  }
+  let weaverseData = await context.weaverse.loadPage({ type });
+  if (!weaverseData?.page?.id || weaverseData.page.id.includes("fallback")) {
+    throw new Response(null, { status: 404 });
+  }
   let seo = seoPayload.home();
 
   return {
-    recommendedProducts,
-    weaverseData: await context.weaverse.loadPage(),
+    weaverseData,
+    analytics: {
+      pageType: AnalyticsPageType.home,
+    },
     seo,
   };
 }

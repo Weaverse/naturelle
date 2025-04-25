@@ -35,7 +35,6 @@ import * as ProductInformation from "~/sections/product-information/index";
 import * as ProductPlacement from "~/sections/product-placement/index";
 import * as ProductPlacementItems from "~/sections/product-placement/items";
 import * as ProductPlacementItem from "~/sections/product-placement/productItem";
-import * as RecommendedProducts from "~/sections/recommended-products";
 import * as RelatedArticles from "~/sections/related-articles/related-articles";
 import * as ScrollingText from "~/sections/scrolling-text/index";
 import * as SingleProduct from "~/sections/single-product/index";
