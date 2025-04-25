@@ -34,9 +34,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return getSeoMeta(data!.seo as SeoConfig);
 };
 export default function Homepage() {
-  let { weaverseData } = useLoaderData<typeof loader>();
-  console.log("🚀 ~ weaverseData:", weaverseData);
-  
   return (
     <div className="home">
       <WeaverseContent />
