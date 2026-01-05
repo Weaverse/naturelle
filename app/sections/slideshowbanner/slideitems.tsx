@@ -5,7 +5,7 @@ import {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { backgroundInputs } from "../atoms/BackgroundImage";
 import { overlayInputs } from "../atoms/Overlay";
 import {
@@ -74,7 +74,10 @@ export interface SlideProps
   backgroundColor: string;
 }
 
-let Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
+let Slide = ({
+  ref,
+  ...props
+}: SlideProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let {
     contentPosition,
     width,
@@ -102,7 +105,7 @@ let Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
 export default Slide;
 
@@ -110,7 +113,7 @@ export let schema: HydrogenComponentSchema = {
   title: "Slide",
   type: "slideshowbanner--slide",
   childTypes: ["subheading", "heading", "description", "button"],
-  inspector: [
+  settings: [
     {
       group: "Slide",
       inputs: [
@@ -129,7 +132,7 @@ export let schema: HydrogenComponentSchema = {
       group: "Background",
       inputs: backgroundInputs.filter((inp) =>
         ["backgroundImage", "backgroundFit", "backgroundPosition"].includes(
-          inp.name,
+          inp.name as string,
         ),
       ),
     },

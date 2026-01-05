@@ -1,12 +1,11 @@
-import { useLoaderData } from "@remix-run/react";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import type { CSSProperties } from "react";
-import { forwardRef } from "react";
-import type { CollectionDetailsQuery } from "storefrontapi.generated";
+import type { CSSProperties, RefObject } from "react";
+import { useLoaderData } from "react-router";
+import type { CollectionDetailsQuery } from "storefront-api.generated";
 
 interface CollectionBannerProps extends HydrogenComponentProps {
   sectionHeightDesktop: number;
@@ -17,91 +16,91 @@ interface CollectionBannerProps extends HydrogenComponentProps {
   contentPosition: string;
 }
 
-let CollectionBanner = forwardRef<HTMLElement, CollectionBannerProps>(
-  (props, ref) => {
-    let {
-      sectionHeightDesktop,
-      sectionHeightMobile,
-      enableBackground,
-      overlayOpacity,
-      enableOverlay,
-      contentPosition,
-      ...rest
-    } = props;
-    let { collection } = useLoaderData<
-      CollectionDetailsQuery & {
-        collections: Array<{ handle: string; title: string }>;
-      }
-    >();
-    let backgroundStyle: CSSProperties = {
-      "--header-height-desktop": `${sectionHeightDesktop}px`,
-      "--header-height-mobile": `${sectionHeightMobile}px`,
-    } as CSSProperties;
+let CollectionBanner = ({
+  ref,
+  ...props
+}: CollectionBannerProps & { ref?: RefObject<HTMLElement | null> }) => {
+  let {
+    sectionHeightDesktop,
+    sectionHeightMobile,
+    enableBackground,
+    overlayOpacity,
+    enableOverlay,
+    contentPosition,
+    ...rest
+  } = props;
+  let { collection } = useLoaderData<
+    CollectionDetailsQuery & {
+      collections: Array<{ handle: string; title: string }>;
+    }
+  >();
+  let backgroundStyle: CSSProperties = {
+    "--header-height-desktop": `${sectionHeightDesktop}px`,
+    "--header-height-mobile": `${sectionHeightMobile}px`,
+  } as CSSProperties;
 
-    if (enableBackground) {
-      backgroundStyle.backgroundImage = `url('${collection?.image?.url}')`;
-    }
-    let overlayStyle: CSSProperties = {};
-    if (enableOverlay && enableBackground) {
-      overlayStyle = {
-        "--overlay-opacity": `${overlayOpacity}`,
-      } as CSSProperties;
-    }
-    let positionClass: { [key: string]: string } = {
-      "top left": "items-start justify-start",
-      "top right": "items-start justify-end",
-      "top center": "items-start justify-center",
-      "center left": "items-center justify-start",
-      "center center": "items-center justify-center",
-      "center right": "items-center justify-end",
-      "bottom left": "items-end justify-start",
-      "bottom center": "items-end justify-center",
-      "bottom right": "items-end justify-end",
-    };
-    return (
-      <section
-        ref={ref}
-        {...rest}
-        style={backgroundStyle}
+  if (enableBackground) {
+    backgroundStyle.backgroundImage = `url('${collection?.image?.url}')`;
+  }
+  let overlayStyle: CSSProperties = {};
+  if (enableOverlay && enableBackground) {
+    overlayStyle = {
+      "--overlay-opacity": `${overlayOpacity}`,
+    } as CSSProperties;
+  }
+  let positionClass: { [key: string]: string } = {
+    "top left": "items-start justify-start",
+    "top right": "items-start justify-end",
+    "top center": "items-start justify-center",
+    "center left": "items-center justify-start",
+    "center center": "items-center justify-center",
+    "center right": "items-center justify-end",
+    "bottom left": "items-end justify-start",
+    "bottom center": "items-end justify-center",
+    "bottom right": "items-end justify-end",
+  };
+  return (
+    <section
+      ref={ref}
+      {...rest}
+      style={backgroundStyle}
+      className={clsx(
+        "flex relative overflow-hidden bg-center bg-no-repeat bg-cover h-[var(--header-height-mobile)] sm:h-[var(--header-height-desktop)]",
+        positionClass[contentPosition],
+      )}
+    >
+      {enableOverlay && enableBackground && (
+        <div
+          className="absolute inset-0 z-1 bg-black bg-opacity-[var(--overlay-opacity)]"
+          style={overlayStyle}
+        ></div>
+      )}
+      <div
         className={clsx(
-          "flex relative overflow-hidden bg-center bg-no-repeat bg-cover h-[var(--header-height-mobile)] sm:h-[var(--header-height-desktop)]",
-          positionClass[contentPosition],
+          "text-center w-5/6 text-gray-700 z-2 relative",
+          enableBackground ? "text-white" : "text-gray-700",
         )}
       >
-        {enableOverlay && enableBackground && (
-          <div
-            className="absolute inset-0 z-1 bg-black bg-opacity-[var(--overlay-opacity)]"
-            style={overlayStyle}
-          ></div>
+        <h3 className="leading-tight font-medium">{collection?.title}</h3>
+        {collection?.description && (
+          <p className="mt-4 dark:text-gray-400 text-base md:text-sm">
+            {collection.description}
+          </p>
         )}
-        <div
-          className={clsx(
-            "text-center w-5/6 text-gray-700 z-2 relative",
-            enableBackground ? "text-white" : "text-gray-700",
-          )}
-        >
-          <h3 className="leading-tight font-medium">{collection?.title}</h3>
-          {collection?.description && (
-            <p className="mt-4 dark:text-gray-400 text-base md:text-sm">
-              {collection.description}
-            </p>
-          )}
-        </div>
-      </section>
-    );
-  },
-);
+      </div>
+    </section>
+  );
+};
 
 export default CollectionBanner;
 
 export let schema: HydrogenComponentSchema = {
   type: "collection-banner",
   title: "Collection banner",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   enabledOn: {
     pages: ["COLLECTION"],
   },
-  inspector: [
+  settings: [
     {
       group: "Header",
       inputs: [

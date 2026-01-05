@@ -1,19 +1,20 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import type { RefObject } from "react";
+import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 
 type CollectionListProps = SectionProps;
 
-let CollectionList = forwardRef<HTMLElement, CollectionListProps>(
-  (props, ref) => {
-    let { children, ...rest } = props;
-    return (
-      <Section ref={ref} {...rest}>
-        {children}
-      </Section>
-    );
-  },
-);
+let CollectionList = ({
+  ref,
+  ...props
+}: CollectionListProps & { ref?: RefObject<HTMLElement | null> }) => {
+  let { children, ...rest } = props;
+  return (
+    <Section ref={ref} {...rest}>
+      {children}
+    </Section>
+  );
+};
 
 export default CollectionList;
 
@@ -24,8 +25,7 @@ export let schema: HydrogenComponentSchema = {
   enabledOn: {
     pages: ["COLLECTION_LIST"],
   },
-  toolbar: ["general-settings"],
-  inspector: [
+  settings: [
     {
       group: "Layout",
       inputs: layoutInputs.filter(

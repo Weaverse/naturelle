@@ -2,41 +2,41 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import { type CSSProperties, forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
 
 interface ContentReviewProps extends HydrogenComponentProps {
   review?: number;
   gap?: number;
 }
 
-const ContentReview = forwardRef<HTMLDivElement, ContentReviewProps>(
-  (props, ref) => {
-    let { review, gap, children, ...rest } = props;
-    let style: CSSProperties = {
-      "--gap": `${gap}px`,
-    } as CSSProperties;
-    let displayedChildren = children?.slice(0, review);
+const ContentReview = ({
+  ref,
+  ...props
+}: ContentReviewProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  let { review, gap, children, ...rest } = props;
+  let style: CSSProperties = {
+    "--gap": `${gap}px`,
+  } as CSSProperties;
+  let displayedChildren = children?.slice(0, review);
 
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className="flex flex-col gap-[var(--gap)]"
-        style={style}
-      >
-        {displayedChildren}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className="flex flex-col gap-[var(--gap)]"
+      style={style}
+    >
+      {displayedChildren}
+    </div>
+  );
+};
 
 export default ContentReview;
 
 export let schema: HydrogenComponentSchema = {
   type: "content-reviews--review",
   title: "List reviews",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Content reviews",
       inputs: [

@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { Image, Money } from "@shopify/hydrogen";
 import clsx from "clsx";
 import type { SearchResultItemProps } from "../../lib/types/search-types";

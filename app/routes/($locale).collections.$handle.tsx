@@ -1,16 +1,16 @@
-import type { MetaFunction } from "@remix-run/react";
 import {
   AnalyticsPageType,
-  type SeoConfig,
   flattenConnection,
   getPaginationVariables,
   getSeoMeta,
+  type SeoConfig,
 } from "@shopify/hydrogen";
 import type {
   ProductCollectionSortKeys,
   ProductFilter,
 } from "@shopify/hydrogen/storefront-api-types";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import type { MetaFunction } from "react-router";
+import { data, type LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
 import { routeHeaders } from "~/data/cache";
 import { COLLECTION_QUERY } from "~/graphql/data/queries";
@@ -36,18 +36,15 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { sortKey, reverse } = getSortValuesFromParam(
     searchParams.get("sort") as SortParam,
   );
-  const filters = [...searchParams.entries()].reduce(
-    (filters, [key, value]) => {
-      if (key.startsWith(FILTER_URL_PREFIX)) {
-        const filterKey = key.substring(FILTER_URL_PREFIX.length);
-        filters.push({
-          [filterKey]: JSON.parse(value),
-        });
-      }
-      return filters;
-    },
-    [] as ProductFilter[],
-  );
+  const filters = [...searchParams.entries()].reduce((acc, [key, value]) => {
+    if (key.startsWith(FILTER_URL_PREFIX)) {
+      const filterKey = key.substring(FILTER_URL_PREFIX.length);
+      acc.push({
+        [filterKey]: JSON.parse(value),
+      });
+    }
+    return acc;
+  }, [] as ProductFilter[]);
 
   const { collection, collections } = await context.storefront.query(
     COLLECTION_QUERY,
@@ -134,8 +131,8 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   });
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Collection() {
   return <WeaverseContent />;

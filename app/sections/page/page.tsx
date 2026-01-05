@@ -1,10 +1,10 @@
-import { useLoaderData } from "@remix-run/react";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import type { PageDetailsQuery } from "storefrontapi.generated";
+import type { RefObject } from "react";
+import { useLoaderData } from "react-router";
+import type { PageDetailsQuery } from "storefront-api.generated";
 import { PageHeader, Section } from "~/components/Text";
 import { prefixClassNames } from "~/lib/utils";
 
@@ -13,7 +13,10 @@ interface PageProps extends HydrogenComponentProps {
   paddingBottom: number;
 }
 
-let Page = forwardRef<HTMLElement, PageProps>((props, ref) => {
+let Page = ({
+  ref,
+  ...props
+}: PageProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { page } = useLoaderData<PageDetailsQuery>();
   let { paddingTop, paddingBottom, ...rest } = props;
 
@@ -43,7 +46,7 @@ let Page = forwardRef<HTMLElement, PageProps>((props, ref) => {
     );
   }
   return <section ref={ref} {...rest} />;
-});
+};
 
 export default Page;
 
@@ -54,8 +57,7 @@ export let schema: HydrogenComponentSchema = {
   enabledOn: {
     pages: ["PAGE"],
   },
-  toolbar: ["general-settings"],
-  inspector: [
+  settings: [
     {
       group: "Page",
       inputs: [

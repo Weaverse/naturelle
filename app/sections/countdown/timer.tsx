@@ -2,8 +2,8 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import type { CSSProperties } from "react";
-import { forwardRef, useEffect, useState } from "react";
+import type { CSSProperties, RefObject } from "react";
+import { useEffect, useState } from "react";
 
 const ONE_SEC = 1000;
 const ONE_MIN = ONE_SEC * 60;
@@ -11,7 +11,7 @@ const ONE_HOUR = ONE_MIN * 60;
 const ONE_DAY = ONE_HOUR * 24;
 
 function calculateRemainingTime(endTime: number) {
-  let now = new Date().getTime();
+  let now = Date.now();
   let diff = endTime - now;
   if (diff <= 0) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -29,10 +29,11 @@ type CountDownTimerData = {
   endTime: number;
 };
 
-let CountdownTimer = forwardRef<
-  HTMLDivElement,
-  CountDownTimerData & HydrogenComponentProps
->((props, ref) => {
+let CountdownTimer = ({
+  ref,
+  ...props
+}: CountDownTimerData &
+  HydrogenComponentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { textColor, endTime, ...rest } = props;
   let [remainingTime, setRemainingTime] = useState(
     calculateRemainingTime(endTime),
@@ -100,7 +101,7 @@ let CountdownTimer = forwardRef<
       </div>
     </div>
   );
-});
+};
 
 export default CountdownTimer;
 
@@ -110,8 +111,7 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 export let schema: HydrogenComponentSchema = {
   type: "countdown--timer",
   title: "Timer",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Timer",
       inputs: [

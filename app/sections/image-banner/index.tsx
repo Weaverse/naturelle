@@ -4,10 +4,10 @@ import {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { backgroundInputs } from "../atoms/BackgroundImage";
 import { overlayInputs } from "../atoms/Overlay";
-import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 
 export interface SlideShowBannerItemProps
   extends VariantProps<typeof variants> {
@@ -45,10 +45,11 @@ let variants = cva("flex flex-col [&_.paragraph]:mx-[unset]", {
   },
 });
 
-let HeaderImage = forwardRef<
-  HTMLElement,
-  SlideShowBannerItemProps & SectionProps
->((props, ref) => {
+let HeaderImage = ({
+  ref,
+  ...props
+}: SlideShowBannerItemProps &
+  SectionProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { children, height, contentPosition, horizontalPadding, ...rest } = props;
   let style = {
     "--horizontal-padding": `${horizontalPadding}px`,
@@ -67,15 +68,14 @@ let HeaderImage = forwardRef<
       </Section>
     </div>
   );
-});
+};
 
 export default HeaderImage;
 
 export let schema: HydrogenComponentSchema = {
   type: "image-banner",
   title: "Image banner",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Image",
       inputs: [

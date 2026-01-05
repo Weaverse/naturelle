@@ -2,7 +2,7 @@ import type {
   ChildMenuItemFragment,
   MenuFragment,
   ParentMenuItemFragment,
-} from "storefrontapi.generated";
+} from "storefront-api.generated";
 
 export function getMaxDepth(item: { items: any[] }): number {
   if (item.items?.length > 0) {

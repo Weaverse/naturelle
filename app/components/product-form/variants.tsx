@@ -3,7 +3,7 @@ import clsx from "clsx";
 import type {
   ProductQuery,
   ProductVariantFragmentFragment,
-} from "storefrontapi.generated";
+} from "storefront-api.generated";
 import { VariantOption } from "./options";
 
 interface ProductVariantsProps {

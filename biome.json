@@ -1,36 +1,68 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "extends": ["./node_modules/@weaverse/biome/biome.json"],
-  "files": {
-    "ignore": [
-      "public/**",
-      "node_modules/**",
-      "build/**",
-      "dist/**",
-      "customer-accountapi.generated.d.ts",
-      "storefrontapi.generated.d.ts",
-      ".shopify/**"
-    ]
-  },
+  "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
+  "extends": ["@weaverse/biome"],
   "linter": {
     "rules": {
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "style": {
+        "useThrowNewError": "warn",
+        "useFilenamingConvention": "off",
+        "useNamingConvention": "off",
+        "noParameterAssign": "off",
+        "noMagicNumbers": "off",
+        "noDescendingSpecificity": "off",
+        "useConsistentTypeDefinitions": "off",
+        "noNestedTernary": "off"
+      },
       "suspicious": {
         "noExplicitAny": "off",
-        "noArrayIndexKey": "off",
-        "noAssignInExpressions": "off"
+        "useAwait": "off",
+        "noConsole": "off",
+        "noAlert": "off",
+        "noArrayIndexKey": "off"
       },
-      "style": {},
+      "nursery": {
+        "useConsistentArrowReturn": "off",
+        "noUnnecessaryConditions": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "off",
+        "useUniqueElementIds": "off"
+      },
+      "performance": {
+        "noNamespaceImport": "off",
+        "useTopLevelRegex": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": {
+          "level": "error",
+          "options": {
+            "maxAllowedComplexity": 50
+          }
+        },
+        "noExcessiveLinesPerFunction": "off"
+      },
       "a11y": {
+        "noNoninteractiveElementInteractions": "off",
         "useKeyWithClickEvents": "off",
-        "noSvgWithoutTitle": "off",
-        "useButtonType": "off"
+        "noStaticElementInteractions": "off"
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "useSortedAttributes": "off"
       }
     }
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "double",
-      "semicolons": "always"
+      "semicolons": "always",
+      "trailingCommas": "all"
     }
   }
 }

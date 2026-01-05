@@ -1,6 +1,11 @@
-import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
-import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import { getPaginationVariables, Pagination } from "@shopify/hydrogen";
+import {
+  data,
+  Link,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  useLoaderData,
+} from "react-router";
 import { WeaverseContent } from "~/weaverse";
 
 export const meta: MetaFunction = () => {

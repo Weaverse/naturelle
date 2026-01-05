@@ -4,7 +4,7 @@ import {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { backgroundInputs } from "../atoms/BackgroundImage";
 import { overlayInputs } from "../atoms/Overlay";
 import { Section, type SectionProps } from "../atoms/Section";
@@ -22,22 +22,24 @@ let variants = cva("flex flex-col [&_.paragraph]:mx-[unset] px-4 sm:px-16", {
 
 interface CountdownProps extends VariantProps<typeof variants>, SectionProps {}
 
-let Countdown = forwardRef<HTMLElement, CountdownProps>((props, ref) => {
+let Countdown = ({
+  ref,
+  ...props
+}: CountdownProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { children, alignment, ...rest } = props;
   return (
     <Section ref={ref} {...rest} containerClassName={variants({ alignment })}>
       {children}
     </Section>
   );
-});
+};
 
 export default Countdown;
 
 export let schema: HydrogenComponentSchema = {
   type: "countdown",
   title: "Countdown",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Layout",
       inputs: [

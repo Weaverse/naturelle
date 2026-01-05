@@ -1,12 +1,12 @@
-import { Form } from "@remix-run/react";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import { type CSSProperties, forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
+import { Form } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { useMotion } from "~/hooks/use-animation";
+import { useAnimation } from "~/hooks/use-animation";
 
 interface ContactFormProps extends HydrogenComponentProps {
   backgroundColor: string;
@@ -27,8 +27,11 @@ interface ContactFormProps extends HydrogenComponentProps {
   bottomPadding: number;
 }
 
-let ContactForm = forwardRef<HTMLDivElement, ContactFormProps>((props, ref) => {
-  const [scope] = useMotion(ref);
+let ContactForm = ({
+  ref,
+  ...props
+}: ContactFormProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const [scope] = useAnimation(ref);
   let {
     backgroundColor,
     contentAlignment,
@@ -109,7 +112,7 @@ let ContactForm = forwardRef<HTMLDivElement, ContactFormProps>((props, ref) => {
       </Form>
     </div>
   );
-});
+};
 
 export default ContactForm;
 
@@ -120,7 +123,7 @@ export let schema: HydrogenComponentSchema = {
   enabledOn: {
     pages: ["INDEX"],
   },
-  inspector: [
+  settings: [
     {
       group: "Contact form",
       inputs: [

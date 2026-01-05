@@ -5,12 +5,12 @@ import {
   useNavigation,
   useOutlet,
   useOutletContext,
-} from "@remix-run/react";
+} from "react-router";
 import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
 import type {
   AddressFragment,
   CustomerFragment,
-} from "customer-accountapi.generated";
+} from "customer-account-api.generated";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/button";
 import { Checkbox } from "~/components/checkbox";

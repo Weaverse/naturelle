@@ -4,7 +4,7 @@ import clsx from "clsx";
 import type {
   ProductCardFragment,
   ProductVariantFragmentFragment,
-} from "storefrontapi.generated";
+} from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { isLightColor } from "~/lib/utils";
 import { Link } from "./Link";

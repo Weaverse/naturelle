@@ -1,9 +1,9 @@
 import type { HydrogenSession } from "@shopify/hydrogen";
 import {
+  createCookieSessionStorage,
   type Session,
   type SessionStorage,
-  createCookieSessionStorage,
-} from "@shopify/remix-oxygen";
+} from "react-router";
 
 /**
  * This is a custom session implementation for your Hydrogen shop.
@@ -11,9 +11,9 @@ import {
  * swap out the cookie-based implementation with something else!
  */
 export class AppSession implements HydrogenSession {
-  public isPending = false;
-  #sessionStorage;
-  #session;
+  isPending = false;
+  readonly #sessionStorage;
+  readonly #session;
 
   constructor(sessionStorage: SessionStorage, session: Session) {
     this.#sessionStorage = sessionStorage;

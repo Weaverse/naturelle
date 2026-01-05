@@ -1,14 +1,17 @@
-import { useLoaderData } from "@remix-run/react";
 import { Image } from "@shopify/hydrogen";
 import type { Article } from "@shopify/hydrogen/storefront-api-types";
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
+import { useLoaderData } from "react-router";
 import { prefixClassNames } from "~/lib/utils";
-import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 
 type BlogPostProps = SectionProps;
 
-let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
+let BlogPost = ({
+  ref,
+  ...props
+}: BlogPostProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { ...rest } = props;
   let { article, formattedDate } = useLoaderData<{
     article: Article;
@@ -50,7 +53,7 @@ let BlogPost = forwardRef<HTMLElement, BlogPostProps>((props, ref) => {
     );
   }
   return <section ref={ref} {...rest} />;
-});
+};
 
 export default BlogPost;
 
@@ -61,8 +64,7 @@ export let schema: HydrogenComponentSchema = {
   enabledOn: {
     pages: ["ARTICLE"],
   },
-  toolbar: ["general-settings"],
-  inspector: [
+  settings: [
     {
       group: "Blog post",
       inputs: layoutInputs.filter(

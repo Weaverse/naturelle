@@ -13,7 +13,7 @@ import { useState } from "react";
 import type {
   ProductCardFragment,
   ProductVariantFragmentFragment,
-} from "storefrontapi.generated";
+} from "storefront-api.generated";
 import { AddToCartButton } from "~/components/AddToCartButton";
 import { Link } from "~/components/Link";
 import { Text } from "~/components/Text";

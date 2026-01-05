@@ -1,4 +1,4 @@
-import { type LoaderFunction, data } from "@shopify/remix-oxygen";
+import { data, type LoaderFunction } from "react-router";
 import { getProductData } from "~/lib/utils/products";
 
 function getRequestQueries<T = Record<string, string>>(request: Request) {
@@ -15,8 +15,11 @@ export let loader: LoaderFunction = async ({ request, params, context }) => {
     switch (params.param) {
       case "products": {
         let handle = queries.handle;
-        if (!handle) return data(null, { status: 404 });
-        let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
+        if (!handle) {
+          return data(null, { status: 404 });
+        }
+        let metafield =
+          context.env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
         let productData = await getProductData(
           context.storefront,
           String(handle),

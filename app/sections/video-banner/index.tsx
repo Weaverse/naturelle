@@ -6,17 +6,10 @@ import {
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
-import type { CSSProperties } from "react";
-import {
-  Suspense,
-  forwardRef,
-  lazy,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import type { CSSProperties, RefObject } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useMotion } from "~/hooks/use-animation";
+import { useAnimation } from "~/hooks/use-animation";
 import { Overlay, type OverlayProps, overlayInputs } from "../atoms/Overlay";
 
 const SECTION_HEIGHTS = {
@@ -104,7 +97,10 @@ function getPlayerSize(id: string) {
   return { width: "100%", height: "auto" };
 }
 
-let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
+let VideoBanner = ({
+  ref,
+  ...props
+}: VideoBannerProps & { ref?: RefObject<HTMLElement | null> }) => {
   let {
     videoURL,
     videoURL2,
@@ -136,11 +132,13 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
   });
 
   // Use `useCallback` so we don't recreate the function on each render
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: callback refs need to be stable
   let setRefs = useCallback(
     (node: HTMLElement) => {
       // Ref's from useRef needs to have the node assigned to `current`
-      ref && Object.assign(ref, { current: node });
+      if (ref) {
+        Object.assign(ref, { current: node });
+      }
       // Callback refs, like the one from `useInView`, is a function that takes the node as an argument
       inViewRef(node);
     },
@@ -151,7 +149,7 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
     setSize(getPlayerSize(id));
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleResize handles its own dependencies
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -160,7 +158,7 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
     };
   }, [inView, height, heightOnDesktop, heightOnMobile]);
 
-  const [scope] = useMotion(ref);
+  const [scope] = useAnimation(ref);
 
   return (
     <section
@@ -213,14 +211,14 @@ let VideoBanner = forwardRef<HTMLElement, VideoBannerProps>((props, ref) => {
       </div>
     </section>
   );
-});
+};
 
 export default VideoBanner;
 
 export let schema: HydrogenComponentSchema = {
   type: "video-banner",
   title: "Video banner",
-  inspector: [
+  settings: [
     {
       group: "Video",
       inputs: [

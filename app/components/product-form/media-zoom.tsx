@@ -8,7 +8,7 @@ import type {
   MediaFragment,
   Media_MediaImage_Fragment,
   Media_Video_Fragment,
-} from "storefrontapi.generated";
+} from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Image } from "~/components/image";
 import { ScrollArea } from "~/components/scroll-area";

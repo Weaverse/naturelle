@@ -1,5 +1,5 @@
 import * as Menubar from "@radix-ui/react-menubar";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type React from "react";

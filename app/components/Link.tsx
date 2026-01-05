@@ -3,7 +3,7 @@ import {
   type LinkProps as RemixLinkProps,
   NavLink as RemixNavLink,
   type NavLinkProps as RemixNavLinkProps,
-} from "@remix-run/react";
+} from "react-router";
 
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useRootLoaderData } from "~/root";

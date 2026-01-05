@@ -1,4 +1,4 @@
-import { useFetcher, useParams } from "@remix-run/react";
+import { useFetcher, useParams } from "react-router";
 import { useEffect, useRef } from "react";
 import type {
   NormalizedPredictiveSearchResults,

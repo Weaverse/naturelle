@@ -1,6 +1,6 @@
-import { type Fetcher, useFetchers } from "@remix-run/react";
 import { CartForm } from "@shopify/hydrogen";
 import { useEffect, useState } from "react";
+import { type Fetcher, useFetchers } from "react-router";
 
 export function useCartFetchers(actionName: string, onFinished?: () => void) {
   const fetchers = useFetchers();
@@ -22,8 +22,8 @@ export function useCartFetchers(actionName: string, onFinished?: () => void) {
     }
     if (fetchers.length === 0 && cartAdding) {
       setCartAdding(false);
-      onFinished && onFinished();
+      onFinished?.();
     }
-  }, [fetchers]);
+  }, [fetchers, actionName, cartAdding, onFinished]);
   return { cartAdding, cartFetchers };
 }

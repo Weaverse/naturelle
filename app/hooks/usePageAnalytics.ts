@@ -1,32 +1,35 @@
-import { useMatches } from "@remix-run/react";
 import type { ShopifyPageViewPayload } from "@shopify/hydrogen";
 import { useMemo } from "react";
+import { useMatches } from "react-router";
 
 import { DEFAULT_LOCALE } from "~/lib/utils";
 
 export function usePageAnalytics({
   hasUserConsent,
-}: { hasUserConsent: boolean }) {
+}: {
+  hasUserConsent: boolean;
+}) {
   const matches = useMatches();
 
   return useMemo(() => {
     const data: Record<string, unknown> = {};
 
-    matches.forEach((event) => {
+    for (const event of matches) {
       const eventData = event?.data as Record<string, unknown>;
       if (eventData) {
-        eventData["analytics"] && Object.assign(data, eventData["analytics"]);
+        if (eventData.analytics) {
+          Object.assign(data, eventData.analytics);
+        }
 
         const selectedLocale =
-          (eventData["selectedLocale"] as typeof DEFAULT_LOCALE) ||
-          DEFAULT_LOCALE;
+          (eventData.selectedLocale as typeof DEFAULT_LOCALE) || DEFAULT_LOCALE;
 
         Object.assign(data, {
           currency: selectedLocale.currency,
           acceptedLanguage: selectedLocale.language,
         });
       }
-    });
+    }
 
     return {
       ...data,

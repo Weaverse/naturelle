@@ -1,6 +1,6 @@
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Check } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 
 import { cn } from "~/lib/utils";
 
@@ -9,10 +9,14 @@ interface CheckboxProps
   label?: string;
 }
 
-const Checkbox = React.forwardRef<
-  React.ElementRef<typeof CheckboxPrimitive.Root>,
-  CheckboxProps
->(({ className, label, ...props }, ref) => (
+const Checkbox = ({
+  className,
+  label,
+  ref,
+  ...props
+}: CheckboxProps & {
+  ref?: React.RefObject<React.ElementRef<typeof CheckboxPrimitive.Root> | null>;
+}) => (
   <div className={cn(`flex items-center space-x-2.5`, className)}>
     <CheckboxPrimitive.Root
       ref={ref}
@@ -29,7 +33,7 @@ const Checkbox = React.forwardRef<
     </CheckboxPrimitive.Root>
     {label ? <span>{label}</span> : null}
   </div>
-));
+);
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox };

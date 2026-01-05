@@ -6,10 +6,10 @@ import {
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useMotion } from "~/hooks/use-animation";
+import { useAnimation } from "~/hooks/use-animation";
 import type { SlideshowArrowsProps } from "./arrows";
 import { Arrows } from "./arrows";
 import type { SlideshowDotsProps } from "./dots";
@@ -43,7 +43,10 @@ export interface SlideshowProps
   changeSlidesEvery: number;
 }
 
-let Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
+let Slideshow = ({
+  ref,
+  ...props
+}: SlideshowProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let {
     height,
     showArrows,
@@ -61,7 +64,7 @@ let Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
     children = [],
     ...rest
   } = props;
-  const [scope] = useMotion(ref);
+  const [scope] = useAnimation(ref);
 
   let id = rest["data-wv-id"];
   let key = `slideshow-${id}-${loop}-${autoRotate}-${changeSlidesEvery}`;
@@ -108,7 +111,7 @@ let Slideshow = forwardRef<HTMLDivElement, SlideshowProps>((props, ref) => {
       </Swiper>
     </section>
   );
-});
+};
 
 export default Slideshow;
 
@@ -116,7 +119,7 @@ export let schema: HydrogenComponentSchema = {
   title: "Slide show banner",
   type: "slide-show-banner",
   childTypes: ["slideshowbanner--slide"],
-  inspector: [
+  settings: [
     {
       group: "Slideshow",
       inputs: [

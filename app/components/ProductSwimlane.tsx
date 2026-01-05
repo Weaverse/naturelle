@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import type { FeaturedItemsQuery } from "storefrontapi.generated";
+import type { FeaturedItemsQuery } from "storefront-api.generated";
 import { ProductCard } from "~/components/ProductCard";
 import { Section } from "~/components/Text";
 import { IconArrowScrollLeft, IconArrowScrollRight } from "./Icon";

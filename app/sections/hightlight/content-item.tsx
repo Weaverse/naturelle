@@ -3,7 +3,7 @@ import type {
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import React, { forwardRef, type CSSProperties } from "react";
+import React, { type CSSProperties } from "react";
 
 interface ContentProps extends HydrogenComponentProps {
   itemPerRow: number;
@@ -18,37 +18,37 @@ let itemsPerRowClasses: { [item: number]: string } = {
   4: "sm:grid-cols-4",
 };
 
-const HighlightContent = forwardRef<HTMLDivElement, ContentProps>(
-  (props, ref) => {
-    let { itemPerRow, gap, borderColor, children, ...rest } = props;
-    let style: CSSProperties = {
-      "--item-gap": `${gap}px`,
-      "--border-color": borderColor,
-    } as CSSProperties;
-    let actualItemPerRow = Math.min(itemPerRow, React.Children.count(children));
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className={clsx(
-          "flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)]",
-          itemsPerRowClasses[actualItemPerRow],
-        )}
-        style={style}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+const HighlightContent = ({
+  ref,
+  ...props
+}: ContentProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
+  let { itemPerRow, gap, borderColor, children, ...rest } = props;
+  let style: CSSProperties = {
+    "--item-gap": `${gap}px`,
+    "--border-color": borderColor,
+  } as CSSProperties;
+  let actualItemPerRow = Math.min(itemPerRow, React.Children.count(children));
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className={clsx(
+        "flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)]",
+        itemsPerRowClasses[actualItemPerRow],
+      )}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default HighlightContent;
 
 export let schema: HydrogenComponentSchema = {
   type: "highlight-content--item",
   title: "List items",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Highlights",
       inputs: [

@@ -1,4 +1,4 @@
-import type { ActionFunction } from "@shopify/remix-oxygen";
+import type { ActionFunction } from "react-router";
 
 export let action: ActionFunction = async ({ request, context }) => {
   let { env } = context;

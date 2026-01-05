@@ -1,10 +1,13 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { Section, type SectionProps, sectionInspector } from "../atoms/Section";
 
 type HighlightsProps = SectionProps;
 
-const Highlights = forwardRef<HTMLElement, HighlightsProps>((props, ref) => {
+const Highlights = ({
+  ref,
+  ...props
+}: HighlightsProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { children, ...rest } = props;
 
   return (
@@ -12,15 +15,14 @@ const Highlights = forwardRef<HTMLElement, HighlightsProps>((props, ref) => {
       {children}
     </Section>
   );
-});
+};
 
 export default Highlights;
 
 export let schema: HydrogenComponentSchema = {
   type: "highlight",
   title: "Highlights",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: sectionInspector,
+  settings: sectionInspector,
   childTypes: ["heading", "highlight-content--item"],
   presets: {
     children: [

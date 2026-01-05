@@ -1,6 +1,6 @@
-import { useNavigate } from "@remix-run/react";
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { Grid } from "~/components/Grid";
 import { getImageLoadingPriority } from "~/lib/utils/const";
 import { CollectionCard } from "./collection-card";

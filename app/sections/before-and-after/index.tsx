@@ -1,27 +1,27 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import type { RefObject } from "react";
+import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 
 type BeforeAndAfterProps = SectionProps;
 
-const BeforeAndAfter = forwardRef<HTMLElement, BeforeAndAfterProps>(
-  (props, ref) => {
-    let { children, ...rest } = props;
-    return (
-      <Section ref={ref} {...rest}>
-        {children}
-      </Section>
-    );
-  },
-);
+const BeforeAndAfter = ({
+  ref,
+  ...props
+}: BeforeAndAfterProps & { ref?: RefObject<HTMLElement | null> }) => {
+  let { children, ...rest } = props;
+  return (
+    <Section ref={ref} {...rest}>
+      {children}
+    </Section>
+  );
+};
 
 export default BeforeAndAfter;
 
 export let schema: HydrogenComponentSchema = {
   type: "before-and-after",
   title: "Before & after",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Layout",
       inputs: layoutInputs.filter(

@@ -1,29 +1,27 @@
 import {
+  flattenConnection,
+  getPaginationVariables,
+  Image,
+  Pagination,
+} from "@shopify/hydrogen";
+import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
+import type {
+  CustomerFragment,
+  CustomerOrdersFragment,
+  OrderItemFragment,
+} from "customer-account-api.generated";
+import {
+  type ActionFunctionArgs,
+  data,
   Form,
   Link,
+  type LoaderFunctionArgs,
   type MetaFunction,
   useActionData,
   useLoaderData,
   useNavigation,
   useOutletContext,
-} from "@remix-run/react";
-import {
-  Image,
-  Pagination,
-  flattenConnection,
-  getPaginationVariables,
-} from "@shopify/hydrogen";
-import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  data,
-} from "@shopify/remix-oxygen";
-import type {
-  CustomerFragment,
-  CustomerOrdersFragment,
-  OrderItemFragment,
-} from "customer-accountapi.generated";
+} from "react-router";
 import Addresses from "~/components/account/Addresses";
 import {
   CREATE_ADDRESS_MUTATION,
@@ -43,7 +41,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let access = await context.customerAccount.getAccessToken();
   console.log(access);
 
-  const { data, errors } = await context.customerAccount.query(
+  const { data: queryData, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
     {
       variables: {
@@ -52,14 +50,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     },
   );
 
-  if (errors?.length || !data?.customer) {
-    throw Error("Customer orders not found");
+  if (errors?.length || !queryData?.customer) {
+    throw new Error("Customer orders not found");
   }
 
-  return data({ customer: data.customer });
+  return data({ customer: queryData.customer });
 }
 
-export async function action({ request, context, params }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   const { customerAccount } = context;
 
   try {
@@ -105,8 +103,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     switch (request.method) {
       case "POST": {
         // handle new address creation
+        // handle new address creation
         try {
-          const { data, errors } = await customerAccount.mutate(
+          const { data: createData, errors } = await customerAccount.mutate(
             CREATE_ADDRESS_MUTATION,
             {
               variables: { address, defaultAddress },
@@ -117,17 +116,19 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error(errors[0].message);
           }
 
-          if (data?.customerAddressCreate?.userErrors?.length) {
-            throw new Error(data?.customerAddressCreate?.userErrors[0].message);
+          if (createData?.customerAddressCreate?.userErrors?.length) {
+            throw new Error(
+              createData?.customerAddressCreate?.userErrors[0].message,
+            );
           }
 
-          if (!data?.customerAddressCreate?.customerAddress) {
+          if (!createData?.customerAddressCreate?.customerAddress) {
             throw new Error("Customer address create failed.");
           }
 
           return data({
             error: null,
-            createdAddress: data?.customerAddressCreate?.customerAddress,
+            createdAddress: createData?.customerAddressCreate?.customerAddress,
             defaultAddress,
           });
         } catch (error: unknown) {
@@ -144,7 +145,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       case "PUT": {
         // handle address updates
         try {
-          const { data, errors } = await customerAccount.mutate(
+          const { data: updateData, errors } = await customerAccount.mutate(
             UPDATE_ADDRESS_MUTATION,
             {
               variables: {
@@ -159,11 +160,13 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error(errors[0].message);
           }
 
-          if (data?.customerAddressUpdate?.userErrors?.length) {
-            throw new Error(data?.customerAddressUpdate?.userErrors[0].message);
+          if (updateData?.customerAddressUpdate?.userErrors?.length) {
+            throw new Error(
+              updateData?.customerAddressUpdate?.userErrors[0].message,
+            );
           }
 
-          if (!data?.customerAddressUpdate?.customerAddress) {
+          if (!updateData?.customerAddressUpdate?.customerAddress) {
             throw new Error("Customer address update failed.");
           }
           // return redirect(params?.locale ? `${params.locale}/account` : '/account', {
@@ -189,7 +192,7 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
       case "DELETE": {
         // handles address deletion
         try {
-          const { data, errors } = await customerAccount.mutate(
+          const { data: deleteData, errors } = await customerAccount.mutate(
             DELETE_ADDRESS_MUTATION,
             {
               variables: { addressId: decodeURIComponent(addressId) },
@@ -200,11 +203,13 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error(errors[0].message);
           }
 
-          if (data?.customerAddressDelete?.userErrors?.length) {
-            throw new Error(data?.customerAddressDelete?.userErrors[0].message);
+          if (deleteData?.customerAddressDelete?.userErrors?.length) {
+            throw new Error(
+              deleteData?.customerAddressDelete?.userErrors[0].message,
+            );
           }
 
-          if (!data?.customerAddressDelete?.deletedAddressId) {
+          if (!deleteData?.customerAddressDelete?.deletedAddressId) {
             throw new Error("Customer address delete failed.");
           }
 
@@ -336,8 +341,8 @@ type ActionResponse = {
 function AccountProfile() {
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
-  const action = useActionData<ActionResponse>();
-  const customer = action?.customer ?? account?.customer;
+  const actionData = useActionData<ActionResponse>();
+  const customer = actionData?.customer ?? account?.customer;
   console.log("🚀 ~ customer2:", customer);
 
   return (
@@ -385,10 +390,10 @@ function AccountProfile() {
               minLength={2}
             />
           </fieldset>
-          {action?.error ? (
+          {actionData?.error ? (
             <p>
               <mark>
-                <small>{action.error}</small>
+                <small>{actionData.error}</small>
               </mark>
             </p>
           ) : (

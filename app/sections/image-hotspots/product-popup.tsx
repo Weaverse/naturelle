@@ -3,7 +3,7 @@ import type { MediaImage } from "@shopify/hydrogen/storefront-api-types";
 import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties } from "react";
-import type { ProductQuery } from "storefrontapi.generated";
+import type { ProductQuery } from "storefront-api.generated";
 import { Link } from "~/components/Link";
 import type { HotspotsItemData } from "./hotspot-item";
 
@@ -58,7 +58,7 @@ const PRODUCT_PLACEHOLDER: Partial<ProductQuery["product"]> = {
 };
 
 export function ProductPopup({
-  // @ts-ignore
+  // @ts-expect-error
   product = PRODUCT_PLACEHOLDER,
   popupWidth,
   offsetX,

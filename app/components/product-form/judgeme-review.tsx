@@ -1,4 +1,4 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "react-router";
 import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
@@ -58,7 +58,6 @@ export default JudgemeReview;
 export let schema: HydrogenComponentSchema = {
   type: "judgeme",
   title: "Judgeme review",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   inspector: [
     {
       group: "Judgeme",

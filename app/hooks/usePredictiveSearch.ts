@@ -1,5 +1,5 @@
-import { useFetchers } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
+import { useFetchers } from "react-router";
 import type {
   NormalizedPredictiveSearch,
   NormalizedPredictiveSearchResults,
@@ -37,7 +37,9 @@ export function usePredictiveSearch(): UseSearchReturn {
 
   // capture the search input element as a ref
   useEffect(() => {
-    if (searchInputRef.current) return;
+    if (searchInputRef.current) {
+      return;
+    }
     searchInputRef.current = document.querySelector('input[type="search"]');
   }, []);
 

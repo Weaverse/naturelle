@@ -1,4 +1,4 @@
-import { useRouteError } from "@remix-run/react";
+import { useRouteError } from "react-router";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
 import { useEffect, useState } from "react";

@@ -7,7 +7,7 @@ export interface SlideshowDotsProps {
   instance: SwiperClass | null;
 }
 
-export function Number(props: SlideshowDotsProps) {
+export function SlideNumber(props: SlideshowDotsProps) {
   let { className, instance } = props;
   let [currentSlideIndex, setCurrentSlide] = useState(1);
   let [totalSlides, setTotalSlides] = useState(0);
@@ -53,3 +53,6 @@ export function Number(props: SlideshowDotsProps) {
     </div>
   );
 }
+
+// Export as Number for backward compatibility
+export { SlideNumber as Number };

@@ -1,15 +1,20 @@
-import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
 import {
-  Image,
-  Pagination,
   flattenConnection,
   getPaginationVariables,
+  Image,
+  Pagination,
 } from "@shopify/hydrogen";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
 import type {
   CustomerOrdersFragment,
   OrderItemFragment,
-} from "customer-accountapi.generated";
+} from "customer-account-api.generated";
+import {
+  data,
+  Link,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  useLoaderData,
+} from "react-router";
 import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/CustomerOrdersQuery";
 
 export const meta: MetaFunction = () => {
@@ -23,7 +28,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let access = await context.customerAccount.getAccessToken();
   console.log(access);
 
-  const { data, errors } = await context.customerAccount.query(
+  const { data: queryData, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
     {
       variables: {
@@ -32,11 +37,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     },
   );
 
-  if (errors?.length || !data?.customer) {
-    throw Error("Customer orders not found");
+  if (errors?.length || !queryData?.customer) {
+    throw new Error("Customer orders not found");
   }
 
-  return data({ customer: data.customer });
+  return data({ customer: queryData.customer });
 }
 
 export default function Orders() {

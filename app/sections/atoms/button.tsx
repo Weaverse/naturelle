@@ -1,7 +1,7 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { type CSSProperties, forwardRef } from "react";
-import { IconEllipse } from "~/components/Icon";
+import type { CSSProperties, RefObject } from "react";
 import { Button, type ButtonProps } from "~/components/button";
+import { IconEllipse } from "~/components/Icon";
 
 interface OriginalButtonProps extends ButtonProps {
   href?: string;
@@ -16,80 +16,84 @@ interface OriginalButtonProps extends ButtonProps {
   borderColorHover?: string;
 }
 
-const WeaverseButton = forwardRef<HTMLButtonElement, OriginalButtonProps>(
-  (props, ref) => {
-    const {
-      href,
-      target,
-      value,
-      variant,
-      shape,
-      radius,
-      fontFamily,
-      textColorDecor,
-      textColor,
-      backgroundColor,
-      borderColor,
-      backgroundColorHover,
-      textColorHover,
-      borderColorHover,
-      ...rest
-    } = props;
-    const Component = href ? "a" : "button";
-    let style = {
-      color: textColorDecor,
-      "--text-color": textColor,
-      "--background-color": backgroundColor,
-      "--border-color": borderColor,
-      "--background-color-hover": backgroundColorHover,
-      "--text-color-hover": textColorHover,
-      "--border-color-hover": borderColorHover,
-      "--radius": `${radius}px`,
-    } as CSSProperties;
-    let styleButton = "";
-    if (variant === "custom") {
-      styleButton =
-        "bg-[var(--background-color)] border border-[var(--border-color)] !text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:!text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]";
-    }
-    return (
-      <Button
-        as={Component}
-        to={href}
-        data-motion="fade-up"
-        target={target}
-        variant={variant}
-        shape={shape}
-        fontFamily={fontFamily}
-        ref={ref}
-        {...rest}
-        className={`w-fit ${props.className} ${variant === "custom" && styleButton}`}
-        style={style}
-      >
-        {variant === "decor" ? (
-          <>
-            <IconEllipse
-              className="absolute inset-0 !h-[61px] !w-[148px] transform transition-transform duration-500 hover:rotate-[-11deg]"
-              stroke={
-                textColorDecor ? textColorDecor : "rgb(var(--color-foreground))"
-              }
-              viewBox="0 0 148 61"
-            />
-            <div className="flex pl-4 pt-2">{value}</div>
-          </>
-        ) : (
-          <>{value}</>
-        )}
-      </Button>
-    );
-  },
-);
+const WeaverseButton = ({
+  ref,
+  ...props
+}: OriginalButtonProps & { ref?: RefObject<HTMLButtonElement | null> }) => {
+  const {
+    href,
+    target,
+    value,
+    variant,
+    shape,
+    radius,
+    fontFamily,
+    textColorDecor,
+    textColor,
+    backgroundColor,
+    borderColor,
+    backgroundColorHover,
+    textColorHover,
+    borderColorHover,
+    // @ts-expect-error - buttonContent comes from CMS/Weaverse
+    buttonContent,
+    content,
+    ...rest
+  } = props;
+  const Component = href ? "a" : "button";
+  let style = {
+    color: textColorDecor,
+    "--text-color": textColor,
+    "--background-color": backgroundColor,
+    "--border-color": borderColor,
+    "--background-color-hover": backgroundColorHover,
+    "--text-color-hover": textColorHover,
+    "--border-color-hover": borderColorHover,
+    "--radius": `${radius}px`,
+  } as CSSProperties;
+  let styleButton = "";
+  if (variant === "custom") {
+    styleButton =
+      "bg-[var(--background-color)] border border-[var(--border-color)] !text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:!text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]";
+  }
+  return (
+    <Button
+      as={Component}
+      to={href}
+      data-motion="fade-up"
+      target={target}
+      variant={variant}
+      shape={shape}
+      fontFamily={fontFamily}
+      ref={ref}
+      {...rest}
+      className={`w-fit ${props.className} ${variant === "custom" && styleButton}`}
+      style={style}
+    >
+      {variant === "decor" ? (
+        <>
+          <IconEllipse
+            className="absolute inset-0 !h-[61px] !w-[148px] transform transition-transform duration-500 hover:rotate-[-11deg]"
+            stroke={
+              textColorDecor ? textColorDecor : "rgb(var(--color-foreground))"
+            }
+            viewBox="0 0 148 61"
+          />
+          <div className="flex pl-4 pt-2">{value}</div>
+        </>
+      ) : (
+        value
+      )}
+    </Button>
+  );
+};
 
 export default WeaverseButton;
 
 export const schema: HydrogenComponentSchema = {
   title: "Button",
   type: "button",
-  inspector: [
+  settings: [
     {
       group: "Button",
       inputs: [

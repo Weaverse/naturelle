@@ -193,7 +193,9 @@ const PLACEHOLDERS = {
  */
 
 export function getHeroPlaceholder(heros: any[]) {
-  if (!heros?.length) return [];
+  if (!heros?.length) {
+    return [];
+  }
 
   // when we pass a collection without metafields,
   // we merge it with placeholder data

@@ -2,13 +2,14 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import { type CSSProperties, forwardRef, useEffect, useState } from "react";
+import type { RefObject } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import { EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import clsx from "clsx";
-import { useMotion } from "~/hooks/use-animation";
+import { useAnimation } from "~/hooks/use-animation";
 
 interface SlidesProps extends HydrogenComponentProps {
   sectionHeight: number;
@@ -20,10 +21,13 @@ let widthClasses: { [item: string]: string } = {
   fixed: "container",
 };
 
-const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
+const Slides = ({
+  ref,
+  ...props
+}: SlidesProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { sectionHeight, width, children, ...rest } = props;
   const [isMobile, setIsMobile] = useState(false);
-  const [scope] = useMotion(ref);
+  const [scope] = useAnimation(ref);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -73,14 +77,14 @@ const Slides = forwardRef<HTMLElement, SlidesProps>((props, ref) => {
       </Swiper>
     </section>
   );
-});
+};
 
 export default Slides;
 
 export let schema: HydrogenComponentSchema = {
   type: "slides-index",
   title: "Slides",
-  inspector: [
+  settings: [
     {
       group: "Slides",
       inputs: [

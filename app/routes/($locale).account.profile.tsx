@@ -1,18 +1,15 @@
+import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api-types";
+import type { CustomerFragment } from "customer-account-api.generated";
 import {
+  type ActionFunctionArgs,
+  data,
   Form,
+  type LoaderFunctionArgs,
   type MetaFunction,
   useActionData,
   useNavigation,
   useOutletContext,
-} from "@remix-run/react";
-import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api-types";
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  data,
-  redirect,
-} from "@shopify/remix-oxygen";
-import type { CustomerFragment } from "customer-accountapi.generated";
+} from "react-router";
 import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/CustomerUpdateMutation";
 
 export type ActionResponse = {
@@ -52,7 +49,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     // update customer and possibly password
-    const { data, errors } = await customerAccount.mutate(
+    const { data: customerData, errors } = await customerAccount.mutate(
       CUSTOMER_UPDATE_MUTATION,
       {
         variables: {
@@ -65,13 +62,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
       throw new Error(errors[0].message);
     }
 
-    if (!data?.customerUpdate?.customer) {
+    if (!customerData?.customerUpdate?.customer) {
       throw new Error("Customer profile update failed.");
     }
 
     return data({
       error: null,
-      customer: data?.customerUpdate?.customer,
+      customer: customerData?.customerUpdate?.customer,
     });
   } catch (error: any) {
     return data(
@@ -86,8 +83,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
 export default function AccountProfile() {
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
-  const action = useActionData<ActionResponse>();
-  const customer = action?.customer ?? account?.customer;
+  const actionData = useActionData<ActionResponse>();
+  const customer = actionData?.customer ?? account?.customer;
 
   return (
     <div className="account-profile container">
@@ -134,10 +131,10 @@ export default function AccountProfile() {
               minLength={2}
             />
           </fieldset>
-          {action?.error ? (
+          {actionData?.error ? (
             <p>
               <mark>
-                <small>{action.error}</small>
+                <small>{actionData.error}</small>
               </mark>
             </p>
           ) : (

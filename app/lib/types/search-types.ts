@@ -1,9 +1,9 @@
-import type { FormProps, useFetcher } from "@remix-run/react";
+import type { FormProps, useFetcher } from "react-router";
 import type {
   PredictiveArticleFragment,
   PredictiveCollectionFragment,
   PredictiveProductFragment,
-} from "storefrontapi.generated";
+} from "storefront-api.generated";
 
 export type UseSearchReturn = NormalizedPredictiveSearch & {
   searchInputRef: React.MutableRefObject<HTMLInputElement | null>;
@@ -24,11 +24,11 @@ export type NormalizedPredictiveSearch = {
 };
 
 export type NormalizedPredictiveSearchResults = Array<
-  | { type: "queries"; items: Array<NormalizedPredictiveSearchResultItem> }
-  | { type: "products"; items: Array<NormalizedPredictiveSearchResultItem> }
-  | { type: "collections"; items: Array<NormalizedPredictiveSearchResultItem> }
-  | { type: "pages"; items: Array<NormalizedPredictiveSearchResultItem> }
-  | { type: "articles"; items: Array<NormalizedPredictiveSearchResultItem> }
+  | { type: "queries"; items: NormalizedPredictiveSearchResultItem[] }
+  | { type: "products"; items: NormalizedPredictiveSearchResultItem[] }
+  | { type: "collections"; items: NormalizedPredictiveSearchResultItem[] }
+  | { type: "pages"; items: NormalizedPredictiveSearchResultItem[] }
+  | { type: "articles"; items: NormalizedPredictiveSearchResultItem[] }
 >;
 
 export type NormalizedPredictiveSearchResultItem = {
@@ -40,7 +40,7 @@ export type NormalizedPredictiveSearchResultItem = {
   compareAtPrice?: PredictiveSearchResultItemPrice;
   styledTitle?: string;
   title: string;
-  vendor: string;
+  vendor?: string;
   url: string;
 };
 

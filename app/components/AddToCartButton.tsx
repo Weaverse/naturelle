@@ -1,4 +1,3 @@
-import type { FetcherWithComponents } from "@remix-run/react";
 import type { ShopifyAddToCartPayload } from "@shopify/hydrogen";
 import {
   AnalyticsEventName,
@@ -8,6 +7,7 @@ import {
 } from "@shopify/hydrogen";
 import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
 import { useEffect } from "react";
+import type { FetcherWithComponents } from "react-router";
 
 import { Button } from "~/components/button";
 import { usePageAnalytics } from "~/hooks/usePageAnalytics";
@@ -42,11 +42,12 @@ export function AddToCartButton({
       action={CartForm.ACTIONS.LinesAdd}
     >
       {(fetcher: FetcherWithComponents<any>) => {
+        // biome-ignore lint/correctness/useHookAtTopLevel: This is a valid pattern in CartForm render prop
         useEffect(() => {
           if (onFetchingStateChange) {
             onFetchingStateChange(fetcher.state);
           }
-        }, [fetcher.state]);
+        }, [fetcher.state, onFetchingStateChange]);
 
         return (
           <AddToCartAnalytics fetcher={fetcher}>
@@ -80,7 +81,7 @@ function AddToCartAnalytics({
 }: {
   fetcher: FetcherWithComponents<any>;
   children: React.ReactNode;
-}): JSX.Element {
+}): React.ReactNode {
   const fetcherData = fetcher.data;
   const formData = fetcher.formData;
   const pageAnalytics = usePageAnalytics({ hasUserConsent: true });

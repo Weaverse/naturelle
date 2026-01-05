@@ -5,7 +5,7 @@ import type {
   WeaverseImage,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { type CSSProperties, forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { useSwiper } from "swiper/react";
 import {
   IconArrowLeft,
@@ -34,12 +34,15 @@ let AlignImageClasses: Record<AlignImage, string> = {
   right: "sm:flex-row-reverse",
 };
 
-const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
+const Slide = ({
+  ref,
+  ...props
+}: SlideProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let {
     backgroundImage,
-    imageAlignment,
+    imageAlignment = "left",
     backgroundColor,
-    textAlignment,
+    textAlignment = "center",
     enableImageAnimation,
     children,
     ...rest
@@ -62,7 +65,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
         <div
           className={clsx(
             "flex flex-col justify-center items-center h-full w-full",
-            AlignImageClasses[imageAlignment!],
+            AlignImageClasses[imageAlignment],
           )}
         >
           <div
@@ -93,7 +96,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
             <div
               className={clsx(
                 "flex flex-col justify-center gap-4",
-                alignmentClasses[textAlignment!],
+                alignmentClasses[textAlignment],
               )}
             >
               {children}
@@ -118,15 +121,14 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
 export default Slide;
 
 export let schema: HydrogenComponentSchema = {
   type: "slides-item",
   title: "Slide",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Slide",
       inputs: [

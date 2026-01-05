@@ -5,8 +5,7 @@ import type {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import type { CSSProperties } from "react";
-import { forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { cn } from "~/lib/utils";
 
 let fontSizeVariants = cva("", {
@@ -94,10 +93,13 @@ export interface HeadingProps
   maxSize?: number;
 }
 
-let Heading = forwardRef<
-  HTMLHeadingElement,
-  HeadingProps & Partial<HydrogenComponentProps>
->((props, ref) => {
+let Heading = ({
+  ref,
+  ...props
+}: HeadingProps &
+  Partial<HydrogenComponentProps> & {
+    ref?: RefObject<HTMLHeadingElement | null>;
+  }) => {
   let {
     as: Tag = "h4",
     content,
@@ -111,6 +113,8 @@ let Heading = forwardRef<
     minSize,
     maxSize,
     className,
+    // @ts-expect-error
+    headingContent,
     ...rest
   } = props;
   let style: CSSProperties = { color };
@@ -136,7 +140,7 @@ let Heading = forwardRef<
       {content}
     </Tag>
   );
-});
+};
 
 export default Heading;
 
@@ -315,7 +319,7 @@ export let headingInputs: InspectorGroup["inputs"] = [
 export let schema: HydrogenComponentSchema = {
   type: "heading",
   title: "Heading",
-  inspector: [
+  settings: [
     {
       group: "Heading",
       inputs: headingInputs,

@@ -1,13 +1,10 @@
 import { Portal } from "@headlessui/react";
-import { useFetcher } from "@remix-run/react";
-import type { Jsonify } from "@remix-run/server-runtime/dist/jsonify";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
-import { Text } from "~/components/Text";
+import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
-import { ProductDetail } from "~/components/product-form/product-detail";
-import { getExcerpt } from "~/lib/utils";
+import { Text } from "~/components/Text";
 import type { ProductData } from "~/lib/utils/products";
 import { AddToCartButton } from "./AddToCartButton";
 import { Link } from "./Link";
@@ -16,7 +13,7 @@ import { ProductMedia } from "./product-form/product-media";
 import { Quantity } from "./product-form/quantity";
 import { ProductVariants } from "./product-form/variants";
 
-export function QuickView(props: { data: Jsonify<ProductData> }) {
+export function QuickView(props: { data: ProductData }) {
   const { data } = props;
   let themeSettings = useThemeSettings();
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +60,7 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product?.id]);
+  }, [product?.selectedVariant, selectedVariant, variants?.nodes?.[0]]);
 
   const { shippingPolicy, refundPolicy } = shop;
 
@@ -96,12 +93,14 @@ export function QuickView(props: { data: Jsonify<ProductData> }) {
           <div className="flex flex-col justify-start gap-4">
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
-                <h2 className="font-medium tracking-tighter line-clamp-2">{title}</h2>
+                <h2 className="font-medium tracking-tighter line-clamp-2">
+                  {title}
+                </h2>
                 {showVendor && vendor && (
                   <Text className={"opacity-50 font-medium"}>{vendor}</Text>
                 )}
                 <h4 className="flex gap-3">
-                  {selectedVariant && selectedVariant.compareAtPrice && (
+                  {selectedVariant?.compareAtPrice && (
                     <Money
                       withoutTrailingZeros
                       data={selectedVariant.compareAtPrice}
@@ -219,7 +218,7 @@ export function QuickViewTrigger(props: { productHandle: string }) {
     if (quickAddOpen && !data && state !== "loading") {
       load(`/api/query/products?handle=${productHandle}`);
     }
-  }, [quickAddOpen, data, load, state]);
+  }, [quickAddOpen, data, load, state, productHandle]);
   return (
     <>
       <div className="mt-2 absolute rounded-b bottom-0 hidden lg:group-hover/productCard:block py-5 px-3 w-full opacity-100 bg-[rgba(238,239,234,0.10)] backdrop-blur-2xl">

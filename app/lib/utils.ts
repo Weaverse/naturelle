@@ -1,11 +1,11 @@
-import { useLocation, useRouteLoaderData } from "@remix-run/react";
 import type { FulfillmentStatus } from "@shopify/hydrogen/customer-account-api-types";
 import type { MoneyV2 } from "@shopify/hydrogen/storefront-api-types";
 import { type ClassValue, clsx } from "clsx";
 import { colord, extend } from "colord";
 import namesPlugin from "colord/plugins/names";
 import { type LinkHTMLAttributes, useEffect, useState } from "react";
-import type { MenuFragment } from "storefrontapi.generated";
+import { useLocation, useRouteLoaderData } from "react-router";
+import type { MenuFragment } from "storefront-api.generated";
 import { twMerge } from "tailwind-merge";
 import typographicBase from "typographic-base/index";
 import { countries } from "~/data/countries";
@@ -74,7 +74,9 @@ function resolveToFromType(
     customPrefixes: {},
   },
 ) {
-  if (!pathname || !type) return "";
+  if (!pathname || !type) {
+    return "";
+  }
 
   /*
     MenuItemType enum
@@ -173,7 +175,7 @@ function parseItem(primaryDomain: string, env: Env, customPrefixes = {}) {
       return {
         ...parsedItem,
         items: item.items
-          // @ts-ignore
+
           .map(parseItem(primaryDomain, env, customPrefixes))
           .filter(Boolean),
       } as EnhancedMenu["items"][number];
@@ -299,11 +301,13 @@ export function isLocalPath(url: string) {
 }
 
 export function removeFalsy<T = any>(
-  // biome-ignore lint/complexity/noBannedTypes: <explanation>
+  // biome-ignore lint/complexity/noBannedTypes: generic defaulting to object type
   obj: {},
   falsyValues: any[] = ["", null, undefined],
 ): T {
-  if (!obj || typeof obj !== "object") return obj as any;
+  if (!obj || typeof obj !== "object") {
+    return obj as any;
+  }
 
   return Object.entries(obj).reduce((a: any, c) => {
     let [k, v]: [string, any] = c;
@@ -353,26 +357,30 @@ export function loadCSS(attrs: LinkHTMLAttributes<HTMLLinkElement>) {
 
 export function prefixClassNames(contentHtml: string, prefix: string) {
   const [articleContent, setArticleContent] = useState<string>("");
-  const prefixClassNames = (html: string, prefix: string) => {
-    html = html.replace(/class="([^"]*)"/g, (match, classNames) => {
-      const prefixedClassNames = classNames
-        .split(" ")
-        .map((className: string) => `${prefix}${className}`)
-        .join(" ");
-      return `class="${prefixedClassNames}"`;
-    });
-    html = html.replace(/(\.[a-zA-Z0-9_-]+)\s*{/g, (match, className) => {
-      return `.${prefix}${className.slice(1)} {`;
-    });
-
-    return html;
-  };
   useEffect(() => {
+    const processPrefixClassNames = (html: string, pfx: string) => {
+      let result = html.replace(/class="([^"]*)"/g, (_match, classNames) => {
+        const prefixedClassNames = classNames
+          .split(" ")
+          .map((className: string) => `${pfx}${className}`)
+          .join(" ");
+        return `class="${prefixedClassNames}"`;
+      });
+      result = result.replace(
+        /(\.[a-zA-Z0-9_-]+)\s*{/g,
+        (_match, className) => {
+          return `.${prefix}${className.slice(1)} {`;
+        },
+      );
+
+      return result;
+    };
+
     if (contentHtml) {
-      const prefixedContent = prefixClassNames(contentHtml, prefix);
+      const prefixedContent = processPrefixClassNames(contentHtml, prefix);
       setArticleContent(prefixedContent);
     }
-  }, [contentHtml]);
+  }, [contentHtml, prefix]);
   return articleContent;
 }
 

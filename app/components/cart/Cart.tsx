@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import {
   CartForm,
   Image,
@@ -10,7 +10,7 @@ import {
 } from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
-import type { CartApiQueryFragment } from "storefrontapi.generated";
+import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 import { cn } from "~/lib/utils";

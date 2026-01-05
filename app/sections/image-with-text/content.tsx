@@ -5,7 +5,7 @@ import type {
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 
 let variants = cva(
   "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-4 md:px-8 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
@@ -33,10 +33,10 @@ interface ImageWithTextContentProps
   extends VariantProps<typeof variants>,
     HydrogenComponentProps {}
 
-let ImageWithTextContent = forwardRef<
-  HTMLDivElement,
-  ImageWithTextContentProps
->((props, ref) => {
+let ImageWithTextContent = ({
+  ref,
+  ...props
+}: ImageWithTextContentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { alignment, verticalPadding, children, ...rest } = props;
   return (
     <div
@@ -47,7 +47,7 @@ let ImageWithTextContent = forwardRef<
       {children}
     </div>
   );
-});
+};
 
 export default ImageWithTextContent;
 
@@ -55,7 +55,7 @@ export let schema: HydrogenComponentSchema = {
   type: "image-with-text--content",
   title: "Content",
   limit: 1,
-  inspector: [
+  settings: [
     {
       group: "Content",
       inputs: [

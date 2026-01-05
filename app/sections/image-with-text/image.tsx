@@ -7,7 +7,7 @@ import {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { cn } from "~/lib/utils";
 
 let variants = cva("w-full h-auto basis-full md:basis-1/2", {
@@ -54,46 +54,45 @@ interface ImageWithTextImageProps
   aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
 }
 
-let ImageWithTextImage = forwardRef<HTMLDivElement, ImageWithTextImageProps>(
-  (props, ref) => {
-    let {
-      image = IMAGES_PLACEHOLDERS.image,
-      width,
-      aspectRatio,
-      borderRadius,
-      objectFit,
-      ...rest
-    } = props;
-    let imageData: Partial<WeaverseImage> =
-      typeof image === "string"
-        ? { url: image, altText: "Placeholder" }
-        : image;
-    let aspRt: string | undefined;
-    if (aspectRatio === "adapt") {
-      if (imageData.width && imageData.height) {
-        aspRt = `${imageData.width}/${imageData.height}`;
-      }
-    } else {
-      aspRt = aspectRatio;
+let ImageWithTextImage = ({
+  ref,
+  ...props
+}: ImageWithTextImageProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  let {
+    image = IMAGES_PLACEHOLDERS.image,
+    width,
+    aspectRatio,
+    borderRadius,
+    objectFit,
+    ...rest
+  } = props;
+  let imageData: Partial<WeaverseImage> =
+    typeof image === "string" ? { url: image, altText: "Placeholder" } : image;
+  let aspRt: string | undefined;
+  if (aspectRatio === "adapt") {
+    if (imageData.width && imageData.height) {
+      aspRt = `${imageData.width}/${imageData.height}`;
     }
+  } else {
+    aspRt = aspectRatio;
+  }
 
-    return (
-      <div
-        data-motion="zoom-in"
-        ref={ref}
-        {...rest}
-        className={cn(variants({ width }))}
-      >
-        <Image
-          data={imageData}
-          sizes="auto"
-          aspectRatio={aspRt}
-          className={cn("h-auto", variants({ objectFit, borderRadius }))}
-        />
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      data-motion="zoom-in"
+      ref={ref}
+      {...rest}
+      className={cn(variants({ width }))}
+    >
+      <Image
+        data={imageData}
+        sizes="auto"
+        aspectRatio={aspRt}
+        className={cn("h-auto", variants({ objectFit, borderRadius }))}
+      />
+    </div>
+  );
+};
 
 export default ImageWithTextImage;
 
@@ -101,7 +100,7 @@ export let schema: HydrogenComponentSchema = {
   type: "image-with-text--image",
   title: "Image",
   limit: 1,
-  inspector: [
+  settings: [
     {
       group: "Image",
       inputs: [

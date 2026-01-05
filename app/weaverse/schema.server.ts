@@ -1,5 +1,6 @@
 import type { HydrogenThemeSchema } from "@weaverse/hydrogen";
 import pkg from "../../package.json";
+
 let variantSwatch = {
   configs: [],
   swatches: {
@@ -17,7 +18,7 @@ export const themeSchema: HydrogenThemeSchema = {
     documentationUrl: "https://weaverse.io/docs",
     supportUrl: "https://weaverse.io/contact",
   },
-  inspector: [
+  settings: [
     {
       group: "Product swatches",
       inputs: [
@@ -179,31 +180,6 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: "fixed",
         },
         {
-          type: "toggle-group",
-          label: "Header menu type for desktop",
-          name: "typeMenuHeader",
-          configs: {
-            options: [
-              { value: "mega", label: "Mega" },
-              { value: "drawer", label: "Drawer" },
-            ],
-          },
-          defaultValue: "mega",
-        },
-        {
-          type: "toggle-group",
-          label: "Type open menu",
-          name: "typeOpenMenu",
-          configs: {
-            options: [
-              { value: "mouseHover", label: "Mouse hover" },
-              { value: "mouseClick", label: "Mouse click" },
-            ],
-          },
-          defaultValue: "mouseHover",
-          condition: "typeMenuHeader.eq.mega",
-        },
-        {
           type: "switch",
           label: "Enable transparent header",
           name: "enableTransparentHeader",
@@ -243,18 +219,6 @@ export const themeSchema: HydrogenThemeSchema = {
             unit: "px",
           },
           defaultValue: 150,
-        },
-        {
-          type: "toggle-group",
-          label: "Search type for desktop",
-          name: "searchType",
-          configs: {
-            options: [
-              { value: "popupSearch", label: "Popup search" },
-              { value: "drawerSearch", label: "Drawer search" },
-            ],
-          },
-          defaultValue: "headerSearch",
         },
       ],
     },

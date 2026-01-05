@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { NavLink, useFetcher } from "@remix-run/react";
+import { NavLink, useFetcher } from "react-router";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
 import type React from "react";

@@ -4,10 +4,9 @@ import type {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import type { HTMLAttributes } from "react";
 import type React from "react";
-import { forwardRef } from "react";
-import { useMotion } from "~/hooks/use-animation";
+import type { HTMLAttributes } from "react";
+import { useAnimation } from "~/hooks/use-animation";
 import { cn } from "~/lib/utils";
 import type { BackgroundImageProps } from "./BackgroundImage";
 import { backgroundInputs } from "./BackgroundImage";
@@ -78,8 +77,11 @@ let variants = cva("relative", {
   },
 });
 
-export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
-  const [scope] = useMotion(ref);
+export let Section = ({
+  ref,
+  ...props
+}: SectionProps & { ref?: React.RefObject<HTMLElement | null> }) => {
+  const [scope] = useAnimation(ref);
   let {
     as: Component = "section",
     width,
@@ -135,7 +137,7 @@ export let Section = forwardRef<HTMLElement, SectionProps>((props, ref) => {
       </div>
     </Component>
   );
-});
+};
 
 export let layoutInputs: InspectorGroup["inputs"] = [
   {

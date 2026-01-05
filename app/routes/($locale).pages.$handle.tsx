@@ -1,7 +1,6 @@
-import type { MetaFunction } from "@remix-run/react";
-import { type SeoConfig, getSeoMeta } from "@shopify/hydrogen";
-import { data } from "@shopify/remix-oxygen";
-import type { RouteLoaderArgs } from "@weaverse/hydrogen";
+import { getSeoMeta, type SeoConfig } from "@shopify/hydrogen";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { data } from "react-router";
 import invariant from "tiny-invariant";
 import { routeHeaders } from "~/data/cache";
 import { seoPayload } from "~/lib/seo.server";
@@ -9,7 +8,7 @@ import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
-export async function loader({ request, params, context }: RouteLoaderArgs) {
+export async function loader({ request, params, context }: LoaderFunctionArgs) {
   invariant(params.handle, "Missing page handle");
 
   const { page } = await context.storefront.query(PAGE_QUERY, {
@@ -35,8 +34,8 @@ export async function loader({ request, params, context }: RouteLoaderArgs) {
   });
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Page() {
   return <WeaverseContent />;

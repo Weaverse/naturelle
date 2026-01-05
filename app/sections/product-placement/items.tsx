@@ -2,8 +2,7 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import clsx from "clsx";
-import { type CSSProperties, forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid } from "~/components/Grid";
 import "swiper/swiper-bundle.css";
@@ -16,10 +15,10 @@ interface ProductPlacementItemsProps extends HydrogenComponentProps {
   itemsSpacing: number;
 }
 
-const ProductPlacementItems = forwardRef<
-  HTMLDivElement,
-  ProductPlacementItemsProps
->((props, ref) => {
+const ProductPlacementItems = ({
+  ref,
+  ...props
+}: ProductPlacementItemsProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { productsPerRow, thumbnailRatio, itemsSpacing, children, ...rest } =
     props;
   let contentStyle: CSSProperties = {
@@ -62,14 +61,14 @@ const ProductPlacementItems = forwardRef<
       </div>
     </div>
   );
-});
+};
 
 export default ProductPlacementItems;
 
 export const schema: HydrogenComponentSchema = {
   type: "product-placement--items",
   title: "Items",
-  inspector: [
+  settings: [
     {
       group: "Product",
       inputs: [

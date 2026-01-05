@@ -5,7 +5,7 @@ import type {
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 
 export interface ParagraphProps
   extends VariantProps<typeof variants>,
@@ -48,10 +48,12 @@ let variants = cva("paragraph", {
   },
 });
 
-let Description = forwardRef<
-  HTMLParagraphElement | HTMLDivElement,
-  ParagraphProps
->((props, ref) => {
+let Description = ({
+  ref,
+  ...props
+}: ParagraphProps & {
+  ref?: RefObject<HTMLParagraphElement | HTMLDivElement | null>;
+}) => {
   let {
     as: Tag = "p",
     width,
@@ -73,14 +75,14 @@ let Description = forwardRef<
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
-});
+};
 
 export default Description;
 
 export let schema: HydrogenComponentSchema = {
   type: "description",
   title: "Description",
-  inspector: [
+  settings: [
     {
       group: "Paragraph",
       inputs: [
@@ -169,5 +171,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
 };

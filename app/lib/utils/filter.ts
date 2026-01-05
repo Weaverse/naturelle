@@ -1,5 +1,5 @@
-import type { Location, useLocation } from "@remix-run/react";
 import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
+import type { Location, useLocation } from "react-router";
 import { FILTER_URL_PREFIX } from "./const";
 
 export type AppliedFilter = {
@@ -21,10 +21,10 @@ export function getAppliedFilterLink(
   location: Location,
 ) {
   const paramsClone = new URLSearchParams(params);
-  Object.entries(filter.filter).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(filter.filter)) {
     const fullKey = FILTER_URL_PREFIX + key;
     paramsClone.delete(fullKey, JSON.stringify(value));
-  });
+  }
   return `${location.pathname}?${paramsClone.toString()}`;
 }
 
@@ -56,9 +56,9 @@ export function filterInputToParams(
       ? (JSON.parse(rawInput) as ProductFilter)
       : rawInput;
 
-  Object.entries(input).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(input)) {
     if (params.has(`${FILTER_URL_PREFIX}${key}`, JSON.stringify(value))) {
-      return;
+      continue;
     }
     if (key === "price") {
       // For price, we want to overwrite
@@ -66,7 +66,7 @@ export function filterInputToParams(
     } else {
       params.append(`${FILTER_URL_PREFIX}${key}`, JSON.stringify(value));
     }
-  });
+  }
 
   return params;
 }

@@ -1,4 +1,4 @@
-import { useNavigate } from "@remix-run/react";
+import { useNavigate } from "react-router";
 import { IconSearch } from "~/components/Icon";
 import { Input } from "~/components/input";
 import { PredictiveSearchForm } from "../../SearchForm";

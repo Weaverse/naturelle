@@ -1,35 +1,35 @@
 import {
+  getPaginationVariables,
+  getSeoMeta,
+  Pagination,
+  type SeoConfig,
+} from "@shopify/hydrogen";
+import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
+import { Suspense } from "react";
+import type { LoaderFunctionArgs } from "react-router";
+import {
   Await,
   Form,
   type MetaFunction,
   useLoaderData,
   useLocation,
   useNavigate,
-} from "@remix-run/react";
-import {
-  Pagination,
-  type SeoConfig,
-  getPaginationVariables,
-  getSeoMeta,
-} from "@shopify/hydrogen";
-import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
-import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { Suspense } from "react";
+} from "react-router";
+import { Button } from "~/components/button";
 import { DrawerFilter } from "~/components/DrawerFilter";
 import { Grid } from "~/components/Grid";
 import { IconSearch } from "~/components/Icon";
+import { Input } from "~/components/input";
 import { ProductCard } from "~/components/ProductCard";
 import { ProductSwimlane } from "~/components/ProductSwimlane";
 import { PageHeader, Text } from "~/components/Text";
-import { Button } from "~/components/button";
-import { Input } from "~/components/input";
 import { FILTER_QUERY, SEARCH_QUERY } from "~/graphql/data/queries";
 import { seoPayload } from "~/lib/seo.server";
 import { parseAsCurrency } from "~/lib/utils";
 import {
   FILTER_URL_PREFIX,
-  PAGINATION_SIZE,
   getImageLoadingPriority,
+  PAGINATION_SIZE,
 } from "~/lib/utils/const";
 import type { SortParam } from "~/lib/utils/filter";
 import { getSortValuesFromParam } from "./($locale).collections.$handle";
@@ -41,7 +41,7 @@ import {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;
   const searchParams = new URL(request.url).searchParams;
-  const searchTerm = searchParams.get("q")! || "";
+  const searchTerm = searchParams.get("q") ?? "";
   const variables = getPaginationVariables(request, {
     pageBy: PAGINATION_SIZE,
   });
@@ -54,18 +54,15 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     searchParams.get("sort") as SortParam,
   );
 
-  const filters = [...searchParams.entries()].reduce(
-    (filters, [key, value]) => {
-      if (key.startsWith(FILTER_URL_PREFIX)) {
-        const filterKey = key.substring(FILTER_URL_PREFIX.length);
-        filters.push({
-          [filterKey]: JSON.parse(value),
-        });
-      }
-      return filters;
-    },
-    [] as ProductFilter[],
-  );
+  const filters = [...searchParams.entries()].reduce((acc, [key, value]) => {
+    if (key.startsWith(FILTER_URL_PREFIX)) {
+      const filterKey = key.substring(FILTER_URL_PREFIX.length);
+      acc.push({
+        [filterKey]: JSON.parse(value),
+      });
+    }
+    return acc;
+  }, [] as ProductFilter[]);
 
   const { search: productSearch } = await storefront.query(SEARCH_QUERY, {
     variables: {
@@ -161,8 +158,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   };
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Search() {
   const {
@@ -282,7 +279,9 @@ function NoResults({
           resolve={recommendations}
         >
           {(result) => {
-            if (!result) return null;
+            if (!result) {
+              return null;
+            }
             const { featuredCollections, featuredProducts } = result;
 
             return (

@@ -1,12 +1,11 @@
 import { Image } from "@shopify/hydrogen";
 import type {
-  ComponentLoaderArgs,
   HydrogenComponentProps,
   HydrogenComponentSchema,
   WeaverseImage,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
-import { type CSSProperties, forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { IconImageBlank } from "~/components/Icon";
 import { Link } from "~/components/Link";
 
@@ -15,10 +14,10 @@ interface ProductPlacementItemProps extends HydrogenComponentProps {
   product?: WeaverseProduct;
 }
 
-const ProductPlacementItem = forwardRef<
-  HTMLDivElement,
-  ProductPlacementItemProps
->((props, ref) => {
+const ProductPlacementItem = ({
+  ref,
+  ...props
+}: ProductPlacementItemProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { image, product, ...rest } = props;
   let contentStyle: CSSProperties = {} as CSSProperties;
   return (
@@ -54,14 +53,14 @@ const ProductPlacementItem = forwardRef<
       )}
     </div>
   );
-});
+};
 
 export default ProductPlacementItem;
 
 export const schema: HydrogenComponentSchema = {
   type: "product-placement--item",
   title: "Product",
-  inspector: [
+  settings: [
     {
       group: "Product",
       inputs: [

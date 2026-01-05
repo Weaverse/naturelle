@@ -1,7 +1,7 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import type { MediaFragment } from "storefrontapi.generated";
+import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import { Image } from "~/components/image";

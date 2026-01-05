@@ -1,26 +1,22 @@
 import {
+  AnalyticsPageType,
+  getSeoMeta,
+  type SeoConfig,
+  type ShopifyAnalyticsProduct,
+} from "@shopify/hydrogen";
+import { getSelectedProductOptions } from "@weaverse/hydrogen";
+import { useEffect } from "react";
+import {
+  type ActionFunctionArgs,
+  data,
+  type HeadersFunction,
+  type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
   useSearchParams,
-} from "@remix-run/react";
-import {
-  AnalyticsPageType,
-  type SeoConfig,
-  type ShopifyAnalyticsProduct,
-  getSeoMeta,
-} from "@shopify/hydrogen";
-import type { SelectedOptionInput } from "@shopify/hydrogen/storefront-api-types";
-import {
-  type ActionFunctionArgs,
-  type HeadersFunction,
-  type LoaderFunctionArgs,
-  data,
-} from "@shopify/remix-oxygen";
-import { getSelectedProductOptions } from "@weaverse/hydrogen";
-import { useEffect } from "react";
-import type { ProductRecommendationsQuery } from "storefrontapi.generated";
+} from "react-router";
+import type { ProductRecommendationsQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
 import {
   PRODUCT_QUERY,
   RECOMMENDED_PRODUCTS_QUERY,
@@ -32,11 +28,15 @@ import { createJudgemeReview, getJudgemeReviews } from "~/lib/utils/judgeme";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
-  return {
-    ...routeHeaders,
-    ...(loaderHeaders || {}),
-    ...(actionHeaders || {}),
-  };
+  const mergedHeaders = new Headers(loaderHeaders);
+
+  if (actionHeaders) {
+    for (const [key, value] of actionHeaders.entries()) {
+      mergedHeaders.set(key, value);
+    }
+  }
+
+  return mergedHeaders;
 };
 
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
@@ -45,13 +45,13 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   invariant(handle, "Missing productHandle param, check route filename");
 
   const selectedOptions = getSelectedProductOptions(request);
-  let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
+  let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
   const { shop, product } = await context.storefront.query(PRODUCT_QUERY, {
     variables: {
       handle: handle,
       selectedOptions,
-      namespace: metafield.split('.')[0],
-      key: metafield.split('.')[1],
+      namespace: metafield.split(".")[0],
+      key: metafield.split(".")[1],
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
@@ -61,11 +61,12 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     throw new Response("product", { status: 404 });
   }
 
-  if (!product.selectedVariant && product.options.length) {
-    // set the selectedVariant to the first variant if there is only one option
-    if (product.options.length < 2) {
-      product.selectedVariant = product.variants.nodes[0];
-    }
+  if (
+    !product.selectedVariant &&
+    product.options.length &&
+    product.options.length < 2
+  ) {
+    product.selectedVariant = product.variants.nodes[0];
   }
 
   // In order to show which variants are available in the UI, we need to query
@@ -152,8 +153,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
   return data(rest, { status });
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 // function redirectToFirstVariant({
 //   product,
@@ -184,15 +185,17 @@ let useApplyFirstVariant = () => {
   useEffect(() => {
     if (!product.selectedVariant) {
       let selectedOptions = product.variants?.nodes?.[0]?.selectedOptions;
-      selectedOptions?.forEach((option: SelectedOptionInput) => {
-        searchParams.set(option.name, option.value);
-      });
+      if (selectedOptions) {
+        for (const option of selectedOptions) {
+          searchParams.set(option.name, option.value);
+        }
+      }
       setSearchParams(searchParams, {
         replace: true, // prevent adding a new entry to the history stack
       });
     }
     // eslint-disable-next-line
-  }, [product]);
+  }, [product, searchParams, setSearchParams]);
 };
 
 export default function Product() {

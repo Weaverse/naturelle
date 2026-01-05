@@ -2,16 +2,11 @@ import clsx from "clsx";
 import { useState } from "react";
 
 interface MetaField {
-  description: string | null;
+  description?: string | null;
   id: string;
   key: string;
   namespace: string;
-  reference: {
-    fields: Array<{
-      key: string;
-      value: string;
-    }>;
-  };
+  reference?: any;
 }
 
 interface MetaFieldTableProps {
@@ -20,7 +15,7 @@ interface MetaFieldTableProps {
 
 export function MetaFieldTable({ data }: MetaFieldTableProps) {
   const validTabs = data.reference.fields.filter(
-    (field) => field.value && field.value.trim() !== ""
+    (field) => field.value && field.value.trim() !== "",
   );
 
   const [activeTab, setActiveTab] = useState(validTabs[0]?.key ?? "");
@@ -40,12 +35,13 @@ export function MetaFieldTable({ data }: MetaFieldTableProps) {
       <div className={clsx("flex")}>
         {validTabs.map((tab) => (
           <button
+            type="button"
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={clsx(
               "flex-1 py-4 px-6 text-sm font-medium uppercase text-center transition-colors",
               "border-r-2 last:border-r-0 border-border-subtle",
-              activeTab === tab.key ? "border-b-0 bg-[#E0E5D6]" : "border-b-2"
+              activeTab === tab.key ? "border-b-0 bg-[#E0E5D6]" : "border-b-2",
             )}
           >
             {tab.key.replace(/_/g, " ")}

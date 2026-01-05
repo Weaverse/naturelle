@@ -4,7 +4,7 @@ import type {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 import { cn } from "~/lib/utils";
 
 let variants = cva("subheading", {
@@ -38,10 +38,14 @@ interface SubHeadingProps
   content: string;
 }
 
-let SubHeading = forwardRef<
-  HTMLHeadingElement | HTMLParagraphElement | HTMLDivElement,
-  SubHeadingProps
->((props, ref) => {
+let SubHeading = ({
+  ref,
+  ...props
+}: SubHeadingProps & {
+  ref?: RefObject<
+    HTMLHeadingElement | HTMLParagraphElement | HTMLDivElement | null
+  >;
+}) => {
   let {
     as: Tag = "p",
     content,
@@ -63,14 +67,14 @@ let SubHeading = forwardRef<
       {content}
     </Tag>
   );
-});
+};
 
 export default SubHeading;
 
 export let schema: HydrogenComponentSchema = {
   type: "subheading",
   title: "Subheading",
-  inspector: [
+  settings: [
     {
       group: "Subheading",
       inputs: [
@@ -145,5 +149,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
 };

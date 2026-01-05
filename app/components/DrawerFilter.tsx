@@ -1,30 +1,25 @@
 import { Disclosure, Menu } from "@headlessui/react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
 import type {
   Filter,
   ProductFilter,
 } from "@shopify/hydrogen/storefront-api-types";
 import type { SyntheticEvent } from "react";
 import { useMemo, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import useDebounce from "react-use/esm/useDebounce";
-import { IconCaret, IconXMark } from "~/components/Icon";
-import { Heading } from "~/components/Text";
 import { Button } from "~/components/button";
 import { Checkbox } from "~/components/checkbox";
+import { IconCaret, IconXMark } from "~/components/Icon";
 import { Input } from "~/components/input";
+import { Heading } from "~/components/Text";
 import { FILTER_URL_PREFIX } from "~/lib/utils/const";
 import {
   type AppliedFilter,
-  type SortParam,
   filterInputToParams,
   getAppliedFilterLink,
   getFilterLink,
   getSortLink,
+  type SortParam,
 } from "~/lib/utils/filter";
 import { Drawer, useDrawer } from "./Drawer";
 
@@ -44,35 +39,33 @@ export function DrawerFilter({
 }: DrawerFilterProps) {
   const { openDrawer, isOpen, closeDrawer } = useDrawer();
   return (
-    <>
-      <div className="border-y border-border-subtle py-4 px-3 md:px-4 lg:px-0">
-        <div className="container flex w-full items-center justify-between">
-          <span className="font-heading text-xl font-medium tracking-tight">
-            {productNumber} Products
-          </span>
-          <div className="flex gap-2">
-            <SortMenu showSearchSort={showSearchSort} />
-            <Button onClick={openDrawer} shape="default" variant="outline">
-              <span className="font-heading text-xl font-normal">Filter</span>
-            </Button>
-            <Drawer
-              open={isOpen}
-              onClose={closeDrawer}
-              openFrom="left"
-              heading="FILTER"
-              isForm="filter"
-            >
-              <div className="w-96 px-6">
-                <FiltersDrawer
-                  filters={filters}
-                  appliedFilters={appliedFilters}
-                />
-              </div>
-            </Drawer>
-          </div>
+    <div className="border-y border-border-subtle py-4 px-3 md:px-4 lg:px-0">
+      <div className="container flex w-full items-center justify-between">
+        <span className="font-heading text-xl font-medium tracking-tight">
+          {productNumber} Products
+        </span>
+        <div className="flex gap-2">
+          <SortMenu showSearchSort={showSearchSort} />
+          <Button onClick={openDrawer} shape="default" variant="outline">
+            <span className="font-heading text-xl font-normal">Filter</span>
+          </Button>
+          <Drawer
+            open={isOpen}
+            onClose={closeDrawer}
+            openFrom="left"
+            heading="FILTER"
+            isForm="filter"
+          >
+            <div className="w-96 px-6">
+              <FiltersDrawer
+                filters={filters}
+                appliedFilters={appliedFilters}
+              />
+            </div>
+          </Drawer>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -86,18 +79,18 @@ function ListItemFilter({
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const location = useLocation();
-  let filter = appliedFilters.find(
-    (filter) => JSON.stringify(filter.filter) === option.input,
+  let appliedFilter = appliedFilters.find(
+    (f) => JSON.stringify(f.filter) === option.input,
   );
-  let [checked, setChecked] = useState(!!filter);
+  let [checked, setChecked] = useState(Boolean(appliedFilter));
 
-  let handleCheckedChange = (checked: boolean) => {
-    setChecked(checked);
-    if (checked) {
+  let handleCheckedChange = (isChecked: boolean) => {
+    setChecked(isChecked);
+    if (isChecked) {
       const link = getFilterLink(option.input as string, params, location);
       navigate(link);
-    } else if (filter) {
-      let link = getAppliedFilterLink(filter, params, location);
+    } else if (appliedFilter) {
+      let link = getAppliedFilterLink(appliedFilter, params, location);
       navigate(link);
     }
   };
@@ -119,14 +112,19 @@ export function FiltersDrawer({
   const [params] = useSearchParams();
   const filterMarkup = (filter: Filter, option: Filter["values"][0]) => {
     switch (filter.type) {
-      case "PRICE_RANGE":
+      case "PRICE_RANGE": {
         const priceFilter = params.get(`${FILTER_URL_PREFIX}price`);
         const price = priceFilter
           ? (JSON.parse(priceFilter) as ProductFilter["price"])
           : undefined;
-        const min = isNaN(Number(price?.min)) ? undefined : Number(price?.min);
-        const max = isNaN(Number(price?.max)) ? undefined : Number(price?.max);
+        const min = Number.isNaN(Number(price?.min))
+          ? undefined
+          : Number(price?.min);
+        const max = Number.isNaN(Number(price?.max))
+          ? undefined
+          : Number(price?.max);
         return <PriceRangeFilter min={min} max={max} />;
+      }
 
       default:
         return (
@@ -182,7 +180,7 @@ function AppliedFilters({ filters = [] }: { filters: AppliedFilter[] }) {
               className="gap flex rounded-full border px-2"
               key={`${filter.label}-${JSON.stringify(filter.filter)}`}
             >
-              <span className="flex-grow">{filter.label}</span>
+              <span className="grow">{filter.label}</span>
               <span>
                 <IconXMark />
               </span>
@@ -244,9 +242,10 @@ function PriceRangeFilter({ max, min }: { max?: number; min?: number }) {
 
   return (
     <div className="flex gap-6">
-      <label className="flex items-center gap-1">
+      <label htmlFor="minPrice" className="flex items-center gap-1">
         <span>$</span>
         <Input
+          id="minPrice"
           name="minPrice"
           type="number"
           value={minPrice ?? ""}
@@ -254,9 +253,10 @@ function PriceRangeFilter({ max, min }: { max?: number; min?: number }) {
           onChange={onChangeMin}
         />
       </label>
-      <label className="flex items-center gap-1">
+      <label htmlFor="maxPrice" className="flex items-center gap-1">
         <span>$</span>
         <Input
+          id="maxPrice"
           name="maxPrice"
           type="number"
           value={maxPrice ?? ""}

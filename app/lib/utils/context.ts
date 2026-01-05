@@ -1,7 +1,8 @@
-import { createHydrogenContext } from "@shopify/hydrogen";
+import { createHydrogenContext, type HydrogenCart } from "@shopify/hydrogen";
 import { WeaverseClient } from "@weaverse/hydrogen";
 import { CART_QUERY_FRAGMENT } from "~/graphql/data/fragments";
 import { AppSession } from "~/lib/session";
+import type { I18nLocale } from "~/lib/types/type-locale";
 import { getLocaleFromRequest } from "~/lib/utils";
 import { components } from "~/weaverse/components";
 import { themeSchema } from "~/weaverse/schema.server";
@@ -28,7 +29,11 @@ export async function createAppLoadContext(
     AppSession.init(request, [env.SESSION_SECRET]),
   ]);
 
-  const hydrogenContext = createHydrogenContext({
+  const hydrogenContext = createHydrogenContext<
+    AppSession,
+    HydrogenCart,
+    I18nLocale
+  >({
     env,
     request,
     cache,
@@ -40,9 +45,11 @@ export async function createAppLoadContext(
     },
   });
 
-  return {
-    ...hydrogenContext,
-    // declare additional Remix loader context
+  /*
+   * Use Object.assign to preserve the prototype chain of the hydrogenContext
+   * which is required for React Router v7 middleware integration.
+   */
+  Object.assign(hydrogenContext, {
     weaverse: new WeaverseClient({
       ...hydrogenContext,
       request,
@@ -50,5 +57,7 @@ export async function createAppLoadContext(
       themeSchema,
       components,
     }),
-  };
+  });
+
+  return hydrogenContext;
 }
