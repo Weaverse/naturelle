@@ -1,39 +1,39 @@
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
+  Analytics,
+  getSeoMeta,
+  Image,
+  type SeoConfig,
+  useNonce,
+} from "@shopify/hydrogen";
+import { withWeaverse } from "@weaverse/hydrogen";
+import {
+  isRouteErrorResponse,
   Links,
+  type LoaderFunctionArgs,
   Meta,
+  type MetaArgs,
   Outlet,
   Scripts,
   ScrollRestoration,
   type ShouldRevalidateFunction,
-  isRouteErrorResponse,
   useMatches,
   useRouteError,
   useRouteLoaderData,
-  type LoaderFunctionArgs,
-  type MetaArgs,
 } from "react-router";
-import {
-  Analytics,
-  Image,
-  type SeoConfig,
-  getSeoMeta,
-  useNonce,
-} from "@shopify/hydrogen";
-import { withWeaverse } from "@weaverse/hydrogen";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
-import tailwind from "./styles/tailwind.css?url";
+import appStyles from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/cormorant";
 import "@fontsource-variable/nunito-sans";
 import { CustomAnalytics } from "~/components/Analytics";
-import { Header } from "~/components/Header/Header";
 import { Button } from "~/components/button";
 import { Footer } from "~/components/footer/Footer";
-import { Preloader } from "./components/Preloader";
+import { Header } from "~/components/Header/Header";
+import { loadCriticalData, loadDeferredData } from "./.server/root";
 import { GlobalLoading } from "./components/global-loading";
+import { Preloader } from "./components/Preloader";
 import { DEFAULT_LOCALE } from "./lib/utils";
 import { getErrorMessage } from "./lib/utils/defineMessageError";
-import { loadCriticalData, loadDeferredData } from "./.server/root";
 
 export type RootLoader = typeof loader;
 
@@ -104,7 +104,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" href={tailwind} />
+        <link rel="stylesheet" href={appStyles} />
         <Meta />
         <Links />
         <GlobalStyle />
