@@ -2,7 +2,7 @@ import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api
 import type { CustomerFragment } from "customer-account-api.generated";
 import {
   type ActionFunctionArgs,
-  data,
+  data as response,
   Form,
   type LoaderFunctionArgs,
   type MetaFunction,
@@ -24,14 +24,14 @@ export const meta: MetaFunction = () => {
 export async function loader({ context }: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
-  return data({});
+  return response({});
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { customerAccount } = context;
 
   if (request.method !== "PUT") {
-    return data({ error: "Method not allowed" }, { status: 405 });
+    return response({ error: "Method not allowed" }, { status: 405 });
   }
 
   const form = await request.formData();
@@ -49,7 +49,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     // update customer and possibly password
-    const { data: customerData, errors } = await customerAccount.mutate(
+    const { data, errors } = await customerAccount.mutate(
       CUSTOMER_UPDATE_MUTATION,
       {
         variables: {
@@ -62,16 +62,16 @@ export async function action({ request, context }: ActionFunctionArgs) {
       throw new Error(errors[0].message);
     }
 
-    if (!customerData?.customerUpdate?.customer) {
+    if (!data?.customerUpdate?.customer) {
       throw new Error("Customer profile update failed.");
     }
 
-    return data({
+    return response({
       error: null,
-      customer: customerData?.customerUpdate?.customer,
+      customer: data?.customerUpdate?.customer,
     });
   } catch (error: any) {
-    return data(
+    return response(
       { error: error.message, customer: null },
       {
         status: 400,
@@ -83,8 +83,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
 export default function AccountProfile() {
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
-  const actionData = useActionData<ActionResponse>();
-  const customer = actionData?.customer ?? account?.customer;
+  const action = useActionData<ActionResponse>();
+  const customer = action?.customer ?? account?.customer;
 
   return (
     <div className="account-profile container">
@@ -131,10 +131,10 @@ export default function AccountProfile() {
               minLength={2}
             />
           </fieldset>
-          {actionData?.error ? (
+          {action?.error ? (
             <p>
               <mark>
-                <small>{actionData.error}</small>
+                <small>{action.error}</small>
               </mark>
             </p>
           ) : (

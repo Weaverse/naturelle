@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Button } from "~/components/button";
-import { usePredictiveSearch } from "../../../../hooks/usePredictiveSearch";
+import { usePredictiveSearch } from "../../../../hooks/use-predictive-search";
 import { PredictiveSearchResult } from "../../PredictiveSearchResult";
 
 export function SearchTypeHeaderResults() {

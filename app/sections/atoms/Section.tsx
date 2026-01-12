@@ -21,10 +21,10 @@ export type BackgroundProps = BackgroundImageProps & {
 
 export interface SectionProps<T = any>
   extends Omit<VariantProps<typeof variants>, "padding">,
-    Omit<HydrogenComponentProps<T>, "children">,
-    Omit<HTMLAttributes<HTMLElement>, "children">,
-    Partial<BackgroundProps>,
-    OverlayProps {
+  Omit<HydrogenComponentProps<T>, "children">,
+  Omit<HTMLAttributes<HTMLElement>, "children">,
+  Partial<BackgroundProps>,
+  OverlayProps {
   as: React.ElementType;
   borderRadius: number;
   containerClassName: string;
@@ -80,7 +80,7 @@ let variants = cva("relative", {
 export let Section = ({
   ref,
   ...props
-}: SectionProps & { ref?: React.RefObject<HTMLElement | null> }) => {
+}: SectionProps & { ref?: React.Ref<HTMLElement> }) => {
   const [scope] = useAnimation(ref);
   let {
     as: Component = "section",

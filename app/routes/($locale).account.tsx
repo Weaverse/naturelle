@@ -1,5 +1,5 @@
 import {
-  data,
+  data as response,
   Form,
   type LoaderFunctionArgs,
   NavLink,
@@ -13,16 +13,16 @@ export function shouldRevalidate() {
 }
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const { data: customerData, errors } = await context.customerAccount.query(
+  const { data, errors } = await context.customerAccount.query(
     CUSTOMER_DETAILS_QUERY,
   );
 
-  if (errors?.length || !customerData?.customer) {
+  if (errors?.length || !data?.customer) {
     throw new Error("Customer not found");
   }
 
-  return data(
-    { customer: customerData.customer },
+  return response(
+    { customer: data.customer },
     {
       headers: {
         "Cache-Control": "no-cache, no-store, must-revalidate",

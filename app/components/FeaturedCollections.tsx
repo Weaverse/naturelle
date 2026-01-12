@@ -1,6 +1,6 @@
+import { Image } from "~/components/image";
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { Grid } from "~/components/Grid";
-import { Image } from "~/components/image";
 import { Link } from "~/components/Link";
 import { Heading, Section } from "~/components/Text";
 

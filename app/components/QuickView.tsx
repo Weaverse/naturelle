@@ -1,8 +1,8 @@
 import { Portal } from "@headlessui/react";
+import { useFetcher } from "react-router";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
-import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
 import { Text } from "~/components/Text";
 import type { ProductData } from "~/lib/utils/products";

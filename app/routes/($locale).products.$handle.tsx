@@ -17,6 +17,7 @@ import {
 } from "react-router";
 import type { ProductRecommendationsQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
+import { routeHeaders } from "~/data/cache";
 import {
   PRODUCT_QUERY,
   RECOMMENDED_PRODUCTS_QUERY,
@@ -27,17 +28,7 @@ import type { Storefront } from "~/lib/types/type-locale";
 import { createJudgemeReview, getJudgemeReviews } from "~/lib/utils/judgeme";
 import { WeaverseContent } from "~/weaverse";
 
-export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
-  const mergedHeaders = new Headers(loaderHeaders);
-
-  if (actionHeaders) {
-    for (const [key, value] of actionHeaders.entries()) {
-      mergedHeaders.set(key, value);
-    }
-  }
-
-  return mergedHeaders;
-};
+export const headers = routeHeaders;
 
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { handle } = params;

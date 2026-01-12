@@ -1,11 +1,11 @@
 import { Disclosure, Menu } from "@headlessui/react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import type {
   Filter,
   ProductFilter,
 } from "@shopify/hydrogen/storefront-api-types";
 import type { SyntheticEvent } from "react";
 import { useMemo, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import useDebounce from "react-use/esm/useDebounce";
 import { Button } from "~/components/button";
 import { Checkbox } from "~/components/checkbox";
@@ -15,11 +15,11 @@ import { Heading } from "~/components/Text";
 import { FILTER_URL_PREFIX } from "~/lib/utils/const";
 import {
   type AppliedFilter,
+  type SortParam,
   filterInputToParams,
   getAppliedFilterLink,
   getFilterLink,
   getSortLink,
-  type SortParam,
 } from "~/lib/utils/filter";
 import { Drawer, useDrawer } from "./Drawer";
 
@@ -328,9 +328,8 @@ export default function SortMenu({
             {() => (
               <Link to={getSortLink(item.key, params, location)}>
                 <p
-                  className={`block text-base ${
-                    activeItem?.key === item.key ? "font-bold" : "font-normal"
-                  }`}
+                  className={`block text-base ${activeItem?.key === item.key ? "font-bold" : "font-normal"
+                    }`}
                 >
                   {item.label}
                 </p>

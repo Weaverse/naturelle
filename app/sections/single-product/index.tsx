@@ -233,10 +233,10 @@ let SingleProduct = ({
                         quantity,
                       },
                     ]}
+                    variant="primary"
                     onFetchingStateChange={(state) =>
                       setIsLoading(state === "submitting")
                     }
-                    variant="primary"
                     data-test="add-to-cart"
                     className="w-full"
                   >

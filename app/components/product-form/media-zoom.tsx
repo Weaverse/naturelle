@@ -88,7 +88,7 @@ export function ZoomModal({
           }
           aria-describedby={undefined}
         >
-          <div className="w-full h-full flex items-center justify-center bg-[--color-background] relative">
+          <div className="w-full h-full flex items-center justify-center bg-[var(--color-background)] relative">
             <VisuallyHidden.Root asChild>
               <Dialog.Title>Product media zoom</Dialog.Title>
             </VisuallyHidden.Root>

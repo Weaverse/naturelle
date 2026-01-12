@@ -36,15 +36,18 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { sortKey, reverse } = getSortValuesFromParam(
     searchParams.get("sort") as SortParam,
   );
-  const filters = [...searchParams.entries()].reduce((acc, [key, value]) => {
-    if (key.startsWith(FILTER_URL_PREFIX)) {
-      const filterKey = key.substring(FILTER_URL_PREFIX.length);
-      acc.push({
-        [filterKey]: JSON.parse(value),
-      });
-    }
-    return acc;
-  }, [] as ProductFilter[]);
+  const filters = [...searchParams.entries()].reduce(
+    (filters, [key, value]) => {
+      if (key.startsWith(FILTER_URL_PREFIX)) {
+        const filterKey = key.substring(FILTER_URL_PREFIX.length);
+        filters.push({
+          [filterKey]: JSON.parse(value),
+        });
+      }
+      return filters;
+    },
+    [] as ProductFilter[],
+  );
 
   const { collection, collections } = await context.storefront.query(
     COLLECTION_QUERY,

@@ -4,7 +4,7 @@ import {
   type SeoConfig,
 } from "@shopify/hydrogen";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
-import { data } from "react-router";
+import { data as response } from "react-router";
 import invariant from "tiny-invariant";
 import { routeHeaders } from "~/data/cache";
 import { ALL_PRODUCTS_QUERY } from "~/graphql/data/queries";
@@ -50,7 +50,7 @@ export async function loader({
     },
   });
 
-  return data({
+  return response({
     products: data.products,
     seo,
     weaverseData: await weaverse.loadPage({

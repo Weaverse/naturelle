@@ -1,9 +1,11 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import type { CSSProperties, RefObject } from "react";
+import type React from "react";
+import type { CSSProperties } from "react";
 import { Button, type ButtonProps } from "~/components/button";
 import { IconEllipse } from "~/components/Icon";
+import { cn } from "~/lib/utils";
 
-interface OriginalButtonProps extends ButtonProps {
+export interface WeaverseButtonProps extends ButtonProps {
   href?: string;
   target?: string;
   radius?: number;
@@ -14,13 +16,14 @@ interface OriginalButtonProps extends ButtonProps {
   backgroundColorHover?: string;
   textColorHover?: string;
   borderColorHover?: string;
+  // Weaverse specific props that might be passed
+  buttonContent?: any;
+  content?: any;
 }
 
-const WeaverseButton = ({
-  ref,
-  ...props
-}: OriginalButtonProps & { ref?: RefObject<HTMLButtonElement | null> }) => {
+export default function WeaverseButton(props: WeaverseButtonProps) {
   const {
+    ref,
     href,
     target,
     value,
@@ -35,13 +38,13 @@ const WeaverseButton = ({
     backgroundColorHover,
     textColorHover,
     borderColorHover,
-    // @ts-expect-error - buttonContent comes from CMS/Weaverse
     buttonContent,
     content,
+    className,
     ...rest
   } = props;
   const Component = href ? "a" : "button";
-  let style = {
+  const style = {
     color: textColorDecor,
     "--text-color": textColor,
     "--background-color": backgroundColor,
@@ -51,11 +54,13 @@ const WeaverseButton = ({
     "--border-color-hover": borderColorHover,
     "--radius": `${radius}px`,
   } as CSSProperties;
+
   let styleButton = "";
   if (variant === "custom") {
     styleButton =
       "bg-[var(--background-color)] border border-[var(--border-color)] !text-[var(--text-color)] hover:bg-[var(--background-color-hover)] hover:!text-[var(--text-color-hover)] hover:border-[var(--border-color-hover)]";
   }
+
   return (
     <Button
       as={Component}
@@ -65,9 +70,9 @@ const WeaverseButton = ({
       variant={variant}
       shape={shape}
       fontFamily={fontFamily}
-      ref={ref}
+      ref={ref as any}
       {...rest}
-      className={`w-fit ${props.className} ${variant === "custom" && styleButton}`}
+      className={cn("w-fit", className, variant === "custom" && styleButton)}
       style={style}
     >
       {variant === "decor" ? (
@@ -86,9 +91,7 @@ const WeaverseButton = ({
       )}
     </Button>
   );
-};
-
-export default WeaverseButton;
+}
 
 export const schema: HydrogenComponentSchema = {
   title: "Button",

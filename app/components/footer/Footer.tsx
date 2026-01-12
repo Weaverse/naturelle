@@ -166,17 +166,15 @@ function MenuLink(props: SingleMenuItem) {
                   <span>
                     <IconPlusLinkFooter
                       open={open}
-                      className={`trasition-transform h-5 w-5 duration-300 ${
-                        open ? "rotate-90" : "rotate-0"
-                      }`}
+                      className={`trasition-transform h-5 w-5 duration-300 ${open ? "rotate-90" : "rotate-0"
+                        }`}
                     />
                   </span>
                 </Tag>
               </Disclosure.Button>
               <div
-                className={`${
-                  open ? `h-fit max-h-48` : `max-h-0`
-                } overflow-hidden transition-all duration-300`}
+                className={`${open ? `h-fit max-h-48` : `max-h-0`
+                  } overflow-hidden transition-all duration-300`}
               >
                 <Disclosure.Panel static>
                   <ul className="space-y-3 pb-3 pt-2">

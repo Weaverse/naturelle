@@ -1,10 +1,10 @@
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import {
   AnalyticsPageType,
   getSeoMeta,
   type SeoConfig,
 } from "@shopify/hydrogen";
 import type { PageType } from "@weaverse/hydrogen";
-import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/lib/seo.server";
 import type { Storefront } from "~/lib/types/type-locale";
 import { WeaverseContent } from "~/weaverse";

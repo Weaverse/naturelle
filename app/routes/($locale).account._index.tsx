@@ -12,7 +12,7 @@ import type {
 } from "customer-account-api.generated";
 import {
   type ActionFunctionArgs,
-  data,
+  data as response,
   Form,
   Link,
   type LoaderFunctionArgs,
@@ -41,7 +41,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let access = await context.customerAccount.getAccessToken();
   console.log(access);
 
-  const { data: queryData, errors } = await context.customerAccount.query(
+  const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
     {
       variables: {
@@ -50,11 +50,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     },
   );
 
-  if (errors?.length || !queryData?.customer) {
+  if (errors?.length || !data?.customer) {
     throw new Error("Customer orders not found");
   }
 
-  return data({ customer: queryData.customer });
+  return response({ customer: data.customer });
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
@@ -73,7 +73,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     // this will ensure redirecting to login never happen for mutatation
     const isLoggedIn = await customerAccount.isLoggedIn();
     if (!isLoggedIn) {
-      return data({ error: { [addressId]: "Unauthorized" } }, { status: 401 });
+      return response({ error: { [addressId]: "Unauthorized" } }, { status: 401 });
     }
 
     const defaultAddress = form.has("defaultAddress")
@@ -103,9 +103,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
     switch (request.method) {
       case "POST": {
         // handle new address creation
-        // handle new address creation
         try {
-          const { data: createData, errors } = await customerAccount.mutate(
+          const { data, errors } = await customerAccount.mutate(
             CREATE_ADDRESS_MUTATION,
             {
               variables: { address, defaultAddress },
@@ -116,36 +115,36 @@ export async function action({ request, context }: ActionFunctionArgs) {
             throw new Error(errors[0].message);
           }
 
-          if (createData?.customerAddressCreate?.userErrors?.length) {
+          if (data?.customerAddressCreate?.userErrors?.length) {
             throw new Error(
-              createData?.customerAddressCreate?.userErrors[0].message,
+              data?.customerAddressCreate?.userErrors[0].message,
             );
           }
 
-          if (!createData?.customerAddressCreate?.customerAddress) {
+          if (!data?.customerAddressCreate?.customerAddress) {
             throw new Error("Customer address create failed.");
           }
 
-          return data({
+          return response({
             error: null,
-            createdAddress: createData?.customerAddressCreate?.customerAddress,
+            createdAddress: data?.customerAddressCreate?.customerAddress,
             defaultAddress,
           });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return data(
+            return response(
               { error: { [addressId]: error.message } },
               { status: 400 },
             );
           }
-          return data({ error: { [addressId]: error } }, { status: 400 });
+          return response({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
       case "PUT": {
         // handle address updates
         try {
-          const { data: updateData, errors } = await customerAccount.mutate(
+          const { data, errors } = await customerAccount.mutate(
             UPDATE_ADDRESS_MUTATION,
             {
               variables: {
@@ -160,39 +159,36 @@ export async function action({ request, context }: ActionFunctionArgs) {
             throw new Error(errors[0].message);
           }
 
-          if (updateData?.customerAddressUpdate?.userErrors?.length) {
+          if (data?.customerAddressUpdate?.userErrors?.length) {
             throw new Error(
-              updateData?.customerAddressUpdate?.userErrors[0].message,
+              data?.customerAddressUpdate?.userErrors[0].message,
             );
           }
 
-          if (!updateData?.customerAddressUpdate?.customerAddress) {
+          if (!data?.customerAddressUpdate?.customerAddress) {
             throw new Error("Customer address update failed.");
           }
-          // return redirect(params?.locale ? `${params.locale}/account` : '/account', {
 
-          // });
-
-          return data({
+          return response({
             error: null,
             updatedAddress: address,
             defaultAddress,
           });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return data(
+            return response(
               { error: { [addressId]: error.message } },
               { status: 400 },
             );
           }
-          return data({ error: { [addressId]: error } }, { status: 400 });
+          return response({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
       case "DELETE": {
         // handles address deletion
         try {
-          const { data: deleteData, errors } = await customerAccount.mutate(
+          const { data, errors } = await customerAccount.mutate(
             DELETE_ADDRESS_MUTATION,
             {
               variables: { addressId: decodeURIComponent(addressId) },
@@ -203,30 +199,30 @@ export async function action({ request, context }: ActionFunctionArgs) {
             throw new Error(errors[0].message);
           }
 
-          if (deleteData?.customerAddressDelete?.userErrors?.length) {
+          if (data?.customerAddressDelete?.userErrors?.length) {
             throw new Error(
-              deleteData?.customerAddressDelete?.userErrors[0].message,
+              data?.customerAddressDelete?.userErrors[0].message,
             );
           }
 
-          if (!deleteData?.customerAddressDelete?.deletedAddressId) {
+          if (!data?.customerAddressDelete?.deletedAddressId) {
             throw new Error("Customer address delete failed.");
           }
 
-          return data({ error: null, deletedAddress: addressId });
+          return response({ error: null, deletedAddress: addressId });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return data(
+            return response(
               { error: { [addressId]: error.message } },
               { status: 400 },
             );
           }
-          return data({ error: { [addressId]: error } }, { status: 400 });
+          return response({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
       default: {
-        return data(
+        return response(
           { error: { [addressId]: "Method not allowed" } },
           { status: 405 },
         );
@@ -234,9 +230,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return data({ error: error.message }, { status: 400 });
+      return response({ error: error.message }, { status: 400 });
     }
-    return data({ error }, { status: 400 });
+    return response({ error }, { status: 400 });
   }
 }
 
@@ -341,8 +337,8 @@ type ActionResponse = {
 function AccountProfile() {
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
-  const actionData = useActionData<ActionResponse>();
-  const customer = actionData?.customer ?? account?.customer;
+  const action = useActionData<ActionResponse>();
+  const customer = action?.customer ?? account?.customer;
   console.log("🚀 ~ customer2:", customer);
 
   return (
@@ -390,10 +386,10 @@ function AccountProfile() {
               minLength={2}
             />
           </fieldset>
-          {actionData?.error ? (
+          {action?.error ? (
             <p>
               <mark>
-                <small>{actionData.error}</small>
+                <small>{action.error}</small>
               </mark>
             </p>
           ) : (

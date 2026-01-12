@@ -5,7 +5,8 @@ import type {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import type { CSSProperties, RefObject } from "react";
+import type { CSSProperties } from "react";
+import type React from "react";
 import { cn } from "~/lib/utils";
 
 let fontSizeVariants = cva("", {
@@ -85,22 +86,19 @@ let variants = cva("heading", {
 
 export interface HeadingProps
   extends VariantProps<typeof variants>,
-    VariantProps<typeof fontSizeVariants> {
+  VariantProps<typeof fontSizeVariants>,
+  Partial<HydrogenComponentProps> {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   content: string;
   color?: string;
   minSize?: number;
   maxSize?: number;
+  ref?: React.Ref<HTMLHeadingElement>;
 }
 
-let Heading = ({
-  ref,
-  ...props
-}: HeadingProps &
-  Partial<HydrogenComponentProps> & {
-    ref?: RefObject<HTMLHeadingElement | null>;
-  }) => {
+export default function Heading(props: HeadingProps) {
   let {
+    ref,
     as: Tag = "h4",
     content,
     size,
@@ -140,11 +138,9 @@ let Heading = ({
       {content}
     </Tag>
   );
-};
+}
 
-export default Heading;
-
-export let headingInputs: InspectorGroup["inputs"] = [
+export const headingInputs: InspectorGroup["inputs"] = [
   {
     type: "text",
     name: "content",
@@ -316,7 +312,7 @@ export let headingInputs: InspectorGroup["inputs"] = [
   },
 ];
 
-export let schema: HydrogenComponentSchema = {
+export const schema: HydrogenComponentSchema = {
   type: "heading",
   title: "Heading",
   settings: [

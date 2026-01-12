@@ -85,7 +85,7 @@ type ProductRequiredFields = Pick<
 };
 
 function productJsonLd({
-  product: productData,
+  product,
   selectedVariant,
   url,
 }: {
@@ -94,9 +94,9 @@ function productJsonLd({
   url: Request["url"];
 }): SeoConfig["jsonLd"] {
   const origin = new URL(url).origin;
-  const variants = productData.variants.nodes;
+  const variants = product.variants.nodes;
   const description = truncate(
-    productData?.seo?.description ?? productData?.description,
+    product?.seo?.description ?? product?.description,
   );
   const offers: Offer[] = (variants || []).map((variant) => {
     const variantUrl = new URL(url);
@@ -130,7 +130,7 @@ function productJsonLd({
         {
           "@type": "ListItem",
           position: 2,
-          name: productData.title,
+          name: product.title,
         },
       ],
     },
@@ -139,11 +139,11 @@ function productJsonLd({
       "@type": "Product",
       brand: {
         "@type": "Brand",
-        name: productData.vendor,
+        name: product.vendor,
       },
       description,
       image: [selectedVariant?.image?.url ?? ""],
-      name: productData.title,
+      name: product.title,
       offers,
       sku: selectedVariant?.sku ?? "",
       url,
@@ -152,7 +152,7 @@ function productJsonLd({
 }
 
 function product({
-  product: productData,
+  product,
   url,
   selectedVariant,
 }: {
@@ -161,13 +161,13 @@ function product({
   url: Request["url"];
 }): SeoConfig {
   const description = truncate(
-    productData?.seo?.description ?? productData?.description ?? "",
+    product?.seo?.description ?? product?.description ?? "",
   );
   return {
-    title: productData?.seo?.title ?? productData?.title,
+    title: product?.seo?.title ?? product?.title,
     description,
     media: selectedVariant?.image,
-    jsonLd: productJsonLd({ product: productData, selectedVariant, url }),
+    jsonLd: productJsonLd({ product, selectedVariant, url }),
   };
 }
 
@@ -175,7 +175,7 @@ type CollectionRequiredFields = Omit<
   Collection,
   "products" | "descriptionHtml" | "metafields" | "image" | "updatedAt"
 > & {
-  products: { nodes: Pick<Product, "handle">[] };
+  products: { nodes: Array<Pick<Product, "handle">> };
   image?: null | Pick<Image, "url" | "height" | "width" | "altText">;
   descriptionHtml?: null | Collection["descriptionHtml"];
   updatedAt?: null | Collection["updatedAt"];
@@ -184,14 +184,14 @@ type CollectionRequiredFields = Omit<
 
 function collectionJsonLd({
   url,
-  collection: collectionData,
+  collection,
 }: {
   url: Request["url"];
   collection: CollectionRequiredFields;
 }): SeoConfig["jsonLd"] {
   const siteUrl = new URL(url);
   const itemListElement: CollectionPage["mainEntity"] =
-    collectionData.products.nodes.map((prod, index) => {
+    collection.products.nodes.map((prod, index) => {
       return {
         "@type": "ListItem",
         position: index + 1,
@@ -213,19 +213,19 @@ function collectionJsonLd({
         {
           "@type": "ListItem",
           position: 2,
-          name: collectionData.title,
+          name: collection.title,
         },
       ],
     },
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: collectionData?.seo?.title ?? collectionData?.title ?? "",
+      name: collection?.seo?.title ?? collection?.title ?? "",
       description: truncate(
-        collectionData?.seo?.description ?? collectionData?.description ?? "",
+        collection?.seo?.description ?? collection?.description ?? "",
       ),
-      image: collectionData?.image?.url,
-      url: `/collections/${collectionData.handle}`,
+      image: collection?.image?.url,
+      url: `/collections/${collection.handle}`,
       mainEntity: {
         "@type": "ItemList",
         itemListElement,
@@ -235,31 +235,31 @@ function collectionJsonLd({
 }
 
 function collection({
-  collection: collectionData,
+  collection,
   url,
 }: {
   collection: CollectionRequiredFields;
   url: Request["url"];
 }): SeoConfig {
   return {
-    title: collectionData?.seo?.title,
+    title: collection?.seo?.title,
     description: truncate(
-      collectionData?.seo?.description ?? collectionData?.description ?? "",
+      collection?.seo?.description ?? collection?.description ?? "",
     ),
     titleTemplate: "%s | Collection",
     media: {
       type: "image",
-      url: collectionData?.image?.url,
-      height: collectionData?.image?.height,
-      width: collectionData?.image?.width,
-      altText: collectionData?.image?.altText,
+      url: collection?.image?.url,
+      height: collection?.image?.height,
+      width: collection?.image?.width,
+      altText: collection?.image?.altText,
     },
-    jsonLd: collectionJsonLd({ collection: collectionData, url }),
+    jsonLd: collectionJsonLd({ collection, url }),
   };
 }
 
 type CollectionListRequiredFields = {
-  nodes: Omit<CollectionRequiredFields, "products">[];
+  nodes: Array<Omit<CollectionRequiredFields, "products">>;
 };
 
 function collectionsJsonLd({
@@ -270,11 +270,11 @@ function collectionsJsonLd({
   collections: CollectionListRequiredFields;
 }): SeoConfig["jsonLd"] {
   const itemListElement: CollectionPage["mainEntity"] = collections.nodes.map(
-    (coll, index) => {
+    (collection, index) => {
       return {
         "@type": "ListItem",
         position: index + 1,
-        url: `/collections/${coll.handle}`,
+        url: `/collections/${collection.handle}`,
       };
     },
   );
@@ -309,7 +309,7 @@ function listCollections({
 }
 
 function article({
-  article: articleData,
+  article,
   url,
 }: {
   article: Pick<
@@ -324,106 +324,106 @@ function article({
   url: Request["url"];
 }): SeoConfig {
   return {
-    title: articleData?.seo?.title ?? articleData?.title,
-    description: truncate(articleData?.seo?.description ?? ""),
+    title: article?.seo?.title ?? article?.title,
+    description: truncate(article?.seo?.description ?? ""),
     titleTemplate: "%s | Journal",
     url,
     media: {
       type: "image",
-      url: articleData?.image?.url,
-      height: articleData?.image?.height,
-      width: articleData?.image?.width,
-      altText: articleData?.image?.altText,
+      url: article?.image?.url,
+      height: article?.image?.height,
+      width: article?.image?.width,
+      altText: article?.image?.altText,
     },
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Article",
-      alternativeHeadline: articleData.title,
-      articleBody: articleData.contentHtml,
-      datePublished: articleData?.publishedAt,
+      alternativeHeadline: article.title,
+      articleBody: article.contentHtml,
+      datePublished: article?.publishedAt,
       description: truncate(
-        articleData?.seo?.description || articleData?.excerpt || "",
+        article?.seo?.description || article?.excerpt || "",
       ),
-      headline: articleData?.seo?.title || "",
-      image: articleData?.image?.url,
+      headline: article?.seo?.title || "",
+      image: article?.image?.url,
       url,
     },
   };
 }
 
 function blog({
-  blog: blogData,
+  blog,
   url,
 }: {
   blog: Pick<Blog, "seo" | "title">;
   url: Request["url"];
 }): SeoConfig {
   return {
-    title: blogData?.seo?.title,
-    description: truncate(blogData?.seo?.description || ""),
+    title: blog?.seo?.title,
+    description: truncate(blog?.seo?.description || ""),
     titleTemplate: "%s | Blog",
     url,
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Blog",
-      name: blogData?.seo?.title || blogData?.title || "",
-      description: blogData?.seo?.description || "",
+      name: blog?.seo?.title || blog?.title || "",
+      description: blog?.seo?.description || "",
       url,
     },
   };
 }
 
 function page({
-  page: pageData,
+  page,
   url,
 }: {
   page: Pick<Page, "title" | "seo">;
   url: Request["url"];
 }): SeoConfig {
   return {
-    description: truncate(pageData?.seo?.description || ""),
-    title: pageData?.seo?.title ?? pageData?.title,
+    description: truncate(page?.seo?.description || ""),
+    title: page?.seo?.title ?? page?.title,
     titleTemplate: "%s | Page",
     url,
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      name: pageData.title,
+      name: page.title,
     },
   };
 }
 
 function policy({
-  policy: policyData,
+  policy,
   url,
 }: {
   policy: Pick<ShopPolicy, "title" | "body">;
   url: Request["url"];
 }): SeoConfig {
   return {
-    description: truncate(policyData?.body ?? ""),
-    title: policyData?.title,
+    description: truncate(policy?.body ?? ""),
+    title: policy?.title,
     titleTemplate: "%s | Policy",
     url,
   };
 }
 
 function policies({
-  policies: policiesData,
+  policies,
   url,
 }: {
-  policies: Pick<ShopPolicy, "title" | "handle">[];
+  policies: Array<Pick<ShopPolicy, "title" | "handle">>;
   url: Request["url"];
 }): SeoConfig {
   const origin = new URL(url).origin;
-  const itemListElement: BreadcrumbList["itemListElement"] = policiesData
+  const itemListElement: BreadcrumbList["itemListElement"] = policies
     .filter(Boolean)
-    .map((pol, index) => {
+    .map((policy, index) => {
       return {
         "@type": "ListItem",
         position: index + 1,
-        name: pol.title,
-        item: `${origin}/policies/${pol.handle}`,
+        name: policy.title,
+        item: `${origin}/policies/${policy.handle}`,
       };
     });
   return {

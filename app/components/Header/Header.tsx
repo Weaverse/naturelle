@@ -61,7 +61,7 @@ export function Header() {
       <header
         role="banner"
         className={cn(
-          "top-0 z-40 border-b transition duration-300 ease-in-out",
+          "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
           "bg-[var(--color-header-bg)] text-[var(--color-header-text)] border-[var(--color-header-text)]",
           "hover:bg-[var(--color-header-bg)]",
           "hover:text-[var(--color-header-text)]",
@@ -70,10 +70,10 @@ export function Header() {
           scrolled ? "shadow-header" : "shadow-none",
           isTransparent
             ? [
-                "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]",
-                "[&_.main-logo]:opacity-0",
-                "[&_.transparent-logo]:opacity-100",
-              ]
+              "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]",
+              "[&_.main-logo]:opacity-0",
+              "[&_.transparent-logo]:opacity-100",
+            ]
             : ["[&_.main-logo]:opacity-100", "[&_.transparent-logo]:opacity-0"],
           variants({ padding: headerWidth }),
         )}

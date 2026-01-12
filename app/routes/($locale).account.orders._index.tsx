@@ -9,7 +9,7 @@ import type {
   OrderItemFragment,
 } from "customer-account-api.generated";
 import {
-  data,
+  data as response,
   Link,
   type LoaderFunctionArgs,
   type MetaFunction,
@@ -25,10 +25,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 20,
   });
-  let access = await context.customerAccount.getAccessToken();
-  console.log(access);
 
-  const { data: queryData, errors } = await context.customerAccount.query(
+  const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
     {
       variables: {
@@ -37,11 +35,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     },
   );
 
-  if (errors?.length || !queryData?.customer) {
+  if (errors?.length || !data?.customer) {
     throw new Error("Customer orders not found");
   }
 
-  return data({ customer: queryData.customer });
+  return response({ customer: data.customer });
 }
 
 export default function Orders() {

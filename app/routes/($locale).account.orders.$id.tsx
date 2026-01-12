@@ -1,7 +1,7 @@
 import { flattenConnection, Image, Money } from "@shopify/hydrogen";
 import type { OrderLineItemFullFragment } from "customer-account-api.generated";
 import {
-  data,
+  data as response,
   type LoaderFunctionArgs,
   type MetaFunction,
   redirect,
@@ -9,8 +9,8 @@ import {
 } from "react-router";
 import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/CustomerOrderQuery";
 
-export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
-  return [{ title: `Order ${loaderData?.order?.name}` }];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Order ${data?.order?.name}` }];
 };
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
@@ -19,18 +19,18 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
   }
 
   const orderId = atob(params.id);
-  const { data: orderData, errors } = await context.customerAccount.query(
+  const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDER_QUERY,
     {
       variables: { orderId },
     },
   );
 
-  if (errors?.length || !orderData?.order) {
+  if (errors?.length || !data?.order) {
     throw new Error("Order not found");
   }
 
-  const { order } = orderData;
+  const { order } = data;
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
@@ -45,7 +45,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     firstDiscount?.__typename === "PricingPercentageValue" &&
     firstDiscount?.percentage;
 
-  return data({
+  return response({
     order,
     lineItems,
     discountValue,

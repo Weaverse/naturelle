@@ -1,7 +1,7 @@
 import type { ScrollAreaProps as RadixScrollAreaProps } from "@radix-ui/react-scroll-area";
 import { Root, Scrollbar, Thumb, Viewport } from "@radix-ui/react-scroll-area";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "~/utils/cn";
+import { cn } from "~/lib/utils";
 
 const variants = cva("", {
   variants: {
@@ -19,7 +19,7 @@ const variants = cva("", {
 
 interface ScrollAreaProps
   extends RadixScrollAreaProps,
-    VariantProps<typeof variants> {
+  VariantProps<typeof variants> {
   ref?: React.Ref<HTMLDivElement>;
   style?: React.CSSProperties;
   rootClassName?: string;
@@ -27,17 +27,18 @@ interface ScrollAreaProps
   thumbClassName?: string;
 }
 
-export function ScrollArea({
-  ref,
-  size,
-  rootClassName,
-  className,
-  scrollbarClassName,
-  thumbClassName,
-  children,
-  style,
-  ...rest
-}: ScrollAreaProps) {
+export function ScrollArea(props: ScrollAreaProps) {
+  const {
+    ref,
+    size,
+    rootClassName,
+    className,
+    scrollbarClassName,
+    thumbClassName,
+    children,
+    style,
+    ...rest
+  } = props;
   return (
     <Root {...rest} ref={ref} className={cn("overflow-hidden", rootClassName)}>
       <Viewport

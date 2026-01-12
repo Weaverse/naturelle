@@ -1,8 +1,8 @@
 import type { HydrogenSession } from "@shopify/hydrogen";
 import {
-  createCookieSessionStorage,
   type Session,
   type SessionStorage,
+  createCookieSessionStorage,
 } from "react-router";
 
 /**
@@ -11,9 +11,9 @@ import {
  * swap out the cookie-based implementation with something else!
  */
 export class AppSession implements HydrogenSession {
-  isPending = false;
-  readonly #sessionStorage;
-  readonly #session;
+  public isPending = false;
+  #sessionStorage;
+  #session;
 
   constructor(sessionStorage: SessionStorage, session: Session) {
     this.#sessionStorage = sessionStorage;

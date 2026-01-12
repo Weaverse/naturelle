@@ -2,7 +2,7 @@ import { Image as HydrogenImage } from "@shopify/hydrogen";
 import type { Image as ImageType } from "@shopify/hydrogen/storefront-api-types";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "~/utils/cn";
+import { cn } from "~/lib/utils";
 
 type Crop = "center" | "top" | "bottom" | "left" | "right";
 
@@ -31,10 +31,6 @@ export interface ImageProps
 }
 
 export function Image({ ref, className, onLoad, ...rest }: ImageProps) {
-  /**
-   * Use useRef for HydrogenImage, so we can access the HydrogenImage's ref
-   * even when using ref prop for the outer div
-   */
   const hydrogenImageRef = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState(false);
 

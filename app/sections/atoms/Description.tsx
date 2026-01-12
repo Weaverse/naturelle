@@ -5,15 +5,7 @@ import type {
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
-import type { RefObject } from "react";
-
-export interface ParagraphProps
-  extends VariantProps<typeof variants>,
-    Partial<HydrogenComponentProps> {
-  as?: "p" | "div";
-  content: string;
-  color?: string;
-}
+import type React from "react";
 
 let variants = cva("paragraph", {
   variants: {
@@ -48,13 +40,18 @@ let variants = cva("paragraph", {
   },
 });
 
-let Description = ({
-  ref,
-  ...props
-}: ParagraphProps & {
-  ref?: RefObject<HTMLParagraphElement | HTMLDivElement | null>;
-}) => {
+export interface ParagraphProps
+  extends VariantProps<typeof variants>,
+  Partial<HydrogenComponentProps> {
+  as?: "p" | "div";
+  content: string;
+  color?: string;
+  ref?: React.Ref<HTMLParagraphElement | HTMLDivElement>;
+}
+
+export default function Description(props: ParagraphProps) {
   let {
+    ref,
     as: Tag = "p",
     width,
     content,
@@ -75,9 +72,7 @@ let Description = ({
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
-};
-
-export default Description;
+}
 
 export let schema: HydrogenComponentSchema = {
   type: "description",

@@ -28,10 +28,11 @@ const inputVariants = cva(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
+  VariantProps<typeof inputVariants> {
   suffix?: React.ReactNode;
   prefixElement?: React.ReactNode;
   onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
 const Input = ({
@@ -45,7 +46,7 @@ const Input = ({
   onClear,
   ref,
   ...rest
-}: InputProps & { ref?: React.RefObject<HTMLInputElement | null> }) => {
+}: InputProps) => {
   let [focused, setFocused] = useState(false);
   let commonClasses = cn(
     "w-full rounded-sm border px-3 py-3",
@@ -72,7 +73,7 @@ const Input = ({
       ref={ref}
       autoComplete="off"
       className={cn(
-        hasChild ? "relatvie grow border-none p-0" : commonClasses,
+        hasChild ? "relative grow border-none p-0" : commonClasses,
         inputVariants({ variant }),
       )}
       onFocus={(e) => {

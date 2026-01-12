@@ -1,8 +1,11 @@
-export const PAGINATION_SIZE = 24;
+export const PAGINATION_SIZE = 8;
+export const DEFAULT_GRID_IMG_LOAD_EAGER_COUNT = 4;
+export const ATTR_LOADING_EAGER = "eager";
 export const FILTER_URL_PREFIX = "filter.";
 
-export function getImageLoadingPriority(index: number, maxLoadFactor = 30) {
-  return index < maxLoadFactor ? "eager" : "lazy";
+export function getImageLoadingPriority(
+  index: number,
+  maxEagerLoadCount = DEFAULT_GRID_IMG_LOAD_EAGER_COUNT,
+): HTMLImageElement["loading"] {
+  return index < maxEagerLoadCount ? ATTR_LOADING_EAGER : undefined;
 }
-
-export { DEFAULT_LOCALE } from "~/utils/const";

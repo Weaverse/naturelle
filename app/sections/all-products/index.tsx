@@ -1,8 +1,5 @@
 import { Pagination } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { Children } from "react";
 import { useLoaderData } from "react-router";
@@ -13,24 +10,21 @@ import { ProductCard } from "~/components/ProductCard";
 import { getImageLoadingPriority } from "~/lib/utils/const";
 import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 
-interface AllProductsProps extends HydrogenComponentProps {
+interface AllProductsProps extends SectionProps {
   heading: string;
+  ref?: React.Ref<HTMLElement>;
 }
 
-let AllProducts = ({
-  ref,
-  ...props
-}: AllProductsProps &
-  SectionProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { heading, children, ...rest } = props;
-  let { products } = useLoaderData<AllProductsQuery>();
+export default function AllProducts(props: AllProductsProps) {
+  const { ref, heading, children, ...rest } = props;
+  const { products } = useLoaderData<AllProductsQuery>();
 
   return (
     <Section ref={ref} {...rest}>
       {Boolean(Children.count(children)) && <div>{children}</div>}
       <Pagination connection={products}>
         {({ nodes, isLoading, NextLink, PreviousLink }) => {
-          let itemsMarkup = nodes.map((product, i) => (
+          const itemsMarkup = nodes.map((product, i) => (
             <ProductCard
               quickAdd
               key={product.id}
@@ -64,9 +58,7 @@ let AllProducts = ({
       </Pagination>
     </Section>
   );
-};
-
-export default AllProducts;
+}
 
 export let schema: HydrogenComponentSchema = {
   type: "all-products",

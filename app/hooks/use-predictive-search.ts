@@ -3,7 +3,8 @@ import { useFetchers } from "react-router";
 import type {
   NormalizedPredictiveSearch,
   NormalizedPredictiveSearchResults,
-} from "~/types/predictive-search";
+  UseSearchReturn,
+} from "../lib/types/search-types";
 
 export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
   { type: "queries", items: [] },
@@ -13,14 +14,12 @@ export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
   { type: "articles", items: [] },
 ];
 
-export function usePredictiveSearch(): NormalizedPredictiveSearch & {
-  searchTerm: React.RefObject<string>;
-} {
-  const [results, setResults] = useState<NormalizedPredictiveSearchResults>();
+export function usePredictiveSearch(): UseSearchReturn {
   const fetchers = useFetchers();
   const searchTerm = useRef<string>("");
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchFetcher = fetchers.find((fetcher) => fetcher.data?.searchResults);
-
+  let [results, setResults] = useState<NormalizedPredictiveSearchResults>();
   useEffect(() => {
     if (searchFetcher) {
       setResults(searchFetcher.data?.searchResults);
@@ -36,5 +35,13 @@ export function usePredictiveSearch(): NormalizedPredictiveSearch & {
     totalResults: 0,
   }) as NormalizedPredictiveSearch;
 
-  return { ...search, searchTerm };
+  // capture the search input element as a ref
+  useEffect(() => {
+    if (searchInputRef.current) {
+      return;
+    }
+    searchInputRef.current = document.querySelector('input[type="search"]');
+  }, []);
+
+  return { ...search, searchInputRef, searchTerm };
 }

@@ -1,6 +1,6 @@
+import { type Fetcher, useFetchers } from "react-router";
 import { CartForm } from "@shopify/hydrogen";
 import { useEffect, useState } from "react";
-import { type Fetcher, useFetchers } from "react-router";
 
 export function useCartFetchers(actionName: string, onFinished?: () => void) {
   const fetchers = useFetchers();

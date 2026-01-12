@@ -11,6 +11,7 @@ export default {
       documents: [
         "./*.{ts,tsx,js,jsx}",
         "./app/**/*.{ts,tsx,js,jsx}",
+        "./app/.server/**/*.{ts,tsx,js,jsx}",
         "!./app/graphql/customer-account/**/*.{ts,tsx,js,jsx}",
       ],
     },

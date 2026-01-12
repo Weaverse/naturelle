@@ -1,7 +1,7 @@
 import { Await, useRouteLoaderData } from "react-router";
 import { CartForm, type CartReturn } from "@shopify/hydrogen";
 import { Suspense } from "react";
-import { useCartFetchers } from "~/hooks/useCartFetchers";
+import { useCartFetchers } from "~/hooks/use-cart-fetchers";
 import type { RootLoader } from "~/root";
 import { Drawer, useDrawer } from "../Drawer";
 import { IconBag } from "../Icon";

@@ -1,14 +1,7 @@
-/* ==========================================================================
-   Naturelle Theme - Tailwind CSS v4 Configuration
-   Migrated from tailwind.config.js and tailwind.css
-   ========================================================================== */
-
-/* 1. CSS Imports & Tailwind */
 @import "swiper/css/bundle" layer(base);
 @import "tailwindcss" source("../../app");
 @plugin "@tailwindcss/typography";
 
-/* 2. Theme Configuration */
 @theme {
   /* Fonts - Naturelle uses Nunito Sans (body) and Cormorant (heading) */
   --font-body: Nunito Sans Variable, ui-sans-serif, system-ui, sans-serif;
@@ -23,9 +16,25 @@
 
   /* Container */
   --container-2xl: 1440px;
+
+  /* Colors */
+  --color-background: rgb(var(--color-background));
+  --color-text-primary: rgb(var(--color-text-primary));
+  --color-text-subtle: rgb(var(--color-text-subtle));
+  --color-text-inverse: rgb(var(--color-text-inverse));
+
+  --color-border: rgb(var(--color-border));
+  --color-border-subtle: rgb(var(--color-border-subtle));
+  
+  --color-label-text: rgb(var(--color-label-text));
+  --color-label-sale-background: rgb(var(--color-label-bg-sale));
+  --color-label-new-background: rgb(var(--color-label-bg-new));
+  --color-label-soldout-background: rgb(var(--color-label-bg-soldout));
+
+  /* Height Overrides */
+  --height-screen: var(--screen-height, 100vh);
 }
 
-/* 3. Inline Theme (CSS vars, keyframes, animations) */
 @theme inline {
   /* Font Sizes with Calc (from old tailwind.config.js) */
   --text-scale: calc(
@@ -97,7 +106,7 @@
   }
 }
 
-/* 4. Custom Utilities */
+
 @utility text-scale {
   font-size: calc(
     var(--min-size-px) + 
@@ -131,10 +140,11 @@
   }
 }
 
-/* 5. Base Layer */
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
-    border-color: rgb(var(--color-border) / 0.15);
+    border-color: rgb(var(--color-border));
   }
 
   body {
@@ -158,34 +168,22 @@
   }
 }
 
-/* 6. Components Layer */
 @layer components {
   .swimlane {
     @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll px-6 pb-4;
   }
 }
 
-/* ==========================================================================
-   7. Animation System (CRITICAL - Keep Outside Layers)
-   Used by app/hooks/use-animation.ts for scroll reveal
-   ========================================================================== */
 .animated-scope [data-motion] {
   opacity: 0;
 }
 
-/* ==========================================================================
-   8. Vanilla CSS Classes (Keep Outside Layers)
-   These are NOT Tailwind utilities - they're custom CSS classes
-   ========================================================================== */
-
-/* Typography Classes used by CVA */
 .heading {
   font-family: var(--font-heading);
 }
 
 .subheading {
   font-family: var(--font-heading);
-  /* text-transform: uppercase; */ /* Optional, derived from design */
 }
 
 .paragraph {
@@ -217,6 +215,8 @@
 /* Container max width */
 .container {
   max-width: var(--page-width, 1440px);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Hide search cancel button */
@@ -275,11 +275,6 @@ input[type="search"]::-webkit-search-cancel-button {
 #announcement-bar ~ header {
   top: var(--announcement-bar-height, 0px);
 }
-
-/* ==========================================================================
-   9. Legacy Component Styles (from old app.css)
-   Aside, Header, Footer, Cart, Search, etc.
-   ========================================================================== */
 
 :root {
   --aside-width: 400px;
@@ -444,7 +439,6 @@ aside li {
 
 /* Footer Component */
 .footer {
-  background: var(--color-dark);
   margin-top: auto;
 }
 

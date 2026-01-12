@@ -1,6 +1,6 @@
+import { useNavigation } from "react-router";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import { useNavigation } from "react-router";
 
 export function GlobalLoading() {
   let transition = useNavigation();
@@ -40,7 +40,7 @@ export function GlobalLoading() {
         className={clsx(
           "h-full bg-gradient-to-r from-[#F8f8f0] to-[#3D490B] transition-all duration-500 ease-in-out",
           transition.state === "idle" &&
-            (animating ? "w-full" : "w-0 opacity-0 transition-none"),
+          (animating ? "w-full" : "w-0 opacity-0 transition-none"),
           transition.state === "submitting" && "w-4/12",
           transition.state === "loading" && "w-10/12",
         )}
