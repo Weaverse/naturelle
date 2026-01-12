@@ -53,7 +53,7 @@ export function CartDrawer() {
         heading="CART"
         isForm="cart"
       >
-        <div>
+        <div className="h-full">
           <Suspense fallback={<CartLoading />}>
             <Await resolve={rootData?.cart}>
               {(cart) => <CartMain layout="aside" cart={cart as CartReturn} />}

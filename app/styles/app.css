@@ -18,18 +18,18 @@
   --container-2xl: 1440px;
 
   /* Colors */
-  --color-background: rgb(var(--color-background));
-  --color-text-primary: rgb(var(--color-text-primary));
-  --color-text-subtle: rgb(var(--color-text-subtle));
-  --color-text-inverse: rgb(var(--color-text-inverse));
+  --color-background: var(--color-background);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-subtle: var(--color-text-subtle);
+  --color-text-inverse: var(--color-text-inverse);
 
-  --color-border: rgb(var(--color-border));
-  --color-border-subtle: rgb(var(--color-border-subtle));
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
   
-  --color-label-text: rgb(var(--color-label-text));
-  --color-label-sale-background: rgb(var(--color-label-bg-sale));
-  --color-label-new-background: rgb(var(--color-label-bg-new));
-  --color-label-soldout-background: rgb(var(--color-label-bg-soldout));
+  --color-label-text: var(--color-label-text);
+  --color-label-sale-background: var(--color-label-bg-sale);
+  --color-label-new-background: var(--color-label-bg-new);
+  --color-label-soldout-background: var(--color-label-bg-soldout);
 
   /* Height Overrides */
   --height-screen: var(--screen-height, 100vh);
@@ -460,14 +460,7 @@ aside li {
 
 /* Cart Component */
 .cart-main {
-  height: 100%;
-  max-height: calc(100vh - var(--cart-aside-summary-height));
-  overflow-y: auto;
   width: auto;
-}
-
-.cart-main.with-discount {
-  max-height: calc(100vh - var(--cart-aside-summary-height-with-discount));
 }
 
 .cart-line {

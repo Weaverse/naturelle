@@ -69,7 +69,7 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    "transform text-left align-middle shadow-xl transition-all bg-[var(--color-drawer-bg)]",
+                    "transform text-left align-middle shadow-xl transition-all bg-[var(--color-drawer-bg)] flex flex-col",
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
@@ -79,7 +79,7 @@ export function Drawer({
                 >
                   <header
                     className={cn(
-                      "sticky top-0 flex h-nav items-center px-6 py-5",
+                      "sticky top-0 flex h-nav items-center px-6 py-5 shrink-0",
                       heading ? "justify-between" : "justify-items-end",
                       openFrom === "left" ||
                         isForm === "cart" ||
