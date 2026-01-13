@@ -36,7 +36,7 @@ export function SearchTypeHeaderResults() {
   }
   return (
     <div className="absolute left-1/2 top-24 z-10 flex w-fit -translate-x-1/2 items-center justify-center">
-      <div className="grid max-h-[80vh] w-screen min-w-[430px] max-w-[720px] grid-cols-1 gap-6 overflow-y-auto border bg-[var(--color-drawer-bg)] p-6 lg:grid-cols-[1fr_2fr]">
+      <div className="grid max-h-[80vh] w-screen min-w-[430px] max-w-[720px] grid-cols-1 gap-6 overflow-y-auto border bg-(--color-drawer-bg) p-6 lg:grid-cols-[1fr_2fr]">
         <div className="space-y-8">
           {queries && (
             <div className="flex flex-col gap-4 divide-y divide-border-subtle">
@@ -111,7 +111,7 @@ function NoPredictiveSearchResults({
     return null;
   }
   return (
-    <div className="w-[640px] border bg-[var(--color-drawer-bg)] p-6">
+    <div className="w-[640px] border bg-(--color-drawer-bg) p-6">
       <p className="border-b border-bar-subtle pb-3">NO RESULTS</p>
       <p className="pt-5">
         No results found for <q>{searchTerm.current}</q>

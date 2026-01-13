@@ -1,17 +1,17 @@
-import { useRouteError } from "react-router";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
 import { useEffect, useState } from "react";
+import { useRouteError } from "react-router";
 import useWindowScroll from "react-use/lib/useWindowScroll";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn, useIsHomePath } from "~/lib/utils";
-import { Logo } from "../Logo";
 import { AccountLink } from "../account/AccountLink";
 import { CartDrawer } from "../cart/CartDrawer";
+import { Logo } from "../Logo";
 import { AnnouncementBar } from "./AnnouncementBar";
-import { SearchToggle } from "./SearchToggle";
 import { HeaderMenuDrawer } from "./menu/DrawerMenu";
 import { MegaMenu } from "./menu/MegaMenu";
+import { SearchToggle } from "./SearchToggle";
 
 let variants = cva("", {
   variants: {
@@ -62,15 +62,15 @@ export function Header() {
         role="banner"
         className={cn(
           "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
-          "bg-[var(--color-header-bg)] text-[var(--color-header-text)] border-[var(--color-header-text)]",
-          "hover:bg-[var(--color-header-bg)]",
-          "hover:text-[var(--color-header-text)]",
-          "hover:border-[var(--color-header-text)]",
+          "bg-header-bg text-(--color-header-text) border-(--color-header-text)",
+          "hover:bg-header-bg",
+          "hover:text-(--color-header-text)",
+          "hover:border-(--color-header-text)",
           enableTransparent ? "fixed w-full group/header" : "sticky",
           scrolled ? "shadow-header" : "shadow-none",
           isTransparent
             ? [
-              "border-[var(--color-transparent-header)] bg-transparent text-[var(--color-transparent-header)]",
+              "border-(--color-transparent-header) bg-transparent text-(--color-transparent-header)",
               "[&_.main-logo]:opacity-0",
               "[&_.transparent-logo]:opacity-100",
             ]

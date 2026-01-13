@@ -87,7 +87,7 @@ export function SearchTypeDrawerResults() {
         <div className="h-[50px] mt-2" />
         {searchTerm.current && (
           <div
-            className="flex justify-center absolute bottom-0 p-6 bg-[var(--color-drawer-bg)] left-0 right-0"
+            className="flex justify-center absolute bottom-0 p-6 bg-(--color-drawer-bg) left-0 right-0"
             style={{ boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)" }}
           >
             <Button variant={"primary"}>

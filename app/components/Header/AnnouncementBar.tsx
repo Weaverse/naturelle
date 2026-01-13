@@ -44,36 +44,39 @@ export function AnnouncementBar() {
     return () => {
       window.removeEventListener("resize", checkScrollCondition);
     };
-  }, [content, enableScrollingText]);
+  }, [enableScrollingText]);
 
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
   return (
     <div
       id="announcement-bar"
       ref={containerRef}
       style={style}
       className={clsx(
-        "h-[var(--height-bar)] bg-[var(--color-topbar-bg)] py-[var(--vertical-padding)]",
-        "border-y border-y-[var(--color-topbar-border)]",
+        "h-(--height-bar) bg-(--color-topbar-bg) py-(--vertical-padding)",
+        "border-y border-y-(--color-topbar-border)",
         "flex w-full items-center justify-center overflow-hidden",
         stickyAnnouncementBar ? "sticky top-0 z-40" : "relative",
       )}
     >
       <button
+        type="button"
         onClick={handleClose}
-        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 transform cursor-pointer border-none bg-transparent text-[var(--color-topbar-text)]"
+        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 transform cursor-pointer border-none bg-transparent text-(--color-topbar-text)"
       >
         ×
       </button>
       {shouldScroll && (
         <>
-          <div className="absolute right-0 z-10 h-full w-11 bg-[var(--color-topbar-bg)]" />
-          <div className="absolute left-0 z-10 h-full w-11 bg-[var(--color-topbar-bg)]" />
+          <div className="absolute right-0 z-10 h-full w-11 bg-(--color-topbar-bg)" />
+          <div className="absolute left-0 z-10 h-full w-11 bg-(--color-topbar-bg)" />
           <ul className="inline-flex list-none">
             {Array.from({ length: 15 }).map((_, i) => (
               <li
                 key={i}
-                className="animate-scrollContent whitespace-nowrap pr-[var(--gap)] font-body font-normal text-[var(--color-topbar-text)]"
+                className="animate-scrollContent whitespace-nowrap pr-(--gap) font-body font-normal text-(--color-topbar-text)"
                 style={{
                   animationDuration: `var(--speed)`,
                   fontSize: `${textSize}px`,
@@ -94,7 +97,7 @@ export function AnnouncementBar() {
       >
         <div
           ref={contentRef}
-          className="w-fit whitespace-nowrap px-11 font-body font-normal text-[var(--color-topbar-text)]"
+          className="w-fit whitespace-nowrap px-11 font-body font-normal text-(--color-topbar-text)"
         >
           {content}
         </div>

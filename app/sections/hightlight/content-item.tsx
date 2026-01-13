@@ -33,7 +33,7 @@ const HighlightContent = ({
       ref={ref}
       {...rest}
       className={clsx(
-        "flex flex-col sm:grid gap-y-6 gap-x-[var(--item-gap)]",
+        "flex flex-col sm:grid gap-y-6 gap-x-(--item-gap)",
         itemsPerRowClasses[actualItemPerRow],
       )}
       style={style}

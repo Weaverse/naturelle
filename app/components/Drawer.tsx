@@ -69,7 +69,7 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    "transform text-left align-middle shadow-xl transition-all bg-[var(--color-drawer-bg)] flex flex-col",
+                    "transform text-left align-middle shadow-xl transition-all bg-(--color-drawer-bg) flex flex-col",
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"

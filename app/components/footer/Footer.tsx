@@ -47,7 +47,7 @@ export function Footer() {
   return (
     <footer
       className={cn(
-        "footer w-full bg-[var(--color-footer-bg)] text-[var(--color-footer-text)] border-t border-[var(--color-footer-text)]",
+        "footer w-full bg-(--color-footer-bg) text-(--color-footer-text) border-t border-(--color-footer-text)",
         variants({ padding: footerWidth }),
       )}
       style={

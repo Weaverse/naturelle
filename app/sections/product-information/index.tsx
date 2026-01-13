@@ -221,7 +221,7 @@ let ProductInformation = ({
                 isDisabled={isLoading}
                 onChange={setQuantity}
               />
-              <div className="flex flex-col gap-3 sm:w-[var(--width-button)] p-4 sm:p-0">
+              <div className="flex flex-col gap-3 sm:w-(--width-button) p-4 sm:p-0">
                 <div data-motion="fade-up">
                   <AddToCartButton
                     disabled={!selectedVariant?.availableForSale}

@@ -23,7 +23,7 @@ const HighlightItem = ({
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex flex-col gap-4 items-center w-full border-2 border-[var(--border-color)] rounded px-8 py-10",
+        "flex flex-col gap-4 items-center w-full border-2 border-(--border-color) rounded px-8 py-10",
         !visibleOnMobile && "hidden sm:flex",
       )}
     >
@@ -32,7 +32,7 @@ const HighlightItem = ({
           <div className="w-full flex justify-center items-center gap-4">
             {index === 0 && (
               <div className="w-fit h-fit">
-                <span className="flex justify-center items-center border border-[var(--border-color)] rounded-full font-heading font-medium w-11 h-11 text-2xl">
+                <span className="flex justify-center items-center border border-(--border-color) rounded-full font-heading font-medium w-11 h-11 text-2xl">
                   {(
                     parentInstance?._store?.children as { id: string }[]
                   )?.findIndex((c) => c.id === child?.props.parentId) + 1}
@@ -42,7 +42,7 @@ const HighlightItem = ({
             {child}
           </div>
           {index < (children?.length ?? 0) - 1 && (
-            <div className="border-b-2 border-[var(--border-color)] w-full"></div>
+            <div className="border-b-2 border-(--border-color) w-full"></div>
           )}
         </>
       ))}
