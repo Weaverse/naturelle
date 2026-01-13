@@ -19,7 +19,7 @@ import { Link } from "~/components/Link";
 import { Text } from "~/components/Text";
 import { Button } from "~/components/button";
 import { Image } from "~/components/image";
-import { isDiscounted, isNewArrival } from "~/lib/utils";
+import { getImageAspectRatio, isDiscounted, isNewArrival } from "~/lib/utils";
 import { getProductPlaceholder } from "~/lib/utils/placeholders";
 import { QuickViewTrigger } from "./QuickView";
 import { ProductCardOptions } from "./product-card-options";
@@ -64,6 +64,7 @@ export function ProductCard({
   if (!cardProduct?.variants?.nodes?.length) return null;
   let [selectedVariant, setSelectedVariant] =
     useState<ProductVariantFragmentFragment | null>(null);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   const variants = flattenConnection(cardProduct.variants);
   const firstVariant = flattenConnection(cardProduct.variants)[0];
@@ -97,7 +98,7 @@ export function ProductCard({
         Math.round(
           (Number.parseFloat(price.amount) /
             Number.parseFloat(compareAtPrice?.amount)) *
-            100,
+          100,
         );
       cardLabel = `Save ${discount}%`;
       labelClass = "bg-label-sale-background text-label-text";
@@ -126,12 +127,12 @@ export function ProductCard({
       style={
         {
           "--card-border-radius": `${pcardBorderRadius}px`,
-          "--card-image-ratio": `${pcardImageRatio}`,
+          "--card-image-ratio": getImageAspectRatio(image, pcardImageRatio),
         } as React.CSSProperties
       }
     >
       <div className={clsx("grid gap-4", className)}>
-        <div className="card-image group/productCard relative aspect-[var(--card-image-ratio)] bg-primary/5">
+        <div className="card-image group/productCard relative aspect-(--card-image-ratio) bg-primary/5">
           {image && (
             <Link
               onClick={onClick}
@@ -145,21 +146,22 @@ export function ProductCard({
                 <>
                   <Image
                     className={clsx(
-                      "fadeIn w-full absolute",
+                      "absolute inset-0 h-full w-full",
                       "opacity-100 transition-opacity duration-300 md:group-hover/productCard:opacity-0",
-                      "rounded-[var(--card-border-radius)] object-cover",
+                      "rounded-(--card-border-radius) object-cover",
                     )}
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio={pcardImageRatio}
                     data={image}
                     alt={image?.altText || `Picture of ${product.title}`}
                     loading={loading}
+                    onLoad={() => setIsImageLoading(false)}
                   />
                   <Image
                     className={clsx(
-                      "fadeIn w-full absolute",
+                      "absolute inset-0 h-full w-full",
                       "opacity-0 transition-opacity duration-300 md:group-hover/productCard:opacity-100",
-                      "rounded-[var(--card-border-radius)] object-cover",
+                      "rounded-(--card-border-radius) object-cover",
                     )}
                     sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                     aspectRatio={pcardImageRatio}
@@ -171,14 +173,16 @@ export function ProductCard({
               ) : (
                 <Image
                   className={clsx(
-                    "fadeIn w-full",
-                    "rounded-[var(--card-border-radius)] object-cover",
+                    "w-full h-full",
+                    isImageLoading && "opacity-0",
+                    "rounded-(--card-border-radius) object-cover transition-opacity duration-300",
                   )}
                   sizes="(min-width: 64em) 25vw, (min-width: 48em) 30vw, 45vw"
                   aspectRatio={pcardImageRatio}
                   data={image}
                   alt={image.altText || `Picture of ${product.title}`}
                   loading={loading}
+                  onLoad={() => setIsImageLoading(false)}
                 />
               )}
             </Link>
@@ -302,7 +306,12 @@ export function ProductCard({
       <ProductCardOptions
         product={product}
         selectedVariant={selectedVariant as ProductVariantFragmentFragment}
-        setSelectedVariant={setSelectedVariant}
+        setSelectedVariant={(variant) => {
+          if (variant?.image?.url !== selectedVariant?.image?.url) {
+            setIsImageLoading(true);
+          }
+          setSelectedVariant(variant as ProductVariantFragmentFragment);
+        }}
       />
     </div>
   );
