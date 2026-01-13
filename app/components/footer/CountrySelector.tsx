@@ -61,7 +61,7 @@ export function CountrySelector() {
     >
       <div className="relative">
         <details
-          className="w-full overflow-hidden rounded border border-[rgb(var(--color-border-subtle))]"
+          className="w-full overflow-hidden rounded border border-border-subtle"
           ref={closeRef}
           onToggle={toggleDropdown}
         >
@@ -76,7 +76,7 @@ export function CountrySelector() {
             </span>
           </summary>
           <div
-            className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border border-[rgb(var(--color-border-subtle))] bg-[rgb(var(--color-background))] transition-all duration-500
+            className={`hiddenScroll absolute bottom-full left-0 right-0 w-full overflow-auto border border-border-subtle bg-background transition-all duration-500
             ${isOpen ? "max-h-36" : "max-h-0"}`}
           >
             {countries &&

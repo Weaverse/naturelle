@@ -61,7 +61,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   <Menubar.Content
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
-                      "bg-[var(--color-header-bg)] shadow-md border-t border-border-subtle mt-1.5",
+                      "bg-header-bg shadow-md border-t border-border-subtle mt-1.5",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >
@@ -124,7 +124,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
               className={clsx([
                 "absolute inset-0 p-2 flex items-center justify-center text-center",
                 "bg-[#5546124D]/20 group-hover/item:bg-[#5546124D]/40 group-hover/item:underline",
-                "h6 text-[rgb(var(--color-text-inverse))] font-medium transition-all duration-300 cursor-pointer",
+                "h6 text-text-inverse font-medium transition-all duration-300 cursor-pointer",
               ])}
             >
               {title}

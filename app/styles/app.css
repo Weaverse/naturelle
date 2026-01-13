@@ -23,6 +23,8 @@
   --color-text-subtle: var(--color-text-subtle);
   --color-text-inverse: var(--color-text-inverse);
 
+  --color-header-bg: var(--color-header-bg);
+
   --color-border: var(--color-border);
   --color-border-subtle: var(--color-border-subtle);
   
@@ -144,13 +146,13 @@
 
 @layer base {
   * {
-    border-color: rgb(var(--color-border));
+    border-color: var(--color-border);
   }
 
   body {
     font-family: var(--font-body);
-    background-color: rgb(var(--color-background));
-    color: rgb(var(--color-text-primary));
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
   }
 

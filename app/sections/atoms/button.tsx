@@ -80,7 +80,7 @@ export default function WeaverseButton(props: WeaverseButtonProps) {
           <IconEllipse
             className="absolute inset-0 !h-[61px] !w-[148px] transform transition-transform duration-500 hover:rotate-[-11deg]"
             stroke={
-              textColorDecor ? textColorDecor : "rgb(var(--color-foreground))"
+              textColorDecor ? textColorDecor : "var(--color-foreground)"
             }
             viewBox="0 0 148 61"
           />
