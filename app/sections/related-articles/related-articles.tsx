@@ -1,14 +1,12 @@
 import { Image } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { Suspense } from "react";
 import { Await, Link, useLoaderData } from "react-router";
 import type { ArticleFragment } from "storefront-api.generated";
-import { Skeleton } from "~/components/Skeleton";
-import { getImageLoadingPriority } from "~/lib/utils/const";
+import { Skeleton } from "~/components/skeleton";
+import { getImageLoadingPriority } from "~/utils/image";
 
 interface RelatedArticlesProps extends HydrogenComponentProps {
   heading: string;
@@ -131,7 +129,7 @@ function ArticleCard({
 
 export default RelatedArticles;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "related-articles",
   title: "Related articles",
   limit: 1,
@@ -187,4 +185,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

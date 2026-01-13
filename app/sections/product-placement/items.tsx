@@ -1,10 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Grid } from "~/components/Grid";
+import { Grid } from "~/components/grid";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
@@ -65,7 +63,7 @@ const ProductPlacementItems = ({
 
 export default ProductPlacementItems;
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "product-placement--items",
   title: "Items",
   settings: [
@@ -128,4 +126,4 @@ export const schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

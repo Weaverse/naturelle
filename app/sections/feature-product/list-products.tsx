@@ -1,21 +1,21 @@
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
   WeaverseCollection,
 } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useState } from "react";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
-import { IconImageBlank } from "~/components/Icon";
-import { FEATURED_PRODUCTS_QUERY } from "~/graphql/data/queries";
+import { IconImageBlank } from "~/components/icon";
+import { FEATURED_PRODUCTS_QUERY } from "~/graphql/queries";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import clsx from "clsx";
 import { Navigation } from "swiper/modules";
-import { ProductCard } from "~/components/ProductCard";
-import { getImageLoadingPriority } from "~/lib/utils/const";
+import { ProductCard } from "~/components/product/product-card";
+import { getImageLoadingPriority } from "~/utils/image";
 import { Arrows, type SlideshowArrowsProps } from "./arrows";
 import { Number as SlideNumber } from "./number";
 
@@ -30,8 +30,8 @@ type FeaturedProductsData = {
 
 interface FeaturedProductsProps
   extends SlideshowArrowsProps,
-  HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
-  FeaturedProductsData { }
+    HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
+    FeaturedProductsData {}
 
 const ListProducts = ({
   ref,
@@ -159,7 +159,7 @@ export let loader = async (args: ComponentLoaderArgs<FeaturedProductsData>) => {
   return null;
 };
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "featured-products--list",
   title: "Featured products list",
   limit: 1,
@@ -271,4 +271,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

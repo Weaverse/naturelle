@@ -1,12 +1,17 @@
 import {
-  data as response,
   Form,
   type LoaderFunctionArgs,
   NavLink,
   Outlet,
+  data as response,
   useLoaderData,
 } from "react-router";
-import { CUSTOMER_DETAILS_QUERY } from "~/graphql/customer-account/CustomerDetailsQuery";
+import {
+  CREATE_ADDRESS_MUTATION,
+  DELETE_ADDRESS_MUTATION,
+  UPDATE_ADDRESS_MUTATION,
+} from "~/graphql/customer-account/customer-address-mutations";
+import { CUSTOMER_DETAILS_QUERY } from "~/graphql/customer-account/customer-details-query";
 
 export function shouldRevalidate() {
   return true;

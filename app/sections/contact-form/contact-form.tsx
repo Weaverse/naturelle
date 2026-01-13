@@ -1,7 +1,5 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import { Form } from "react-router";
 import { Button } from "~/components/button";
@@ -116,7 +114,7 @@ let ContactForm = ({
 
 export default ContactForm;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "contact-us",
   title: "Contact us",
   limit: 1,
@@ -204,4 +202,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

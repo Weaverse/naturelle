@@ -1,8 +1,8 @@
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import {
   type ComponentLoaderArgs,
+  createSchema,
   type HydrogenComponentProps,
-  type HydrogenComponentSchema,
   useThemeSettings,
   type WeaverseProduct,
 } from "@weaverse/hydrogen";
@@ -11,19 +11,19 @@ import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
-import { AddToCartButton } from "~/components/AddToCartButton";
-import { Link } from "~/components/Link";
+import { Link } from "~/components/link";
+import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { ProductDetail } from "~/components/product-form/product-detail";
-import { StarRating } from "~/components/StarRating";
-import { Text } from "~/components/Text";
-import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/data/queries";
-import { getExcerpt } from "~/lib/utils";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { StarRating } from "~/components/star-rating";
+import { Text } from "~/components/text";
+import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/queries";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import { getExcerpt } from "~/utils/misc";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 
 interface SingleProductData extends SectionProps {
   product: WeaverseProduct;
@@ -346,7 +346,7 @@ export let loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
   };
 };
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "single-product",
   title: "Single product",
   childTypes: ["judgeme"],
@@ -489,4 +489,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

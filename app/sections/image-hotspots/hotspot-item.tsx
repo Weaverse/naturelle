@@ -1,13 +1,13 @@
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
-import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/Icon";
-import { PRODUCT_QUERY } from "~/graphql/data/queries";
+import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
+import { PRODUCT_QUERY } from "~/graphql/queries";
 import { ProductPopup } from "./product-popup";
 
 export interface HotspotsItemData {
@@ -114,17 +114,17 @@ export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   return { product };
 };
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "hotspots--item",
   title: "Hotspots item",
   settings: [
     {
-      group: "Icon",
+      group: "icon",
       inputs: [
         {
           type: "toggle-group",
           name: "icon",
-          label: "Icon",
+          label: "icon",
           configs: {
             options: [
               {
@@ -232,4 +232,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

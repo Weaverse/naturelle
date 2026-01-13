@@ -9,13 +9,13 @@ import type {
   OrderItemFragment,
 } from "customer-account-api.generated";
 import {
-  data as response,
   Link,
   type LoaderFunctionArgs,
   type MetaFunction,
+  data as response,
   useLoaderData,
 } from "react-router";
-import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/CustomerOrdersQuery";
+import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/customer-orders-query";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Orders" }];

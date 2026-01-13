@@ -1,14 +1,15 @@
 import { Pagination } from "@shopify/hydrogen";
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { Children } from "react";
 import { useLoaderData } from "react-router";
 import type { AllProductsQuery } from "storefront-api.generated";
 import { Button } from "~/components/button";
-import { Grid } from "~/components/Grid";
-import { ProductCard } from "~/components/ProductCard";
-import { getImageLoadingPriority } from "~/lib/utils/const";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
+import { Grid } from "~/components/grid";
+import { ProductCard } from "~/components/product/product-card";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { getImageLoadingPriority } from "~/utils/image";
 
 interface AllProductsProps extends SectionProps {
   heading: string;
@@ -41,7 +42,7 @@ export default function AllProducts(props: AllProductsProps) {
                 </span>
               </Button>
               <Grid
-                className="!gap-y-10"
+                className="gap-y-10!"
                 layout="products"
                 data-test="product-grid"
               >
@@ -60,7 +61,7 @@ export default function AllProducts(props: AllProductsProps) {
   );
 }
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "all-products",
   title: "All products",
   limit: 1,
@@ -82,4 +83,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

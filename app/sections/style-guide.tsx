@@ -1,4 +1,5 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
@@ -86,7 +87,7 @@ const TestSection = ({
   );
 };
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   title: "Style guide",
   type: "test",
   settings: [
@@ -96,12 +97,12 @@ export const schema: HydrogenComponentSchema = {
         {
           type: "text",
           name: "value",
-          label: "Text",
+          label: "text",
           defaultValue: "Test",
         },
       ],
     },
   ],
-};
+});
 
 export default TestSection;

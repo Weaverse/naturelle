@@ -1,7 +1,7 @@
 import * as remixBuild from "virtual:react-router/server-build"; // Virtual entry point for the app
 import { storefrontRedirect } from "@shopify/hydrogen";
 import { createRequestHandler } from "@shopify/hydrogen/oxygen";
-import { createAppLoadContext } from "~/lib/utils/context";
+import { createAppLoadContext } from "~/.server/context";
 
 /**
  * Export a fetch handler in module format.

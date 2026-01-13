@@ -50,7 +50,9 @@ export type JudgeMeReviewType = {
 
 export type JudgemeReviewsData = {
   averageRating: number;
+  rating: number;
   totalReviews: number;
+  reviewNumber: number;
   ratingDistribution: JudgemeRatingDistribution[];
   currentPage: number;
   totalPage: number;

@@ -1,12 +1,10 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { PageDetailsQuery } from "storefront-api.generated";
-import { PageHeader, Section } from "~/components/Text";
-import { prefixClassNames } from "~/lib/utils";
+import { PageHeader, Section } from "~/components/text";
+import { prefixClassNames } from "~/utils/misc";
 
 interface PageProps extends HydrogenComponentProps {
   paddingTop: number;
@@ -50,7 +48,7 @@ let Page = ({
 
 export default Page;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "page",
   title: "Page",
   limit: 1,
@@ -88,4 +86,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

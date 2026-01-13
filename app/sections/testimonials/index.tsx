@@ -1,13 +1,10 @@
 import { Image } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
-import { IconImageBlank } from "~/components/Icon";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
+import { IconImageBlank } from "~/components/icon";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 interface TestimonialsProps extends HydrogenComponentProps {
   backgroundImage?: WeaverseImage;
@@ -88,7 +85,7 @@ const Testimonials = ({
 
 export default Testimonials;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "testimonials",
   title: "Testimonials",
   settings: [
@@ -158,4 +155,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

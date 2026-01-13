@@ -1,9 +1,10 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React from "react";
-import Description from "../atoms/Description";
-import Heading from "../atoms/Heading";
-import { Section, type SectionProps } from "../atoms/Section";
+import Heading from "~/components/heading";
+import Paragraph from "~/components/paragraph";
+import { Section, type SectionProps } from "~/components/section";
 
 type HotspotsProps = SectionProps & {
   heading?: string;
@@ -19,7 +20,7 @@ let Hotspots = ({
     <Section ref={ref} {...rest} overflow="unset">
       {heading && <Heading data-motion="fade-up" as="h2" content={heading} />}
       {description && (
-        <Description
+        <Paragraph
           data-motion="fade-up"
           as="p"
           content={description}
@@ -43,7 +44,7 @@ let Hotspots = ({
 
 export default Hotspots;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "hotspots",
   title: "Hotspots",
   childTypes: ["image-hotspots"],
@@ -119,4 +120,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

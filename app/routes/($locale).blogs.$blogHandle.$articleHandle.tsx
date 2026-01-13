@@ -3,9 +3,10 @@ import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { data } from "react-router";
 import type { ArticleDetailsQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
-import { ARTICLE_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
+import { redirectIfHandleIsLocalized } from "~/.server/redirect";
+import { seoPayload } from "~/.server/seo";
+import { ARTICLE_QUERY } from "~/graphql/queries";
+import { routeHeaders } from "~/utils/cache";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -17,22 +18,34 @@ export async function loader(args: LoaderFunctionArgs) {
   invariant(params.blogHandle, "Missing blog handle");
   invariant(params.articleHandle, "Missing article handle");
 
-  const { blog } = await context.storefront.query<ArticleDetailsQuery>(
-    ARTICLE_QUERY,
-    {
+  const [shopAndBlog, weaverseData] = await Promise.all([
+    context.storefront.query<ArticleDetailsQuery>(ARTICLE_QUERY, {
       variables: {
         blogHandle: params.blogHandle,
         articleHandle: params.articleHandle,
         language,
       },
-    },
-  );
+    }),
+    context.weaverse.loadPage({
+      type: "ARTICLE",
+      handle: params.articleHandle,
+    }),
+  ]);
+
+  const { blog } = shopAndBlog;
 
   if (!blog?.articleByHandle) {
     throw new Response(null, { status: 404 });
   }
 
   const article = blog.articleByHandle;
+
+  // Redirect if handles are localized
+  redirectIfHandleIsLocalized(
+    request,
+    { handle: params.blogHandle, data: blog },
+    { handle: params.articleHandle, data: article },
+  );
   const relatedArticles = blog.articles.nodes.filter(
     (art: any) => art?.handle !== params?.articleHandle,
   );
@@ -53,10 +66,7 @@ export async function loader(args: LoaderFunctionArgs) {
     relatedArticles,
     formattedDate,
     seo,
-    weaverseData: await context.weaverse.loadPage({
-      type: "ARTICLE",
-      handle: params.articleHandle,
-    }),
+    weaverseData,
   });
 }
 

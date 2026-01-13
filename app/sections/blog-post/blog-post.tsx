@@ -1,10 +1,11 @@
 import { Image } from "@shopify/hydrogen";
 import type { Article } from "@shopify/hydrogen/storefront-api-types";
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
-import { prefixClassNames } from "~/lib/utils";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { prefixClassNames } from "~/utils/misc";
 
 type BlogPostProps = SectionProps;
 
@@ -57,7 +58,7 @@ let BlogPost = ({
 
 export default BlogPost;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "blog-post",
   title: "Blog post",
   limit: 1,
@@ -72,4 +73,4 @@ export let schema: HydrogenComponentSchema = {
       ),
     },
   ],
-};
+});

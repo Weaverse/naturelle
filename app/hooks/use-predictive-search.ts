@@ -4,7 +4,7 @@ import type {
   NormalizedPredictiveSearch,
   NormalizedPredictiveSearchResults,
   UseSearchReturn,
-} from "../lib/types/search-types";
+} from "~/types/search-types";
 
 export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
   { type: "queries", items: [] },

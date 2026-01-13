@@ -2,7 +2,7 @@ import type { ShopifyPageViewPayload } from "@shopify/hydrogen";
 import { useMemo } from "react";
 import { useMatches } from "react-router";
 
-import { DEFAULT_LOCALE } from "~/lib/utils";
+import { DEFAULT_LOCALE } from "~/utils/const";
 
 export function usePageAnalytics({
   hasUserConsent,

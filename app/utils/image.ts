@@ -10,7 +10,7 @@ export function getImageLoadingPriority(
   return index < maxEagerLoadCount ? ATTR_LOADING_EAGER : undefined;
 }
 
-export function calculateAspectRatio(
+export function getImageAspectRatio(
   image: {
     width?: number | null;
     height?: number | null;

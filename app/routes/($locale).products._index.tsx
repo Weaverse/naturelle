@@ -6,10 +6,10 @@ import {
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { data as response } from "react-router";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
-import { ALL_PRODUCTS_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
-import { PAGINATION_SIZE } from "~/lib/utils/const";
+import { seoPayload } from "~/.server/seo";
+import { ALL_PRODUCTS_QUERY } from "~/graphql/queries";
+import { routeHeaders } from "~/utils/cache";
+import { PAGINATION_SIZE } from "~/utils/const";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;

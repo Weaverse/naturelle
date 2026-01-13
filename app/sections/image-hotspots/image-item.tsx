@@ -1,12 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
-import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { Image } from "~/components/image";
-import { getImageAspectRatio } from "~/lib/utils";
+import { getImageAspectRatio } from "~/utils/image";
 
 interface HotspotsImageProps extends HydrogenComponentProps {
   image: string;
@@ -41,7 +37,7 @@ const HotspotsImage = ({
 
 export default HotspotsImage;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "image-hotspots",
   title: "Image hotspots",
   limit: 2,
@@ -86,4 +82,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

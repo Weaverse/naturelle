@@ -44,7 +44,7 @@ export default function Blogs() {
                   <PreviousLink>
                     {isLoading ? "Loading..." : <span>↑ Load previous</span>}
                   </PreviousLink>
-                  {nodes.map((blog) => {
+                  {nodes.map((blog: any) => {
                     return (
                       <Link
                         className="blog"

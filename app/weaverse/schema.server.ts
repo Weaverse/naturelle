@@ -89,7 +89,7 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "textarea",
           name: "content",
-          label: "Text",
+          label: "text",
           defaultValue: "FREE SHIPPING IN THE US FOR ORDER OVER $100",
         },
         {
@@ -188,9 +188,9 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "image",
           name: "logoData",
-          label: "Logo",
+          label: "logo",
           defaultValue: {
-            altText: "Logo",
+            altText: "logo",
             url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle_logo.png?v=1705045487",
             width: 320,
             height: 116,
@@ -201,7 +201,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "transparentLogoData",
           label: "Transparent Logo",
           defaultValue: {
-            altText: "Logo",
+            altText: "logo",
             url: "https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Property_1_White.png?v=1720064102",
             width: 320,
             height: 116,
@@ -392,7 +392,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "borderSubtleColor",
           defaultValue: "#78A286",
         },
-        { type: "heading", label: "Drawer" },
+        { type: "heading", label: "drawer" },
         {
           type: "color",
           label: "Drawer background",

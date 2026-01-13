@@ -2,15 +2,15 @@ import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api
 import type { CustomerFragment } from "customer-account-api.generated";
 import {
   type ActionFunctionArgs,
-  data as response,
   Form,
   type LoaderFunctionArgs,
   type MetaFunction,
+  data as response,
   useActionData,
   useNavigation,
   useOutletContext,
 } from "react-router";
-import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/CustomerUpdateMutation";
+import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/customer-update-mutation";
 
 export type ActionResponse = {
   error: string | null;

@@ -1,6 +1,5 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 
-
 export function GlobalStyle() {
   const settings = useThemeSettings();
   if (settings) {

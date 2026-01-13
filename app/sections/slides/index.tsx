@@ -1,7 +1,5 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { type CSSProperties, useEffect, useState } from "react";
 import { EffectFade, Pagination } from "swiper/modules";
@@ -81,7 +79,7 @@ const Slides = ({
 
 export default Slides;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "slides-index",
   title: "Slides",
   settings: [
@@ -123,4 +121,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

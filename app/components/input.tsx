@@ -2,8 +2,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import type * as React from "react";
 import { useState } from "react";
-import { IconClose } from "~/components/Icon";
-import { cn } from "~/lib/utils";
+import { IconClose } from "~/components/icon";
+import { cn } from "~/utils/cn";
 
 const inputVariants = cva(
   "w-full !shadow-none focus:ring-0 focus-visible:outline-none placeholder-text-subtle bg-transparent",
@@ -28,7 +28,7 @@ const inputVariants = cva(
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-  VariantProps<typeof inputVariants> {
+    VariantProps<typeof inputVariants> {
   suffix?: React.ReactNode;
   prefixElement?: React.ReactNode;
   onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;

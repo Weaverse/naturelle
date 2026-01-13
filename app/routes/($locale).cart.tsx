@@ -9,7 +9,7 @@ import {
   type MetaFunction,
 } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
-import { CartMain } from "~/components/cart/Cart";
+import { CartMain } from "~/components/cart/cart";
 import { useRootLoaderData } from "~/root";
 
 export const meta: MetaFunction = () => {

@@ -1,6 +1,11 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
-import { Section, type SectionProps, sectionInspector } from "../atoms/Section";
+import {
+  Section,
+  type SectionProps,
+  sectionInspector,
+} from "~/components/section";
 
 type FeaturedProductsData = SectionProps;
 
@@ -19,7 +24,7 @@ const FeaturedProducts = ({
 
 export default FeaturedProducts;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "featured-products",
   title: "Featured products",
   settings: sectionInspector,
@@ -35,4 +40,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

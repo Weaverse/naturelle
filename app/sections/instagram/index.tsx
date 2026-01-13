@@ -2,15 +2,15 @@ import { Image } from "@shopify/hydrogen";
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import clsx from "clsx";
 import { Pagination } from "swiper/modules";
-import { IconImageBlank, IconInstagram } from "~/components/Icon";
+import { IconImageBlank, IconInstagram } from "~/components/icon";
 import { useAnimation } from "~/hooks/use-animation";
 
 type InstagramData = {
@@ -66,7 +66,7 @@ const Instagram = ({
       <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
         <IconImageBlank
           viewBox="0 0 526 526"
-          className="!h-full !w-full opacity-80"
+          className="h-full! w-full! opacity-80"
         />
       </div>
     );
@@ -226,7 +226,7 @@ export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
   return null;
 };
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "instagram",
   title: "Instagram",
   settings: [
@@ -300,4 +300,4 @@ export const schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

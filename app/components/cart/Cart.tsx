@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import {
   CartForm,
   Image,
@@ -10,13 +9,14 @@ import {
 } from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
+import { Link } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { cn } from "~/lib/utils";
-import { useVariantUrl } from "~/lib/utils/variants";
-import { IconRemove } from "../Icon";
-import { CartPopularCollections } from "./CartPopularCollections";
+import { cn } from "~/utils/cn";
+import { useVariantUrl } from "~/utils/variants";
+import { IconRemove } from "../icon";
+import { CartPopularCollections } from "./cart-popular-collections";
 
 type CartLine = OptimisticCart<CartApiQueryFragment>["lines"]["nodes"][0];
 

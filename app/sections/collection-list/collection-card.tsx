@@ -2,7 +2,7 @@ import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import type { CSSProperties } from "react";
 import { Image } from "~/components/image";
-import { Link } from "~/components/Link";
+import { Link } from "~/components/link";
 
 export function CollectionCard({
   collection,

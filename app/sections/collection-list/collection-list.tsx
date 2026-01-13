@@ -1,8 +1,6 @@
 import { Pagination } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLoaderData } from "react-router";
@@ -67,7 +65,7 @@ let CollectionListItem = ({
 
 export default CollectionListItem;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "collection-list--item",
   title: "Collection list",
   limit: 1,
@@ -95,4 +93,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

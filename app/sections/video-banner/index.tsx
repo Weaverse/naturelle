@@ -1,6 +1,6 @@
 import {
+  createSchema,
   type HydrogenComponentProps,
-  type HydrogenComponentSchema,
   isBrowser,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
@@ -9,8 +9,12 @@ import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import {
+  Overlay,
+  type OverlayProps,
+  overlayInputs,
+} from "~/components/overlay";
 import { useAnimation } from "~/hooks/use-animation";
-import { Overlay, type OverlayProps, overlayInputs } from "../atoms/Overlay";
 
 const SECTION_HEIGHTS = {
   small: {
@@ -215,7 +219,7 @@ let VideoBanner = ({
 
 export default VideoBanner;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "video-banner",
   title: "Video banner",
   settings: [
@@ -300,7 +304,7 @@ export let schema: HydrogenComponentSchema = {
       inputs: overlayInputs,
     },
   ],
-  childTypes: ["subheading", "heading", "description", "button"],
+  childTypes: ["subheading", "heading", "paragraph", "button"],
   presets: {
     enableOverlay: true,
     overlayColor: "#000000",
@@ -328,11 +332,11 @@ export let schema: HydrogenComponentSchema = {
         color: "#fff",
       },
       {
-        type: "description",
+        type: "paragraph",
         content:
           "Pair large video with a compelling message to captivate your audience.",
         color: "#fff",
       },
     ],
   },
-};
+});

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { formatText, missingClass } from "~/lib/utils";
+import { formatText, missingClass } from "~/utils/misc";
 
 export function Text({
   as: Component = "span",

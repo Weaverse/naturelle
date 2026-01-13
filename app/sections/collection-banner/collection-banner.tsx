@@ -1,10 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import { useLoaderData } from "react-router";
 import type { CollectionDetailsQuery } from "storefront-api.generated";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 interface CollectionBannerProps extends HydrogenComponentProps {
   sectionHeightDesktop: number;
@@ -92,7 +90,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
 
 export default CollectionBanner;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "collection-banner",
   title: "Collection banner",
   enabledOn: {
@@ -157,4 +155,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

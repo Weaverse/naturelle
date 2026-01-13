@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Image } from "~/components/image";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
 const OPTIONS_AS_IMAGE = ["Image", "Images"];
@@ -134,23 +134,25 @@ export function VariantOption(props: VariantOptionProps) {
     );
   }
   if (OPTION_AS_MORPHOLOGY.includes(name)) {
-    return (<div className="flex gap-3 flex-wrap">
-      {values.map((value) => (
-        <div
-          key={value.value}
-          className={clsx(
-            "!leading-none py-3 px-3 cursor-pointer transition-all duration-200 font-normal border-2 rounded",
-            value.isAvailable && selectedOptionValue === value.value
-              ? "border-border/90 bg-[#E5E6D4]"
-              : value.isAvailable
-                ? "border-border-subtle"
-                : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
-          )}
-          onClick={() => onSelectOptionValue(value.value)}
-        >
-          {value.value}
-        </div>
-      ))}
-    </div>)
+    return (
+      <div className="flex gap-3 flex-wrap">
+        {values.map((value) => (
+          <div
+            key={value.value}
+            className={clsx(
+              "!leading-none py-3 px-3 cursor-pointer transition-all duration-200 font-normal border-2 rounded",
+              value.isAvailable && selectedOptionValue === value.value
+                ? "border-border/90 bg-[#E5E6D4]"
+                : value.isAvailable
+                  ? "border-border-subtle"
+                  : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
+            )}
+            onClick={() => onSelectOptionValue(value.value)}
+          >
+            {value.value}
+          </div>
+        ))}
+      </div>
+    );
   }
 }

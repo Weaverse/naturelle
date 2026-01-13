@@ -1,24 +1,21 @@
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import {
-  type HydrogenComponentSchema,
-  useThemeSettings,
-} from "@weaverse/hydrogen";
+import { createSchema, useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
-import { AddToCartButton } from "~/components/AddToCartButton";
-import { StarRating } from "~/components/StarRating";
-import { Text } from "~/components/Text";
-import { getExcerpt } from "~/lib/utils";
+import { AddToCartButton } from "~/components/product/add-to-cart-button";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { StarRating } from "~/components/star-rating";
+import { Text } from "~/components/text";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import { getExcerpt } from "~/utils/misc";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductDetail } from "../../components/product-form/product-detail";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
 import { MetaFieldTable } from "./metafield";
 
 interface ProductInformationProps extends SectionProps {
@@ -290,7 +287,7 @@ let ProductInformation = ({
 
 export default ProductInformation;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "product-information",
   title: "Product information",
   childTypes: ["judgeme"],
@@ -434,4 +431,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

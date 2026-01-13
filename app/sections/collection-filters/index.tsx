@@ -1,15 +1,16 @@
 import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { RefObject } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLoaderData } from "react-router";
 import type { CollectionDetailsQuery } from "storefront-api.generated";
 import { Button } from "~/components/button";
-import { DrawerFilter } from "~/components/DrawerFilter";
-import { cn } from "~/lib/utils";
-import type { AppliedFilter } from "~/lib/utils/filter";
+import { DrawerFilter } from "~/components/drawer-filter";
+import { cn } from "~/utils/cn";
+import type { AppliedFilter } from "~/utils/filter";
 import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
 
 interface CollectionFiltersProps extends VariantProps<typeof variants> {}
@@ -111,7 +112,7 @@ let CollectionFilters = ({
 
 export default CollectionFilters;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "collection-filters",
   title: "Collection filters",
   limit: 1,
@@ -150,4 +151,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

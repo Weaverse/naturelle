@@ -1,41 +1,42 @@
 import {
+  Analytics,
+  getSeoMeta,
+  getShopAnalytics,
+  Image,
+  type SeoConfig,
+  useNonce,
+} from "@shopify/hydrogen";
+import { withWeaverse } from "@weaverse/hydrogen";
+import {
+  type AppLoadContext,
+  isRouteErrorResponse,
   Links,
+  type LoaderFunctionArgs,
   Meta,
+  type MetaArgs,
   Outlet,
   Scripts,
   ScrollRestoration,
   type ShouldRevalidateFunction,
-  isRouteErrorResponse,
   useMatches,
   useRouteError,
   useRouteLoaderData,
-  type LoaderFunctionArgs,
-  type MetaArgs,
-  type AppLoadContext,
 } from "react-router";
-import {
-  Analytics,
-  Image,
-  type SeoConfig,
-  getSeoMeta,
-  getShopAnalytics,
-  useNonce,
-} from "@shopify/hydrogen";
-import { withWeaverse } from "@weaverse/hydrogen";
 import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/cormorant";
 import "@fontsource-variable/nunito-sans";
 import invariant from "tiny-invariant";
-import { CustomAnalytics } from "~/components/Analytics";
-import { Header } from "~/components/Header/Header";
+import { seoPayload } from "~/.server/seo";
 import { Button } from "~/components/button";
-import { Footer } from "~/components/footer/Footer";
-import { seoPayload } from "~/lib/seo.server";
-import { Preloader } from "./components/Preloader";
-import { GlobalLoading } from "./components/global-loading";
-import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
-import { getErrorMessage } from "./lib/utils/defineMessageError";
+import { Footer } from "~/components/layout/footer";
+import { Header } from "~/components/layout/header";
+import { CustomAnalytics } from "~/components/root/analytics";
+import { GlobalLoading } from "~/components/root/global-loading";
+import { Preloader } from "~/components/root/preloader";
+import { getErrorMessage } from "~/utils/define-message-error";
+import { DEFAULT_LOCALE } from "./utils/const";
+import { parseMenu } from "./utils/menu";
 
 export type RootLoader = typeof loader;
 
@@ -341,20 +342,20 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
 
   const headerMenu = data?.headerMenu
     ? parseMenu(
-      data.headerMenu,
-      data.shop.primaryDomain.url,
-      env,
-      customPrefixes,
-    )
+        data.headerMenu,
+        data.shop.primaryDomain.url,
+        env,
+        customPrefixes,
+      )
     : undefined;
 
   const footerMenu = data?.footerMenu
     ? parseMenu(
-      data.footerMenu,
-      data.shop.primaryDomain.url,
-      env,
-      customPrefixes,
-    )
+        data.footerMenu,
+        data.shop.primaryDomain.url,
+        env,
+        customPrefixes,
+      )
     : undefined;
 
   return { shop: data.shop, headerMenu, footerMenu };

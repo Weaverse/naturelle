@@ -1,5 +1,5 @@
 import { data, type LoaderFunction } from "react-router";
-import { getProductData } from "~/lib/utils/products";
+import { getProductData } from "~/utils/product";
 
 function getRequestQueries<T = Record<string, string>>(request: Request) {
   let url = new URL(request.url);

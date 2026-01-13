@@ -74,7 +74,7 @@ export function ProductVariants(props: ProductVariantsProps) {
     selectedOptionMap.set(opt.name, opt.value);
   });
 
-  if (selectedOptions?.every(opt => opt.value === "Default Title")) {
+  if (selectedOptions?.every((opt) => opt.value === "Default Title")) {
     return null;
   }
 
@@ -121,7 +121,7 @@ export function ProductVariants(props: ProductVariantsProps) {
                 isDisabled && "opacity-50 cursor-not-allowed",
               )}
             >
-              <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-[4rem]">
+              <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-16">
                 <span className="font-semibold text-base">
                   {config?.displayName || optionName}:
                 </span>

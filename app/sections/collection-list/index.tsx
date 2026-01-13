@@ -1,6 +1,7 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 type CollectionListProps = SectionProps;
 
@@ -18,7 +19,7 @@ let CollectionList = ({
 
 export default CollectionList;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "collection-list",
   title: "Collection list",
   limit: 1,
@@ -45,4 +46,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

@@ -12,12 +12,13 @@ import type {
 import type { MetaFunction } from "react-router";
 import { data, type LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
-import { COLLECTION_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
-import { parseAsCurrency } from "~/lib/utils";
-import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/lib/utils/const";
-import type { SortParam } from "~/lib/utils/filter";
+import { redirectIfHandleIsLocalized } from "~/.server/redirect";
+import { seoPayload } from "~/.server/seo";
+import { COLLECTION_QUERY } from "~/graphql/queries";
+import { routeHeaders } from "~/utils/cache";
+import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
+import type { SortParam } from "~/utils/filter";
+import { parseAsCurrency } from "~/utils/locale";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -49,9 +50,8 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     [] as ProductFilter[],
   );
 
-  const { collection, collections } = await context.storefront.query(
-    COLLECTION_QUERY,
-    {
+  const [shopAndCollections, weaverseData] = await Promise.all([
+    context.storefront.query(COLLECTION_QUERY, {
       variables: {
         ...paginationVariables,
         handle: handle,
@@ -61,12 +61,21 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
         country: context.storefront.i18n.country,
         language: context.storefront.i18n.language,
       },
-    },
-  );
+    }),
+    context.weaverse.loadPage({
+      type: "COLLECTION",
+      handle: handle,
+    }),
+  ]);
+
+  const { collection, collections } = shopAndCollections;
 
   if (!collection) {
     throw new Response("collection", { status: 404 });
   }
+
+  // Redirect if handle is localized
+  redirectIfHandleIsLocalized(request, { handle, data: collection });
 
   const seo = seoPayload.collection({ collection, url: request.url });
 
@@ -127,10 +136,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       resourceId: collection.id,
     },
     seo,
-    weaverseData: await context.weaverse.loadPage({
-      type: "COLLECTION",
-      handle: handle,
-    }),
+    weaverseData,
   });
 }
 

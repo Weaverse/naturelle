@@ -1,11 +1,8 @@
 import { Image } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
-import { IconNewsletter } from "~/components/Icon";
+import { IconNewsletter } from "~/components/icon";
 
 interface NewsletterIconProps extends HydrogenComponentProps {
   iconImage: WeaverseImage;
@@ -43,12 +40,12 @@ const NewsletterIcon = ({
 
 export default NewsletterIcon;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "newsletter-icon",
-  title: "Icon",
+  title: "icon",
   settings: [
     {
-      group: "Icon",
+      group: "icon",
       inputs: [
         {
           type: "image",
@@ -69,4 +66,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

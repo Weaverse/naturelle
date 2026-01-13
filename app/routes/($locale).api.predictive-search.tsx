@@ -12,7 +12,7 @@ import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/hooks/use-predictive-search";
 import type {
   NormalizedPredictiveSearch,
   NormalizedPredictiveSearchResults,
-} from "~/lib/types/search-types";
+} from "~/types/search-types";
 
 type PredictiveSearchResultItem =
   | PredictiveArticleFragment
@@ -70,9 +70,9 @@ async function fetchPredictiveSearchResults({
     rawTypes === "ANY"
       ? DEFAULT_SEARCH_TYPES
       : rawTypes
-        .split(",")
-        .map((t) => t.toUpperCase() as PredictiveSearchTypes)
-        .filter((t) => DEFAULT_SEARCH_TYPES.includes(t));
+          .split(",")
+          .map((t) => t.toUpperCase() as PredictiveSearchTypes)
+          .filter((t) => DEFAULT_SEARCH_TYPES.includes(t));
 
   if (!searchTerm) {
     return {

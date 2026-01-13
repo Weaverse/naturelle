@@ -1,18 +1,18 @@
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
   WeaverseBlog,
 } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
-import { IconImageBlank } from "~/components/Icon";
+import { IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
-import { Link } from "~/components/Link";
-import { BLOG_QUERY } from "~/graphql/data/queries";
+import { Link } from "~/components/link";
+import { BLOG_QUERY } from "~/graphql/queries";
 import { useAnimation } from "~/hooks/use-animation";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 let fontSizeVariants = cva("", {
   variants: {
@@ -88,9 +88,9 @@ type BlogData = {
 
 export interface BlogProps
   extends HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
-  BlogData,
-  VariantProps<typeof variants>,
-  VariantProps<typeof fontSizeVariants> { }
+    BlogData,
+    VariantProps<typeof variants>,
+    VariantProps<typeof fontSizeVariants> {}
 
 let articlesPerRowClasses: { [item: number]: string } = {
   1: "sm:grid-cols-1",
@@ -129,7 +129,7 @@ const Blogs = ({
         Math.max(
           0,
           Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
-          [19, 18, 28][i],
+            [19, 18, 28][i],
         )
           .toString(16)
           .padStart(2, "0"),
@@ -208,7 +208,7 @@ const Blogs = ({
                   <Tag
                     className={cn(
                       size === "custom" &&
-                      fontSizeVariants({ mobileSize, desktopSize }),
+                        fontSizeVariants({ mobileSize, desktopSize }),
                       variants({ size, weight }),
                     )}
                   >
@@ -243,7 +243,7 @@ export let loader = async (args: ComponentLoaderArgs<BlogData>) => {
   }
 };
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "blogs",
   title: "Blogs",
   settings: [
@@ -446,4 +446,4 @@ export const schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

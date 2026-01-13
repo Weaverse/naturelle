@@ -1,16 +1,13 @@
 import { Image } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React, { type CSSProperties, useEffect, useRef } from "react";
 import {
   IconArrowSlideLeft,
   IconArrowSlideRight,
   IconImageBlank,
-} from "~/components/Icon";
+} from "~/components/icon";
 
 interface BeforeAndAfterProps extends HydrogenComponentProps {
   beforeImage: WeaverseImage;
@@ -277,7 +274,7 @@ const BeforeAndAfter = ({
 
 export default BeforeAndAfter;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "before-after-slider",
   title: "Slider",
   limit: 1,
@@ -352,4 +349,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

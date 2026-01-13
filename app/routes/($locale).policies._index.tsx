@@ -23,7 +23,7 @@ export default function Policies() {
     <div className="policies">
       <h1>Policies</h1>
       <div>
-        {policies.map((policy) => {
+        {policies.map((policy: any) => {
           if (!policy) {
             return null;
           }

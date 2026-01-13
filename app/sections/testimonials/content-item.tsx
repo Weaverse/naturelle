@@ -1,7 +1,5 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 
 interface ContentReviewProps extends HydrogenComponentProps {
@@ -33,7 +31,7 @@ const ContentReview = ({
 
 export default ContentReview;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "content-reviews--review",
   title: "List reviews",
   settings: [
@@ -89,4 +87,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

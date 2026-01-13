@@ -7,10 +7,11 @@ import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { data } from "react-router";
 import type { BlogQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
-import { BLOGS_PAGE_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
-import { PAGINATION_SIZE } from "~/lib/utils/const";
+import { redirectIfHandleIsLocalized } from "~/.server/redirect";
+import { seoPayload } from "~/.server/seo";
+import { BLOGS_PAGE_QUERY } from "~/graphql/queries";
+import { routeHeaders } from "~/utils/cache";
+import { PAGINATION_SIZE } from "~/utils/const";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -32,6 +33,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
   if (!blog?.articles) {
     throw new Response("Not found", { status: 404 });
   }
+
+  // Redirect if handle is localized
+  redirectIfHandleIsLocalized(request, {
+    handle: params.blogHandle,
+    data: blog,
+  });
 
   const articles = flattenConnection(blog.articles).map((article) => {
     const publishedAt = article?.publishedAt;

@@ -1,8 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { useLocation } from "react-router";
 import { Fragment, useEffect, useState } from "react";
-import { cn } from "~/lib/utils";
-import { IconArrowLeft, IconClose } from "./Icon";
+import { useLocation } from "react-router";
+import { cn } from "~/utils/cn";
+import { IconArrowLeft, IconClose } from "./icon";
 
 /**
  * Drawer component that opens on user click.
@@ -55,8 +55,9 @@ export function Drawer({
         <div className="fixed inset-0">
           <div className="absolute inset-0 overflow-hidden bg-black/60">
             <div
-              className={`fixed inset-y-0 flex max-w-full ${openFrom === "right" ? "right-0" : ""
-                }`}
+              className={`fixed inset-y-0 flex max-w-full ${
+                openFrom === "right" ? "right-0" : ""
+              }`}
             >
               <Transition.Child
                 as={Fragment}

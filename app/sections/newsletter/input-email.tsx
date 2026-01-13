@@ -1,7 +1,5 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { type CSSProperties, useRef } from "react";
@@ -90,7 +88,7 @@ const NewsletterInput = ({
 
 export default NewsletterInput;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "newsletter-input",
   title: "Input",
   limit: 1,
@@ -126,4 +124,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

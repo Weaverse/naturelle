@@ -1,10 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type React from "react";
 import type { RefObject } from "react";
-import { IconStar } from "~/components/Icon";
+import { IconStar } from "~/components/icon";
 
 interface ReviewProps extends HydrogenComponentProps {
   name?: string;
@@ -33,7 +31,9 @@ const Review = ({
     >
       {name && <h4 className="font-medium text-[var(--text-color)]">{name}</h4>}
       <p className="flex gap-1">{renderStars()}</p>
-      {content && <p className="font-normal text-[var(--text-color)]">{content}</p>}
+      {content && (
+        <p className="font-normal text-[var(--text-color)]">{content}</p>
+      )}
       <div className="hover:opacity-10 hover:bg-white opacity-0 absolute inset-0 transition-opacity duration-500" />
     </div>
   );
@@ -41,7 +41,7 @@ const Review = ({
 
 export default Review;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "reviews",
   title: "Reviews",
   settings: [
@@ -75,4 +75,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

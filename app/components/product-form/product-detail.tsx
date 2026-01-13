@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
-import { IconPlusLinkFooter } from "~/components/Icon";
-import { Link } from "~/components/Link";
-import { Text } from "~/components/Text";
+import { IconPlusLinkFooter } from "~/components/icon";
+import { Link } from "~/components/link";
+import { Text } from "~/components/text";
 
 export function ProductDetail({
   title,

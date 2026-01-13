@@ -1,13 +1,10 @@
-import {
-  type HydrogenComponentSchema,
-  IMAGES_PLACEHOLDERS,
-} from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
-import { backgroundInputs } from "../atoms/BackgroundImage";
-import { overlayInputs } from "../atoms/Overlay";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
+import { backgroundInputs } from "~/components/background-image";
+import { overlayInputs } from "~/components/overlay";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 export interface SlideShowBannerItemProps
   extends VariantProps<typeof variants> {
@@ -72,7 +69,7 @@ let HeaderImage = ({
 
 export default HeaderImage;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "image-banner",
   title: "Image banner",
   settings: [
@@ -155,4 +152,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

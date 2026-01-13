@@ -2,11 +2,11 @@ import clsx from "clsx";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
-import { IconFilledStar, IconStarReview } from "~/components/Icon";
+import { IconFilledStar, IconStarReview } from "~/components/icon";
 import { Input } from "~/components/input";
-import { StarRating } from "~/components/StarRating";
-import type { JudgemeReviewsData } from "~/lib/utils/judgeme";
+import { StarRating } from "~/components/star-rating";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import type { JudgemeReviewsData } from "~/utils/judgeme";
 
 export function ReviewForm({
   judgemeReviews,

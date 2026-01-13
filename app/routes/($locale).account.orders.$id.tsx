@@ -1,13 +1,13 @@
 import { flattenConnection, Image, Money } from "@shopify/hydrogen";
 import type { OrderLineItemFullFragment } from "customer-account-api.generated";
 import {
-  data as response,
   type LoaderFunctionArgs,
   type MetaFunction,
   redirect,
+  data as response,
   useLoaderData,
 } from "react-router";
-import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/CustomerOrderQuery";
+import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/customer-order-query";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [{ title: `Order ${data?.order?.name}` }];

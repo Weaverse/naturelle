@@ -2,7 +2,7 @@ import { Image as HydrogenImage } from "@shopify/hydrogen";
 import type { Image as ImageType } from "@shopify/hydrogen/storefront-api-types";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 type Crop = "center" | "top" | "bottom" | "left" | "right";
 

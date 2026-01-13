@@ -1,6 +1,7 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
-import { layoutInputs, Section, type SectionProps } from "../atoms/Section";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 type JudgemeReviewProps = SectionProps;
 const JudgemeReviewSection = ({
@@ -17,7 +18,7 @@ const JudgemeReviewSection = ({
 
 export default JudgemeReviewSection;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "judgeme-reviews",
   title: "Judgeme Reviews",
   enabledOn: {
@@ -45,4 +46,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

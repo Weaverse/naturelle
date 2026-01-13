@@ -5,8 +5,8 @@ import {
 } from "@shopify/hydrogen";
 import type { MetaFunction } from "react-router";
 import { data, type LoaderFunctionArgs } from "react-router";
-import { COLLECTIONS_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
+import { seoPayload } from "~/.server/seo";
+import { COLLECTIONS_QUERY } from "~/graphql/queries";
 import { WeaverseContent } from "~/weaverse";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {

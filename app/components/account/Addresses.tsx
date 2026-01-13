@@ -1,4 +1,10 @@
 import { Dialog } from "@headlessui/react";
+import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
+import type {
+  AddressFragment,
+  CustomerFragment,
+} from "customer-account-api.generated";
+import { useEffect, useState } from "react";
 import {
   Form,
   useActionData,
@@ -6,16 +12,10 @@ import {
   useOutlet,
   useOutletContext,
 } from "react-router";
-import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
-import type {
-  AddressFragment,
-  CustomerFragment,
-} from "customer-account-api.generated";
-import { useEffect, useState } from "react";
 import { Button } from "~/components/button";
 import { Checkbox } from "~/components/checkbox";
 import { Input } from "~/components/input";
-import { IconClose } from "../Icon";
+import { IconClose } from "../icon";
 
 function AddressCard(props: {
   address: AddressFragment;

@@ -12,23 +12,24 @@ import type {
 } from "customer-account-api.generated";
 import {
   type ActionFunctionArgs,
-  data as response,
   Form,
   Link,
   type LoaderFunctionArgs,
   type MetaFunction,
+  data as response,
   useActionData,
   useLoaderData,
   useNavigation,
   useOutletContext,
 } from "react-router";
-import Addresses from "~/components/account/Addresses";
+import Addresses from "~/components/account/addresses";
 import {
   CREATE_ADDRESS_MUTATION,
   DELETE_ADDRESS_MUTATION,
   UPDATE_ADDRESS_MUTATION,
-} from "~/graphql/customer-account/CustomerAddressMutations";
-import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/CustomerOrdersQuery";
+} from "~/graphql/customer-account/customer-address-mutations";
+import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/customer-orders-query";
+import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/customer-update-mutation";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Orders" }];
@@ -73,7 +74,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
     // this will ensure redirecting to login never happen for mutatation
     const isLoggedIn = await customerAccount.isLoggedIn();
     if (!isLoggedIn) {
-      return response({ error: { [addressId]: "Unauthorized" } }, { status: 401 });
+      return response(
+        { error: { [addressId]: "Unauthorized" } },
+        { status: 401 },
+      );
     }
 
     const defaultAddress = form.has("defaultAddress")
@@ -116,9 +120,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           }
 
           if (data?.customerAddressCreate?.userErrors?.length) {
-            throw new Error(
-              data?.customerAddressCreate?.userErrors[0].message,
-            );
+            throw new Error(data?.customerAddressCreate?.userErrors[0].message);
           }
 
           if (!data?.customerAddressCreate?.customerAddress) {
@@ -160,9 +162,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           }
 
           if (data?.customerAddressUpdate?.userErrors?.length) {
-            throw new Error(
-              data?.customerAddressUpdate?.userErrors[0].message,
-            );
+            throw new Error(data?.customerAddressUpdate?.userErrors[0].message);
           }
 
           if (!data?.customerAddressUpdate?.customerAddress) {
@@ -200,9 +200,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           }
 
           if (data?.customerAddressDelete?.userErrors?.length) {
-            throw new Error(
-              data?.customerAddressDelete?.userErrors[0].message,
-            );
+            throw new Error(data?.customerAddressDelete?.userErrors[0].message);
           }
 
           if (!data?.customerAddressDelete?.deletedAddressId) {

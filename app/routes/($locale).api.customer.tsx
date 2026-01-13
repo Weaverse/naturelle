@@ -1,7 +1,7 @@
 import type { ActionFunction, ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 import type { CustomerCreateMutation } from "storefront-api.generated";
-import { CUSTOMER_CREATE_MUTATION } from "~/data/mutations";
+import { CUSTOMER_CREATE_MUTATION } from "~/graphql/mutations";
 
 export let action: ActionFunction = async ({
   request,

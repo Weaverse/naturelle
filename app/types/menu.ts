@@ -4,15 +4,23 @@ import type {
   ParentMenuItemFragment,
 } from "storefront-api.generated";
 
+export function getMaxDepth(item: { items: any[] }): number {
+  if (item.items?.length > 0) {
+    return Math.max(...item.items.map(getMaxDepth)) + 1;
+  }
+  return 1;
+}
+
 type EnhancedMenuItemProps = {
   to: string;
   target: string;
   isExternal?: boolean;
 };
 
-type ChildEnhancedMenuItem = ChildMenuItemFragment & EnhancedMenuItemProps;
+export type ChildEnhancedMenuItem = ChildMenuItemFragment &
+  EnhancedMenuItemProps;
 
-type ParentEnhancedMenuItem = (ParentMenuItemFragment &
+export type ParentEnhancedMenuItem = (ParentMenuItemFragment &
   EnhancedMenuItemProps) & {
   items: ChildEnhancedMenuItem[];
 };
@@ -26,9 +34,6 @@ export interface SingleMenuItem {
   title: string;
   items: SingleMenuItem[];
   to: string;
-  isExternal?: boolean;
-  target: string;
-  type: string;
   resource?: {
     image?: {
       altText: string;

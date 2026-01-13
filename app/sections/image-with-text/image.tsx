@@ -1,14 +1,14 @@
 import { Image } from "@shopify/hydrogen";
 import {
+  createSchema,
   type HydrogenComponentProps,
-  type HydrogenComponentSchema,
   IMAGES_PLACEHOLDERS,
   type WeaverseImage,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 let variants = cva("w-full h-auto basis-full md:basis-1/2", {
   variants: {
@@ -96,7 +96,7 @@ let ImageWithTextImage = ({
 
 export default ImageWithTextImage;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "image-with-text--image",
   title: "Image",
   limit: 1,
@@ -173,4 +173,4 @@ export let schema: HydrogenComponentSchema = {
     objectFit: "cover",
     borderRadius: 0,
   },
-};
+});

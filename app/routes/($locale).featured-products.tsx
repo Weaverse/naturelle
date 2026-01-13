@@ -1,6 +1,6 @@
 import { data, type LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
-import { FEATURED_ITEMS_QUERY } from "~/graphql/data/queries";
+import { FEATURED_ITEMS_QUERY } from "~/graphql/queries";
 
 export async function loader({ context: { storefront } }: LoaderFunctionArgs) {
   return data(await getFeaturedData(storefront));

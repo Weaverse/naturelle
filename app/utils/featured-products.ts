@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import type { FeaturedProductsQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
-import { PRODUCT_CARD_FRAGMENT } from "~/graphql/data/fragments";
+import { PRODUCT_CARD_FRAGMENT } from "~/graphql/fragments";
 import { maybeFilterOutCombinedListingsQuery } from "~/utils/combined-listings";
 
 export async function getFeaturedProducts(

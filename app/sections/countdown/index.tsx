@@ -1,13 +1,10 @@
-import {
-  type HydrogenComponentSchema,
-  IMAGES_PLACEHOLDERS,
-} from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
-import { backgroundInputs } from "../atoms/BackgroundImage";
-import { overlayInputs } from "../atoms/Overlay";
-import { Section, type SectionProps } from "../atoms/Section";
+import { backgroundInputs } from "~/components/background-image";
+import { overlayInputs } from "~/components/overlay";
+import { Section, type SectionProps } from "~/components/section";
 
 let variants = cva("flex flex-col [&_.paragraph]:mx-[unset] px-4 sm:px-16", {
   variants: {
@@ -36,7 +33,7 @@ let Countdown = ({
 
 export default Countdown;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "countdown",
   title: "Countdown",
   settings: [
@@ -142,4 +139,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

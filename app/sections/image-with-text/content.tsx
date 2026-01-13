@@ -1,7 +1,5 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
@@ -51,7 +49,7 @@ let ImageWithTextContent = ({
 
 export default ImageWithTextContent;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "image-with-text--content",
   title: "Content",
   limit: 1,
@@ -90,7 +88,7 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  childTypes: ["subheading", "heading", "description", "button"],
+  childTypes: ["subheading", "heading", "paragraph", "button"],
   presets: {
     alignment: "center",
     children: [
@@ -103,7 +101,7 @@ export let schema: HydrogenComponentSchema = {
         content: "Heading for image",
       },
       {
-        type: "description",
+        type: "paragraph",
         content: "Pair large text with an image to tell a story.",
       },
       {
@@ -112,4 +110,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

@@ -1,4 +1,5 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
@@ -28,14 +29,9 @@ const ReviewIndex = ({
 
 export default ReviewIndex;
 
-export let schema: HydrogenComponentSchema = {
+export let schema = createSchema({
   type: "judgeme-review--index",
   title: "Judgeme Review",
   limit: 1,
-  settings: [
-    {
-      group: "Review",
-      inputs: [],
-    },
-  ],
-};
+  settings: [],
+});
