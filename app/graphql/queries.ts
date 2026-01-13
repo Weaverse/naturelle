@@ -137,7 +137,6 @@ export let PRODUCT_QUERY = `#graphql
     }
   }
   ${MEDIA_FRAGMENT}
-  ${PRODUCT_VARIANT_FRAGMENT}
   ${PRODUCT_OPTION_FRAGMENT}
 ` as const;
 
