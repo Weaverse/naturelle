@@ -72,7 +72,7 @@ export default function Paragraph(props: ParagraphProps) {
   );
 }
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "paragraph",
   title: "Paragraph",
   settings: [

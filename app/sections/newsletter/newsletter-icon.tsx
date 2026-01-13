@@ -40,7 +40,7 @@ const NewsletterIcon = ({
 
 export default NewsletterIcon;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "newsletter-icon",
   title: "icon",
   settings: [

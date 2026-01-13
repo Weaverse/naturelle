@@ -112,7 +112,7 @@ let CollectionFilters = ({
 
 export default CollectionFilters;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "collection-filters",
   title: "Collection filters",
   limit: 1,

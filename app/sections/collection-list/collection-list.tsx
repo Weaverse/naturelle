@@ -65,7 +65,7 @@ let CollectionListItem = ({
 
 export default CollectionListItem;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "collection-list--item",
   title: "Collection list",
   limit: 1,

@@ -85,7 +85,7 @@ const Testimonials = ({
 
 export default Testimonials;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "testimonials",
   title: "Testimonials",
   settings: [

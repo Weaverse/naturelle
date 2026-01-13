@@ -24,7 +24,7 @@ const FeaturedProducts = ({
 
 export default FeaturedProducts;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "featured-products",
   title: "Featured products",
   settings: sectionInspector,

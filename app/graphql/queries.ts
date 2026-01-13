@@ -41,7 +41,7 @@ export const FEATURED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 `;
 
-export let ALL_PRODUCTS_QUERY = `#graphql
+export const ALL_PRODUCTS_QUERY = `#graphql
   query AllProducts(
     $country: CountryCode
     $language: LanguageCode
@@ -65,7 +65,7 @@ export let ALL_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
 
-export let PRODUCT_QUERY = `#graphql
+export const PRODUCT_QUERY = `#graphql
   query Product(
     $country: CountryCode
     $language: LanguageCode
@@ -140,7 +140,7 @@ export let PRODUCT_QUERY = `#graphql
   ${PRODUCT_OPTION_FRAGMENT}
 ` as const;
 
-export let RECOMMENDED_PRODUCTS_QUERY = `#graphql
+export const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   query productRecommendations(
     $productId: ID!
     $count: Int
@@ -159,7 +159,7 @@ export let RECOMMENDED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
 
-export let VARIANTS_QUERY = `#graphql
+export const VARIANTS_QUERY = `#graphql
   query variants(
     $country: CountryCode
     $language: LanguageCode
@@ -176,7 +176,7 @@ export let VARIANTS_QUERY = `#graphql
   ${PRODUCT_VARIANT_FRAGMENT}
 ` as const;
 
-export let COLLECTION_QUERY = `#graphql
+export const COLLECTION_QUERY = `#graphql
   query CollectionDetails(
     $handle: String!
     $country: CountryCode
@@ -268,7 +268,7 @@ export const COLLECTIONS_QUERY = `#graphql
   ${COLLECTION_FRAGMENT}
 ` as const;
 
-export let BLOGS_PAGE_QUERY = `#graphql
+export const BLOGS_PAGE_QUERY = `#graphql
   query Blog(
     $language: LanguageCode
     $blogHandle: String!
@@ -294,7 +294,7 @@ export let BLOGS_PAGE_QUERY = `#graphql
   ${ARTICLE_FRAGMENT}
 `;
 
-export let ARTICLE_QUERY = `#graphql
+export const ARTICLE_QUERY = `#graphql
   query ArticleDetails(
     $language: LanguageCode
     $blogHandle: String!

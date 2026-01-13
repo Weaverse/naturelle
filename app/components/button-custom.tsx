@@ -1,6 +1,4 @@
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
-import type React from "react";
 import type { CSSProperties } from "react";
 import { Button, type ButtonProps } from "~/components/button";
 import { IconEllipse } from "~/components/icon";
@@ -102,7 +100,7 @@ export const schema = createSchema({
         {
           type: "text",
           name: "value",
-          label: "text",
+          label: "Text",
           defaultValue: "Shop now",
         },
         {
@@ -168,7 +166,7 @@ export const schema = createSchema({
               { label: "Default", value: "default" },
               { label: "Small", value: "sm" },
               { label: "Large", value: "lg" },
-              { label: "icon", value: "icon" },
+              { label: "Icon", value: "icon" },
             ],
           },
           condition: `variant.ne.decor`,

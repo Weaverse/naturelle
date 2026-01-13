@@ -230,7 +230,7 @@ const Blogs = ({
 
 export default Blogs;
 
-export let loader = async (args: ComponentLoaderArgs<BlogData>) => {
+export const loader = async (args: ComponentLoaderArgs<BlogData>) => {
   let { weaverse, data } = args;
   let { storefront, request } = weaverse;
   if (data.blogs) {

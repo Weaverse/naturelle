@@ -45,7 +45,7 @@ let Spacer = ({
 
 export default Spacer;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "spacer",
   title: "Spacer",
   settings: [

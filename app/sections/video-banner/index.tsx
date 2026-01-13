@@ -219,7 +219,7 @@ let VideoBanner = ({
 
 export default VideoBanner;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "video-banner",
   title: "Video banner",
   settings: [

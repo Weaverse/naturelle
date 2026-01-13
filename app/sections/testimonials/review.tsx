@@ -41,7 +41,7 @@ const Review = ({
 
 export default Review;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "reviews",
   title: "Reviews",
   settings: [

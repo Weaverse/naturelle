@@ -29,7 +29,7 @@ const ReviewIndex = ({
 
 export default ReviewIndex;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "judgeme-review--index",
   title: "Judgeme Review",
   limit: 1,

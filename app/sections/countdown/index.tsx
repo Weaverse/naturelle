@@ -33,7 +33,7 @@ let Countdown = ({
 
 export default Countdown;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "countdown",
   title: "Countdown",
   settings: [

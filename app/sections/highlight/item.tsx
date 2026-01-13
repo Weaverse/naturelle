@@ -49,7 +49,7 @@ const HighlightItem = ({
 
 export default HighlightItem;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "highlight--item",
   title: "Highlight",
   limit: 8,

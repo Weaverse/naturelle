@@ -18,7 +18,7 @@ const JudgemeReviewSection = ({
 
 export default JudgemeReviewSection;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "judgeme-reviews",
   title: "Judgeme Reviews",
   enabledOn: {

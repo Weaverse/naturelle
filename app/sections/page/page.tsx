@@ -48,7 +48,7 @@ let Page = ({
 
 export default Page;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "page",
   title: "Page",
   limit: 1,

@@ -287,7 +287,7 @@ let ProductInformation = ({
 
 export default ProductInformation;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "product-information",
   title: "Product information",
   childTypes: ["judgeme"],

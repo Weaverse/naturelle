@@ -77,7 +77,7 @@ let variants = cva("relative", {
   },
 });
 
-export let Section = ({
+export const Section = ({
   ref,
   ...props
 }: SectionProps & { ref?: React.Ref<HTMLElement> }) => {
@@ -139,7 +139,7 @@ export let Section = ({
   );
 };
 
-export let layoutInputs: InspectorGroup["inputs"] = [
+export const layoutInputs: InspectorGroup["inputs"] = [
   {
     type: "select",
     name: "width",
@@ -193,7 +193,7 @@ export let layoutInputs: InspectorGroup["inputs"] = [
   },
 ];
 
-export let sectionInspector: InspectorGroup[] = [
+export const sectionInspector: InspectorGroup[] = [
   { group: "Layout", inputs: layoutInputs },
   { group: "Background", inputs: backgroundInputs },
   { group: "Overlay", inputs: overlayInputs },

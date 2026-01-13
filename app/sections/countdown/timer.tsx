@@ -106,7 +106,7 @@ export default CountdownTimer;
 let tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "countdown--timer",
   title: "Timer",
   settings: [

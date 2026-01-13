@@ -61,7 +61,7 @@ export default function AllProducts(props: AllProductsProps) {
   );
 }
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "all-products",
   title: "All products",
   limit: 1,

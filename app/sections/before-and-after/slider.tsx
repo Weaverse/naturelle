@@ -274,7 +274,7 @@ const BeforeAndAfter = ({
 
 export default BeforeAndAfter;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "before-after-slider",
   title: "Slider",
   limit: 1,

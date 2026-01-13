@@ -40,7 +40,7 @@ import { parseMenu } from "./utils/menu";
 
 export type RootLoader = typeof loader;
 
-export let shouldRevalidate: ShouldRevalidateFunction = ({
+export const shouldRevalidate: ShouldRevalidateFunction = ({
   formMethod,
   currentUrl,
   nextUrl,

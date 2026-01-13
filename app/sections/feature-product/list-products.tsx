@@ -144,7 +144,9 @@ const ListProducts = ({
 
 export default ListProducts;
 
-export let loader = async (args: ComponentLoaderArgs<FeaturedProductsData>) => {
+export const loader = async (
+  args: ComponentLoaderArgs<FeaturedProductsData>,
+) => {
   let { weaverse, data } = args;
   let { language, country } = weaverse.storefront.i18n;
   if (data.products) {
@@ -159,7 +161,7 @@ export let loader = async (args: ComponentLoaderArgs<FeaturedProductsData>) => {
   return null;
 };
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "featured-products--list",
   title: "Featured products list",
   limit: 1,

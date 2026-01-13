@@ -31,7 +31,7 @@ const ContentReview = ({
 
 export default ContentReview;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "content-reviews--review",
   title: "List reviews",
   settings: [

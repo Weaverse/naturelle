@@ -206,7 +206,7 @@ const Instagram = ({
 
 export default Instagram;
 
-export let loader = async (args: ComponentLoaderArgs<InstagramData>) => {
+export const loader = async (args: ComponentLoaderArgs<InstagramData>) => {
   /* Instagram loader disabled temporarily
   let { weaverse, data } = args;
   if (data.instagramToken) {

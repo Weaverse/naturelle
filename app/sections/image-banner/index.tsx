@@ -69,7 +69,7 @@ let HeaderImage = ({
 
 export default HeaderImage;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "image-banner",
   title: "Image banner",
   settings: [

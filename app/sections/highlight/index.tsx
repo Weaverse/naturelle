@@ -24,7 +24,7 @@ const Highlights = ({
 
 export default Highlights;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "highlight",
   title: "Highlights",
   settings: sectionInspector,

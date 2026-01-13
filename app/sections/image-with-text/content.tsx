@@ -49,7 +49,7 @@ let ImageWithTextContent = ({
 
 export default ImageWithTextContent;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "image-with-text--content",
   title: "Content",
   limit: 1,

@@ -129,7 +129,7 @@ function ArticleCard({
 
 export default RelatedArticles;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "related-articles",
   title: "Related articles",
   limit: 1,

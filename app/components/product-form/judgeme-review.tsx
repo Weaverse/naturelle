@@ -53,7 +53,7 @@ let JudgemeReview = forwardRef<HTMLDivElement, HydrogenComponentProps>(
 
 export default JudgemeReview;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "judgeme",
   title: "Judgeme review",
   settings: [],

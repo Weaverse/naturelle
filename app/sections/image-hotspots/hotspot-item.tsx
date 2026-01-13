@@ -92,7 +92,7 @@ let HotspotsItem = ({
 
 export default HotspotsItem;
 
-export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
+export const loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   let { weaverse, data } = args;
   let { storefront, env } = weaverse;
   let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
@@ -114,17 +114,17 @@ export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   return { product };
 };
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "hotspots--item",
   title: "Hotspots item",
   settings: [
     {
-      group: "icon",
+      group: "Icon",
       inputs: [
         {
           type: "toggle-group",
           name: "icon",
-          label: "icon",
+          label: "Icon",
           configs: {
             options: [
               {

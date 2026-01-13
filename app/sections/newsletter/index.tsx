@@ -24,7 +24,7 @@ const Newsletter = ({
 
 export default Newsletter;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "newsletter",
   title: "Newsletter",
   settings: sectionInspector,

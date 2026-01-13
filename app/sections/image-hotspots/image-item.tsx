@@ -37,7 +37,7 @@ const HotspotsImage = ({
 
 export default HotspotsImage;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "image-hotspots",
   title: "Image hotspots",
   limit: 2,

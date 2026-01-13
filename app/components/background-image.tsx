@@ -50,7 +50,7 @@ export function BackgroundImage(props: BackgroundImageProps) {
   return null;
 }
 
-export let backgroundInputs: InspectorGroup["inputs"] = [
+export const backgroundInputs: InspectorGroup["inputs"] = [
   {
     type: "select",
     name: "backgroundFor",

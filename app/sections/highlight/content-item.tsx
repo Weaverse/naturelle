@@ -43,7 +43,7 @@ const HighlightContent = ({
 
 export default HighlightContent;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "highlight-content--item",
   title: "List items",
   settings: [

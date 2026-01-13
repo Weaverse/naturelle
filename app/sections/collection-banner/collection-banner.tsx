@@ -90,7 +90,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
 
 export default CollectionBanner;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "collection-banner",
   title: "Collection banner",
   enabledOn: {

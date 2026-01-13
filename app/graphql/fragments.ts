@@ -189,7 +189,7 @@ export const ARTICLE_FRAGMENT = `#graphql
   }
 `;
 
-export let COLLECTION_CONTENT_FRAGMENT = `#graphql
+export const COLLECTION_CONTENT_FRAGMENT = `#graphql
   fragment CollectionContent on Collection {
     id
     handle

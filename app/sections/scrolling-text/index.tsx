@@ -94,7 +94,7 @@ const ScrollingText = ({
 
 export default ScrollingText;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "scrolling-text",
   title: "Scrolling Text",
   settings: [
@@ -104,7 +104,7 @@ export let schema = createSchema({
         {
           type: "textarea",
           name: "content",
-          label: "text",
+          label: "Text",
           defaultValue:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
         },

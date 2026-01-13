@@ -311,7 +311,7 @@ let SingleProduct = ({
 
 export default SingleProduct;
 
-export let loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
+export const loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
   let { weaverse, data } = args;
   let { storefront } = weaverse;
   if (!data.product) {
@@ -346,7 +346,7 @@ export let loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
   };
 };
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "single-product",
   title: "Single product",
   childTypes: ["judgeme"],

@@ -41,7 +41,7 @@ export function Overlay(props: OverlayProps) {
   return null;
 }
 
-export let overlayInputs: InspectorGroup["inputs"] = [
+export const overlayInputs: InspectorGroup["inputs"] = [
   {
     type: "switch",
     name: "enableOverlay",

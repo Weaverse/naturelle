@@ -29,7 +29,7 @@ export function isDiscounted(price: MoneyV2, compareAtPrice: MoneyV2) {
   return false;
 }
 
-export let getProductData = async (
+export const getProductData = async (
   storefront: Storefront,
   handle: string,
   metafield: string,

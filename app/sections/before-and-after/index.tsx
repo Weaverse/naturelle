@@ -16,7 +16,7 @@ export default function BeforeAndAfter(props: BeforeAndAfterProps) {
   );
 }
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "before-and-after",
   title: "Before & after",
   settings: [

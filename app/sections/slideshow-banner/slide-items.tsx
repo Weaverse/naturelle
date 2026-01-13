@@ -109,7 +109,7 @@ let Slide = ({
 
 export default Slide;
 
-export let schema = createSchema({
+export const schema = createSchema({
   title: "Slide",
   type: "slideshowbanner--slide",
   childTypes: ["subheading", "heading", "paragraph", "button"],

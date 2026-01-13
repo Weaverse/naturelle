@@ -88,7 +88,7 @@ const NewsletterInput = ({
 
 export default NewsletterInput;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "newsletter-input",
   title: "Input",
   limit: 1,

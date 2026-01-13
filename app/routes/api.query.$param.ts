@@ -9,7 +9,7 @@ function getRequestQueries<T = Record<string, string>>(request: Request) {
   }, {}) as T;
 }
 
-export let loader: LoaderFunction = async ({ request, params, context }) => {
+export const loader: LoaderFunction = async ({ request, params, context }) => {
   try {
     let queries = getRequestQueries(request);
     switch (params.param) {

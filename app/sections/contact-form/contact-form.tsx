@@ -114,7 +114,7 @@ let ContactForm = ({
 
 export default ContactForm;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "contact-us",
   title: "Contact us",
   limit: 1,

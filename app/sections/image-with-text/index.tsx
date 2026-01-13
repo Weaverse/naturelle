@@ -25,7 +25,7 @@ let ImageWithText = ({
 
 export default ImageWithText;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "image-with-text",
   title: "Image with text",
   settings: [

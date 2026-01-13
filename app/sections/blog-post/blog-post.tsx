@@ -58,7 +58,7 @@ let BlogPost = ({
 
 export default BlogPost;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "blog-post",
   title: "Blog post",
   limit: 1,

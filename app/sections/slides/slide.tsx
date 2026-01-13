@@ -122,7 +122,7 @@ const Slide = ({
 
 export default Slide;
 
-export let schema = createSchema({
+export const schema = createSchema({
   type: "slides-item",
   title: "Slide",
   settings: [
