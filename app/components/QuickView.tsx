@@ -60,7 +60,7 @@ export function QuickView(props: { data: ProductData }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product?.selectedVariant, selectedVariant, variants?.nodes?.[0]]);
+  }, [product?.id]);
 
   const { shippingPolicy, refundPolicy } = shop;
 
