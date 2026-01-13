@@ -2,10 +2,9 @@ import type {
   HydrogenComponentProps,
   HydrogenComponentSchema,
 } from "@weaverse/hydrogen";
-import clsx from "clsx";
-import type { CSSProperties, RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { CollectionDetailsQuery } from "storefront-api.generated";
+import { cn } from "~/lib/utils";
 
 interface CollectionBannerProps extends HydrogenComponentProps {
   sectionHeightDesktop: number;
@@ -14,13 +13,12 @@ interface CollectionBannerProps extends HydrogenComponentProps {
   overlayOpacity: number;
   enableOverlay: boolean;
   contentPosition: string;
+  ref?: React.Ref<HTMLElement>;
 }
 
-let CollectionBanner = ({
-  ref,
-  ...props
-}: CollectionBannerProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let {
+const CollectionBanner = (props: CollectionBannerProps) => {
+  const {
+    ref,
     sectionHeightDesktop,
     sectionHeightMobile,
     enableBackground,
@@ -29,26 +27,14 @@ let CollectionBanner = ({
     contentPosition,
     ...rest
   } = props;
-  let { collection } = useLoaderData<
+
+  const { collection } = useLoaderData<
     CollectionDetailsQuery & {
       collections: Array<{ handle: string; title: string }>;
     }
   >();
-  let backgroundStyle: CSSProperties = {
-    "--header-height-desktop": `${sectionHeightDesktop}px`,
-    "--header-height-mobile": `${sectionHeightMobile}px`,
-  } as CSSProperties;
 
-  if (enableBackground) {
-    backgroundStyle.backgroundImage = `url('${collection?.image?.url}')`;
-  }
-  let overlayStyle: CSSProperties = {};
-  if (enableOverlay && enableBackground) {
-    overlayStyle = {
-      "--overlay-opacity": `${overlayOpacity}`,
-    } as CSSProperties;
-  }
-  let positionClass: { [key: string]: string } = {
+  const positionClass: Record<string, string> = {
     "top left": "items-start justify-start",
     "top right": "items-start justify-end",
     "top center": "items-start justify-center",
@@ -59,31 +45,43 @@ let CollectionBanner = ({
     "bottom center": "items-end justify-center",
     "bottom right": "items-end justify-end",
   };
+
+  const imageUrl = collection?.image?.url;
+
   return (
     <section
       ref={ref}
       {...rest}
-      style={backgroundStyle}
-      className={clsx(
-        "flex relative overflow-hidden bg-center bg-no-repeat bg-cover h-[var(--header-height-mobile)] sm:h-[var(--header-height-desktop)]",
+      style={
+        {
+          "--header-height-desktop": `${sectionHeightDesktop}px`,
+          "--header-height-mobile": `${sectionHeightMobile}px`,
+          backgroundImage:
+            enableBackground && imageUrl ? `url('${imageUrl}')` : undefined,
+        } as React.CSSProperties
+      }
+      className={cn(
+        "flex relative overflow-hidden bg-center bg-no-repeat bg-cover h-(--header-height-mobile) sm:h-(--header-height-desktop)",
         positionClass[contentPosition],
       )}
     >
       {enableOverlay && enableBackground && (
         <div
-          className="absolute inset-0 z-1 bg-black bg-opacity-[var(--overlay-opacity)]"
-          style={overlayStyle}
-        ></div>
+          className="absolute inset-0 z-10 bg-black"
+          style={{ opacity: overlayOpacity }}
+        />
       )}
       <div
-        className={clsx(
-          "text-center w-5/6 text-gray-700 z-2 relative",
-          enableBackground ? "text-white" : "text-gray-700",
+        className={cn(
+          "text-center w-5/6 z-20 relative p-6",
+          enableBackground ? "text-white" : "text-text-primary",
         )}
       >
-        <h3 className="leading-tight font-medium">{collection?.title}</h3>
+        <h3 className="leading-tight font-medium text-4xl sm:text-5xl">
+          {collection?.title}
+        </h3>
         {collection?.description && (
-          <p className="mt-4 dark:text-gray-400 text-base md:text-sm">
+          <p className="mt-4 text-base md:text-lg max-w-2xl mx-auto opacity-90">
             {collection.description}
           </p>
         )}
@@ -102,7 +100,7 @@ export let schema: HydrogenComponentSchema = {
   },
   settings: [
     {
-      group: "Header",
+      group: "Banner",
       inputs: [
         {
           type: "switch",
@@ -117,7 +115,7 @@ export let schema: HydrogenComponentSchema = {
           defaultValue: 450,
           configs: {
             min: 350,
-            max: 550,
+            max: 650,
             step: 10,
           },
         },
@@ -127,7 +125,7 @@ export let schema: HydrogenComponentSchema = {
           label: "Section height mobile",
           defaultValue: 450,
           configs: {
-            min: 350,
+            min: 300,
             max: 550,
             step: 10,
           },
@@ -144,7 +142,7 @@ export let schema: HydrogenComponentSchema = {
           label: "Overlay opacity",
           defaultValue: 0.5,
           configs: {
-            min: 0.1,
+            min: 0,
             max: 1,
             step: 0.1,
           },
