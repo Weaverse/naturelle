@@ -1,6 +1,6 @@
 import { flattenConnection } from "@shopify/hydrogen";
-import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import type { SitemapsQuery } from "storefrontapi.generated";
+import type { LoaderFunctionArgs } from "react-router";
+import type { SitemapsQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
 
 const MAX_URLS = 250; // the google limit is 50K, however, SF API only allow querying for 250 resources each time
@@ -48,7 +48,10 @@ function xmlEncode(string: string) {
 function shopSitemap({
   data,
   baseUrl,
-}: { data: SitemapsQuery; baseUrl: string }) {
+}: {
+  data: SitemapsQuery;
+  baseUrl: string;
+}) {
   const productsData = flattenConnection(data.products)
     .filter((product) => product.onlineStoreUrl)
     .map((product) => {

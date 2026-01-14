@@ -1,27 +1,30 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
+
 type JudgemeReviewProps = SectionProps;
-const JudgemeReviewSection = forwardRef<HTMLElement, JudgemeReviewProps>(
-  (props, ref) => {
-    let { children, loaderData, ...rest } = props;
-    return (
-      <Section ref={ref} {...rest} overflow="unset">
-        {children}
-      </Section>
-    );
-  },
-);
+const JudgemeReviewSection = ({
+  ref,
+  ...props
+}: JudgemeReviewProps & { ref?: RefObject<HTMLElement | null> }) => {
+  let { children, loaderData, ...rest } = props;
+  return (
+    <Section ref={ref} {...rest} overflow="unset">
+      {children}
+    </Section>
+  );
+};
 
 export default JudgemeReviewSection;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "judgeme-reviews",
   title: "Judgeme Reviews",
   enabledOn: {
     pages: ["PRODUCT"],
   },
-  inspector: [
+  settings: [
     {
       group: "Layout",
       inputs: layoutInputs.filter((inp) => inp.name !== "borderRadius"),
@@ -43,4 +46,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

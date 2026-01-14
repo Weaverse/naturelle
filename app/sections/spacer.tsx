@@ -1,8 +1,6 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
 
 type SpacerProps = HydrogenComponentProps & {
   mobileHeight: number;
@@ -12,7 +10,10 @@ type SpacerProps = HydrogenComponentProps & {
   separatorColor: string;
 };
 
-let Spacer = forwardRef<HTMLDivElement, SpacerProps>((props, ref) => {
+let Spacer = ({
+  ref,
+  ...props
+}: SpacerProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let {
     mobileHeight,
     desktopHeight,
@@ -29,8 +30,8 @@ let Spacer = forwardRef<HTMLDivElement, SpacerProps>((props, ref) => {
       style={
         {
           backgroundColor,
-          "--mobile-height": mobileHeight + "px",
-          "--desktop-height": desktopHeight + "px",
+          "--mobile-height": `${mobileHeight}px`,
+          "--desktop-height": `${desktopHeight}px`,
           "--separator-color": separatorColor,
         } as React.CSSProperties
       }
@@ -40,14 +41,14 @@ let Spacer = forwardRef<HTMLDivElement, SpacerProps>((props, ref) => {
       )}
     </div>
   );
-});
+};
 
 export default Spacer;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "spacer",
   title: "Spacer",
-  inspector: [
+  settings: [
     {
       group: "Spacer",
       inputs: [
@@ -98,4 +99,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

@@ -1,17 +1,14 @@
 import { Image } from "@shopify/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { type CSSProperties, forwardRef } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { useSwiper } from "swiper/react";
 import {
   IconArrowLeft,
   IconArrowRight,
   IconImageBlank,
-} from "~/components/Icon";
+} from "~/components/icon";
 
 type AlignImage = "left" | "right";
 type Alignment = "left" | "center" | "right";
@@ -34,12 +31,15 @@ let AlignImageClasses: Record<AlignImage, string> = {
   right: "sm:flex-row-reverse",
 };
 
-const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
+const Slide = ({
+  ref,
+  ...props
+}: SlideProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let {
     backgroundImage,
-    imageAlignment,
+    imageAlignment = "left",
     backgroundColor,
-    textAlignment,
+    textAlignment = "center",
     enableImageAnimation,
     children,
     ...rest
@@ -62,7 +62,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
         <div
           className={clsx(
             "flex flex-col justify-center items-center h-full w-full",
-            AlignImageClasses[imageAlignment!],
+            AlignImageClasses[imageAlignment],
           )}
         >
           <div
@@ -74,7 +74,7 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
                 data={backgroundImage}
                 sizes="auto"
                 className={clsx(
-                  "!w-full !h-full object-cover",
+                  "w-full! h-full! object-cover",
                   enableImageAnimation
                     ? "group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
                     : "",
@@ -89,11 +89,11 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-0 md:gap-6 lg:gap-20 items-center justify-center px-6 py-12 bg-[var(--background-color)] aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20">
+          <div className="flex flex-col gap-0 md:gap-6 lg:gap-20 items-center justify-center px-6 py-12 bg-(--background-color) aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20">
             <div
               className={clsx(
                 "flex flex-col justify-center gap-4",
-                alignmentClasses[textAlignment!],
+                alignmentClasses[textAlignment],
               )}
             >
               {children}
@@ -118,15 +118,14 @@ const Slide = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
 export default Slide;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "slides-item",
   title: "Slide",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Slide",
       inputs: [
@@ -175,7 +174,7 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  childTypes: ["subheading", "heading", "description"],
+  childTypes: ["subheading", "heading", "paragraph"],
   presets: {
     children: [
       {
@@ -187,10 +186,10 @@ export let schema: HydrogenComponentSchema = {
         content: "Heading",
       },
       {
-        type: "description",
+        type: "paragraph",
         content:
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
       },
     ],
   },
-};
+});

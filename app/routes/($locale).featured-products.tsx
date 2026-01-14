@@ -1,6 +1,6 @@
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import { data, type LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
-import { FEATURED_ITEMS_QUERY } from "~/graphql/data/queries";
+import { FEATURED_ITEMS_QUERY } from "~/graphql/queries";
 
 export async function loader({ context: { storefront } }: LoaderFunctionArgs) {
   return data(await getFeaturedData(storefront));
@@ -10,7 +10,7 @@ export async function getFeaturedData(
   storefront: LoaderFunctionArgs["context"]["storefront"],
   variables: { pageBy?: number } = {},
 ) {
-  const data = await storefront.query(FEATURED_ITEMS_QUERY, {
+  const response = await storefront.query(FEATURED_ITEMS_QUERY, {
     variables: {
       pageBy: 12,
       country: storefront.i18n.country,
@@ -19,9 +19,9 @@ export async function getFeaturedData(
     },
   });
 
-  invariant(data, "No featured items data returned from Shopify API");
+  invariant(response, "No featured items data returned from Shopify API");
 
-  return data;
+  return response;
 }
 
 export type FeaturedData = Awaited<ReturnType<typeof getFeaturedData>>;

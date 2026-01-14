@@ -1,36 +1,35 @@
 import {
-  Form,
-  Link,
-  type MetaFunction,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-  useOutletContext,
-} from "@remix-run/react";
-import {
-  Image,
-  Pagination,
   flattenConnection,
   getPaginationVariables,
+  Image,
+  Pagination,
 } from "@shopify/hydrogen";
 import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  data,
-} from "@shopify/remix-oxygen";
 import type {
   CustomerFragment,
   CustomerOrdersFragment,
   OrderItemFragment,
-} from "customer-accountapi.generated";
-import Addresses from "~/components/account/Addresses";
+} from "customer-account-api.generated";
+import {
+  type ActionFunctionArgs,
+  Form,
+  Link,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  data as response,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  useOutletContext,
+} from "react-router";
+import Addresses from "~/components/account/addresses";
 import {
   CREATE_ADDRESS_MUTATION,
   DELETE_ADDRESS_MUTATION,
   UPDATE_ADDRESS_MUTATION,
-} from "~/graphql/customer-account/CustomerAddressMutations";
-import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/CustomerOrdersQuery";
+} from "~/graphql/customer-account/customer-address-mutations";
+import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/customer-orders-query";
+import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/customer-update-mutation";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Orders" }];
@@ -53,13 +52,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   );
 
   if (errors?.length || !data?.customer) {
-    throw Error("Customer orders not found");
+    throw new Error("Customer orders not found");
   }
 
-  return data({ customer: data.customer });
+  return response({ customer: data.customer });
 }
 
-export async function action({ request, context, params }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   const { customerAccount } = context;
 
   try {
@@ -75,7 +74,10 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     // this will ensure redirecting to login never happen for mutatation
     const isLoggedIn = await customerAccount.isLoggedIn();
     if (!isLoggedIn) {
-      return data({ error: { [addressId]: "Unauthorized" } }, { status: 401 });
+      return response(
+        { error: { [addressId]: "Unauthorized" } },
+        { status: 401 },
+      );
     }
 
     const defaultAddress = form.has("defaultAddress")
@@ -125,19 +127,19 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error("Customer address create failed.");
           }
 
-          return data({
+          return response({
             error: null,
             createdAddress: data?.customerAddressCreate?.customerAddress,
             defaultAddress,
           });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return data(
+            return response(
               { error: { [addressId]: error.message } },
               { status: 400 },
             );
           }
-          return data({ error: { [addressId]: error } }, { status: 400 });
+          return response({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
@@ -166,23 +168,20 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
           if (!data?.customerAddressUpdate?.customerAddress) {
             throw new Error("Customer address update failed.");
           }
-          // return redirect(params?.locale ? `${params.locale}/account` : '/account', {
 
-          // });
-
-          return data({
+          return response({
             error: null,
             updatedAddress: address,
             defaultAddress,
           });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return data(
+            return response(
               { error: { [addressId]: error.message } },
               { status: 400 },
             );
           }
-          return data({ error: { [addressId]: error } }, { status: 400 });
+          return response({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
@@ -208,20 +207,20 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
             throw new Error("Customer address delete failed.");
           }
 
-          return data({ error: null, deletedAddress: addressId });
+          return response({ error: null, deletedAddress: addressId });
         } catch (error: unknown) {
           if (error instanceof Error) {
-            return data(
+            return response(
               { error: { [addressId]: error.message } },
               { status: 400 },
             );
           }
-          return data({ error: { [addressId]: error } }, { status: 400 });
+          return response({ error: { [addressId]: error } }, { status: 400 });
         }
       }
 
       default: {
-        return data(
+        return response(
           { error: { [addressId]: "Method not allowed" } },
           { status: 405 },
         );
@@ -229,9 +228,9 @@ export async function action({ request, context, params }: ActionFunctionArgs) {
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return data({ error: error.message }, { status: 400 });
+      return response({ error: error.message }, { status: 400 });
     }
-    return data({ error }, { status: 400 });
+    return response({ error }, { status: 400 });
   }
 }
 

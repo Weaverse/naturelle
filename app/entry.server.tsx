@@ -1,8 +1,11 @@
-import { RemixServer } from "@remix-run/react";
-import { createContentSecurityPolicy } from "@shopify/hydrogen";
-import type { AppLoadContext, EntryContext } from "@shopify/remix-oxygen";
+import {
+  createContentSecurityPolicy,
+  type HydrogenRouterContextProvider,
+} from "@shopify/hydrogen";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
+import type { EntryContext } from "react-router";
+import { ServerRouter } from "react-router";
 
 import { getWeaverseCsp } from "~/weaverse/csp";
 
@@ -10,8 +13,8 @@ export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
-  context: AppLoadContext,
+  reactRouterContext: EntryContext,
+  context: HydrogenRouterContextProvider,
 ) {
   const { nonce, header, NonceProvider } = createContentSecurityPolicy({
     ...getWeaverseCsp(request, context),
@@ -21,9 +24,14 @@ export default async function handleRequest(
       storeDomain: context.env?.PUBLIC_STORE_DOMAIN,
     },
   });
+
   const body = await renderToReadableStream(
     <NonceProvider>
-      <RemixServer context={remixContext} url={request.url} nonce={nonce} />
+      <ServerRouter
+        context={reactRouterContext}
+        url={request.url}
+        nonce={nonce}
+      />
     </NonceProvider>,
     {
       nonce,
@@ -41,6 +49,7 @@ export default async function handleRequest(
 
   responseHeaders.set("Content-Type", "text/html");
   responseHeaders.set("Content-Security-Policy", header);
+
   return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,

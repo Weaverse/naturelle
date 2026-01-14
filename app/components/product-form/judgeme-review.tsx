@@ -1,12 +1,10 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import { useParentInstance } from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema, useParentInstance } from "@weaverse/hydrogen";
 import { forwardRef, useEffect } from "react";
-import { usePrefixPathWithLocale } from "~/lib/utils";
-import { StarRating } from "../StarRating";
+import { useFetcher, useLoaderData } from "react-router";
+import { usePrefixPathWithLocale } from "~/utils/locale";
+import { StarRating } from "../star-rating";
+
 type JudgemeReviewsData = {
   rating: number;
   reviewNumber: number;
@@ -21,7 +19,7 @@ let JudgemeReview = forwardRef<HTMLDivElement, HydrogenComponentProps>(
     let judgemeReviews = loaderData?.judgemeReviews;
     let { load, data: fetchData } = useFetcher<JudgemeReviewsData>();
     let context = useParentInstance();
-    let handle = context?.data?.product?.handle!;
+    let handle = context?.data?.product?.handle;
     let api = usePrefixPathWithLocale(`/api/review/${handle}`);
 
     useEffect(() => {
@@ -55,14 +53,8 @@ let JudgemeReview = forwardRef<HTMLDivElement, HydrogenComponentProps>(
 
 export default JudgemeReview;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "judgeme",
   title: "Judgeme review",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
-    {
-      group: "Judgeme",
-      inputs: [],
-    },
-  ],
-};
+  settings: [],
+});

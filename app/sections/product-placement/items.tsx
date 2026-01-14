@@ -1,11 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import clsx from "clsx";
-import { type CSSProperties, forwardRef } from "react";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
+import type { CSSProperties, RefObject } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Grid } from "~/components/Grid";
+import { Grid } from "~/components/grid";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
@@ -16,10 +13,10 @@ interface ProductPlacementItemsProps extends HydrogenComponentProps {
   itemsSpacing: number;
 }
 
-const ProductPlacementItems = forwardRef<
-  HTMLDivElement,
-  ProductPlacementItemsProps
->((props, ref) => {
+const ProductPlacementItems = ({
+  ref,
+  ...props
+}: ProductPlacementItemsProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { productsPerRow, thumbnailRatio, itemsSpacing, children, ...rest } =
     props;
   let contentStyle: CSSProperties = {
@@ -62,14 +59,14 @@ const ProductPlacementItems = forwardRef<
       </div>
     </div>
   );
-});
+};
 
 export default ProductPlacementItems;
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "product-placement--items",
   title: "Items",
-  inspector: [
+  settings: [
     {
       group: "Product",
       inputs: [
@@ -129,4 +126,4 @@ export const schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

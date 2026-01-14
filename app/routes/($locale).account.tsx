@@ -1,6 +1,17 @@
-import { Form, NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import { type LoaderFunctionArgs, data, redirect } from "@shopify/remix-oxygen";
-import { CUSTOMER_DETAILS_QUERY } from "~/graphql/customer-account/CustomerDetailsQuery";
+import {
+  Form,
+  type LoaderFunctionArgs,
+  NavLink,
+  Outlet,
+  data as response,
+  useLoaderData,
+} from "react-router";
+import {
+  CREATE_ADDRESS_MUTATION,
+  DELETE_ADDRESS_MUTATION,
+  UPDATE_ADDRESS_MUTATION,
+} from "~/graphql/customer-account/customer-address-mutations";
+import { CUSTOMER_DETAILS_QUERY } from "~/graphql/customer-account/customer-details-query";
 
 export function shouldRevalidate() {
   return true;
@@ -15,7 +26,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
     throw new Error("Customer not found");
   }
 
-  return data(
+  return response(
     { customer: data.customer },
     {
       headers: {
@@ -59,7 +70,7 @@ function AccountMenu() {
   }
 
   return (
-    <nav role="navigation">
+    <nav>
       <NavLink to="/account/orders" style={isActiveStyle}>
         Orders &nbsp;
       </NavLink>

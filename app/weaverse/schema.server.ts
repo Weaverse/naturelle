@@ -1,5 +1,6 @@
 import type { HydrogenThemeSchema } from "@weaverse/hydrogen";
 import pkg from "../../package.json";
+
 let variantSwatch = {
   configs: [],
   swatches: {
@@ -17,7 +18,7 @@ export const themeSchema: HydrogenThemeSchema = {
     documentationUrl: "https://weaverse.io/docs",
     supportUrl: "https://weaverse.io/contact",
   },
-  inspector: [
+  settings: [
     {
       group: "Product swatches",
       inputs: [
@@ -88,7 +89,7 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "textarea",
           name: "content",
-          label: "Text",
+          label: "text",
           defaultValue: "FREE SHIPPING IN THE US FOR ORDER OVER $100",
         },
         {
@@ -179,31 +180,6 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: "fixed",
         },
         {
-          type: "toggle-group",
-          label: "Header menu type for desktop",
-          name: "typeMenuHeader",
-          configs: {
-            options: [
-              { value: "mega", label: "Mega" },
-              { value: "drawer", label: "Drawer" },
-            ],
-          },
-          defaultValue: "mega",
-        },
-        {
-          type: "toggle-group",
-          label: "Type open menu",
-          name: "typeOpenMenu",
-          configs: {
-            options: [
-              { value: "mouseHover", label: "Mouse hover" },
-              { value: "mouseClick", label: "Mouse click" },
-            ],
-          },
-          defaultValue: "mouseHover",
-          condition: "typeMenuHeader.eq.mega",
-        },
-        {
           type: "switch",
           label: "Enable transparent header",
           name: "enableTransparentHeader",
@@ -212,9 +188,9 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "image",
           name: "logoData",
-          label: "Logo",
+          label: "logo",
           defaultValue: {
-            altText: "Logo",
+            altText: "logo",
             url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle_logo.png?v=1705045487",
             width: 320,
             height: 116,
@@ -225,7 +201,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "transparentLogoData",
           label: "Transparent Logo",
           defaultValue: {
-            altText: "Logo",
+            altText: "logo",
             url: "https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Property_1_White.png?v=1720064102",
             width: 320,
             height: 116,
@@ -243,18 +219,6 @@ export const themeSchema: HydrogenThemeSchema = {
             unit: "px",
           },
           defaultValue: 150,
-        },
-        {
-          type: "toggle-group",
-          label: "Search type for desktop",
-          name: "searchType",
-          configs: {
-            options: [
-              { value: "popupSearch", label: "Popup search" },
-              { value: "drawerSearch", label: "Drawer search" },
-            ],
-          },
-          defaultValue: "headerSearch",
         },
       ],
     },
@@ -428,7 +392,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "borderSubtleColor",
           defaultValue: "#78A286",
         },
-        { type: "heading", label: "Drawer" },
+        { type: "heading", label: "drawer" },
         {
           type: "color",
           label: "Drawer background",

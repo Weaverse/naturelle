@@ -1,6 +1,6 @@
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
-type IconProps = JSX.IntrinsicElements["svg"] & {
+type IconProps = React.SVGProps<SVGSVGElement> & {
   direction?: "up" | "right" | "down" | "left";
 };
 

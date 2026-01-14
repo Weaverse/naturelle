@@ -1,4 +1,3 @@
-import { Link } from "@remix-run/react";
 import {
   CartForm,
   Image,
@@ -10,13 +9,14 @@ import {
 } from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import clsx from "clsx";
-import type { CartApiQueryFragment } from "storefrontapi.generated";
+import { Link } from "react-router";
+import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { cn } from "~/lib/utils";
-import { useVariantUrl } from "~/lib/utils/variants";
-import { IconRemove } from "../Icon";
-import { CartPopularCollections } from "./CartPopularCollections";
+import { cn } from "~/utils/cn";
+import { useVariantUrl } from "~/utils/variants";
+import { IconRemove } from "../icon";
+import { CartPopularCollections } from "./cart-popular-collections";
 
 type CartLine = OptimisticCart<CartApiQueryFragment>["lines"]["nodes"][0];
 
@@ -38,7 +38,7 @@ export function CartMain({ layout, cart }: CartMainProps) {
     Boolean(cart.discountCodes.filter((code) => code.applicable).length);
   const styles = {
     page: "cart-main container mt-10",
-    aside: "cart-main px-6 relative",
+    aside: "cart-main px-6 relative flex flex-col h-full",
   };
   return (
     <div className={styles[layout]}>
@@ -52,8 +52,7 @@ function CartDetails({ layout, cart }: CartMainProps) {
   const cartHasItems = !!cart && cart.totalQuantity > 0;
   let styles = {
     page: "cart-details grid gap-y-6 lg:gap-10 grid-cols-1 lg:grid-cols-3",
-    aside:
-      "cart-details flex flex-col gap-6 relative justify-between h-screen-in-drawer",
+    aside: "cart-details flex flex-col gap-6 relative justify-between h-full",
   };
   if (!cart) return null;
   return (
@@ -82,7 +81,7 @@ function CartLines({
         {layout === "page" && (
           <thead>
             <tr className="p-2">
-              <th className="font-medium p-4 text-left border-border/15 border-b border-border">
+              <th className="font-medium p-4 text-left border-b border-border">
                 Product
               </th>
               <th className="font-medium p-4 border-b border-border/15 hidden md:table-cell"></th>

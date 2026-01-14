@@ -1,14 +1,19 @@
-import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
 import type { Shop } from "@shopify/hydrogen/storefront-api-types";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import {
+  data,
+  Link,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  useLoaderData,
+} from "react-router";
 
 type SelectedPolicies = keyof Pick<
   Shop,
   "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy"
 >;
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `Hydrogen | ${data?.policy.title ?? ""}` }];
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return [{ title: `Hydrogen | ${loaderData?.policy.title ?? ""}` }];
 };
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
@@ -21,7 +26,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     (_: unknown, m1: string) => m1.toUpperCase(),
   ) as SelectedPolicies;
 
-  const data = await context.storefront.query(POLICY_CONTENT_QUERY, {
+  const policyData = await context.storefront.query(POLICY_CONTENT_QUERY, {
     variables: {
       privacyPolicy: false,
       shippingPolicy: false,
@@ -32,7 +37,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     },
   });
 
-  const policy = data.shop?.[policyName];
+  const policy = policyData.shop?.[policyName];
 
   if (!policy) {
     throw new Response("Could not find the policy", { status: 404 });

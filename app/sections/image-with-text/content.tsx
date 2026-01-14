@@ -1,11 +1,9 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
-import { forwardRef } from "react";
+import type { RefObject } from "react";
 
 let variants = cva(
   "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-4 md:px-8 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
@@ -33,10 +31,10 @@ interface ImageWithTextContentProps
   extends VariantProps<typeof variants>,
     HydrogenComponentProps {}
 
-let ImageWithTextContent = forwardRef<
-  HTMLDivElement,
-  ImageWithTextContentProps
->((props, ref) => {
+let ImageWithTextContent = ({
+  ref,
+  ...props
+}: ImageWithTextContentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { alignment, verticalPadding, children, ...rest } = props;
   return (
     <div
@@ -47,15 +45,15 @@ let ImageWithTextContent = forwardRef<
       {children}
     </div>
   );
-});
+};
 
 export default ImageWithTextContent;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "image-with-text--content",
   title: "Content",
   limit: 1,
-  inspector: [
+  settings: [
     {
       group: "Content",
       inputs: [
@@ -90,7 +88,7 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  childTypes: ["subheading", "heading", "description", "button"],
+  childTypes: ["subheading", "heading", "paragraph", "button"],
   presets: {
     alignment: "center",
     children: [
@@ -103,7 +101,7 @@ export let schema: HydrogenComponentSchema = {
         content: "Heading for image",
       },
       {
-        type: "description",
+        type: "paragraph",
         content: "Pair large text with an image to tell a story.",
       },
       {
@@ -112,4 +110,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

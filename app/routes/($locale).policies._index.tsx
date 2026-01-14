@@ -1,9 +1,13 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import {
+  data,
+  Link,
+  type LoaderFunctionArgs,
+  useLoaderData,
+} from "react-router";
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const data = await context.storefront.query(POLICIES_QUERY);
-  const policies = Object.values(data.shop || {});
+  const policiesData = await context.storefront.query(POLICIES_QUERY);
+  const policies = Object.values(policiesData.shop || {});
 
   if (!policies.length) {
     throw new Response("No policies found", { status: 404 });
@@ -19,8 +23,10 @@ export default function Policies() {
     <div className="policies">
       <h1>Policies</h1>
       <div>
-        {policies.map((policy) => {
-          if (!policy) return null;
+        {policies.map((policy: any) => {
+          if (!policy) {
+            return null;
+          }
           return (
             <fieldset key={policy.id}>
               <Link to={`/policies/${policy.handle}`}>{policy.title}</Link>

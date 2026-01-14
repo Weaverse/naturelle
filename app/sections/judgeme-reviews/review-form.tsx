@@ -1,12 +1,12 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { IconFilledStar, IconStarReview } from "~/components/Icon";
-import { StarRating } from "~/components/StarRating";
+import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
+import { IconFilledStar, IconStarReview } from "~/components/icon";
 import { Input } from "~/components/input";
-import type { JudgemeReviewsData } from "~/lib/utils/judgeme";
+import { StarRating } from "~/components/star-rating";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import type { JudgemeReviewsData } from "~/utils/judgeme";
 
 export function ReviewForm({
   judgemeReviews,
@@ -66,7 +66,7 @@ export function ReviewForm({
             product reviews ({judgemeReviews.reviewNumber})
           </p>
           <div className="flex justify-start items-center gap-3">
-            {judgemeReviews && judgemeReviews.rating ? (
+            {judgemeReviews?.rating ? (
               <>
                 <h4 className="font-medium">
                   {judgemeReviews.rating.toFixed(1)}
@@ -117,24 +117,24 @@ export function ReviewForm({
               <div className="flex flex-col gap-3">
                 <span className="text-base font-semibold">Rating</span>
                 <div className="flex items-center">
-                  {[...Array(5)].map((_, index) => {
+                  {[...new Array(5)].map((_, index) => {
                     const ratingValue = index + 1;
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={index}
                         onClick={() => handleRatingClick(ratingValue)}
                         onMouseEnter={() => setHover(ratingValue)}
                         onMouseLeave={() => setHover(0)}
                         aria-label={`Rate ${ratingValue} out of 5 stars`}
-                        role="button"
-                        className="pr-1"
+                        className="pr-1 appearance-none focus:outline-none"
                       >
                         {ratingValue <= (hover || rating) ? (
                           <IconFilledStar />
                         ) : (
                           <IconStarReview />
                         )}
-                      </div>
+                      </button>
                     );
                   })}
                 </div>

@@ -1,11 +1,14 @@
 import { Image as HydrogenImage } from "@shopify/hydrogen";
 import type { Image as ImageType } from "@shopify/hydrogen/storefront-api-types";
+import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "~/lib/utils";
+import { cn } from "~/utils/cn";
 
 type Crop = "center" | "top" | "bottom" | "left" | "right";
 
-export interface ImageProps extends React.ComponentPropsWithRef<"img"> {
+export interface ImageProps
+  extends Omit<React.ComponentPropsWithRef<"img">, "ref"> {
+  ref?: React.Ref<HTMLDivElement>;
   aspectRatio?: string;
   crop?: "center" | "top" | "bottom" | "left" | "right";
   data?: Partial<
@@ -27,33 +30,37 @@ export interface ImageProps extends React.ComponentPropsWithRef<"img"> {
   };
 }
 
-export function Image(props: ImageProps) {
-  let { className, ...rest } = props;
-  let ref = useRef<HTMLImageElement>(null);
-  let [loaded, setLoaded] = useState(false);
+export function Image({ ref, className, onLoad, ...rest }: ImageProps) {
+  const hydrogenImageRef = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (ref.current?.complete) {
+    if (hydrogenImageRef.current?.complete) {
       setLoaded(true);
+      onLoad?.({} as React.SyntheticEvent<HTMLImageElement>);
     }
-  }, []);
+  }, [onLoad]);
 
   return (
     <div
+      ref={ref}
       className={cn(
-        "w-full h-full overflow-hidden",
+        "h-full w-full overflow-hidden",
         !loaded && "animate-pulse [animation-duration:4s]",
         className,
       )}
     >
       <HydrogenImage
-        ref={ref}
+        ref={hydrogenImageRef}
         className={cn(
           "[transition:filter_500ms_cubic-bezier(.4,0,.2,1)]",
           "h-full max-h-full w-full object-cover object-center",
           loaded ? "blur-0" : "blur-xl",
         )}
-        onLoad={() => setLoaded(true)}
+        onLoad={(e) => {
+          setLoaded(true);
+          onLoad?.(e);
+        }}
         {...rest}
       />
     </div>

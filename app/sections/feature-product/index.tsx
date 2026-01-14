@@ -1,27 +1,33 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { Section, type SectionProps, sectionInspector } from "../atoms/Section";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
+import {
+  Section,
+  type SectionProps,
+  sectionInspector,
+} from "~/components/section";
 
 type FeaturedProductsData = SectionProps;
 
-const FeaturedProducts = forwardRef<HTMLElement, FeaturedProductsData>(
-  (props, ref) => {
-    let { children, ...rest } = props;
+const FeaturedProducts = ({
+  ref,
+  ...props
+}: FeaturedProductsData & { ref?: RefObject<HTMLElement | null> }) => {
+  let { children, ...rest } = props;
 
-    return (
-      <Section ref={ref} {...rest}>
-        {children}
-      </Section>
-    );
-  },
-);
+  return (
+    <Section ref={ref} {...rest}>
+      {children}
+    </Section>
+  );
+};
 
 export default FeaturedProducts;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "featured-products",
   title: "Featured products",
-  inspector: sectionInspector,
+  settings: sectionInspector,
   childTypes: ["heading", "featured-products--list"],
   presets: {
     children: [
@@ -34,4 +40,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

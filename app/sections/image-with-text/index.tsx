@@ -1,32 +1,34 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { backgroundInputs } from "../atoms/BackgroundImage";
-import { Section, type SectionProps, layoutInputs } from "../atoms/Section";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
+import { backgroundInputs } from "~/components/background-image";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 type ImageWithTextProps = SectionProps;
 
-let ImageWithText = forwardRef<HTMLElement, ImageWithTextProps>(
-  (props, ref) => {
-    let { children, ...rest } = props;
+let ImageWithText = ({
+  ref,
+  ...props
+}: ImageWithTextProps & { ref?: RefObject<HTMLElement | null> }) => {
+  let { children, ...rest } = props;
 
-    return (
-      <Section
-        ref={ref}
-        {...rest}
-        containerClassName="flex flex-col md:flex-row md:justify-between px-0 sm:px-0"
-      >
-        {children}
-      </Section>
-    );
-  },
-);
+  return (
+    <Section
+      ref={ref}
+      {...rest}
+      containerClassName="flex flex-col md:flex-row md:justify-between px-0 sm:px-0"
+    >
+      {children}
+    </Section>
+  );
+};
 
 export default ImageWithText;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "image-with-text",
   title: "Image with text",
-  inspector: [
+  settings: [
     {
       group: "Layout",
       inputs: layoutInputs.filter(({ name }) => name !== "gap"),
@@ -41,4 +43,4 @@ export let schema: HydrogenComponentSchema = {
       { type: "image-with-text--content" },
     ],
   },
-};
+});

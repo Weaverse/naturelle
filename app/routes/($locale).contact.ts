@@ -1,6 +1,6 @@
-import type { ActionFunction } from "@shopify/remix-oxygen";
+import type { ActionFunction } from "react-router";
 
-export let action: ActionFunction = async ({ request, context }) => {
+export const action: ActionFunction = async ({ request, context }) => {
   let { env } = context;
   const formData = await request.formData();
   let url = `${env.WEAVERSE_HOST}/api/public/mail`;

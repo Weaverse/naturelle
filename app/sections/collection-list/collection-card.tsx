@@ -1,8 +1,8 @@
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import type { CSSProperties } from "react";
-import { Link } from "~/components/Link";
 import { Image } from "~/components/image";
+import { Link } from "~/components/link";
 
 export function CollectionCard({
   collection,
@@ -16,7 +16,7 @@ export function CollectionCard({
   let settings = useThemeSettings();
   let { colorBackground } = settings;
   const calculateColor = (hex: string) =>
-    `#${[...Array(3)]
+    `#${[...new Array(3)]
       .map((_, i) =>
         Math.max(
           0,

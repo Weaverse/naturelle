@@ -1,16 +1,15 @@
-import type { MetaFunction } from "@remix-run/react";
 import {
-  type SeoConfig,
   getPaginationVariables,
   getSeoMeta,
+  type SeoConfig,
 } from "@shopify/hydrogen";
-import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { data } from "@shopify/remix-oxygen";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { data as response } from "react-router";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
-import { ALL_PRODUCTS_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
-import { PAGINATION_SIZE } from "~/lib/utils/const";
+import { seoPayload } from "~/.server/seo";
+import { ALL_PRODUCTS_QUERY } from "~/graphql/queries";
+import { routeHeaders } from "~/utils/cache";
+import { PAGINATION_SIZE } from "~/utils/const";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -51,7 +50,7 @@ export async function loader({
     },
   });
 
-  return data({
+  return response({
     products: data.products,
     seo,
     weaverseData: await weaverse.loadPage({
@@ -61,7 +60,7 @@ export async function loader({
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+  return getSeoMeta(data?.seo as SeoConfig);
 };
 export default function AllProducts() {
   return <WeaverseContent />;

@@ -1,22 +1,23 @@
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
   WeaverseCollection,
 } from "@weaverse/hydrogen";
-import { forwardRef, useState } from "react";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
+import { useState } from "react";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
-import { IconImageBlank } from "~/components/Icon";
-import { FEATURED_PRODUCTS_QUERY } from "~/graphql/data/queries";
+import { IconImageBlank } from "~/components/icon";
+import { FEATURED_PRODUCTS_QUERY } from "~/graphql/queries";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
-import { ProductCard } from "~/components/ProductCard";
-import { getImageLoadingPriority } from "~/lib/utils/const";
-import { Arrows, type SlideshowArrowsProps } from "./arrows";
-import { Number } from "./number";
 import clsx from "clsx";
+import { Navigation } from "swiper/modules";
+import { ProductCard } from "~/components/product/product-card";
+import { getImageLoadingPriority } from "~/utils/image";
+import { Arrows, type SlideshowArrowsProps } from "./arrows";
+import { Number as SlideNumber } from "./number";
 
 type FeaturedProductsData = {
   products: WeaverseCollection;
@@ -32,119 +33,120 @@ interface FeaturedProductsProps
     HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
     FeaturedProductsData {}
 
-const ListProducts = forwardRef<HTMLDivElement, FeaturedProductsProps>(
-  (props, ref) => {
-    let {
-      products,
-      totalProduct,
-      productsPerRow,
-      showArrows,
-      arrowsIcon,
-      iconSize,
-      showArrowsOnHover,
-      arrowsColor,
-      arrowsShape,
-      showNumber,
-      numberPosition,
-      loaderData,
-      ...rest
-    } = props;
+const ListProducts = ({
+  ref,
+  ...props
+}: FeaturedProductsProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  let {
+    products,
+    totalProduct,
+    productsPerRow,
+    showArrows,
+    arrowsIcon,
+    iconSize,
+    showArrowsOnHover,
+    arrowsColor,
+    arrowsShape,
+    showNumber,
+    numberPosition,
+    loaderData,
+    ...rest
+  } = props;
 
-    let res = loaderData?.collection?.products?.nodes;
-    let displayedProducts = res?.slice(0, totalProduct);
-    const productItemBlank = () => {
-      return (
-        <div className="flex w-full cursor-pointer flex-col gap-4">
-          <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
-            <IconImageBlank
-              viewBox="0 0 526 526"
-              className="h-full w-full opacity-80"
-            />
-          </div>
-          <div className="flex flex-col gap-2 px-2">
-            <p className="text-base font-normal">By vendor</p>
-            <h4 className="font-medium">Product title</h4>
-            <p className="text-base font-normal">Price</p>
-          </div>
-        </div>
-      );
-    };
-    const renderProducts = () => {
-      if (!loaderData || !displayedProducts) {
-        return Array.from({ length: 4 }).map((_, i) => (
-          <SwiperSlide key={i} className="w-full">
-            {productItemBlank()}
-          </SwiperSlide>
-        ));
-      } else {
-        return displayedProducts.map((product, i) => (
-          <SwiperSlide key={product.id}>
-            <ProductCard
-              quickAdd
-              product={product}
-              loading={getImageLoadingPriority(i)}
-            />
-          </SwiperSlide>
-        ));
-      }
-    };
-    let id = rest["data-wv-id"];
-    let key = `slideshow-${id}`;
-    let [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
-      null
-    );
+  let res = loaderData?.collection?.products?.nodes;
+  let displayedProducts = res?.slice(0, totalProduct);
+  const productItemBlank = () => {
     return (
-      <div
-        key={key}
-        ref={ref}
-        {...rest}
-        data-motion="fade-up"
-        className={clsx(
-          "group/arrow flex flex-col gap-12",
-          showArrows && "px-0 md:px-8 lg:px-12"
-        )}
-      >
-        <Swiper
-          onSwiper={setSwiperInstance}
-          navigation={
-            showArrows && {
-              nextEl: ".slideshow-arrow-next",
-              prevEl: ".slideshow-arrow-prev",
-            }
-          }
-          modules={[showArrows ? Navigation : null].filter(Boolean)}
-          breakpoints={{
-            320: {
-              slidesPerView: 2,
-              spaceBetween: 10,
-            },
-            640: {
-              slidesPerView: 4,
-              spaceBetween: 20,
-            },
-            768: {
-              slidesPerView: 4,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 4,
-              spaceBetween: 20,
-            },
-          }}
-          className="w-full !static"
-        >
-          {renderProducts()}
-          {showArrows && <Arrows {...props} />}
-        </Swiper>
-        {showNumber && <Number {...props} instance={swiperInstance} />}
+      <div className="flex w-full cursor-pointer flex-col gap-4">
+        <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
+          <IconImageBlank
+            viewBox="0 0 526 526"
+            className="h-full w-full opacity-80"
+          />
+        </div>
+        <div className="flex flex-col gap-2 px-2">
+          <p className="text-base font-normal">By vendor</p>
+          <h4 className="font-medium">Product title</h4>
+          <p className="text-base font-normal">Price</p>
+        </div>
       </div>
     );
-  }
-);
+  };
+  const renderProducts = () => {
+    if (!loaderData || !displayedProducts) {
+      return Array.from({ length: 4 }).map((_, i) => (
+        <SwiperSlide key={i} className="w-full">
+          {productItemBlank()}
+        </SwiperSlide>
+      ));
+    } else {
+      return displayedProducts.map((product, i) => (
+        <SwiperSlide key={product.id}>
+          <ProductCard
+            quickAdd
+            product={product}
+            loading={getImageLoadingPriority(i)}
+          />
+        </SwiperSlide>
+      ));
+    }
+  };
+  let id = rest["data-wv-id"];
+  let key = `slideshow-${id}`;
+  let [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(null);
+  return (
+    <div
+      key={key}
+      ref={ref}
+      {...rest}
+      data-motion="fade-up"
+      className={clsx(
+        "group/arrow flex flex-col gap-12",
+        showArrows && "px-0 md:px-8 lg:px-12",
+      )}
+    >
+      <Swiper
+        onSwiper={setSwiperInstance}
+        navigation={
+          showArrows && {
+            nextEl: ".slideshow-arrow-next",
+            prevEl: ".slideshow-arrow-prev",
+          }
+        }
+        modules={[showArrows ? Navigation : null].filter(Boolean)}
+        breakpoints={{
+          320: {
+            slidesPerView: 2,
+            spaceBetween: 10,
+          },
+          640: {
+            slidesPerView: 4,
+            spaceBetween: 20,
+          },
+          768: {
+            slidesPerView: 4,
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 4,
+            spaceBetween: 20,
+          },
+        }}
+        className="w-full !static"
+      >
+        {renderProducts()}
+        {showArrows && <Arrows {...props} />}
+      </Swiper>
+      {showNumber && <SlideNumber {...props} instance={swiperInstance} />}
+    </div>
+  );
+};
 
 export default ListProducts;
 
-export let loader = async (args: ComponentLoaderArgs<FeaturedProductsData>) => {
+export const loader = async (
+  args: ComponentLoaderArgs<FeaturedProductsData>,
+) => {
   let { weaverse, data } = args;
   let { language, country } = weaverse.storefront.i18n;
   if (data.products) {
@@ -159,11 +161,11 @@ export let loader = async (args: ComponentLoaderArgs<FeaturedProductsData>) => {
   return null;
 };
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "featured-products--list",
   title: "Featured products list",
   limit: 1,
-  inspector: [
+  settings: [
     {
       group: "Featured products",
       inputs: [
@@ -271,4 +273,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

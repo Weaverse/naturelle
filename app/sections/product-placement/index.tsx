@@ -1,30 +1,36 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { Section, type SectionProps, sectionInspector } from "../atoms/Section";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
+import {
+  Section,
+  type SectionProps,
+  sectionInspector,
+} from "~/components/section";
 
 type ProductPlacementProps = SectionProps;
 
-const ProductPlacement = forwardRef<HTMLElement, ProductPlacementProps>(
-  (props, ref) => {
-    let { children, ...rest } = props;
-    return (
-      <Section ref={ref} {...rest}>
-        {children}
-      </Section>
-    );
-  },
-);
+const ProductPlacement = ({
+  ref,
+  ...props
+}: ProductPlacementProps & { ref?: RefObject<HTMLElement | null> }) => {
+  let { children, ...rest } = props;
+  return (
+    <Section ref={ref} {...rest}>
+      {children}
+    </Section>
+  );
+};
 
 export default ProductPlacement;
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "product-placement",
   title: "Product placement",
-  inspector: sectionInspector,
+  settings: sectionInspector,
   childTypes: [
     "subheading",
     "heading",
-    "description",
+    "paragraph",
     "product-placement--items",
   ],
   presets: {
@@ -38,4 +44,4 @@ export const schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

@@ -1,11 +1,10 @@
+import { useThemeSettings } from "@weaverse/hydrogen";
 import {
   Link as RemixLink,
   type LinkProps as RemixLinkProps,
   NavLink as RemixNavLink,
   type NavLinkProps as RemixNavLinkProps,
-} from "@remix-run/react";
-
-import { useThemeSettings } from "@weaverse/hydrogen";
+} from "react-router";
 import { useRootLoaderData } from "~/root";
 
 type LinkProps = Omit<RemixLinkProps, "className"> & {
@@ -35,10 +34,12 @@ export function Link(props: LinkProps) {
 
   let toWithLocale = to;
 
-  if (typeof toWithLocale === "string" && selectedLocale?.pathPrefix) {
-    if (!toWithLocale.toLowerCase().startsWith(selectedLocale.pathPrefix)) {
-      toWithLocale = `${selectedLocale.pathPrefix}${to}`;
-    }
+  if (
+    typeof toWithLocale === "string" &&
+    selectedLocale?.pathPrefix &&
+    !toWithLocale.toLowerCase().startsWith(selectedLocale.pathPrefix)
+  ) {
+    toWithLocale = `${selectedLocale.pathPrefix}${to}`;
   }
 
   if (typeof className === "function") {

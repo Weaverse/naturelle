@@ -5,14 +5,15 @@ import { parseGid } from "@shopify/hydrogen";
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import type {
-  MediaFragment,
   Media_MediaImage_Fragment,
   Media_Video_Fragment,
-} from "storefrontapi.generated";
+  MediaFragment,
+} from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Image } from "~/components/image";
 import { ScrollArea } from "~/components/scroll-area";
-import { cn, getImageAspectRatio } from "~/lib/utils";
+import { cn } from "~/utils/cn";
+import { getImageAspectRatio } from "~/utils/image";
 
 export function ZoomModal({
   media,
@@ -36,13 +37,12 @@ export function ZoomModal({
   function scrollToMedia(id: string) {
     let { id: mediaId } = parseGid(id);
     let mediaElement = document.getElementById(`zoom-media--${mediaId}`);
-    if (mediaElement) {
-      if (
-        scrollAreaRef.current &&
-        !isVisibleInParent(mediaElement, scrollAreaRef.current)
-      ) {
-        mediaElement.scrollIntoView({ behavior: "smooth" });
-      }
+    if (
+      mediaElement &&
+      scrollAreaRef.current &&
+      !isVisibleInParent(mediaElement, scrollAreaRef.current)
+    ) {
+      mediaElement.scrollIntoView({ behavior: "smooth" });
     }
   }
 
@@ -88,7 +88,7 @@ export function ZoomModal({
           }
           aria-describedby={undefined}
         >
-          <div className="w-full h-full flex items-center justify-center bg-[--color-background] relative">
+          <div className="w-full h-full flex items-center justify-center bg-background relative">
             <VisuallyHidden.Root asChild>
               <Dialog.Title>Product media zoom</Dialog.Title>
             </VisuallyHidden.Root>
@@ -107,7 +107,7 @@ export function ZoomModal({
                         id={`zoom-media--${mediaId}`}
                         className={cn(
                           "relative bg-gray-100",
-                          "p-1 border transition-colors cursor-pointer rounded border-transparent !h-auto",
+                          "p-1 border transition-colors cursor-pointer rounded border-transparent h-auto!",
                           zoomMediaId === id && "border-border",
                         )}
                         onClick={() => setZoomMediaId(id)}

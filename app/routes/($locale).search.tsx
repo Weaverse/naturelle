@@ -1,37 +1,34 @@
 import {
+  getPaginationVariables,
+  getSeoMeta,
+  Pagination,
+  type SeoConfig,
+} from "@shopify/hydrogen";
+import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
+import { Suspense } from "react";
+import type { LoaderFunctionArgs } from "react-router";
+import {
   Await,
   Form,
   type MetaFunction,
   useLoaderData,
   useLocation,
   useNavigate,
-} from "@remix-run/react";
-import {
-  Pagination,
-  type SeoConfig,
-  getPaginationVariables,
-  getSeoMeta,
-} from "@shopify/hydrogen";
-import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
-import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { Suspense } from "react";
-import { DrawerFilter } from "~/components/DrawerFilter";
-import { Grid } from "~/components/Grid";
-import { IconSearch } from "~/components/Icon";
-import { ProductCard } from "~/components/ProductCard";
-import { ProductSwimlane } from "~/components/ProductSwimlane";
-import { PageHeader, Text } from "~/components/Text";
+} from "react-router";
+import { seoPayload } from "~/.server/seo";
 import { Button } from "~/components/button";
+import { DrawerFilter } from "~/components/drawer-filter";
+import { Grid } from "~/components/grid";
+import { IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
-import { FILTER_QUERY, SEARCH_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
-import { parseAsCurrency } from "~/lib/utils";
-import {
-  FILTER_URL_PREFIX,
-  PAGINATION_SIZE,
-  getImageLoadingPriority,
-} from "~/lib/utils/const";
-import type { SortParam } from "~/lib/utils/filter";
+import { ProductCard } from "~/components/product/product-card";
+import { ProductSwimlane } from "~/components/product/product-swimlane";
+import { PageHeader, Text } from "~/components/text";
+import { FILTER_QUERY, SEARCH_QUERY } from "~/graphql/queries";
+import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
+import type { SortParam } from "~/utils/filter";
+import { getImageLoadingPriority } from "~/utils/image";
+import { parseAsCurrency } from "~/utils/locale";
 import { getSortValuesFromParam } from "./($locale).collections.$handle";
 import {
   type FeaturedData,
@@ -41,44 +38,46 @@ import {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;
   const searchParams = new URL(request.url).searchParams;
-  const searchTerm = searchParams.get("q")! || "";
+  const searchTerm = searchParams.get("q") ?? "";
   const variables = getPaginationVariables(request, {
     pageBy: PAGINATION_SIZE,
-  });
-  const { search } = await storefront.query(FILTER_QUERY, {
-    variables: {
-      query: "",
-    },
   });
   const { sortKey, reverse } = getSortValuesFromParam(
     searchParams.get("sort") as SortParam,
   );
 
-  const filters = [...searchParams.entries()].reduce(
-    (filters, [key, value]) => {
-      if (key.startsWith(FILTER_URL_PREFIX)) {
-        const filterKey = key.substring(FILTER_URL_PREFIX.length);
-        filters.push({
-          [filterKey]: JSON.parse(value),
-        });
-      }
-      return filters;
-    },
-    [] as ProductFilter[],
-  );
+  const filters = [...searchParams.entries()].reduce((acc, [key, value]) => {
+    if (key.startsWith(FILTER_URL_PREFIX)) {
+      const filterKey = key.substring(FILTER_URL_PREFIX.length);
+      acc.push({
+        [filterKey]: JSON.parse(value),
+      });
+    }
+    return acc;
+  }, [] as ProductFilter[]);
 
-  const { search: productSearch } = await storefront.query(SEARCH_QUERY, {
-    variables: {
-      searchTerm,
-      productFilters: filters,
-      sortKey,
-      reverse,
-      ...variables,
-      country: storefront.i18n.country,
-      language: storefront.i18n.language,
-    },
-  });
-  let products = productSearch;
+  const [filterData, productSearchData] = await Promise.all([
+    storefront.query(FILTER_QUERY, {
+      variables: {
+        query: "",
+      },
+    }),
+    storefront.query(SEARCH_QUERY, {
+      variables: {
+        searchTerm,
+        productFilters: filters,
+        sortKey,
+        reverse,
+        ...variables,
+        country: storefront.i18n.country,
+        language: storefront.i18n.language,
+      },
+    }),
+  ]);
+
+  const { search } = filterData;
+  const { search: productSearch } = productSearchData;
+  const products = productSearch;
   console.log("🚀 ~ productSearch:", productSearch);
 
   const locale = context.storefront.i18n;
@@ -161,8 +160,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   };
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Search() {
   const {
@@ -241,7 +240,7 @@ export default function Search() {
                   <Grid
                     data-test="product-grid"
                     layout="products"
-                    className="!gap-y-10"
+                    className="gap-y-10!"
                   >
                     {itemsMarkup}
                   </Grid>
@@ -282,7 +281,9 @@ function NoResults({
           resolve={recommendations}
         >
           {(result) => {
-            if (!result) return null;
+            if (!result) {
+              return null;
+            }
             const { featuredCollections, featuredProducts } = result;
 
             return (

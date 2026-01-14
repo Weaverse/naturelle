@@ -1,27 +1,9 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 
-const hexToPercent = (hex: string) => {
-  const num = Number.parseInt(hex, 16);
-  return Math.floor((num / 255) * 100);
-};
-
-function hexToRgbString(hexColor = ""): string {
-  hexColor = hexColor.replace("#", "");
-  if (hexColor.length === 3) {
-    hexColor = hexColor.replace(/(.)/g, "$1$1");
-  }
-  const r = Number.parseInt(hexColor.substring(0, 2), 16) || "";
-  const g = Number.parseInt(hexColor.substring(2, 4), 16) || "";
-  const b = Number.parseInt(hexColor.substring(4, 6), 16) || "";
-  const a = hexToPercent(hexColor.substring(6, 8)) || "";
-  const val = `${r} ${g} ${b}`;
-  return `${val}${a ? ` / ${a}%` : ""}`.trim();
-}
-
 export function GlobalStyle() {
   const settings = useThemeSettings();
   if (settings) {
-    let {
+    const {
       colorBackground,
       colorTextPrimary,
       colorTextSubtle,
@@ -57,8 +39,6 @@ export function GlobalStyle() {
       labelBgSale,
       labelBgNew,
       labelBgSoldOut,
-    } = settings;
-    const {
       bodyBaseSize,
       bodyBaseSpacing,
       bodyBaseLineHeight,
@@ -70,16 +50,7 @@ export function GlobalStyle() {
       footerMenuBackgroundColor,
       pageWidth,
     } = settings;
-    colorBackground = hexToRgbString(colorBackground);
-    colorTextPrimary = hexToRgbString(colorTextPrimary);
-    colorTextSubtle = hexToRgbString(colorTextSubtle);
-    colorTextInverse = hexToRgbString(colorTextInverse);
-    borderColor = hexToRgbString(borderColor);
-    borderSubtleColor = hexToRgbString(borderSubtleColor);
-    labelText = hexToRgbString(labelText);
-    labelBgSale = hexToRgbString(labelBgSale);
-    labelBgNew = hexToRgbString(labelBgNew);
-    labelBgSoldOut = hexToRgbString(labelBgSoldOut);
+
     return (
       <style
         id="global-theme-style"
@@ -198,6 +169,7 @@ export function GlobalStyle() {
               background-color: ${buttonBgColorPrimary};
               color: ${buttonTextPrimary}!important;
               border: 1px solid ${buttonBorderColorPrimary};
+              cursor: pointer;
             }
             .btn-primary:hover{
               background-color: ${buttonBgHoverPrimary}!important;
@@ -209,6 +181,7 @@ export function GlobalStyle() {
               background-color: ${buttonBgColorSecondary};
               color: ${buttonTextSecondary}!important;
               border: 1px solid ${buttonBorderColorSecondary};
+              cursor: pointer;
             }
             .btn-secondary:hover{
               background-color: ${buttonBgHoverSecondary}!important;
@@ -219,6 +192,7 @@ export function GlobalStyle() {
             .btn-outline{
               color: ${buttonTextOutline}!important;
               border: 1px solid ${buttonBorderColorOutline};
+              cursor: pointer;
             }
             .btn-outline:hover{
               color: ${buttonTextHoverOutline}!important;

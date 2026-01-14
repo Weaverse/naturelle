@@ -3,8 +3,8 @@ import type { MediaImage } from "@shopify/hydrogen/storefront-api-types";
 import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties } from "react";
-import type { ProductQuery } from "storefrontapi.generated";
-import { Link } from "~/components/Link";
+import type { ProductQuery } from "storefront-api.generated";
+import { Link } from "~/components/link";
 import type { HotspotsItemData } from "./hotspot-item";
 
 interface ProductPopupProps
@@ -58,7 +58,7 @@ const PRODUCT_PLACEHOLDER: Partial<ProductQuery["product"]> = {
 };
 
 export function ProductPopup({
-  // @ts-ignore
+  // @ts-expect-error
   product = PRODUCT_PLACEHOLDER,
   popupWidth,
   offsetX,
@@ -83,7 +83,7 @@ export function ProductPopup({
       className={clsx(
         "absolute z-10 py-1.5 text-sm sm:text-base transition-all",
         "invisible opacity-0",
-        "w-40 sm:w-[var(--popup-width)]",
+        "w-40 sm:w-(--popup-width)",
         "translate-x-[calc(var(--translate-x-ratio)*var(--spot-size))]",
         "translate-y-[calc(var(--translate-y-ratio)*-16px)]",
         "group-hover:visible group-hover:opacity-100",

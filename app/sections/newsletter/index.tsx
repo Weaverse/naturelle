@@ -1,10 +1,18 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { Section, type SectionProps, sectionInspector } from "../atoms/Section";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
+import {
+  Section,
+  type SectionProps,
+  sectionInspector,
+} from "~/components/section";
 
 type NewsletterProps = SectionProps;
 
-const Newsletter = forwardRef<HTMLElement, NewsletterProps>((props, ref) => {
+const Newsletter = ({
+  ref,
+  ...props
+}: NewsletterProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { children, ...rest } = props;
 
   return (
@@ -12,16 +20,15 @@ const Newsletter = forwardRef<HTMLElement, NewsletterProps>((props, ref) => {
       {children}
     </Section>
   );
-});
+};
 
 export default Newsletter;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "newsletter",
   title: "Newsletter",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: sectionInspector,
-  childTypes: ["newsletter-icon", "heading", "description", "newsletter-input"],
+  settings: sectionInspector,
+  childTypes: ["newsletter-icon", "heading", "paragraph", "newsletter-input"],
   presets: {
     children: [
       {
@@ -32,7 +39,7 @@ export let schema: HydrogenComponentSchema = {
         content: "Sign up for the updates",
       },
       {
-        type: "description",
+        type: "paragraph",
         content: "Get 15% off your first order",
       },
       {
@@ -40,4 +47,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

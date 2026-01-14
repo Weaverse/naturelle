@@ -1,51 +1,48 @@
-import { IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-  WeaverseImage,
-} from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
 import { Image } from "~/components/image";
-import { getImageAspectRatio } from "~/lib/utils";
+import { getImageAspectRatio } from "~/utils/image";
 
 interface HotspotsImageProps extends HydrogenComponentProps {
   image: string;
   aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
 }
 
-const HotspotsImage = forwardRef<HTMLDivElement, HotspotsImageProps>(
-  (props, ref) => {
-    let { image, aspectRatio, children, ...rest } = props;
-    let imageData: Partial<WeaverseImage> =
-      typeof image === "string"
-        ? { url: image, altText: "Hotspots image" }
-        : image;
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className="relative w-full h-full"
-        style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
-      >
-        <Image
-          data={imageData}
-          sizes="auto"
-          className="object-cover z-0 w-full h-full"
-        />
-        {children}
-      </div>
-    );
-  },
-);
+const HotspotsImage = ({
+  ref,
+  ...props
+}: HotspotsImageProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  let { image, aspectRatio, children, ...rest } = props;
+  let imageData: Partial<WeaverseImage> =
+    typeof image === "string"
+      ? { url: image, altText: "Hotspots image" }
+      : image;
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className="relative w-full h-full"
+      style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
+    >
+      <Image
+        data={imageData}
+        sizes="auto"
+        className="object-cover z-0 w-full h-full"
+      />
+      {children}
+    </div>
+  );
+};
 
 export default HotspotsImage;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "image-hotspots",
   title: "Image hotspots",
   limit: 2,
   childTypes: ["hotspots--item"],
-  inspector: [
+  settings: [
     {
       group: "Image",
       inputs: [
@@ -74,7 +71,6 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   presets: {
     image: IMAGES_PLACEHOLDERS.collection_4,
     aspectRatio: "16/9",
@@ -86,4 +82,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

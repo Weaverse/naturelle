@@ -1,14 +1,15 @@
-import { Await, type MetaFunction } from "@remix-run/react";
 import type { CartQueryDataReturn } from "@shopify/hydrogen";
 import { CartForm } from "@shopify/hydrogen";
+import { Suspense } from "react";
 import {
   type ActionFunctionArgs,
-  type HeadersFunction,
+  Await,
   data,
-} from "@shopify/remix-oxygen";
-import { Suspense } from "react";
-import type { CartApiQueryFragment } from "storefrontapi.generated";
-import { CartMain } from "~/components/cart/Cart";
+  type HeadersFunction,
+  type MetaFunction,
+} from "react-router";
+import type { CartApiQueryFragment } from "storefront-api.generated";
+import { CartMain } from "~/components/cart/cart";
 import { useRootLoaderData } from "~/root";
 
 export const meta: MetaFunction = () => {
@@ -25,16 +26,16 @@ export async function action({ request, context }: ActionFunctionArgs) {
     await context.customerAccount.getAccessToken(),
   ]);
 
-  const { action, inputs } = CartForm.getFormInput(formData);
+  const { action: formAction, inputs } = CartForm.getFormInput(formData);
 
-  if (!action) {
+  if (!formAction) {
     throw new Error("No action provided");
   }
 
   let status = 200;
   let result: CartQueryDataReturn;
 
-  switch (action) {
+  switch (formAction) {
     case CartForm.ACTIONS.LinesAdd:
       result = await cart.addLines(inputs.lines);
       break;
@@ -66,17 +67,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
       break;
     }
     default:
-      throw new Error(`${action} cart action is not defined`);
+      throw new Error(`${formAction} cart action is not defined`);
   }
 
   const cartId = result.cart.id;
-  const headers = cart.setCartId(result.cart.id);
+  const responseHeaders = cart.setCartId(result.cart.id);
   const { cart: cartResult, errors } = result;
 
   const redirectTo = formData.get("redirectTo") ?? null;
   if (typeof redirectTo === "string") {
     status = 303;
-    headers.set("Location", redirectTo);
+    responseHeaders.set("Location", redirectTo);
   }
 
   return data(
@@ -87,7 +88,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
         cartId,
       },
     },
-    { status, headers },
+    { status, headers: responseHeaders },
   );
 }
 

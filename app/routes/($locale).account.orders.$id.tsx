@@ -1,31 +1,36 @@
-import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
-import { Image, Money, flattenConnection } from "@shopify/hydrogen";
-import { type LoaderFunctionArgs, data, redirect } from "@shopify/remix-oxygen";
-import type { OrderLineItemFullFragment } from "customer-accountapi.generated";
-import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/CustomerOrderQuery";
+import { flattenConnection, Image, Money } from "@shopify/hydrogen";
+import type { OrderLineItemFullFragment } from "customer-account-api.generated";
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect,
+  data as response,
+  useLoaderData,
+} from "react-router";
+import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/customer-order-query";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [{ title: `Order ${data?.order?.name}` }];
 };
 
-export async function loader({ params, context, request }: LoaderFunctionArgs) {
+export async function loader({ params, context }: LoaderFunctionArgs) {
   if (!params.id) {
     return redirect("/account/orders");
   }
 
   const orderId = atob(params.id);
-  const { data: orderData, errors } = await context.customerAccount.query(
+  const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDER_QUERY,
     {
       variables: { orderId },
     },
   );
 
-  if (errors?.length || !orderData?.order) {
+  if (errors?.length || !data?.order) {
     throw new Error("Order not found");
   }
 
-  const { order } = orderData;
+  const { order } = data;
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
@@ -40,7 +45,7 @@ export async function loader({ params, context, request }: LoaderFunctionArgs) {
     firstDiscount?.__typename === "PricingPercentageValue" &&
     firstDiscount?.percentage;
 
-  return data({
+  return response({
     order,
     lineItems,
     discountValue,
@@ -60,7 +65,10 @@ export default function OrderRoute() {
   return (
     <div className="account-order">
       <h2>Order {order.name}</h2>
-      <p>Placed on {new Date(order.processedAt!).toDateString()}</p>
+      <p>
+        Placed on{" "}
+        {order.processedAt ? new Date(order.processedAt).toDateString() : ""}
+      </p>
       <br />
       <div>
         <table>
@@ -79,8 +87,7 @@ export default function OrderRoute() {
             ))}
           </tbody>
           <tfoot>
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
+            {(discountValue?.amount || discountPercentage) && (
               <tr>
                 <th scope="row" colSpan={3}>
                   <p>Discounts</p>
@@ -92,7 +99,7 @@ export default function OrderRoute() {
                   {discountPercentage ? (
                     <span>-{discountPercentage}% OFF</span>
                   ) : (
-                    discountValue && <Money data={discountValue!} />
+                    discountValue && <Money data={discountValue} />
                   )}
                 </td>
               </tr>
@@ -104,9 +111,7 @@ export default function OrderRoute() {
               <th scope="row">
                 <p>Subtotal</p>
               </th>
-              <td>
-                <Money data={order.subtotal!} />
-              </td>
+              <td>{order.subtotal && <Money data={order.subtotal} />}</td>
             </tr>
             <tr>
               <th scope="row" colSpan={3}>
@@ -115,9 +120,7 @@ export default function OrderRoute() {
               <th scope="row">
                 <p>Tax</p>
               </th>
-              <td>
-                <Money data={order.totalTax!} />
-              </td>
+              <td>{order.totalTax && <Money data={order.totalTax} />}</td>
             </tr>
             <tr>
               <th scope="row" colSpan={3}>
@@ -126,9 +129,7 @@ export default function OrderRoute() {
               <th scope="row">
                 <p>Total</p>
               </th>
-              <td>
-                <Money data={order.totalPrice!} />
-              </td>
+              <td>{order.totalPrice && <Money data={order.totalPrice} />}</td>
             </tr>
           </tfoot>
         </table>
@@ -183,12 +184,10 @@ function OrderLineRow({ lineItem }: { lineItem: OrderLineItemFullFragment }) {
           </div>
         </div>
       </td>
-      <td>
-        <Money data={lineItem.price!} />
-      </td>
+      <td>{lineItem.price && <Money data={lineItem.price} />}</td>
       <td>{lineItem.quantity}</td>
       <td>
-        <Money data={lineItem.totalDiscount!} />
+        {lineItem.totalDiscount && <Money data={lineItem.totalDiscount} />}
       </td>
     </tr>
   );

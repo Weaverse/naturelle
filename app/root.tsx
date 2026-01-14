@@ -1,48 +1,46 @@
 import {
+  Analytics,
+  getSeoMeta,
+  getShopAnalytics,
+  Image,
+  type SeoConfig,
+  useNonce,
+} from "@shopify/hydrogen";
+import { withWeaverse } from "@weaverse/hydrogen";
+import {
+  type AppLoadContext,
+  isRouteErrorResponse,
   Links,
+  type LoaderFunctionArgs,
   Meta,
+  type MetaArgs,
   Outlet,
   Scripts,
   ScrollRestoration,
   type ShouldRevalidateFunction,
-  isRouteErrorResponse,
   useMatches,
   useRouteError,
   useRouteLoaderData,
-} from "@remix-run/react";
-import {
-  Analytics,
-  Image,
-  type SeoConfig,
-  getSeoMeta,
-  getShopAnalytics,
-  useNonce,
-} from "@shopify/hydrogen";
-import type {
-  AppLoadContext,
-  LoaderFunctionArgs,
-  MetaArgs,
-  SerializeFrom,
-} from "@shopify/remix-oxygen";
-import { withWeaverse } from "@weaverse/hydrogen";
-import tailwind from "./styles/tailwind.css?url";
+} from "react-router";
+import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/cormorant";
 import "@fontsource-variable/nunito-sans";
 import invariant from "tiny-invariant";
-import { CustomAnalytics } from "~/components/Analytics";
-import { Header } from "~/components/Header/Header";
+import { seoPayload } from "~/.server/seo";
 import { Button } from "~/components/button";
-import { Footer } from "~/components/footer/Footer";
-import { seoPayload } from "~/lib/seo.server";
-import { Preloader } from "./components/Preloader";
-import { GlobalLoading } from "./components/global-loading";
-import { DEFAULT_LOCALE, parseMenu } from "./lib/utils";
-import { getErrorMessage } from "./lib/utils/defineMessageError";
+import { Footer } from "~/components/layout/footer";
+import { Header } from "~/components/layout/header";
+import { CustomAnalytics } from "~/components/root/analytics";
+import { GlobalLoading } from "~/components/root/global-loading";
+import { Preloader } from "~/components/root/preloader";
+import { getErrorMessage } from "~/utils/define-message-error";
+import { DEFAULT_LOCALE } from "./utils/const";
+import { parseMenu } from "./utils/menu";
 
 export type RootLoader = typeof loader;
 
-export let shouldRevalidate: ShouldRevalidateFunction = ({
+export const shouldRevalidate: ShouldRevalidateFunction = ({
   formMethod,
   currentUrl,
   nextUrl,
@@ -79,7 +77,7 @@ export function links() {
  */
 export const useRootLoaderData = () => {
   const [root] = useMatches();
-  return root?.data as SerializeFrom<typeof loader>;
+  return root?.data as Awaited<ReturnType<typeof loader>>;
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -100,9 +98,11 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({ request, context }: LoaderFunctionArgs) {
-  const [layout] = await Promise.all([
+  const [layout, swatchesConfigs] = await Promise.all([
     getLayoutData(context),
+    getSwatchesConfigs(context),
     // Add other queries here, so that they are loaded in parallel
+    context.weaverse.loadThemeSettings(),
   ]);
 
   const seo = seoPayload.root({ shop: layout.shop, url: request.url });
@@ -119,10 +119,15 @@ async function loadCriticalData({ request, context }: LoaderFunctionArgs) {
     consent: {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+      withPrivacyBanner: false,
+      // localize the privacy banner
+      country: storefront.i18n.country,
+      language: storefront.i18n.language,
     },
     selectedLocale: storefront.i18n,
     weaverseTheme: await context.weaverse.loadThemeSettings(),
     googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
+    swatchesConfigs,
   };
 }
 
@@ -170,7 +175,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
             consent={data.consent}
           >
             <Header />
-            <main>{children}</main>
+            <main className="grow">{children}</main>
             <Footer />
             <CustomAnalytics />
           </Analytics.Provider>
@@ -355,3 +360,61 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
 
   return { shop: data.shop, headerMenu, footerMenu };
 }
+
+type Swatch = {
+  id: string;
+  name: string;
+  value: string;
+};
+
+async function getSwatchesConfigs(context: AppLoadContext) {
+  const { METAOBJECT_COLORS_TYPE: type } = context.env;
+  if (!type) {
+    return { colors: [], images: [] };
+  }
+  const { metaobjects } = await context.storefront.query(SWATCHES_QUERY, {
+    variables: { type },
+  });
+  const colors: Swatch[] = [];
+  const images: Swatch[] = [];
+  for (const { id, fields } of metaobjects.nodes) {
+    const { value: color } = fields.find(({ key }) => key === "color") || {};
+    const { reference: imageRef } =
+      fields.find(({ key }) => key === "image") || {};
+    const { value: name } = fields.find(({ key }) => key === "label") || {};
+    if (imageRef) {
+      const url = imageRef?.image?.url;
+      if (url) {
+        images.push({ id, name, value: url });
+      }
+    } else if (color) {
+      colors.push({ id, name, value: color });
+    }
+  }
+  return { colors, images };
+}
+
+const SWATCHES_QUERY = `#graphql
+  query swatches($type: String!) {
+    metaobjects(first: 250, type: $type) {
+      nodes {
+        id
+        fields {
+          key
+          value
+          reference {
+            ... on MediaImage {
+              image {
+                id
+                altText
+                url: url(transform: { maxWidth: 300 })
+                width
+                height
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+` as const;

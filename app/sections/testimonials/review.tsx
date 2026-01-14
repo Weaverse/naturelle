@@ -1,9 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import { forwardRef } from "react";
-import { IconStar } from "~/components/Icon";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
+import type React from "react";
+import type { RefObject } from "react";
+import { IconStar } from "~/components/icon";
 
 interface ReviewProps extends HydrogenComponentProps {
   name?: string;
@@ -11,11 +10,14 @@ interface ReviewProps extends HydrogenComponentProps {
   content?: string;
 }
 
-const Review = forwardRef<HTMLDivElement, ReviewProps>((props, ref) => {
+const Review = ({
+  ref,
+  ...props
+}: ReviewProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { name, ratting, content, children, ...rest } = props;
   const renderStars = () => {
-    const stars = [];
-    for (let i = 0; i < ratting; i++) {
+    const stars: React.ReactElement[] = [];
+    for (let i = 0; i < ratting; i += 1) {
       stars.push(<IconStar stroke="white" fill="var(--text-color)" key={i} />);
     }
     return stars;
@@ -35,15 +37,14 @@ const Review = forwardRef<HTMLDivElement, ReviewProps>((props, ref) => {
       <div className="hover:opacity-10 hover:bg-white opacity-0 absolute inset-0 transition-opacity duration-500" />
     </div>
   );
-});
+};
 
 export default Review;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "reviews",
   title: "Reviews",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Review",
       inputs: [
@@ -74,4 +75,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

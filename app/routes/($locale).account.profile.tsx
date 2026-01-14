@@ -1,19 +1,16 @@
+import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api-types";
+import type { CustomerFragment } from "customer-account-api.generated";
 import {
+  type ActionFunctionArgs,
   Form,
+  type LoaderFunctionArgs,
   type MetaFunction,
+  data as response,
   useActionData,
   useNavigation,
   useOutletContext,
-} from "@remix-run/react";
-import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api-types";
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  data,
-  redirect,
-} from "@shopify/remix-oxygen";
-import type { CustomerFragment } from "customer-accountapi.generated";
-import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/CustomerUpdateMutation";
+} from "react-router";
+import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/customer-update-mutation";
 
 export type ActionResponse = {
   error: string | null;
@@ -27,14 +24,14 @@ export const meta: MetaFunction = () => {
 export async function loader({ context }: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
-  return data({});
+  return response({});
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { customerAccount } = context;
 
   if (request.method !== "PUT") {
-    return data({ error: "Method not allowed" }, { status: 405 });
+    return response({ error: "Method not allowed" }, { status: 405 });
   }
 
   const form = await request.formData();
@@ -69,12 +66,12 @@ export async function action({ request, context }: ActionFunctionArgs) {
       throw new Error("Customer profile update failed.");
     }
 
-    return data({
+    return response({
       error: null,
       customer: data?.customerUpdate?.customer,
     });
   } catch (error: any) {
-    return data(
+    return response(
       { error: error.message, customer: null },
       {
         status: 400,

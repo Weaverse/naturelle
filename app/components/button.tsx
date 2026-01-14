@@ -1,10 +1,10 @@
-import { type VariantProps, cva } from "class-variance-authority";
-import * as React from "react";
-import { cn } from "~/lib/utils";
-import { Link } from "./Link";
+import { cva, type VariantProps } from "class-variance-authority";
+import type * as React from "react";
+import { cn } from "~/utils/cn";
+import { Link } from "./link";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap font-normal transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap font-normal transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
   {
     variants: {
       variant: {
@@ -47,49 +47,46 @@ export interface ButtonProps
   to?: string;
   target?: string;
   classNameContainer?: string;
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      loading,
-      variant,
-      size = "default",
-      shape = "round",
-      fontFamily = "body",
-      asChild,
-      as = "button",
-      classNameContainer,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
-    const Component = props?.to ? Link : as;
+const Button = ({
+  className,
+  loading,
+  variant,
+  size = "default",
+  shape = "round",
+  fontFamily = "body",
+  asChild,
+  as = "button",
+  classNameContainer,
+  children,
+  ref,
+  ...props
+}: ButtonProps) => {
+  const Component = props?.to ? Link : as;
 
-    return (
-      <Component
-        className={cn(
-          buttonVariants({ variant, size, shape, fontFamily, className }),
-          loading && "pointer-events-none relative",
-        )}
-        ref={ref}
-        {...props}
-        target={props.to ? props?.target || "_self" : undefined}
-      >
-        {loading && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="w-7 h-7 border-4 border-t-transparent border-border rounded-full animate-spin"></div>
-          </div>
-        )}
-        <span className={cn(classNameContainer, loading ? "invisible" : "")}>
-          {children}
-        </span>
-      </Component>
-    );
-  },
-);
+  return (
+    <Component
+      className={cn(
+        buttonVariants({ variant, size, shape, fontFamily, className }),
+        loading && "pointer-events-none relative",
+      )}
+      ref={ref}
+      {...props}
+      target={props.to ? props?.target || "_self" : undefined}
+    >
+      {loading && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="w-7 h-7 border-4 border-t-transparent border-border rounded-full animate-spin"></div>
+        </div>
+      )}
+      <span className={cn(classNameContainer, loading ? "invisible" : "")}>
+        {children}
+      </span>
+    </Component>
+  );
+};
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

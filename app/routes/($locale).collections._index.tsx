@@ -1,12 +1,12 @@
-import type { MetaFunction } from "@remix-run/react";
 import {
-  type SeoConfig,
   getPaginationVariables,
   getSeoMeta,
+  type SeoConfig,
 } from "@shopify/hydrogen";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
-import { COLLECTIONS_QUERY } from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
+import type { MetaFunction } from "react-router";
+import { data, type LoaderFunctionArgs } from "react-router";
+import { seoPayload } from "~/.server/seo";
+import { COLLECTIONS_QUERY } from "~/graphql/queries";
 import { WeaverseContent } from "~/weaverse";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -29,8 +29,8 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   });
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Collections() {
   // const { collections } = useLoaderData<typeof loader>();

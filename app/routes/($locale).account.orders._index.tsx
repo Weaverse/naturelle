@@ -1,16 +1,21 @@
-import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
 import {
-  Image,
-  Pagination,
   flattenConnection,
   getPaginationVariables,
+  Image,
+  Pagination,
 } from "@shopify/hydrogen";
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
 import type {
   CustomerOrdersFragment,
   OrderItemFragment,
-} from "customer-accountapi.generated";
-import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/CustomerOrdersQuery";
+} from "customer-account-api.generated";
+import {
+  Link,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  data as response,
+  useLoaderData,
+} from "react-router";
+import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/customer-orders-query";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Orders" }];
@@ -20,8 +25,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 20,
   });
-  let access = await context.customerAccount.getAccessToken();
-  console.log(access);
 
   const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
@@ -33,10 +36,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   );
 
   if (errors?.length || !data?.customer) {
-    throw Error("Customer orders not found");
+    throw new Error("Customer orders not found");
   }
 
-  return data({ customer: data.customer });
+  return response({ customer: data.customer });
 }
 
 export default function Orders() {

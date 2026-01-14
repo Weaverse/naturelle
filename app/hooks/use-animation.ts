@@ -2,24 +2,27 @@ import { useThemeSettings } from "@weaverse/hydrogen";
 import { animate, inView, useAnimate } from "framer-motion";
 import { type ForwardedRef, useEffect } from "react";
 
-type MotionType = "fade-up" | "fade-in" | "zoom-in" | "slide-in";
+export type MotionType = "fade-up" | "zoom-in" | "slide-in";
 
 const ANIMATIONS: Record<MotionType, any> = {
   "fade-up": { opacity: [0, 1], y: [20, 0] },
-  "fade-in": { opacity: [0, 1] },
   "zoom-in": { opacity: [0, 1], scale: [0.8, 1], y: [20, 0] },
   "slide-in": { opacity: [0, 1], x: [20, 0] },
 };
 
-export function useMotion(ref?: ForwardedRef<any>) {
-  let { enableScrollReveal } = useThemeSettings();
-  let [scope] = useAnimate();
+// TODO prevent already-in-view elements from triggering the animation
+export function useAnimation(ref?: ForwardedRef<any>) {
+  const { enableScrollReveal } = useThemeSettings();
+  const [scope] = useAnimate();
 
   useEffect(() => {
-    if (!scope.current || !ref) return;
+    if (!(scope.current && ref)) {
+      return;
+    }
     Object.assign(ref, { current: scope.current });
   }, [scope, ref]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation> --- IGNORE ---
   useEffect(() => {
     if (!enableScrollReveal) {
       return;
@@ -30,9 +33,9 @@ export function useMotion(ref?: ForwardedRef<any>) {
       elems.forEach((elem: HTMLElement, idx: number) => {
         inView(
           elem,
-          () => {
-            let { motion, delay } = elem.dataset;
-            animate(elem, ANIMATIONS[(motion as MotionType) || "fade-up"], {
+          (element: Element) => {
+            const { motion, delay } = elem.dataset;
+            animate(element, ANIMATIONS[motion || "fade-up"], {
               delay: Number(delay) || idx * 0.15,
               duration: 0.5,
             });

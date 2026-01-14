@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs, data } from "@shopify/remix-oxygen";
+import { data, type LoaderFunctionArgs } from "react-router";
 
 import type {
   PredictiveArticleFragment,
@@ -7,12 +7,12 @@ import type {
   PredictiveProductFragment,
   PredictiveQueryFragment,
   PredictiveSearchQuery,
-} from "storefrontapi.generated";
-import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/hooks/usePredictiveSearch";
+} from "storefront-api.generated";
+import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/hooks/use-predictive-search";
 import type {
   NormalizedPredictiveSearch,
   NormalizedPredictiveSearchResults,
-} from "~/lib/types/search-types";
+} from "~/types/search-types";
 
 type PredictiveSearchResultItem =
   | PredictiveArticleFragment
@@ -55,10 +55,12 @@ async function fetchPredictiveSearchResults({
 }: Pick<LoaderFunctionArgs, "params" | "context" | "request">) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  let body;
+  let body: FormData | undefined;
   try {
     body = await request.formData();
-  } catch (error) {}
+  } catch {
+    // ignore
+  }
   const searchTerm = String(body?.get("q") || searchParams.get("q") || "");
   const limit = Number(body?.get("limit") || searchParams.get("limit") || 10);
   const rawTypes = String(
@@ -80,21 +82,24 @@ async function fetchPredictiveSearchResults({
     };
   }
 
-  const data = await context.storefront.query(PREDICTIVE_SEARCH_QUERY, {
-    variables: {
-      limit,
-      limitScope: "EACH",
-      searchTerm,
-      types: searchTypes,
+  const searchResponse = await context.storefront.query(
+    PREDICTIVE_SEARCH_QUERY,
+    {
+      variables: {
+        limit,
+        limitScope: "EACH",
+        searchTerm,
+        types: searchTypes,
+      },
     },
-  });
+  );
 
-  if (!data) {
+  if (!searchResponse) {
     throw new Error("No data returned from Shopify API");
   }
 
   const searchResults = normalizePredictiveSearchResults(
-    data.predictiveSearch,
+    searchResponse.predictiveSearch,
     params.locale,
   );
 
@@ -143,7 +148,7 @@ export function normalizePredictiveSearchResults(
           `q=${encodeURIComponent(query.text)}`,
         );
 
-        totalResults++;
+        totalResults += 1;
         return {
           __typename: query.__typename,
           handle: "",
@@ -151,7 +156,7 @@ export function normalizePredictiveSearchResults(
           image: undefined,
           title: query.text,
           styledTitle: query.styledText,
-          // url: `${localePrefix}/search${trackingParams}`,
+          url: `${localePrefix}/search${trackingParams}`,
         };
       }),
     });
@@ -162,7 +167,7 @@ export function normalizePredictiveSearchResults(
       type: "products",
       items: predictiveSearch.products.map(
         (product: PredictiveProductFragment) => {
-          totalResults++;
+          totalResults += 1;
           const trackingParams = applyTrackingParams(product);
           return {
             __typename: product.__typename,
@@ -185,7 +190,7 @@ export function normalizePredictiveSearchResults(
       type: "collections",
       items: predictiveSearch.collections.map(
         (collection: PredictiveCollectionFragment) => {
-          totalResults++;
+          totalResults += 1;
           const trackingParams = applyTrackingParams(collection);
           return {
             __typename: collection.__typename,
@@ -204,7 +209,7 @@ export function normalizePredictiveSearchResults(
     results.push({
       type: "pages",
       items: predictiveSearch.pages.map((page: PredictivePageFragment) => {
-        totalResults++;
+        totalResults += 1;
         const trackingParams = applyTrackingParams(page);
         return {
           __typename: page.__typename,
@@ -223,7 +228,7 @@ export function normalizePredictiveSearchResults(
       type: "articles",
       items: predictiveSearch.articles.map(
         (article: PredictiveArticleFragment) => {
-          totalResults++;
+          totalResults += 1;
           const trackingParams = applyTrackingParams(article);
           return {
             __typename: article.__typename,

@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { StarRating } from "~/components/StarRating";
-import type { JudgemeReviewsData } from "~/lib/utils/judgeme";
+import { StarRating } from "~/components/star-rating";
+import type { JudgemeReviewsData } from "~/utils/judgeme";
 
 const reviewPerPage = 5;
 
 export function ReviewList({
   judgemeReviews,
-}: { judgemeReviews: JudgemeReviewsData }) {
+}: {
+  judgemeReviews: JudgemeReviewsData;
+}) {
   const pageNumber = Math.ceil(judgemeReviews.reviews.length / reviewPerPage);
   const [page, setPage] = useState(0);
   const reviews = judgemeReviews.reviews.slice(
@@ -25,8 +27,8 @@ export function ReviewList({
           Reviews ({judgemeReviews.reviewNumber})
         </span>
         {reviews.map((review, index) => (
-          <div data-motion="fade-up" className="space-y-6">
-            <div key={index} className="flex gap-4 flex-col md:flex-row">
+          <div key={index} data-motion="fade-up" className="space-y-6">
+            <div className="flex gap-4 flex-col md:flex-row">
               <div className="flex flex-col gap-4 md:w-1/4 w-full">
                 <div className="flex items-center gap-0.5">
                   <StarRating rating={review?.rating} />
@@ -62,6 +64,7 @@ export function ReviewList({
         <div data-motion="fade-up" className="flex justify-center gap-2">
           {Array.from({ length: pageNumber }, (_, i) => (
             <button
+              type="button"
               key={i}
               onClick={() => setPage(i)}
               className="bg-[#3d490b]/5 px-4 py-2 rounded-full hover:bg-[#3d490b]/20 transition-colors duration-200 disabled:bg-[#3d490b] disabled:text-white"

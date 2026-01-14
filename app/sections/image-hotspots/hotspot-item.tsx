@@ -1,14 +1,13 @@
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
-import type { CSSProperties } from "react";
-import { forwardRef } from "react";
-import type { ProductQuery } from "storefrontapi.generated";
-import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/Icon";
-import { PRODUCT_QUERY } from "~/graphql/data/queries";
+import { createSchema } from "@weaverse/hydrogen";
+import type { CSSProperties, RefObject } from "react";
+import type { ProductQuery } from "storefront-api.generated";
+import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
+import { PRODUCT_QUERY } from "~/graphql/queries";
 import { ProductPopup } from "./product-popup";
 
 export interface HotspotsItemData {
@@ -34,68 +33,69 @@ const ICONS = {
   tag: IconTag,
 };
 
-let HotspotsItem = forwardRef<HTMLDivElement, HotspotsItemProps>(
-  (props, ref) => {
-    let {
-      icon,
-      iconSize,
-      offsetX,
-      offsetY,
-      product,
-      popupWidth,
-      showPrice,
-      showViewDetailsLink,
-      viewDetailsLinkText,
-      children,
-      loaderData,
-      ...rest
-    } = props;
-    let Icon = ICONS[icon];
+let HotspotsItem = ({
+  ref,
+  ...props
+}: HotspotsItemProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  let {
+    icon,
+    iconSize,
+    offsetX,
+    offsetY,
+    product,
+    popupWidth,
+    showPrice,
+    showViewDetailsLink,
+    viewDetailsLinkText,
+    children,
+    loaderData,
+    ...rest
+  } = props;
+  let Icon = ICONS[icon];
 
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className="absolute -translate-x-1/2 -translate-y-1/2 hover:z-[1]"
-        style={
-          {
-            top: `${offsetY}%`,
-            left: `${offsetX}%`,
-            "--translate-x-ratio": offsetX > 50 ? 1 : -1,
-            "--translate-y-ratio": offsetY > 50 ? 1 : -1,
-            "--spot-size": `${iconSize + 16}px`,
-          } as CSSProperties
-        }
-      >
-        <div className="relative flex cursor-pointer">
-          <span
-            className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-700 opacity-75"
-            style={{ animationDuration: "1500ms" }}
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className="absolute -translate-x-1/2 -translate-y-1/2 hover:z-[1]"
+      style={
+        {
+          top: `${offsetY}%`,
+          left: `${offsetX}%`,
+          "--translate-x-ratio": offsetX > 50 ? 1 : -1,
+          "--translate-y-ratio": offsetY > 50 ? 1 : -1,
+          "--spot-size": `${iconSize + 16}px`,
+        } as CSSProperties
+      }
+    >
+      <div className="relative flex cursor-pointer">
+        <span
+          className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-700 opacity-75"
+          style={{ animationDuration: "1500ms" }}
+        />
+        <span className="relative inline-flex rounded-full p-2 bg-white group">
+          <Icon style={{ width: iconSize, height: iconSize }} />
+          <ProductPopup
+            product={loaderData?.product}
+            popupWidth={popupWidth}
+            offsetX={offsetX}
+            offsetY={offsetY}
+            showPrice={showPrice}
+            showViewDetailsLink={showViewDetailsLink}
+            viewDetailsLinkText={viewDetailsLinkText}
           />
-          <span className="relative inline-flex rounded-full p-2 bg-white group">
-            <Icon style={{ width: iconSize, height: iconSize }} />
-            <ProductPopup
-              product={loaderData?.product}
-              popupWidth={popupWidth}
-              offsetX={offsetX}
-              offsetY={offsetY}
-              showPrice={showPrice}
-              showViewDetailsLink={showViewDetailsLink}
-              viewDetailsLinkText={viewDetailsLinkText}
-            />
-          </span>
-        </div>
+        </span>
       </div>
-    );
-  },
-);
+    </div>
+  );
+};
 
 export default HotspotsItem;
 
-export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
+export const loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   let { weaverse, data } = args;
   let { storefront, env } = weaverse;
-  let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
+  let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
   if (!data?.product) {
     return null;
   }
@@ -104,8 +104,8 @@ export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
     variables: {
       handle: productHandle,
       selectedOptions: [],
-      namespace: metafield.split('.')[0],
-      key: metafield.split('.')[1],
+      namespace: metafield.split(".")[0],
+      key: metafield.split(".")[1],
       language: storefront.i18n.language,
       country: storefront.i18n.country,
     },
@@ -114,10 +114,10 @@ export let loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   return { product };
 };
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "hotspots--item",
   title: "Hotspots item",
-  inspector: [
+  settings: [
     {
       group: "Icon",
       inputs: [
@@ -232,4 +232,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

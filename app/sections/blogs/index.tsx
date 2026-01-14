@@ -1,18 +1,18 @@
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
-  HydrogenComponentSchema,
   WeaverseBlog,
 } from "@weaverse/hydrogen";
-import { type VariantProps, cva } from "class-variance-authority";
+import { createSchema } from "@weaverse/hydrogen";
+import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
-import { type CSSProperties, forwardRef } from "react";
-import { IconImageBlank } from "~/components/Icon";
-import { Link } from "~/components/Link";
+import type { CSSProperties, RefObject } from "react";
+import { IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
-import { BLOG_QUERY } from "~/graphql/data/queries";
-import { useMotion } from "~/hooks/use-animation";
-import { cn } from "~/lib/utils";
+import { Link } from "~/components/link";
+import { BLOG_QUERY } from "~/graphql/queries";
+import { useAnimation } from "~/hooks/use-animation";
+import { cn } from "~/utils/cn";
 
 let fontSizeVariants = cva("", {
   variants: {
@@ -83,6 +83,7 @@ type BlogData = {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   minSize?: number;
   maxSize?: number;
+  aspectRatio: string;
 };
 
 export interface BlogProps
@@ -98,8 +99,11 @@ let articlesPerRowClasses: { [item: number]: string } = {
   4: "sm:grid-cols-4",
 };
 
-const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
-  const [scope] = useMotion(ref);
+const Blogs = ({
+  ref,
+  ...props
+}: BlogProps & { ref?: RefObject<HTMLElement | null> }) => {
+  const [scope] = useAnimation(ref);
   let {
     blogs,
     backgroundColor,
@@ -113,13 +117,14 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
     weight,
     minSize,
     maxSize,
+    aspectRatio = "1/1",
     loaderData,
     children,
     ...rest
   } = props;
 
   const calculateColor = (hex: string) =>
-    `#${[...Array(3)]
+    `#${[...new Array(3)]
       .map((_, i) =>
         Math.max(
           0,
@@ -178,13 +183,21 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
                 className="flex w-full h-full cursor-pointer flex-col items-center gap-4 rounded p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6"
               >
                 {idx.image ? (
-                  <Image
-                    data={idx.image}
-                    sizes="auto"
-                    className="!aspect-square !w-full rounded object-cover"
-                  />
+                  <div
+                    className="w-full overflow-hidden rounded"
+                    style={{ aspectRatio }}
+                  >
+                    <Image
+                      data={idx.image}
+                      sizes="auto"
+                      className="!h-full !w-full object-cover"
+                    />
+                  </div>
                 ) : (
-                  <div className="flex aspect-square w-full items-center justify-center bg-[var(--calculate-color)]">
+                  <div
+                    className="flex w-full items-center justify-center bg-[var(--calculate-color)] rounded overflow-hidden"
+                    style={{ aspectRatio }}
+                  >
                     <IconImageBlank
                       viewBox="0 0 526 526"
                       className="h-full w-full opacity-80"
@@ -213,11 +226,11 @@ const Blogs = forwardRef<HTMLElement, BlogProps>((props, ref) => {
       </div>
     </section>
   );
-});
+};
 
 export default Blogs;
 
-export let loader = async (args: ComponentLoaderArgs<BlogData>) => {
+export const loader = async (args: ComponentLoaderArgs<BlogData>) => {
   let { weaverse, data } = args;
   let { storefront, request } = weaverse;
   if (data.blogs) {
@@ -230,11 +243,10 @@ export let loader = async (args: ComponentLoaderArgs<BlogData>) => {
   }
 };
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "blogs",
   title: "Blogs",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Blog",
       inputs: [
@@ -277,6 +289,21 @@ export const schema: HydrogenComponentSchema = {
           name: "showSeperator",
           label: "Seperator",
           defaultValue: true,
+        },
+        {
+          type: "select",
+          name: "aspectRatio",
+          label: "Aspect ratio",
+          defaultValue: "1/1",
+          configs: {
+            options: [
+              { value: "auto", label: "Auto" },
+              { value: "1/1", label: "Square (1:1)" },
+              { value: "3/4", label: "Portrait (3:4)" },
+              { value: "4/3", label: "Landscape (4:3)" },
+              { value: "16/9", label: "Wide (16:9)" },
+            ],
+          },
         },
       ],
     },
@@ -419,4 +446,4 @@ export const schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

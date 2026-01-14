@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { formatText, missingClass } from "~/lib/utils";
+import { formatText, missingClass } from "~/utils/misc";
 
 export function Text({
   as: Component = "span",
@@ -105,7 +105,7 @@ export function Section({
   return (
     <Component {...props} className={styles}>
       {heading && (
-        <Heading size="lead" className={padding === "y" ? paddings["x"] : ""}>
+        <Heading size="lead" className={padding === "y" ? paddings.x : ""}>
           {heading}
         </Heading>
       )}

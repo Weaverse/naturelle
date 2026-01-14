@@ -1,10 +1,8 @@
-import type {
-  HydrogenComponentProps,
-  HydrogenComponentSchema,
-} from "@weaverse/hydrogen";
-import { type VariantProps, cva } from "class-variance-authority";
-import { type CSSProperties, forwardRef } from "react";
-import { cn } from "~/lib/utils";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
+import { cva, type VariantProps } from "class-variance-authority";
+import type { CSSProperties, RefObject } from "react";
+import { cn } from "~/utils/cn";
 
 let variants = cva("", {
   variants: {
@@ -31,7 +29,10 @@ export interface ScrollingProps
   visibleOnMobile?: boolean;
 }
 
-const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
+const ScrollingText = ({
+  ref,
+  ...props
+}: ScrollingProps & { ref?: RefObject<HTMLElement | null> }) => {
   let {
     content,
     textSize,
@@ -89,15 +90,14 @@ const ScrollingText = forwardRef<HTMLElement, ScrollingProps>((props, ref) => {
       </ul>
     </section>
   );
-});
+};
 
 export default ScrollingText;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "scrolling-text",
   title: "Scrolling Text",
-  toolbar: ["general-settings", ["duplicate", "delete"]],
-  inspector: [
+  settings: [
     {
       group: "Scrolling Text",
       inputs: [
@@ -207,4 +207,4 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});

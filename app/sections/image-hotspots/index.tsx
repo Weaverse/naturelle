@@ -1,22 +1,26 @@
 import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import React, { forwardRef } from "react";
-import Description from "../atoms/Description";
-import Heading from "../atoms/Heading";
-import { Section, type SectionProps } from "../atoms/Section";
+import React from "react";
+import Heading from "~/components/heading";
+import Paragraph from "~/components/paragraph";
+import { Section, type SectionProps } from "~/components/section";
 
 type HotspotsProps = SectionProps & {
   heading?: string;
   description?: string;
 };
 
-let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
+let Hotspots = ({
+  ref,
+  ...props
+}: HotspotsProps & { ref?: React.RefObject<HTMLElement | null> }) => {
   let { heading, description, children, ...rest } = props;
   return (
     <Section ref={ref} {...rest} overflow="unset">
       {heading && <Heading data-motion="fade-up" as="h2" content={heading} />}
       {description && (
-        <Description
+        <Paragraph
           data-motion="fade-up"
           as="p"
           content={description}
@@ -36,15 +40,15 @@ let Hotspots = forwardRef<HTMLElement, HotspotsProps>((props, ref) => {
       </div>
     </Section>
   );
-});
+};
 
 export default Hotspots;
 
-export let schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   type: "hotspots",
   title: "Hotspots",
   childTypes: ["image-hotspots"],
-  inspector: [
+  settings: [
     {
       group: "Layout",
       inputs: [
@@ -107,7 +111,6 @@ export let schema: HydrogenComponentSchema = {
       ],
     },
   ],
-  toolbar: ["general-settings", ["duplicate", "delete"]],
   presets: {
     heading: "Shop the look",
     gap: 40,
@@ -117,4 +120,4 @@ export let schema: HydrogenComponentSchema = {
       },
     ],
   },
-};
+});

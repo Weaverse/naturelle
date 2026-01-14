@@ -1,9 +1,12 @@
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
-import { forwardRef } from "react";
+import { createSchema } from "@weaverse/hydrogen";
+import type { RefObject } from "react";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 
-const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
+const TestSection = ({
+  ref,
+  ...props
+}: any & { ref?: RefObject<HTMLDivElement | null> }) => {
   return (
     <div ref={ref} {...props}>
       <div className="w-full gap-4 bg-background-subtle-1 text-body flex flex-col items-center justify-center py-8">
@@ -81,12 +84,12 @@ const TestSection = forwardRef<HTMLDivElement, any>((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
-export const schema: HydrogenComponentSchema = {
+export const schema = createSchema({
   title: "Style guide",
   type: "test",
-  inspector: [
+  settings: [
     {
       group: "Settings",
       inputs: [
@@ -99,6 +102,6 @@ export const schema: HydrogenComponentSchema = {
       ],
     },
   ],
-};
+});
 
 export default TestSection;

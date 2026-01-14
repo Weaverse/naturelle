@@ -1,12 +1,9 @@
-import type {
-  ActionFunction,
-  ActionFunctionArgs,
-} from "@remix-run/server-runtime";
-import { data } from "@shopify/remix-oxygen";
-import type { CustomerCreateMutation } from "storefrontapi.generated";
-import { CUSTOMER_CREATE_MUTATION } from "~/data/mutations";
+import type { ActionFunction, ActionFunctionArgs } from "react-router";
+import { data } from "react-router";
+import type { CustomerCreateMutation } from "storefront-api.generated";
+import { CUSTOMER_CREATE_MUTATION } from "~/graphql/mutations";
 
-export let action: ActionFunction = async ({
+export const action: ActionFunction = async ({
   request,
   context,
 }: ActionFunctionArgs) => {
@@ -26,7 +23,7 @@ export let action: ActionFunction = async ({
     });
   let customer = customerCreate?.customer;
   let errors = customerCreate?.customerUserErrors || queryError;
-  if (errors && errors.length) {
+  if (errors?.length) {
     return data(
       { errors },
       {

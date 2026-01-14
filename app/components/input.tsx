@@ -1,9 +1,9 @@
-import { type VariantProps, cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
-import * as React from "react";
+import type * as React from "react";
 import { useState } from "react";
-import { IconClose } from "~/components/Icon";
-import { cn } from "~/lib/utils";
+import { IconClose } from "~/components/icon";
+import { cn } from "~/utils/cn";
 
 const inputVariants = cva(
   "w-full !shadow-none focus:ring-0 focus-visible:outline-none placeholder-text-subtle bg-transparent",
@@ -32,78 +32,81 @@ export interface InputProps
   suffix?: React.ReactNode;
   prefixElement?: React.ReactNode;
   onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      className,
-      type,
-      variant = "default",
-      prefixElement,
-      suffix,
-      onFocus,
-      onBlur,
-      onClear,
-      ...rest
-    },
-    ref,
-  ) => {
-    let [focused, setFocused] = useState(false);
-    let commonClasses = cn(
-      "w-full rounded-sm border px-3 py-3",
-      focused ? "border-border" : "border-border-subtle",
-      className,
-    );
+const Input = ({
+  className,
+  type,
+  variant = "default",
+  prefixElement,
+  suffix,
+  onFocus,
+  onBlur,
+  onClear,
+  ref,
+  ...rest
+}: InputProps) => {
+  let [focused, setFocused] = useState(false);
+  let commonClasses = cn(
+    "w-full rounded-sm border px-3 py-3",
+    focused ? "border-border" : "border-border-subtle",
+    className,
+  );
 
-    let handleClear = (e: any) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.previousSibling.value = "";
-      if (onClear) onClear(e);
-    };
-    if (type === "search") {
-      suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
+  let handleClear = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.previousSibling.value = "";
+    if (onClear) {
+      onClear(e);
     }
-    let hasChild = Boolean(prefixElement || suffix);
+  };
+  if (type === "search") {
+    suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
+  }
+  let hasChild = Boolean(prefixElement || suffix);
 
-    let rawInput = (
-      <input
-        type={type}
-        ref={ref}
-        autoComplete="off"
-        className={cn(
-          hasChild ? "relatvie grow border-none p-0" : commonClasses,
-          inputVariants({ variant }),
-        )}
-        onFocus={(e) => {
-          setFocused(true);
-          if (onFocus) onFocus(e);
-        }}
-        onBlur={(e) => {
-          setFocused(false);
-          if (onBlur) onBlur(e);
-        }}
-        {...rest}
-      />
-    );
+  let rawInput = (
+    <input
+      type={type}
+      ref={ref}
+      autoComplete="off"
+      className={cn(
+        hasChild ? "relative grow border-none p-0" : commonClasses,
+        inputVariants({ variant }),
+      )}
+      onFocus={(e) => {
+        setFocused(true);
+        if (onFocus) {
+          onFocus(e);
+        }
+      }}
+      onBlur={(e) => {
+        setFocused(false);
+        if (onBlur) {
+          onBlur(e);
+        }
+      }}
+      {...rest}
+    />
+  );
 
-    return hasChild ? (
-      <div
-        className={clsx(
-          commonClasses,
-          "flex items-center gap-2 overflow-hidden border p-2.5",
-        )}
-      >
-        {prefixElement}
-        {rawInput}
-        {suffix}
-      </div>
-    ) : (
-      rawInput
-    );
-  },
-);
+  return hasChild ? (
+    <div
+      className={clsx(
+        commonClasses,
+        "flex items-center gap-2 overflow-hidden border p-2.5",
+      )}
+    >
+      {prefixElement}
+      {rawInput}
+      {suffix}
+    </div>
+  ) : (
+    rawInput
+  );
+};
 Input.displayName = "Input";
 
 export { Input };

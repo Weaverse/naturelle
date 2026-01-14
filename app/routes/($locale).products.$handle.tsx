@@ -1,43 +1,38 @@
 import {
+  AnalyticsPageType,
+  getSeoMeta,
+  type SeoConfig,
+  type ShopifyAnalyticsProduct,
+} from "@shopify/hydrogen";
+import { getSelectedProductOptions } from "@weaverse/hydrogen";
+import { useEffect } from "react";
+import {
+  type ActionFunctionArgs,
+  data,
+  type HeadersFunction,
+  type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
   useSearchParams,
-} from "@remix-run/react";
-import {
-  AnalyticsPageType,
-  type SeoConfig,
-  type ShopifyAnalyticsProduct,
-  getSeoMeta,
-} from "@shopify/hydrogen";
-import type { SelectedOptionInput } from "@shopify/hydrogen/storefront-api-types";
-import {
-  type ActionFunctionArgs,
-  type HeadersFunction,
-  type LoaderFunctionArgs,
-  data,
-} from "@shopify/remix-oxygen";
-import { getSelectedProductOptions } from "@weaverse/hydrogen";
-import { useEffect } from "react";
-import type { ProductRecommendationsQuery } from "storefrontapi.generated";
+} from "react-router";
+import type { ProductRecommendationsQuery } from "storefront-api.generated";
 import invariant from "tiny-invariant";
-import { routeHeaders } from "~/data/cache";
+import {
+  redirectIfCombinedListing,
+  redirectIfHandleIsLocalized,
+} from "~/.server/redirect";
+import { seoPayload } from "~/.server/seo";
 import {
   PRODUCT_QUERY,
   RECOMMENDED_PRODUCTS_QUERY,
   VARIANTS_QUERY,
-} from "~/graphql/data/queries";
-import { seoPayload } from "~/lib/seo.server";
-import type { Storefront } from "~/lib/types/type-locale";
-import { createJudgemeReview, getJudgemeReviews } from "~/lib/utils/judgeme";
+} from "~/graphql/queries";
+import type { Storefront } from "~/types/type-locale";
+import { routeHeaders } from "~/utils/cache";
+import { createJudgemeReview, getJudgemeReviews } from "~/utils/judgeme";
 import { WeaverseContent } from "~/weaverse";
 
-export const headers: HeadersFunction = ({ loaderHeaders, actionHeaders }) => {
-  return {
-    ...routeHeaders,
-    ...(loaderHeaders || {}),
-    ...(actionHeaders || {}),
-  };
-};
+export const headers = routeHeaders;
 
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { handle } = params;
@@ -45,41 +40,50 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   invariant(handle, "Missing productHandle param, check route filename");
 
   const selectedOptions = getSelectedProductOptions(request);
-  let metafield = context.env.PRODUCT_CUSTOM_DATA_METAFIELD || 'custom.details';
-  const { shop, product } = await context.storefront.query(PRODUCT_QUERY, {
-    variables: {
+  const metafield =
+    context.env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
+
+  const [shopAndProduct, variants, weaverseData] = await Promise.all([
+    context.storefront.query(PRODUCT_QUERY, {
+      variables: {
+        handle: handle,
+        selectedOptions,
+        namespace: metafield.split(".")[0],
+        key: metafield.split(".")[1],
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+    }),
+    context.storefront.query(VARIANTS_QUERY, {
+      variables: {
+        handle: handle,
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+    }),
+    context.weaverse.loadPage({
+      type: "PRODUCT",
       handle: handle,
-      selectedOptions,
-      namespace: metafield.split('.')[0],
-      key: metafield.split('.')[1],
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
+    }),
+  ]);
+
+  const { shop, product } = shopAndProduct;
 
   if (!product?.id) {
     throw new Response("product", { status: 404 });
   }
 
-  if (!product.selectedVariant && product.options.length) {
-    // set the selectedVariant to the first variant if there is only one option
-    if (product.options.length < 2) {
-      product.selectedVariant = product.variants.nodes[0];
-    }
-  }
+  // Redirect if handle is localized or if it's a combined listing
+  redirectIfHandleIsLocalized(request, { handle, data: product });
+  redirectIfCombinedListing(request, product);
 
-  // In order to show which variants are available in the UI, we need to query
-  // all of them. But there might be a *lot*, so instead separate the variants
-  // into its own separate query that is deferred. So there's a brief moment
-  // where variant options might show as available when they're not, but after
-  // this deferred query resolves, the UI will update.
-  const variants = await context.storefront.query(VARIANTS_QUERY, {
-    variables: {
-      handle: handle,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
+  if (
+    !product.selectedVariant &&
+    product.options.length &&
+    product.options.length < 2
+  ) {
+    product.selectedVariant = product.variants.nodes[0];
+  }
 
   const recommended = getRecommendedProducts(context.storefront, product.id);
 
@@ -103,9 +107,9 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     url: request.url,
   });
 
-  let judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
-  let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
-  let judgemeReviews = await getJudgemeReviews(
+  const judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
+  const shop_domain = context.env.PUBLIC_STORE_DOMAIN;
+  const judgemeReviews = await getJudgemeReviews(
     judgeme_API_TOKEN,
     shop_domain,
     handle,
@@ -125,10 +129,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       totalValue: Number.parseFloat(selectedVariant.price.amount),
     },
     seo,
-    weaverseData: await context.weaverse.loadPage({
-      type: "PRODUCT",
-      handle: handle,
-    }),
+    weaverseData,
     judgemeReviews,
   };
 }
@@ -152,8 +153,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
   return data(rest, { status });
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 // function redirectToFirstVariant({
 //   product,
@@ -184,15 +185,17 @@ let useApplyFirstVariant = () => {
   useEffect(() => {
     if (!product.selectedVariant) {
       let selectedOptions = product.variants?.nodes?.[0]?.selectedOptions;
-      selectedOptions?.forEach((option: SelectedOptionInput) => {
-        searchParams.set(option.name, option.value);
-      });
+      if (selectedOptions) {
+        for (const option of selectedOptions) {
+          searchParams.set(option.name, option.value);
+        }
+      }
       setSearchParams(searchParams, {
         replace: true, // prevent adding a new entry to the history stack
       });
     }
     // eslint-disable-next-line
-  }, [product]);
+  }, [product, searchParams, setSearchParams]);
 };
 
 export default function Product() {

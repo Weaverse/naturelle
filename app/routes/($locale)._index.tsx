@@ -1,16 +1,20 @@
-import { useLoaderData, type MetaFunction } from "@remix-run/react";
-import { AnalyticsPageType, type SeoConfig, getSeoMeta } from "@shopify/hydrogen";
-import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { PageType } from "@weaverse/hydrogen";
-import { seoPayload } from "~/lib/seo.server";
+import {
+  AnalyticsPageType,
+  getSeoMeta,
+  type SeoConfig,
+} from "@shopify/hydrogen";
+import type { PageType } from "@weaverse/hydrogen";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { seoPayload } from "~/.server/seo";
+import type { Storefront } from "~/types/type-locale";
 import { WeaverseContent } from "~/weaverse";
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  const { storefront } = context;
-  let { pathPrefix } = context.storefront.i18n;
+  const storefront = context.storefront as Storefront;
+  let { pathPrefix } = storefront.i18n;
   let locale = pathPrefix.slice(1);
   let type: PageType = "INDEX";
-  
+
   if (params.locale && params.locale.toLowerCase() !== locale) {
     // Update for Weaverse: if it not locale, it probably is a custom page handle
     type = "CUSTOM";
@@ -31,7 +35,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+  return getSeoMeta(data?.seo as SeoConfig);
 };
 export default function Homepage() {
   return (

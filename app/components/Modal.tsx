@@ -1,7 +1,7 @@
-import { Link } from "@remix-run/react";
 import { useEffect } from "react";
+import { Link } from "react-router";
 import { Button } from "~/components/button";
-import { IconClose } from "./Icon";
+import { IconClose } from "./icon";
 
 export function Modal({
   children,
@@ -39,7 +39,6 @@ export function Modal({
             onKeyPress={(e) => {
               e.stopPropagation();
             }}
-            tabIndex={0}
           >
             <div className="absolute right-0 top-0">
               {cancelLink ? (
