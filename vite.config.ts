@@ -1,17 +1,19 @@
 import { reactRouter } from "@react-router/dev/vite";
 import { hydrogen } from "@shopify/hydrogen/vite";
-import { oxygen } from "@shopify/mini-oxygen/vite";
+// import { oxygen } from "@shopify/mini-oxygen/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
     hydrogen(),
-    oxygen(),
+    // oxygen(),
     reactRouter(),
     tsconfigPaths(),
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
   ],
   build: {
     // Allow a strict Content-Security-Policy

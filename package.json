@@ -20,9 +20,13 @@
     "biome": "biome check",
     "biome:fix": "biome check --write",
     "format": "biome format --write",
-    "format:check": "biome format"
+    "format:check": "biome format",
+    "cf-dev": "wrangler dev",
+    "check": "tsc --noEmit && npm run routes-check && wrangler deploy --dry-run",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.20.3",
     "@fontsource-variable/cormorant": "^5.2.5",
     "@fontsource-variable/nunito-sans": "^5.2.5",
     "@fontsource-variable/open-sans": "^5.2.5",
