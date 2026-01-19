@@ -1,6 +1,7 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import { reactRouter } from "@react-router/dev/vite";
 import { hydrogen } from "@shopify/hydrogen/vite";
-import { oxygen } from "@shopify/mini-oxygen/vite";
+// import { oxygen } from "@shopify/mini-oxygen/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 import type { Plugin } from "vite";
@@ -31,7 +32,8 @@ function ssrStubClientOnlyModules(): Plugin {
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     hydrogen(),
-    oxygen(),
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    // oxygen(),
     reactRouter(),
     tailwindcss(),
     ssrStubClientOnlyModules(),

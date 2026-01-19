@@ -6,6 +6,7 @@ node_modules
 /public/build
 /.mf
 .env
+.dev.vars
 .vscode
 .idea
 .shopify
