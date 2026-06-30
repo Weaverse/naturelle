@@ -301,6 +301,7 @@ export const ARTICLE_QUERY = `#graphql
     $articleHandle: String!
   ) @inContext(language: $language) {
     blog(handle: $blogHandle) {
+      handle
       articleByHandle(handle: $articleHandle) {
         ...Article
       }
