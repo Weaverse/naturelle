@@ -12,7 +12,7 @@ import { seoPayload } from "~/.server/seo";
 import { BLOGS_PAGE_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
 import { PAGINATION_SIZE } from "~/utils/const";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -56,14 +56,17 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const seo = seoPayload.blog({ blog, url: request.url });
 
+  const weaverseData = await context.weaverse.loadPage({
+    type: "BLOG",
+    handle: params.blogHandle,
+  });
+  validateWeaverseData(weaverseData);
+
   return data({
     blog,
     articles,
     seo,
-    weaverseData: await context.weaverse.loadPage({
-      type: "BLOG",
-      handle: params.blogHandle,
-    }),
+    weaverseData,
   });
 };
 

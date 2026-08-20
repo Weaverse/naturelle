@@ -1,6 +1,17 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["@weaverse/biome"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["!.weaverse"]
+  },
+  "formatter": {
+    "lineEnding": "crlf"
+  },
   "linter": {
     "rules": {
       "security": {
@@ -14,26 +25,44 @@
         "noMagicNumbers": "off",
         "noDescendingSpecificity": "off",
         "useConsistentTypeDefinitions": "off",
-        "noNestedTernary": "off"
+        "useConsistentArrowReturn": "off",
+        "noNestedTernary": "off",
+        "useBlockStatements": "off",
+        "useConsistentArrayType": "off",
+        "useReadonlyClassProperties": "off",
+        "useConsistentMemberAccessibility": "off",
+        "useConsistentBuiltinInstantiation": "off",
+        "useAtIndex": "off",
+        "noIncrementDecrement": "off",
+        "noNonNullAssertion": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",
         "useAwait": "off",
         "noConsole": "off",
         "noAlert": "off",
-        "noArrayIndexKey": "off"
-      },
-      "nursery": {
-        "useConsistentArrowReturn": "off",
-        "noUnnecessaryConditions": "off"
+        "noArrayIndexKey": "off",
+        "noUnnecessaryConditions": "off",
+        "noNonNullAssertedOptionalChain": "off",
+        "noShadow": "off",
+        "noImplicitAnyLet": "off",
+        "noEvolvingTypes": "off",
+        "noDeprecatedImports": "off",
+        "noReactForwardRef": "off",
+        "noGlobalIsNan": "off",
+        "noEmptyBlockStatements": "off"
       },
       "correctness": {
         "noUnusedVariables": "off",
-        "useUniqueElementIds": "off"
+        "useUniqueElementIds": "off",
+        "useExhaustiveDependencies": "off",
+        "noUnusedFunctionParameters": "off",
+        "useHookAtTopLevel": "off"
       },
       "performance": {
         "noNamespaceImport": "off",
-        "useTopLevelRegex": "off"
+        "useTopLevelRegex": "off",
+        "noImgElement": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": {
@@ -42,12 +71,24 @@
             "maxAllowedComplexity": 50
           }
         },
-        "noExcessiveLinesPerFunction": "off"
+        "noExcessiveLinesPerFunction": "off",
+        "noForEach": "off",
+        "noUselessFragments": "off",
+        "noBannedTypes": "off",
+        "useOptionalChain": "off",
+        "useLiteralKeys": "off",
+        "noImplicitCoercions": "off"
       },
       "a11y": {
         "noNoninteractiveElementInteractions": "off",
         "useKeyWithClickEvents": "off",
-        "noStaticElementInteractions": "off"
+        "noStaticElementInteractions": "off",
+        "noRedundantRoles": "off",
+        "noInteractiveElementToNoninteractiveRole": "off",
+        "useButtonType": "off",
+        "useAriaPropsSupportedByRole": "off",
+        "useFocusableInteractive": "off",
+        "useSemanticElements": "off"
       }
     }
   },

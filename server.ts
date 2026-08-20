@@ -1,7 +1,7 @@
 import * as remixBuild from "virtual:react-router/server-build"; // Virtual entry point for the app
 import { storefrontRedirect } from "@shopify/hydrogen";
 import { createRequestHandler } from "@shopify/hydrogen/oxygen";
-import { createAppLoadContext } from "~/.server/context";
+import { createHydrogenRouterContext } from "~/.server/context";
 
 /**
  * Export a fetch handler in module format.
@@ -13,7 +13,7 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
-      const appLoadContext = await createAppLoadContext(
+      const hydrogenContext = await createHydrogenRouterContext(
         request,
         env,
         executionContext,
@@ -26,15 +26,15 @@ export default {
       const handleRequest = createRequestHandler({
         build: remixBuild,
         mode: process.env.NODE_ENV,
-        getLoadContext: () => appLoadContext,
+        getLoadContext: () => hydrogenContext,
       });
 
       const response = await handleRequest(request);
 
-      if (appLoadContext.session.isPending) {
+      if (hydrogenContext.session.isPending) {
         response.headers.set(
           "Set-Cookie",
-          await appLoadContext.session.commit(),
+          await hydrogenContext.session.commit(),
         );
       }
 
@@ -47,7 +47,7 @@ export default {
         return storefrontRedirect({
           request,
           response,
-          storefront: appLoadContext.storefront,
+          storefront: hydrogenContext.storefront,
         });
       }
 

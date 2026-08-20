@@ -85,7 +85,8 @@ let variants = cva(
   },
 );
 
-let ReactPlayer = lazy(() => import("react-player/lazy"));
+// react-player v3 is ESM-only and lazy-loads individual players internally.
+const ReactPlayer = lazy(() => import("react-player"));
 
 function getPlayerSize(id: string) {
   if (isBrowser) {
@@ -184,21 +185,15 @@ let VideoBanner = ({
             fallback={<div className="w-full h-full bg-background"></div>}
           >
             <ReactPlayer
-              url={videoURL2 || videoURL.url}
+              src={videoURL2 || videoURL.url}
               loop={true}
               width={size.width}
               height={size.height}
               controls={false}
               className="aspect-video"
-              config={{
-                file: {
-                  attributes: {
-                    playsInline: true,
-                    autoPlay: true,
-                    muted: true,
-                  },
-                },
-              }}
+              playing
+              muted
+              playsInline
             />
           </Suspense>
         )}

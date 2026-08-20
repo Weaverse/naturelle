@@ -7,7 +7,7 @@ import type { MetaFunction } from "react-router";
 import { data, type LoaderFunctionArgs } from "react-router";
 import { seoPayload } from "~/.server/seo";
 import { COLLECTIONS_QUERY } from "~/graphql/queries";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
@@ -22,10 +22,15 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     collections,
     url: request.url,
   });
+  const weaverseData = await context.weaverse.loadPage({
+    type: "COLLECTION_LIST",
+  });
+  validateWeaverseData(weaverseData);
+
   return data({
     collections,
     seo,
-    weaverseData: await context.weaverse.loadPage({ type: "COLLECTION_LIST" }),
+    weaverseData,
   });
 }
 

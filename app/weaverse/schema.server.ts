@@ -1,5 +1,6 @@
-import type { HydrogenThemeSchema } from "@weaverse/hydrogen";
-import pkg from "../../package.json";
+import type { HydrogenThemeSchema, InspectorGroup } from "@weaverse/hydrogen";
+import { COUNTRIES, DEFAULT_LOCALE } from "~/utils/const";
+import { version } from "../../package.json";
 
 let variantSwatch = {
   configs: [],
@@ -10,13 +11,27 @@ let variantSwatch = {
 };
 export const themeSchema: HydrogenThemeSchema = {
   info: {
-    version: pkg.version,
+    version,
     author: "Weaverse",
     name: "Naturélle",
     authorProfilePhoto:
       "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/Weaverse_logo_-_3000x_e2fa8c13-dac2-4dcb-a2c2-f7aaf7a58169.png?v=1698245759",
-    documentationUrl: "https://weaverse.io/docs",
-    supportUrl: "https://weaverse.io/contact",
+    documentationUrl: "https://docs.weaverse.io",
+    supportUrl: "https://help.weaverse.io/",
+  },
+  i18n: {
+    urlStructure: "url-path",
+    defaultLocale: DEFAULT_LOCALE,
+    shopLocales: Object.entries(COUNTRIES).map(
+      ([pathPrefix, { label, language, country }]) => {
+        return {
+          pathPrefix: pathPrefix === "default" ? "" : pathPrefix,
+          label,
+          language,
+          country,
+        };
+      },
+    ),
   },
   settings: [
     {
@@ -27,7 +42,7 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "swatches",
           label: "Config swatches",
           defaultValue: variantSwatch,
-        },
+        } as unknown as InspectorGroup["inputs"][number],
       ],
     },
     {

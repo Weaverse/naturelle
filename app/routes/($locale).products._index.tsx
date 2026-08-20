@@ -10,7 +10,7 @@ import { seoPayload } from "~/.server/seo";
 import { ALL_PRODUCTS_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
 import { PAGINATION_SIZE } from "~/utils/const";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -50,12 +50,15 @@ export async function loader({
     },
   });
 
+  const weaverseData = await weaverse.loadPage({
+    type: "ALL_PRODUCTS",
+  });
+  validateWeaverseData(weaverseData);
+
   return response({
     products: data.products,
     seo,
-    weaverseData: await weaverse.loadPage({
-      type: "ALL_PRODUCTS",
-    }),
+    weaverseData,
   });
 }
 

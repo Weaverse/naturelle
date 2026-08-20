@@ -7,7 +7,7 @@ import { redirectIfHandleIsLocalized } from "~/.server/redirect";
 import { seoPayload } from "~/.server/seo";
 import { ARTICLE_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -31,6 +31,8 @@ export async function loader(args: LoaderFunctionArgs) {
       handle: params.articleHandle,
     }),
   ]);
+
+  validateWeaverseData(weaverseData);
 
   const { blog } = shopAndBlog;
 
