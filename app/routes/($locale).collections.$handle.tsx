@@ -19,7 +19,7 @@ import { routeHeaders } from "~/utils/cache";
 import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
 import { parseAsCurrency } from "~/utils/locale";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -67,6 +67,8 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       handle: handle,
     }),
   ]);
+
+  validateWeaverseData(weaverseData);
 
   const { collection, collections } = shopAndCollections;
 

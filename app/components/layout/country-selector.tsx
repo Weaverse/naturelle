@@ -3,7 +3,7 @@ import type { CartBuyerIdentityInput } from "@shopify/hydrogen/storefront-api-ty
 import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useFetcher, useLocation, useRouteLoaderData } from "react-router";
+import { useFetcher, useLocation } from "react-router";
 import { Button } from "~/components/button";
 import { IconCaret, IconCheck } from "~/components/icon";
 import { useRootLoaderData } from "~/root";

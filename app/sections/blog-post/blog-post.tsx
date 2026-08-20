@@ -1,6 +1,5 @@
 import { Image } from "@shopify/hydrogen";
 import type { Article } from "@shopify/hydrogen/storefront-api-types";
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";

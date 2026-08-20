@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import {
   type ActionFunctionArgs,
   data,
-  type HeadersFunction,
   type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
@@ -30,7 +29,7 @@ import {
 import type { Storefront } from "~/types/type-locale";
 import { routeHeaders } from "~/utils/cache";
 import { createJudgemeReview, getJudgemeReviews } from "~/utils/judgeme";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -66,6 +65,8 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       handle: handle,
     }),
   ]);
+
+  validateWeaverseData(weaverseData);
 
   const { shop, product } = shopAndProduct;
 

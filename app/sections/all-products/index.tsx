@@ -1,7 +1,5 @@
 import { Pagination } from "@shopify/hydrogen";
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
-import type { RefObject } from "react";
 import { Children } from "react";
 import { useLoaderData } from "react-router";
 import type { AllProductsQuery } from "storefront-api.generated";

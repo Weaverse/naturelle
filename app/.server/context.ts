@@ -1,16 +1,29 @@
 import { createHydrogenContext } from "@shopify/hydrogen";
 import { WeaverseClient } from "@weaverse/hydrogen";
 import { AppSession } from "~/.server/session";
-import { CART_QUERY_FRAGMENT } from "~/graphql/fragments";
+import {
+  CART_MUTATION_FRAGMENT,
+  CART_QUERY_FRAGMENT,
+} from "~/graphql/fragments";
 import { getLocaleFromRequest } from "~/utils/locale";
 import { components } from "~/weaverse/components";
 import { themeSchema } from "~/weaverse/schema.server";
 
+const additionalContext = {
+  // Additional context for custom properties, CMS clients, 3P SDKs, etc.
+} as const;
+
+type AdditionalContextType = typeof additionalContext;
+
+declare global {
+  interface HydrogenAdditionalContext extends AdditionalContextType {}
+}
+
 /**
  * The context implementation is separate from server.ts
  * so that type can be extracted for AppLoadContext
- * */
-export async function createAppLoadContext(
+ */
+export async function createHydrogenRouterContext(
   request: Request,
   env: Env,
   executionContext: ExecutionContext,
@@ -28,27 +41,33 @@ export async function createAppLoadContext(
     AppSession.init(request, [env.SESSION_SECRET]),
   ]);
 
-  const hydrogenContext = createHydrogenContext({
-    env,
-    request,
-    cache,
-    waitUntil,
-    session,
-    i18n: getLocaleFromRequest(request),
-    cart: {
-      queryFragment: CART_QUERY_FRAGMENT,
-    },
-  });
-
-  Object.assign(hydrogenContext, {
-    weaverse: new WeaverseClient({
-      ...hydrogenContext,
+  const hydrogenContext = createHydrogenContext(
+    {
+      env,
       request,
       cache,
-      themeSchema,
-      components,
-    }),
+      waitUntil,
+      session,
+      i18n: getLocaleFromRequest(request),
+      cart: {
+        queryFragment: CART_QUERY_FRAGMENT,
+        mutateFragment: CART_MUTATION_FRAGMENT,
+      },
+    },
+    additionalContext,
+  );
+
+  const weaverse = new WeaverseClient({
+    ...hydrogenContext,
+    request,
+    cache,
+    themeSchema,
+    components,
   });
+
+  // Add weaverse directly to the hydrogenContext instance
+  // This preserves the RouterContextProvider class instance
+  Object.assign(hydrogenContext, { weaverse });
 
   return hydrogenContext;
 }

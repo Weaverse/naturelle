@@ -1,4 +1,3 @@
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React from "react";

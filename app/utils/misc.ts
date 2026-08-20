@@ -119,7 +119,6 @@ export function isLocalPath(url: string) {
 }
 
 export function removeFalsy<T = any>(
-  // biome-ignore lint/complexity/noBannedTypes: <explanation>
   obj: {},
   falsyValues: any[] = ["", null, undefined],
 ): T {

@@ -29,7 +29,6 @@ import {
   UPDATE_ADDRESS_MUTATION,
 } from "~/graphql/customer-account/customer-address-mutations";
 import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/customer-orders-query";
-import { CUSTOMER_UPDATE_MUTATION } from "~/graphql/customer-account/customer-update-mutation";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Orders" }];

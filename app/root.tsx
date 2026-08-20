@@ -18,6 +18,7 @@ import {
   Scripts,
   ScrollRestoration,
   type ShouldRevalidateFunction,
+  useLocation,
   useMatches,
   useRouteError,
   useRouteLoaderData,
@@ -98,10 +99,9 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({ request, context }: LoaderFunctionArgs) {
-  const [layout, swatchesConfigs] = await Promise.all([
+  const [layout, swatchesConfigs, weaverseTheme] = await Promise.all([
     getLayoutData(context),
     getSwatchesConfigs(context),
-    // Add other queries here, so that they are loaded in parallel
     context.weaverse.loadThemeSettings(),
   ]);
 
@@ -125,7 +125,7 @@ async function loadCriticalData({ request, context }: LoaderFunctionArgs) {
       language: storefront.i18n.language,
     },
     selectedLocale: storefront.i18n,
-    weaverseTheme: await context.weaverse.loadThemeSettings(),
+    weaverseTheme,
     googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
     swatchesConfigs,
   };
@@ -149,10 +149,23 @@ export const meta = ({ data }: MetaArgs<typeof loader>) => {
   return getSeoMeta(data?.seo as SeoConfig);
 };
 
-export function Layout({ children }: { children?: React.ReactNode }) {
+export const Layout = withWeaverse(function RootLayout({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
+  const location = useLocation();
   const nonce = useNonce();
   const data = useRouteLoaderData<RootLoader>("root");
   const locale = data?.selectedLocale ?? DEFAULT_LOCALE;
+
+  // Bypass Weaverse theme layout for Hydrogen dev tools
+  if (
+    location.pathname === "/subrequest-profiler" ||
+    location.pathname === "/graphiql"
+  ) {
+    return children;
+  }
 
   return (
     <html lang={locale.language}>
@@ -189,13 +202,13 @@ export function Layout({ children }: { children?: React.ReactNode }) {
       </body>
     </html>
   );
-}
+});
 
 function App() {
   return <Outlet />;
 }
 
-export default withWeaverse(App);
+export default App;
 
 export function ErrorBoundary() {
   const routeError = useRouteError();

@@ -1,6 +1,5 @@
 import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { RefObject } from "react";

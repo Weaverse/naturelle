@@ -85,7 +85,8 @@ let variants = cva(
   },
 );
 
-let ReactPlayer = lazy(() => import("react-player/lazy"));
+// react-player v3 is ESM-only and lazy-loads individual players internally.
+const ReactPlayer = lazy(() => import("react-player"));
 
 function getPlayerSize(id: string) {
   if (isBrowser) {
@@ -136,7 +137,6 @@ let VideoBanner = ({
   });
 
   // Use `useCallback` so we don't recreate the function on each render
-  // biome-ignore lint/correctness/useExhaustiveDependencies: callback refs need to be stable
   let setRefs = useCallback(
     (node: HTMLElement) => {
       // Ref's from useRef needs to have the node assigned to `current`
@@ -153,7 +153,6 @@ let VideoBanner = ({
     setSize(getPlayerSize(id));
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: handleResize handles its own dependencies
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -184,21 +183,15 @@ let VideoBanner = ({
             fallback={<div className="w-full h-full bg-background"></div>}
           >
             <ReactPlayer
-              url={videoURL2 || videoURL.url}
+              src={videoURL2 || videoURL.url}
               loop={true}
               width={size.width}
               height={size.height}
               controls={false}
               className="aspect-video"
-              config={{
-                file: {
-                  attributes: {
-                    playsInline: true,
-                    autoPlay: true,
-                    muted: true,
-                  },
-                },
-              }}
+              playing
+              muted
+              playsInline
             />
           </Suspense>
         )}

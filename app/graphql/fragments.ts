@@ -322,3 +322,12 @@ export const CART_QUERY_FRAGMENT = `#graphql
     }
   }
 ` as const;
+
+// Mutation fragment reuses the query fragment but:
+// 1. Renames the fragment so Hydrogen uses it for mutation responses
+// 2. Replaces the $numCartLines variable with a hardcoded value because
+// mutation operations don't declare that variable (only CART_QUERY does).
+export const CART_MUTATION_FRAGMENT = CART_QUERY_FRAGMENT.replace(
+  "fragment CartApiQuery on Cart",
+  "fragment CartApiMutation on Cart",
+).replaceAll("$numCartLines", "250");

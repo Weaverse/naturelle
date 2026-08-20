@@ -1,4 +1,3 @@
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";

@@ -1,4 +1,3 @@
-import type { HydrogenComponentSchema } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import type React from "react";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";

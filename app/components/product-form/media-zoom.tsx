@@ -46,7 +46,6 @@ export function ZoomModal({
     }
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "ArrowRight" || event.key === "ArrowDown") {
