@@ -30,7 +30,7 @@ const SECTION_HEIGHTS = {
     mobile: "80vh",
   },
   full: {
-    desktop: "calc(var(--screen-height, 100vh)",
+    desktop: "calc(var(--screen-height, 100vh))",
     mobile: "calc(var(--screen-height, 80vh))",
   },
   custom: null,

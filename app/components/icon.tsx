@@ -247,14 +247,14 @@ export function IconClose(props: IconProps) {
         y1="4.30806"
         x2="15.7556"
         y2="15.6218"
-        strokeWidth="1.25"
+        strokeWidth={props.strokeWidth || "1.25"}
       />
       <line
         y1="-0.625"
         x2="16"
         y2="-0.625"
         transform="matrix(-0.707107 0.707107 0.707107 0.707107 16 4.75)"
-        strokeWidth="1.25"
+        strokeWidth={props.strokeWidth || "1.25"}
       />
     </Icon>
   );
@@ -722,6 +722,115 @@ export function IconCheck(props: IconProps) {
         strokeLinejoin="round"
         strokeWidth="1.5"
         d="m7.04 10.37 2.42 2.41 3.5-5.56"
+      />
+    </Icon>
+  );
+}
+
+export function IconAnnouncementChevron({
+  direction = "right",
+  ...props
+}: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 8 12" fill="none">
+      <title>{direction === "left" ? "Previous" : "Next"}</title>
+      <path
+        d={direction === "left" ? "M6 10 2 6l4-4" : "M2 10l4-4-4-4"}
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </Icon>
+  );
+}
+export function IconAnnouncementSparkle(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 20 20" fill="none">
+      <title>Sparkle</title>
+      <path
+        d="M10.086 12.4 8.586 16.47a.5.5 0 0 1-.922 0L6.164 12.4a.5.5 0 0 0-.275-.275L1.82 10.625a.5.5 0 0 1 0-.922l4.07-1.5a.5.5 0 0 0 .274-.275L7.664 3.86a.5.5 0 0 1 .922 0l1.5 4.07a.5.5 0 0 0 .275.274l4.07 1.5a.5.5 0 0 1 0 .922l-4.07 1.5a.5.5 0 0 0-.275.274Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.25 3.25v3.75M16.125 5.125h-3.75M18 7.625v2.5M19.25 8.875h-2.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
+export function IconAnnouncementTicket(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 20 16" fill="none">
+      <title>Ticket</title>
+      <path
+        d="M1.875 12.062a1.062 1.062 0 0 1 0-2.124V7.937a1.062 1.062 0 0 1 0-2.124V4a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v1.813a1.062 1.062 0 0 1 0 2.124v1.999a1.062 1.062 0 0 1 0 2.124V12a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-.938Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 2.375v11.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </Icon>
+  );
+}
+
+export function IconAnnouncementStar(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 10 10" fill="none">
+      <title>Star</title>
+      <path
+        d="M4.883.033a.22.22 0 0 1 .314.09l.963 1.95a.88.88 0 0 0 .664.484l2.153.315a.22.22 0 0 1 .122.377L7.543 4.765a.88.88 0 0 0-.255.783l.368 2.14a.22.22 0 0 1-.322.235L5.41 6.91a.88.88 0 0 0-.822 0L2.664 7.923a.22.22 0 0 1-.32-.234l.367-2.141a.88.88 0 0 0-.255-.783L.899 3.25a.22.22 0 0 1 .123-.377l2.152-.314a.88.88 0 0 0 .665-.484l.963-1.95a.22.22 0 0 1 .181-.091Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </Icon>
+  );
+}
+
+export function IconAnnouncementTree(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="1060 34 20 20" fill="none">
+      <title>Tree</title>
+      <path
+        d="M1070 52.125V40.875"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1070 45.875L1066.25 44"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1070 44L1073.75 42.125"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1070.35 48.1562C1070.93 48.5468 1071.57 48.8137 1072.26 48.9401C1072.94 49.0664 1073.64 49.0494 1074.31 48.8902C1074.99 48.7309 1075.62 48.4328 1076.18 48.015C1076.73 47.5971 1077.19 47.0685 1077.53 46.4629C1077.87 45.8573 1078.08 45.1878 1078.14 44.4971C1078.21 43.8065 1078.13 43.1097 1077.91 42.4511C1077.69 41.7925 1077.34 41.1866 1076.88 40.6718C1076.41 40.157 1075.84 39.7446 1075.21 39.4609C1075.07 39.391 1074.96 39.275 1074.9 39.1328C1074.49 38.1679 1073.81 37.3441 1072.94 36.7648C1072.07 36.1855 1071.05 35.8765 1070 35.8765C1068.95 35.8765 1067.93 36.1855 1067.06 36.7648C1066.19 37.3441 1065.51 38.1679 1065.1 39.1328C1065.04 39.275 1064.93 39.391 1064.79 39.4609C1064.16 39.7446 1063.59 40.157 1063.12 40.6718C1062.66 41.1866 1062.31 41.7925 1062.09 42.4511C1061.87 43.1097 1061.79 43.8065 1061.86 44.4971C1061.92 45.1878 1062.13 45.8573 1062.47 46.4629C1062.81 47.0685 1063.27 47.5971 1063.82 48.015C1064.38 48.4328 1065.01 48.7309 1065.69 48.8902C1066.36 49.0494 1067.06 49.0664 1067.74 48.9401C1068.43 48.8137 1069.08 48.5468 1069.65 48.1562C1069.75 48.0876 1069.88 48.0511 1070 48.0511C1070.13 48.0511 1070.25 48.0876 1070.35 48.1562Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </Icon>
   );

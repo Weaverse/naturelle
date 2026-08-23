@@ -1,63 +1,64 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 
 export function GlobalStyle() {
-  const settings = useThemeSettings();
-  if (settings) {
-    const {
-      colorBackground,
-      colorTextPrimary,
-      colorTextSubtle,
-      colorTextInverse,
-      topbarTextColor,
-      topbarBorderColor,
-      topbarBgColor,
-      headerText,
-      transparentHeader,
-      headerBgColor,
-      footerText,
-      footerBgColor,
-      borderColor,
-      borderSubtleColor,
-      drawerBgColor,
-      buttonTextPrimary,
-      buttonBgColorPrimary,
-      buttonBorderColorPrimary,
-      buttonTextHoverPrimary,
-      buttonBgHoverPrimary,
-      buttonBorderHoverPrimary,
-      buttonTextSecondary,
-      buttonBgColorSecondary,
-      buttonBorderColorSecondary,
-      buttonTextHoverSecondary,
-      buttonBgHoverSecondary,
-      buttonBorderHoverSecondary,
-      buttonTextOutline,
-      buttonBorderColorOutline,
-      buttonTextHoverOutline,
-      buttonBorderHoverOutline,
-      labelText,
-      labelBgSale,
-      labelBgNew,
-      labelBgSoldOut,
-      bodyBaseSize,
-      bodyBaseSpacing,
-      bodyBaseLineHeight,
-      headingBaseSize,
-      headingBaseSpacing,
-      headingBaseLineHeight,
-      navHeightDesktop,
-      navHeightTablet,
-      footerMenuBackgroundColor,
-      pageWidth,
-    } = settings;
+	const settings = useThemeSettings();
+	if (settings) {
+		const {
+			colorBackground,
+			colorTextPrimary,
+			colorTextSubtle,
+			colorTextInverse,
+			topbarTextColor,
+			topbarBorderColor,
+			topbarBgColor,
+			headerText,
+			transparentHeader,
+			headerBgColor,
+			footerText,
+			footerBgColor,
+			borderColor,
+			borderSubtleColor,
+			drawerBgColor,
+			buttonTextPrimary,
+			buttonBgColorPrimary,
+			buttonBorderColorPrimary,
+			buttonTextHoverPrimary,
+			buttonBgHoverPrimary,
+			buttonBorderHoverPrimary,
+			buttonTextSecondary,
+			buttonBgColorSecondary,
+			buttonBorderColorSecondary,
+			buttonTextHoverSecondary,
+			buttonBgHoverSecondary,
+			buttonBorderHoverSecondary,
+			buttonTextOutline,
+			buttonBorderColorOutline,
+			buttonTextHoverOutline,
+			buttonBorderHoverOutline,
+			buttonBgHoverOutline,
+			labelText,
+			labelBgSale,
+			labelBgNew,
+			labelBgSoldOut,
+			bodyBaseSize,
+			bodyBaseSpacing,
+			bodyBaseLineHeight,
+			headingBaseSize,
+			headingBaseSpacing,
+			headingBaseLineHeight,
+			navHeightDesktop,
+			navHeightTablet,
+			footerMenuBackgroundColor,
+			pageWidth,
+		} = settings;
 
-    return (
-      <style
-        id="global-theme-style"
-        key="global-theme-style"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: `
+		return (
+			<style
+				id="global-theme-style"
+				key="global-theme-style"
+				suppressHydrationWarning
+				dangerouslySetInnerHTML={{
+					__html: `
             :root {
               /* Colors */
               --color-background: ${colorBackground};
@@ -196,14 +197,15 @@ export function GlobalStyle() {
               cursor: pointer;
             }
             .btn-outline:hover{
+              background-color: ${buttonBgHoverOutline}!important;
               color: ${buttonTextHoverOutline}!important;
               border: 1px solid ${buttonBorderHoverOutline} !important;
               transition: 0.3s background-color color border;
             }
           `,
-        }}
-      />
-    );
-  }
-  return null;
+				}}
+			/>
+		);
+	}
+	return null;
 }

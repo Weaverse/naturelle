@@ -8,14 +8,14 @@
   --font-heading: Cormorant Variable, ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
 
   /* Breakpoints */
-  --breakpoint-sm: 32em;
-  --breakpoint-md: 48em;
-  --breakpoint-lg: 64em;
-  --breakpoint-xl: 80em;
+  --breakpoint-sm: 26.875em;
+  --breakpoint-md: 49.125em;
+  --breakpoint-lg: 90em;
   --breakpoint-2xl: 90rem;
 
   /* Container */
   --container-2xl: 1440px;
+  --container-lg: 1440px;
 
   /* Colors */
   --color-background: var(--color-background);

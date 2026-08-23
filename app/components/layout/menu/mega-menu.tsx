@@ -4,6 +4,7 @@ import clsx from "clsx";
 import type React from "react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { IconCaret } from "~/components/icon";
 import { Image } from "~/components/image";
 import {
   type EnhancedMenu,
@@ -26,7 +27,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
         onValueChange={setValue}
         onMouseLeave={() => setValue(null)}
       >
-        <nav className="hidden lg:flex grow justify-center h-full z-30">
+        <nav className="z-30 hidden h-full grow items-center justify-center gap-9 md:flex">
           {items.map((menuItem) => {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
@@ -38,8 +39,8 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 <Menubar.Trigger
                   asChild={!hasSubmenu}
                   className={clsx([
-                    "cursor-pointer px-3 py-2 h-full flex items-center gap-1.5",
-                    "focus:outline-none uppercase",
+                    "flex h-full cursor-pointer items-center gap-1 px-0 py-2",
+                    "text-base font-semibold leading-[1.6] tracking-[-0.16px] focus:outline-none",
                   ])}
                   onMouseEnter={() => {
                     if (typeOpenMenu === "mouseHover" && value !== id) {
@@ -50,6 +51,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   {hasSubmenu ? (
                     <>
                       <span className="text-animation">{title}</span>
+                      <IconCaret direction="down" className="size-4" />
                     </>
                   ) : (
                     <Link to={to} className="transition-none">

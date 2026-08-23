@@ -3,7 +3,13 @@ import clsx from "clsx";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({
+  className,
+  width,
+}: {
+  className?: string;
+  width?: number;
+}) {
   let settings = useThemeSettings();
   let { logoData, transparentLogoData, logoWidth } = settings;
   return (
@@ -17,7 +23,7 @@ export function Logo({ className }: { className?: string }) {
     >
       <div
         className="relative"
-        style={{ width: logoData ? logoWidth : "auto" }}
+        style={{ width: logoData ? (width ?? logoWidth) : "auto" }}
       >
         <>
           {logoData && (

@@ -62,7 +62,7 @@ const Input = ({
       onClear(e);
     }
   };
-  if (type === "search") {
+  if (type === "search" && !suffix) {
     suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
   }
   let hasChild = Boolean(prefixElement || suffix);

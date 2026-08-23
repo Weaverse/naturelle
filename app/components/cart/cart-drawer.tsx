@@ -3,13 +3,14 @@ import { Suspense } from "react";
 import { Await, useRouteLoaderData } from "react-router";
 import { useCartFetchers } from "~/hooks/use-cart-fetchers";
 import type { RootLoader } from "~/root";
+import { cn } from "~/utils/cn";
 import { Drawer, useDrawer } from "../drawer";
 import { IconBag } from "../icon";
 import { Link } from "../link";
 import { CartMain } from "./cart";
 import { CartLoading } from "./cart-loading";
 
-export function CartDrawer() {
+export function CartDrawer({ compact = false }: { compact?: boolean }) {
   const {
     isOpen: isCartOpen,
     openDrawer: openCart,
@@ -23,10 +24,23 @@ export function CartDrawer() {
         fallback={
           <Link
             to="/cart"
-            className="focus:ring-border relative flex h-8 w-8 items-center justify-center"
+            className={cn(
+              "focus:ring-border relative flex items-center justify-center",
+              compact ? "size-5" : "size-8",
+            )}
           >
-            <IconBag className="h-6 w-6" viewBox="0 0 24 24" />
-            <div className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-(--color-header-text) p-0.5 text-center text-[0.625rem] font-medium leading-none text-(--color-transparent-header) subpixel-antialiased">
+            <IconBag
+              className={compact ? "size-5" : "size-6"}
+              viewBox="0 0 24 24"
+            />
+            <div
+              className={cn(
+                "absolute flex items-center justify-center rounded-full bg-(--color-header-text) text-center text-[0.625rem] font-medium leading-none text-(--color-transparent-header) subpixel-antialiased",
+                compact
+                  ? "-right-1.5 -top-1.5 size-3.5"
+                  : "right-0 top-0 size-4 p-0.5",
+              )}
+            >
               <span>0</span>
             </div>
           </Link>
@@ -36,10 +50,23 @@ export function CartDrawer() {
           {(cart) => (
             <button
               onClick={openCart}
-              className="focus:ring-border relative flex h-8 w-8 items-center justify-center"
+              className={cn(
+                "focus:ring-border relative flex items-center justify-center",
+                compact ? "size-5" : "size-8",
+              )}
             >
-              <IconBag className="h-6 w-6" viewBox="0 0 24 24" />
-              <div className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-(--color-header-text) p-0.5 text-center text-[0.625rem] font-medium leading-none text-(--color-transparent-header) subpixel-antialiased">
+              <IconBag
+                className={compact ? "size-5" : "size-6"}
+                viewBox="0 0 24 24"
+              />
+              <div
+                className={cn(
+                  "absolute flex items-center justify-center rounded-full bg-(--color-header-text) text-center text-[0.625rem] font-medium leading-none text-(--color-transparent-header) subpixel-antialiased",
+                  compact
+                    ? "-right-1.5 -top-1.5 size-3.5"
+                    : "right-0 top-0 size-4 p-0.5",
+                )}
+              >
                 <span>{cart?.totalQuantity || 0}</span>
               </div>
             </button>

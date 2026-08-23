@@ -21,22 +21,31 @@ export function HeaderMenuDrawer({
   let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
   return (
     <nav
-      className={clsx("z-30 flex items-center justify-start gap-3", className)}
-      role="navigation"
+      className={clsx(
+        "z-30 flex h-12.5 min-w-0 flex-1 flex-col items-start gap-2.5 py-2",
+        className,
+      )}
     >
-      <button className="text-left" onClick={openDrawer}>
-        <IconListMenu />
-      </button>
-      <SearchToggle isOpenDrawerHearder={true} />
-      <Drawer
-        open={showMenu}
-        onClose={closeDrawer}
-        openFrom="left"
-        heading="MENU"
-        isForm="menu"
-      >
-        <DrawerMenu menu={menu} closeDrawer={closeDrawer} />
-      </Drawer>
+      <div className="flex h-12.5 self-stretch items-center gap-3">
+        <button
+          type="button"
+          aria-label="Open menu"
+          className="flex size-6 shrink-0 items-center justify-center text-left"
+          onClick={openDrawer}
+        >
+          <IconListMenu className="size-6" />
+        </button>
+        <SearchToggle isOpenDrawerHearder={true} className="md:hidden" />
+        <Drawer
+          open={showMenu}
+          onClose={closeDrawer}
+          openFrom="left"
+          heading="MENU"
+          isForm="menu"
+        >
+          <DrawerMenu menu={menu} closeDrawer={closeDrawer} />
+        </Drawer>
+      </div>
     </nav>
   );
 }
