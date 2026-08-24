@@ -58,18 +58,22 @@ export function ProductCard({
     pcardShowVendor,
     pcardShowSalePrice,
   } = useThemeSettings();
-  let cardLabel, labelClass;
+  let cardLabel: string | undefined;
+  let labelClass: string | undefined;
+  const [selectedVariant, setSelectedVariant] =
+    useState<ProductVariantFragmentFragment | null>(null);
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const cardProduct: Product = product?.variants
     ? (product as Product)
     : getProductPlaceholder();
-  if (!cardProduct?.variants?.nodes?.length) return null;
-  let [selectedVariant, setSelectedVariant] =
-    useState<ProductVariantFragmentFragment | null>(null);
-  const [isImageLoading, setIsImageLoading] = useState(false);
-
+  if (!cardProduct?.variants?.nodes?.length) {
+    return null;
+  }
   const variants = flattenConnection(cardProduct.variants);
   const firstVariant = flattenConnection(cardProduct.variants)[0];
-  if (!firstVariant) return null;
+  if (!firstVariant) {
+    return null;
+  }
   const { price, compareAtPrice } = firstVariant;
   let params = new URLSearchParams(
     mapSelectedProductOptionToObject(
@@ -77,7 +81,7 @@ export function ProductCard({
     ),
   );
   let [image, secondImage] = product.images.nodes;
-  if (selectedVariant && selectedVariant.image) {
+  if (selectedVariant?.image) {
     image = selectedVariant.image;
     let imageUrl = image.url;
     let imageIndex = product.images.nodes.findIndex(
@@ -261,7 +265,7 @@ export function ProductCard({
                     data={compareAtPrice as MoneyV2}
                   />
                 )}
-              <Money withoutTrailingZeros data={price!} />
+              {price && <Money withoutTrailingZeros data={price} />}
             </Text>
           </div>
         </div>

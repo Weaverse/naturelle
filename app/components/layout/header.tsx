@@ -60,7 +60,6 @@ export function Header() {
     <>
       {enableTrialShipping && <ScrollingAnnouncement />}
       <header
-        role="banner"
         className={cn(
           "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
           "bg-header-bg text-(--color-header-text) border-(--color-header-text)",

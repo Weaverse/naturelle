@@ -146,20 +146,19 @@ let VideoBanner = ({
       // Callback refs, like the one from `useInView`, is a function that takes the node as an argument
       inViewRef(node);
     },
-    [inViewRef],
+    [inViewRef, ref],
   );
 
-  function handleResize() {
-    setSize(getPlayerSize(id));
-  }
-
   useEffect(() => {
+    function handleResize() {
+      setSize(getPlayerSize(id));
+    }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [inView, height, heightOnDesktop, heightOnMobile]);
+  }, [id]);
 
   const [scope] = useAnimation(ref);
 

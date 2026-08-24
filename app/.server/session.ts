@@ -11,9 +11,9 @@ import {
  * swap out the cookie-based implementation with something else!
  */
 export class AppSession implements HydrogenSession {
-  public isPending = false;
-  #sessionStorage;
-  #session;
+  isPending = false;
+  readonly #sessionStorage;
+  readonly #session;
 
   constructor(sessionStorage: SessionStorage, session: Session) {
     this.#sessionStorage = sessionStorage;

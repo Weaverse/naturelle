@@ -119,10 +119,12 @@ export function isLocalPath(url: string) {
 }
 
 export function removeFalsy<T = any>(
-  obj: {},
+  obj: object,
   falsyValues: any[] = ["", null, undefined],
 ): T {
-  if (!obj || typeof obj !== "object") return obj as any;
+  if (!obj || typeof obj !== "object") {
+    return obj as any;
+  }
 
   return Object.entries(obj).reduce((a: any, c) => {
     let [k, v]: [string, any] = c;
@@ -153,27 +155,28 @@ export function loadCSS(attrs: LinkHTMLAttributes<HTMLLinkElement>) {
   });
 }
 
-export function prefixClassNames(contentHtml: string, prefix: string) {
+export function usePrefixClassNames(contentHtml: string, prefix: string) {
   const [articleContent, setArticleContent] = useState<string>("");
-  const prefixClassNames = (html: string, prefix: string) => {
-    html = html.replace(/class="([^"]*)"/g, (match, classNames) => {
-      const prefixedClassNames = classNames
-        .split(" ")
-        .map((className: string) => `${prefix}${className}`)
-        .join(" ");
-      return `class="${prefixedClassNames}"`;
-    });
-    html = html.replace(/(\.[a-zA-Z0-9_-]+)\s*{/g, (match, className) => {
-      return `.${prefix}${className.slice(1)} {`;
-    });
-
-    return html;
-  };
   useEffect(() => {
     if (contentHtml) {
-      const prefixedContent = prefixClassNames(contentHtml, prefix);
+      const prefixedContent = prefixHtmlClassNames(contentHtml, prefix);
       setArticleContent(prefixedContent);
     }
-  }, [contentHtml]);
+  }, [contentHtml, prefix]);
   return articleContent;
+}
+
+function prefixHtmlClassNames(html: string, classPrefix: string) {
+  let prefixedHtml = html.replace(/class="([^"]*)"/g, (_match, classNames) => {
+    const prefixedClassNames = classNames
+      .split(" ")
+      .map((className: string) => `${classPrefix}${className}`)
+      .join(" ");
+    return `class="${prefixedClassNames}"`;
+  });
+  prefixedHtml = prefixedHtml.replace(
+    /(\.[a-zA-Z0-9_-]+)\s*{/g,
+    (_match, className) => `.${classPrefix}${className.slice(1)} {`,
+  );
+  return prefixedHtml;
 }

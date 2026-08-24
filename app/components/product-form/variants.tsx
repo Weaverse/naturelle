@@ -1,4 +1,4 @@
-import { VariantSelector } from "@shopify/hydrogen";
+import { getProductOptions } from "@shopify/hydrogen";
 import clsx from "clsx";
 import type {
   ProductQuery,
@@ -27,9 +27,8 @@ export function ProductVariants(props: ProductVariantsProps) {
   let {
     selectedVariant,
     onSelectedVariantChange,
-    options,
     variants,
-    handle,
+    product,
     swatch,
     hideUnavailableOptions,
     isDisabled,
@@ -50,7 +49,7 @@ export function ProductVariants(props: ProductVariantsProps) {
     let newSelectedVariant = nodes?.find((variant) => {
       let variantOptions = variant.selectedOptions;
       let isMatch = true;
-      for (let i = 0; i < variantOptions.length; i++) {
+      for (let i = 0; i < variantOptions.length; i += 1) {
         if (variantOptions[i].value !== newSelectedOptions?.[i].value) {
           isMatch = false;
           break;
@@ -70,8 +69,13 @@ export function ProductVariants(props: ProductVariantsProps) {
   };
 
   let selectedOptionMap = new Map();
-  selectedOptions?.forEach((opt) => {
+  for (const opt of selectedOptions ?? []) {
     selectedOptionMap.set(opt.name, opt.value);
+  }
+
+  const productOptions = getProductOptions({
+    ...product,
+    selectedOrFirstAvailableVariant: selectedVariant,
   });
 
   if (selectedOptions?.every((opt) => opt.value === "Default Title")) {
@@ -80,66 +84,70 @@ export function ProductVariants(props: ProductVariantsProps) {
 
   return (
     <div data-motion="fade-up" className="flex flex-col gap-6">
-      <VariantSelector handle={handle} variants={nodes} options={options}>
-        {({ option }) => {
-          let optionName = option.name;
-          let clonedSelectedOptionMap = new Map(selectedOptionMap);
-          let values = option.values
-            .map((value) => {
-              clonedSelectedOptionMap.set(optionName, value.value);
-              let variant = nodes?.find((variant) => {
-                return variant.selectedOptions.every((opt) => {
-                  return opt.value === clonedSelectedOptionMap.get(opt.name);
-                });
+      {productOptions.map((option) => {
+        let optionName = option.name;
+        let clonedSelectedOptionMap = new Map(selectedOptionMap);
+        let values = option.optionValues
+          .map((optionValue) => {
+            clonedSelectedOptionMap.set(optionName, optionValue.name);
+            let matchingVariant = nodes?.find((candidateVariant) => {
+              return candidateVariant.selectedOptions.every((opt) => {
+                return opt.value === clonedSelectedOptionMap.get(opt.name);
               });
-              if (hideUnavailableOptions && !variant) {
-                return null;
-              }
-              return {
-                ...value,
-                isAvailable: variant ? variant.availableForSale : false,
-                image: variant?.image,
-              };
-            })
-            .filter(Boolean);
-          let handleSelectOptionValue = (value: string) =>
-            handleSelectOption(optionName, value);
-          let config = swatch?.configs.find((config) => {
-            return (
-              config.name.trim().toLowerCase() ===
-              optionName.trim().toLowerCase()
-            );
-          });
-          let selectedValue = selectedOptions?.find(
-            (opt) => opt.name === optionName,
-          )?.value!;
-
+            });
+            if (hideUnavailableOptions && !matchingVariant) {
+              return null;
+            }
+            return {
+              isActive: selectedOptionMap.get(optionName) === optionValue.name,
+              isAvailable: matchingVariant
+                ? matchingVariant.availableForSale
+                : false,
+              search: "",
+              to: "",
+              value: optionValue.name,
+              image: matchingVariant?.image,
+            };
+          })
+          .filter(Boolean);
+        let handleSelectOptionValue = (value: string) =>
+          handleSelectOption(optionName, value);
+        let config = swatch?.configs.find((swatchConfig) => {
           return (
-            <div
-              className={clsx(
-                "flex flex-col gap-2",
-                isDisabled && "opacity-50 cursor-not-allowed",
-              )}
-            >
-              <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-16">
-                <span className="font-semibold text-base">
-                  {config?.displayName || optionName}:
-                </span>
-                <span className="ml-2 font-semibold text-base">
-                  {selectedValue}
-                </span>
-              </legend>
-              <VariantOption
-                name={optionName}
-                values={values}
-                selectedOptionValue={selectedValue}
-                onSelectOptionValue={handleSelectOptionValue}
-                swatches={swatch?.swatches}
-              />
-            </div>
+            swatchConfig.name.trim().toLowerCase() ===
+            optionName.trim().toLowerCase()
           );
-        }}
-      </VariantSelector>
+        });
+        let selectedValue = selectedOptions?.find(
+          (opt) => opt.name === optionName,
+        )?.value;
+
+        return (
+          <div
+            key={optionName}
+            className={clsx(
+              "flex flex-col gap-2",
+              isDisabled && "opacity-50 cursor-not-allowed",
+            )}
+          >
+            <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-16">
+              <span className="font-semibold text-base">
+                {config?.displayName || optionName}:
+              </span>
+              <span className="ml-2 font-semibold text-base">
+                {selectedValue}
+              </span>
+            </legend>
+            <VariantOption
+              name={optionName}
+              values={values}
+              selectedOptionValue={selectedValue}
+              onSelectOptionValue={handleSelectOptionValue}
+              swatches={swatch?.swatches}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

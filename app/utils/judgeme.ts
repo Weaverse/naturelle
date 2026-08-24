@@ -54,7 +54,7 @@ export async function getJudgemeReviews(
   apiToken: string,
   shopDomain: string,
   handle: string,
-  weaverseContext?: any,
+  _weaverseContext?: any,
 ): Promise<JudgemeReviewsData | null> {
   const url = `https://judge.me/api/v1/widgets/product_review?api_token=${apiToken}&shop_domain=${shopDomain}&handle=${handle}`;
   try {
@@ -84,7 +84,7 @@ export async function getJudgemeReviews(
 }
 
 export async function createJudgemeReview(
-  apiToken: string,
+  _apiToken: string,
   shopDomain: string,
   formData: FormData,
 ) {

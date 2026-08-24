@@ -11,8 +11,8 @@ export function AccountLink({ className }: { className?: string }) {
   return (
     <Suspense fallback="Sign in">
       <Await resolve={isLoggedIn} errorElement="Sign in">
-        {(isLoggedIn) => {
-          return isLoggedIn ? (
+        {(loggedIn) => {
+          return loggedIn ? (
             <Link prefetch="intent" to="/account" className={className}>
               <IconAccount />
             </Link>

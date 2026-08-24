@@ -40,36 +40,62 @@ export function AddToCartButton({
       }}
       action={CartForm.ACTIONS.LinesAdd}
     >
-      {(fetcher: FetcherWithComponents<any>) => {
-        useEffect(() => {
-          if (onFetchingStateChange) {
-            onFetchingStateChange(fetcher.state);
-          }
-        }, [fetcher.state]);
-
-        return (
-          <AddToCartAnalytics fetcher={fetcher}>
-            <input
-              type="hidden"
-              name="analytics"
-              value={JSON.stringify(analytics)}
-            />
-            <Button
-              as="button"
-              type="submit"
-              size="lg"
-              className={className}
-              disabled={disabled ?? fetcher.state !== "idle"}
-              loading={fetcher.state === "submitting"}
-              variant={variant}
-              {...props}
-            >
-              {children}
-            </Button>
-          </AddToCartAnalytics>
-        );
-      }}
+      {(fetcher: FetcherWithComponents<any>) => (
+        <AddToCartContent
+          analytics={analytics}
+          className={className}
+          disabled={disabled}
+          fetcher={fetcher}
+          onFetchingStateChange={onFetchingStateChange}
+          props={props}
+          variant={variant}
+        >
+          {children}
+        </AddToCartContent>
+      )}
     </CartForm>
+  );
+}
+
+function AddToCartContent({
+  analytics,
+  children,
+  className,
+  disabled,
+  fetcher,
+  onFetchingStateChange,
+  props,
+  variant,
+}: {
+  analytics?: unknown;
+  children: React.ReactNode;
+  className: string;
+  disabled?: boolean;
+  fetcher: FetcherWithComponents<any>;
+  onFetchingStateChange?: (state: string) => void;
+  props: Record<string, unknown>;
+  variant: "primary" | "secondary" | "outline";
+}) {
+  useEffect(() => {
+    onFetchingStateChange?.(fetcher.state);
+  }, [fetcher.state, onFetchingStateChange]);
+
+  return (
+    <AddToCartAnalytics fetcher={fetcher}>
+      <input type="hidden" name="analytics" value={JSON.stringify(analytics)} />
+      <Button
+        as="button"
+        type="submit"
+        size="lg"
+        className={className}
+        disabled={disabled ?? fetcher.state !== "idle"}
+        loading={fetcher.state === "submitting"}
+        variant={variant}
+        {...props}
+      >
+        {children}
+      </Button>
+    </AddToCartAnalytics>
   );
 }
 

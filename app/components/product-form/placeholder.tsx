@@ -1,15 +1,16 @@
-export function ProductPlaceholder(props: any) {
+import { Image } from "~/components/image";
+
+export function ProductPlaceholder(_props: any) {
   return (
     <div className="container px-4 md:px-6 mx-auto pointer-events-none">
       <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
-        <img
-          alt=""
-          decoding="async"
-          height="125"
-          loading="lazy"
-          src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292"
-          srcSet="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=200&amp;height=200&amp;crop=center 200w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=400&amp;height=400&amp;crop=center 400w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=600&amp;height=600&amp;crop=center 600w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=800&amp;height=800&amp;crop=center 800w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=1000&amp;height=1000&amp;crop=center 1000w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=1200&amp;height=1200&amp;crop=center 1200w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=1400&amp;height=1400&amp;crop=center 1400w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=1600&amp;height=1600&amp;crop=center 1600w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=1800&amp;height=1800&amp;crop=center 1800w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=2000&amp;height=2000&amp;crop=center 2000w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=2200&amp;height=2200&amp;crop=center 2200w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=2400&amp;height=2400&amp;crop=center 2400w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=2600&amp;height=2600&amp;crop=center 2600w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=2800&amp;height=2800&amp;crop=center 2800w, https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292&amp;width=3000&amp;height=3000&amp;crop=center 3000w"
-          width="100"
+        <Image
+          data={{
+            altText: "",
+            height: 125,
+            url: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292",
+            width: 125,
+          }}
           className="object-cover w-full h-full aspect-square fadeIn"
           style={{ width: "100%" }}
         />
@@ -84,6 +85,7 @@ export function ProductPlaceholder(props: any) {
             </legend>
             <div className="rounded-sm border w-fit">
               <button
+                type="button"
                 name="decrease-quantity"
                 aria-label="Decrease quantity"
                 className="w-10 h-10 transition "
@@ -96,6 +98,7 @@ export function ProductPlaceholder(props: any) {
                 readOnly
               />
               <button
+                type="button"
                 className="w-10 h-10 transition text-body hover:text-body"
                 name="increase-quantity"
                 aria-label="Increase quantity"

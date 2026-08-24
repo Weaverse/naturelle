@@ -14,7 +14,9 @@ export function SearchTypeHeaderResults() {
   let totalResultsCount = totalResults || 0;
   function goToSearchResult(event: React.MouseEvent<HTMLAnchorElement>) {
     let type = event.currentTarget.dataset.type;
-    if (!searchInputRef.current) return;
+    if (!searchInputRef.current) {
+      return;
+    }
     if (type === "SearchQuerySuggestion") {
       searchInputRef.current.value = event.currentTarget.innerText;
       // dispatch event onchange for the search

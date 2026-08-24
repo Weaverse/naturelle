@@ -144,12 +144,10 @@ Drawer.Title = Dialog.Title;
 
 export function useDrawer(openDefault = false) {
   const [isOpen, setIsOpen] = useState(openDefault);
-  let { pathname } = useLocation();
+  const location = useLocation();
   useEffect(() => {
-    if (isOpen) {
-      closeDrawer();
-    }
-  }, [pathname]);
+    setIsOpen(false);
+  }, []);
 
   function openDrawer() {
     setIsOpen(true);

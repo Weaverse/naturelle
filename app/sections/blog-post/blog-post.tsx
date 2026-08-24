@@ -4,7 +4,7 @@ import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
-import { prefixClassNames } from "~/utils/misc";
+import { usePrefixClassNames } from "~/utils/misc";
 
 type BlogPostProps = SectionProps;
 
@@ -19,7 +19,7 @@ let BlogPost = ({
   }>();
   let { title, image, contentHtml, author, tags } = article;
 
-  let articleContent = prefixClassNames(contentHtml, "wv-");
+  let articleContent = usePrefixClassNames(contentHtml, "wv-");
 
   if (article) {
     return (

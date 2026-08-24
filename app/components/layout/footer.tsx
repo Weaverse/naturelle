@@ -111,13 +111,12 @@ export function Footer() {
 
 function FooterMenu({ menu }: { menu: EnhancedMenu | undefined | null }) {
   let items = menu?.items as unknown as SingleMenuItem[];
-  if (!items) return null;
+  if (!items) {
+    return null;
+  }
   return (
     <div className="w-full">
-      <nav
-        className="flex flex-col justify-between gap-4 md:flex-row md:gap-0"
-        role="navigation"
-      >
+      <nav className="flex flex-col justify-between gap-4 md:flex-row md:gap-0">
         {items.map((item, id) => {
           let { title, ...rest } = item;
           let level = getMaxDepth(item);
@@ -200,7 +199,7 @@ function MenuLink(props: SingleMenuItem) {
   );
 }
 
-function HeaderText({ title, to }: { title: string; to: string }) {
+function HeaderText({ title }: { title: string; to: string }) {
   const settings = useThemeSettings();
   let { tagNameTitle: Tag = "h6" } = settings || {};
   return <Tag className="font-semibold uppercase">{title}</Tag>;

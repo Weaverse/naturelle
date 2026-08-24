@@ -44,6 +44,7 @@ export function SearchToggle({
   return (
     <div className={className}>
       <button
+        type="button"
         onClick={openDrawer}
         className="relative flex h-6 w-6 items-center justify-center focus:ring-primary/5"
       >

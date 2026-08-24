@@ -51,6 +51,7 @@ export function ProductSwimlane({
       </div>
       <div className="md:flex items-center absolute top-[304px] h-fit w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden">
         <button
+          type="button"
           onClick={handleScrollLeft}
           aria-label="Scroll left"
           className="absolute md:left-0 bg-white p-2"
@@ -61,6 +62,7 @@ export function ProductSwimlane({
           />
         </button>
         <button
+          type="button"
           onClick={handleScrollRight}
           aria-label="Scroll right"
           className="absolute md:right-0 bg-white p-2"
