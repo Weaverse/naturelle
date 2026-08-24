@@ -61,7 +61,7 @@ export function CountrySelector() {
     >
       <div className="relative">
         <details
-          className="w-full overflow-hidden rounded border border-border-subtle"
+          className="w-full overflow-hidden rounded-md border border-border-subtle"
           ref={closeRef}
           onToggle={toggleDropdown}
         >
@@ -131,7 +131,7 @@ function Country({
           "flex w-full justify-start",
           "cursor-pointer items-center px-4 py-2 text-left",
         ])}
-        className="rounded bg-background p-2 transition w-full"
+        className="w-full rounded-md bg-background p-2 transition"
         variant={"custom"}
         type="submit"
         onClick={closeDropdown}

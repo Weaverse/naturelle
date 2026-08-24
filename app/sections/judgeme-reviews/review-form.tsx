@@ -56,7 +56,7 @@ export function ReviewForm({
         <div
           data-motion="fade-up"
           className={clsx(
-            "flex flex-col gap-4 bg-[#E0E5D6] p-6 w-full",
+            "flex w-full flex-col gap-4 bg-background-subtle-2 p-6",
             judgemeReviews.reviews.length === 0
               ? "items-center"
               : "items-start",
@@ -95,7 +95,7 @@ export function ReviewForm({
         <div
           data-motion="fade-up"
           className={clsx(
-            "bg-[#E0E5D6] p-6 w-full",
+            "w-full bg-background-subtle-2 p-6",
             judgemeReviews.reviews.length === 0 && "flex justify-center",
           )}
         >
@@ -207,7 +207,7 @@ export function ReviewForm({
                   <textarea
                     id="body"
                     name="body"
-                    className="w-full bg-transparent rounded border-2 px-3 py-3 border-border-subtle outline-none focus-visible:border-border"
+                    className="w-full rounded-md border-2 border-border-subtle bg-transparent px-3 py-3 outline-none focus-visible:border-border"
                     rows={4}
                   ></textarea>
                 </div>
@@ -243,7 +243,7 @@ export function ReviewForm({
         <div
           data-motion="fade-up"
           className={clsx(
-            "flex flex-col gap-6 p-6 bg-[#E0E5D6] w-full",
+            "flex w-full flex-col gap-6 bg-background-subtle-2 p-6",
             judgemeReviews.reviews.length === 0 && "items-center",
           )}
           role="alert"

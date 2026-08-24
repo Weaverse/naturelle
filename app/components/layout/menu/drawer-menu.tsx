@@ -242,7 +242,7 @@ function ImageMenu({
             <div className="relative aspect-square w-full group">
               <Image
                 data={item.resource?.image}
-                className="h-full w-full rounded object-cover"
+                className="h-full w-full rounded-md object-cover"
                 sizes="auto"
               />
               <div className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center z-30 px-2">

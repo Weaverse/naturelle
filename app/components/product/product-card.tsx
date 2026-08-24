@@ -257,7 +257,7 @@ export function ProductCard({
               {pcardShowSalePrice &&
                 isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                   <CompareAtPrice
-                    className="text-[#AB2E2E] line-through"
+                    className="text-label-sale-background line-through"
                     data={compareAtPrice as MoneyV2}
                   />
                 )}

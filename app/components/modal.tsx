@@ -34,7 +34,7 @@ export function Modal({
         <div className="relative flex min-h-full items-center justify-center p-4 text-center sm:p-0">
           <div className="absolute inset-0 z-10" onClick={onClose} />
           <div
-            className="relative z-20 flex-1 transform overflow-hidden rounded text-left transition-all sm:flex-none"
+            className="relative z-20 flex-1 transform overflow-hidden rounded-xl text-left transition-all sm:flex-none"
             role="dialog"
             onKeyPress={(e) => {
               e.stopPropagation();

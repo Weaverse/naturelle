@@ -41,7 +41,7 @@ const Slides = ({
     "--section-height": `${sectionHeight}px`,
     "--swiper-pagination-bottom": "50%",
     "--swiper-pagination-top": "50%",
-    "--swiper-theme-color": "#3D490B",
+    "--swiper-theme-color": "var(--color-text-primary)",
   } as CSSProperties;
 
   return (

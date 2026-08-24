@@ -75,7 +75,7 @@ export function ProductMedia(props: ProductMediaProps) {
             style={
               {
                 "--swiper-pagination-bottom": "-6px",
-                "--swiper-pagination-color": "#3D490B",
+                "--swiper-pagination-color": "var(--color-text-primary)",
               } as React.CSSProperties
             }
           >
@@ -87,7 +87,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     data={image}
                     loading={i === 0 ? "eager" : "lazy"}
                     aspectRatio={imageAspectRatio}
-                    className="object-cover w-full h-auto fadeIn rounded"
+                    className="fadeIn h-auto w-full rounded-sm object-cover"
                     sizes="auto"
                   />
                   {enableZoom && (
@@ -147,14 +147,14 @@ export function ProductMedia(props: ProductMediaProps) {
                   <SwiperSlide
                     key={med.id}
                     className={clsx(
-                      "!h-fit !w-fit border-2 transition-colors cursor-pointer border-transparent rounded p-0.5",
+                      "h-fit! w-fit! cursor-pointer rounded-sm border-2 border-transparent p-0.5 transition-colors",
                       "[&.swiper-slide-thumb-active]:border-border",
                     )}
                   >
                     <Image
                       data={image}
                       loading={i === 0 ? "eager" : "lazy"}
-                      className="fadeIn object-cover !h-[100px] rounded shadow-md"
+                      className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
                       aspectRatio={imageAspectRatio}
                       sizes="auto"
                     />

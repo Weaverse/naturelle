@@ -13,8 +13,8 @@ const TestSection = ({
         <h2 className="font-bold">Style Guide</h2>
         <div className="space-y-6">
           <h3 className="text-center font-bold">Font family</h3>
-          <h1 className="text-center font-bold">Cormorant</h1>
-          <h2 className="text-center font-bold">Cormorant</h2>
+          <h1 className="text-center font-bold">Belleza</h1>
+          <p className="text-center font-body font-bold">Montserrat</p>
         </div>
         <div className="flex gap-4"></div>
         <div className="flex gap-4">

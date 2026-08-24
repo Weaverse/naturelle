@@ -216,7 +216,7 @@ const BeforeAndAfter = ({
             className="h-full w-full box-border object-cover object-center"
           />
         ) : (
-          <div className="flex justify-center items-center bg-[#e5e6d4] w-full h-full">
+          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
             <IconImageBlank
               className="w-96 h-96 opacity-80"
               viewBox="0 0 526 526"
@@ -260,7 +260,7 @@ const BeforeAndAfter = ({
             className="h-full w-full box-border object-cover object-center"
           />
         ) : (
-          <div className="flex justify-center items-center bg-[#e5e6d4] w-full h-full">
+          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
             <IconImageBlank
               className="w-96 h-96 opacity-80"
               viewBox="0 0 526 526"

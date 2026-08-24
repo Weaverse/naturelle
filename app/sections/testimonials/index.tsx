@@ -54,7 +54,7 @@ const Testimonials = ({
             sizes="auto"
           />
         ) : (
-          <div className="flex justify-center items-center bg-[#e5e6d4] w-full h-full">
+          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
             <IconImageBlank
               className="w-96 h-96 opacity-80"
               viewBox="0 0 526 526"
@@ -126,7 +126,7 @@ export const schema = createSchema({
           type: "color",
           name: "borderColor",
           label: "Border color",
-          defaultValue: "#3D490B",
+          defaultValue: "#443E40",
         },
         {
           type: "range",

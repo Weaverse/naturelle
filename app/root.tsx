@@ -25,8 +25,8 @@ import {
 } from "react-router";
 import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
-import "@fontsource-variable/cormorant";
-import "@fontsource-variable/nunito-sans";
+import "@fontsource-variable/montserrat";
+import "@fontsource/belleza";
 import invariant from "tiny-invariant";
 import { seoPayload } from "~/.server/seo";
 import { Button } from "~/components/button";

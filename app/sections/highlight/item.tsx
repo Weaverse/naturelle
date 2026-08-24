@@ -20,7 +20,7 @@ const HighlightItem = ({
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex flex-col gap-4 items-center w-full border-2 border-(--border-color) rounded px-8 py-10",
+        "flex w-full flex-col items-center gap-4 rounded-md border-2 border-(--border-color) px-8 py-10",
         !visibleOnMobile && "hidden sm:flex",
       )}
     >

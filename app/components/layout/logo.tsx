@@ -12,6 +12,11 @@ export function Logo({
 }) {
   let settings = useThemeSettings();
   let { logoData, transparentLogoData, logoWidth } = settings;
+  let logoUrl = logoData?.url;
+  let aspectRatio =
+    logoData?.width && logoData?.height
+      ? `${logoData.width} / ${logoData.height}`
+      : "80 / 29";
   return (
     <Link
       className={clsx(
@@ -22,33 +27,38 @@ export function Logo({
       prefetch="intent"
     >
       <div
-        className="relative"
+        className="relative text-inherit"
         style={{ width: logoData ? (width ?? logoWidth) : "auto" }}
       >
-        <>
-          {logoData && (
-            <Image
-              data={logoData}
-              sizes="auto"
-              className={clsx(
-                "main-logo",
-                "w-full h-full object-cover",
-                "group-hover/header:opacity-100",
-              )}
-            />
-          )}
-          {transparentLogoData && (
-            <Image
-              data={transparentLogoData}
-              sizes="auto"
-              className={clsx(
-                "transparent-logo",
-                "absolute top-0 left-0 w-full h-full object-cover",
-                "group-hover/header:opacity-0",
-              )}
-            />
-          )}
-        </>
+        {logoUrl && (
+          <span
+            aria-label={logoData.altText || "Naturélle"}
+            className="main-logo block w-full bg-(--color-header-text) group-hover/header:opacity-100"
+            role="img"
+            style={{
+              aspectRatio,
+              maskImage: `url(${logoUrl})`,
+              maskPosition: "center",
+              maskRepeat: "no-repeat",
+              maskSize: "contain",
+              WebkitMaskImage: `url(${logoUrl})`,
+              WebkitMaskPosition: "center",
+              WebkitMaskRepeat: "no-repeat",
+              WebkitMaskSize: "contain",
+            }}
+          />
+        )}
+        {transparentLogoData && (
+          <Image
+            data={transparentLogoData}
+            sizes="auto"
+            className={clsx(
+              "transparent-logo",
+              "absolute top-0 left-0 h-full w-full object-cover",
+              "group-hover/header:opacity-0",
+            )}
+          />
+        )}
       </div>
     </Link>
   );

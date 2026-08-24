@@ -1,67 +1,81 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 
 export function GlobalStyle() {
-	const settings = useThemeSettings();
-	if (settings) {
-		const {
-			colorBackground,
-			colorTextPrimary,
-			colorTextSubtle,
-			colorTextInverse,
-			topbarTextColor,
-			topbarBorderColor,
-			topbarBgColor,
-			headerText,
-			transparentHeader,
-			headerBgColor,
-			footerText,
-			footerBgColor,
-			borderColor,
-			borderSubtleColor,
-			drawerBgColor,
-			buttonTextPrimary,
-			buttonBgColorPrimary,
-			buttonBorderColorPrimary,
-			buttonTextHoverPrimary,
-			buttonBgHoverPrimary,
-			buttonBorderHoverPrimary,
-			buttonTextSecondary,
-			buttonBgColorSecondary,
-			buttonBorderColorSecondary,
-			buttonTextHoverSecondary,
-			buttonBgHoverSecondary,
-			buttonBorderHoverSecondary,
-			buttonTextOutline,
-			buttonBorderColorOutline,
-			buttonTextHoverOutline,
-			buttonBorderHoverOutline,
-			buttonBgHoverOutline,
-			labelText,
-			labelBgSale,
-			labelBgNew,
-			labelBgSoldOut,
-			bodyBaseSize,
-			bodyBaseSpacing,
-			bodyBaseLineHeight,
-			headingBaseSize,
-			headingBaseSpacing,
-			headingBaseLineHeight,
-			navHeightDesktop,
-			navHeightTablet,
-			footerMenuBackgroundColor,
-			pageWidth,
-		} = settings;
+  const settings = useThemeSettings();
+  if (settings) {
+    const {
+      colorBackground,
+      colorBackgroundSubtle1,
+      colorBackgroundSubtle2,
+      colorBackgroundBasic,
+      colorTextPrimary,
+      colorTextSubtle,
+      colorTextInverse,
+      topbarTextColor,
+      topbarBorderColor,
+      topbarBgColor,
+      headerText,
+      transparentHeader,
+      headerBgColor,
+      headerBgColorSecondary,
+      footerText,
+      footerBgColor,
+      borderColor,
+      borderSubtleColor,
+      drawerBgColor,
+      buttonTextPrimary,
+      buttonBgColorPrimary,
+      buttonBorderColorPrimary,
+      buttonTextHoverPrimary,
+      buttonBgHoverPrimary,
+      buttonBorderHoverPrimary,
+      buttonTextActivePrimary,
+      buttonBgActivePrimary,
+      buttonBorderActivePrimary,
+      buttonTextSecondary,
+      buttonBgColorSecondary,
+      buttonBorderColorSecondary,
+      buttonTextHoverSecondary,
+      buttonBgHoverSecondary,
+      buttonBorderHoverSecondary,
+      buttonTextActiveSecondary,
+      buttonBgActiveSecondary,
+      buttonBorderActiveSecondary,
+      buttonTextOutline,
+      buttonBorderColorOutline,
+      buttonTextHoverOutline,
+      buttonBorderHoverOutline,
+      buttonTextActiveOutline,
+      buttonBorderActiveOutline,
+      labelText,
+      labelBgSale,
+      labelBgNew,
+      labelBgSoldOut,
+      bodyBaseSize,
+      bodyBaseSpacing,
+      bodyBaseLineHeight,
+      headingBaseSize,
+      headingBaseSpacing,
+      headingBaseLineHeight,
+      navHeightDesktop,
+      navHeightTablet,
+      footerMenuBackgroundColor,
+      pageWidth,
+    } = settings;
 
-		return (
-			<style
-				id="global-theme-style"
-				key="global-theme-style"
-				suppressHydrationWarning
-				dangerouslySetInnerHTML={{
-					__html: `
+    return (
+      <style
+        id="global-theme-style"
+        key="global-theme-style"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: `
             :root {
               /* Colors */
               --color-background: ${colorBackground};
+              --color-background-subtle-1: ${colorBackgroundSubtle1};
+              --color-background-subtle-2: ${colorBackgroundSubtle2};
+              --color-background-basic: ${colorBackgroundBasic};
               --color-text-primary: ${colorTextPrimary};
               --color-text-subtle: ${colorTextSubtle};
               --color-text-inverse: ${colorTextInverse};
@@ -73,6 +87,7 @@ export function GlobalStyle() {
               --color-header-text: ${headerText};
               --color-transparent-header: ${transparentHeader};
               --color-header-bg: ${headerBgColor};
+              --color-header-bg-secondary: ${headerBgColorSecondary};
 
               --color-footer-text: ${footerText};
               --color-footer-bg: ${footerBgColor};
@@ -85,6 +100,9 @@ export function GlobalStyle() {
               --color-label-bg-sale: ${labelBgSale};
               --color-label-bg-new: ${labelBgNew};
               --color-label-bg-soldout: ${labelBgSoldOut};
+
+              --color-button-primary-text: ${buttonTextPrimary};
+              --color-button-primary-background: ${buttonBgColorPrimary};
               
 
               /* Typography */
@@ -179,6 +197,11 @@ export function GlobalStyle() {
               border: 1px solid ${buttonBorderHoverPrimary}!important;
               transition: 0.3s background-color color border;
             }
+            .btn-primary:active{
+              background-color: ${buttonBgActivePrimary}!important;
+              color: ${buttonTextActivePrimary}!important;
+              border-color: ${buttonBorderActivePrimary}!important;
+            }
             .btn-secondary{
               background-color: ${buttonBgColorSecondary};
               color: ${buttonTextSecondary}!important;
@@ -191,21 +214,29 @@ export function GlobalStyle() {
               border: 1px solid ${buttonBorderHoverSecondary}!important;
               transition: 0.3s background-color color border;
             }
+            .btn-secondary:active{
+              background-color: ${buttonBgActiveSecondary}!important;
+              color: ${buttonTextActiveSecondary}!important;
+              border-color: ${buttonBorderActiveSecondary}!important;
+            }
             .btn-outline{
               color: ${buttonTextOutline}!important;
               border: 1px solid ${buttonBorderColorOutline};
               cursor: pointer;
             }
             .btn-outline:hover{
-              background-color: ${buttonBgHoverOutline}!important;
               color: ${buttonTextHoverOutline}!important;
               border: 1px solid ${buttonBorderHoverOutline} !important;
-              transition: 0.3s background-color color border;
+              transition: 0.3s color border;
+            }
+            .btn-outline:active{
+              color: ${buttonTextActiveOutline}!important;
+              border-color: ${buttonBorderActiveOutline}!important;
             }
           `,
-				}}
-			/>
-		);
-	}
-	return null;
+        }}
+      />
+    );
+  }
+  return null;
 }

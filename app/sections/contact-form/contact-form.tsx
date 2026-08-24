@@ -96,7 +96,7 @@ let ContactForm = ({
           />
           <textarea
             data-motion="fade-up"
-            className="resize-none w-full p-2.5 border-2 border-bar-subtle rounded focus-visible:outline-none focus-visible:border-bar hover:border-bar placeholder-foreground-subtle"
+            className="w-full resize-none rounded-md border-2 border-bar-subtle p-2.5 placeholder-foreground-subtle hover:border-bar focus-visible:border-bar focus-visible:outline-none"
             rows={4}
             name="message"
             placeholder="Message"
@@ -129,7 +129,7 @@ export const schema = createSchema({
           type: "color",
           name: "backgroundColor",
           label: "Background color",
-          defaultValue: "#F8F8F0",
+          defaultValue: "#F4F4F4",
         },
         {
           type: "toggle-group",

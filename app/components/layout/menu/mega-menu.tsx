@@ -111,13 +111,13 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
         resource?.image && children.length === 0 ? (
           <SlideIn
             key={id}
-            className="grow max-w-72 w-72 aspect-square relative group/item overflow-hidden rounded"
+            className="group/item relative aspect-square w-72 max-w-72 grow overflow-hidden rounded-md"
             style={{ "--idx": idx } as React.CSSProperties}
           >
             <Image
               sizes="auto"
               data={resource.image}
-              className="group-hover/item:scale-[1.03] transition-transform duration-300 rounded object-cover"
+              className="rounded-md object-cover transition-transform duration-300 group-hover/item:scale-[1.03]"
               width={300}
             />
             <Link

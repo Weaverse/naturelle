@@ -315,13 +315,13 @@ export default function SortMenu({
 
   return (
     <Menu as="div" className="relative z-30">
-      <Menu.Button className="flex h-[50px] items-center gap-[10px] rounded border border-border px-4 py-3">
+      <Menu.Button className="flex h-[50px] items-center gap-[10px] rounded-md border border-border px-4 py-3">
         <span className="font-heading text-xl font-medium">Sort by</span>
         <IconCaret />
       </Menu.Button>
       <Menu.Items
         as="nav"
-        className="absolute right-0 top-14 flex h-fit w-56 flex-col gap-2 rounded border bg-background p-5"
+        className="absolute top-14 right-0 flex h-fit w-56 flex-col gap-2 rounded-xl border bg-background p-5"
       >
         {items.map((item) => (
           <Menu.Item key={item.label}>

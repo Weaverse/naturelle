@@ -59,11 +59,11 @@ const Instagram = ({
   let sectionStyle: CSSProperties = {
     backgroundColor: backgroundColor,
     "--speed": `${speed}s`,
-    "--swiper-theme-color": "#3D490B",
+    "--swiper-theme-color": "var(--color-text-primary)",
   } as CSSProperties;
   const imageItemBlank = () => {
     return (
-      <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
+      <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-2">
         <IconImageBlank
           viewBox="0 0 526 526"
           className="h-full! w-full! opacity-80"
@@ -89,14 +89,14 @@ const Instagram = ({
         {displayedImages.map((item, index) => {
           return (
             <div
-              className="group relative aspect-square min-w-80 cursor-pointer rounded"
+              className="group relative aspect-square min-w-80 cursor-pointer rounded-md"
               key={index}
             >
               {item.media_url ? (
                 <Image
                   key={index}
                   src={item.media_url}
-                  className="aspect-square w-full object-cover rounded"
+                  className="aspect-square w-full rounded-md object-cover"
                   sizes="auto"
                 />
               ) : (
@@ -245,7 +245,7 @@ export const schema = createSchema({
           type: "color",
           label: "Background color",
           name: "backgroundColor",
-          defaultValue: "#F8F8F0",
+          defaultValue: "#F4F4F4",
         },
         {
           type: "select",

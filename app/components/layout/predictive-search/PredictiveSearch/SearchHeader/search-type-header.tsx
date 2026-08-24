@@ -51,9 +51,9 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               onKeyDown={handleKeyDown}
               ref={inputRef}
               className={cn(
-                "w-full rounded border-2",
+                "w-full rounded-md border-2",
                 inline
-                  ? "h-[50px] w-[min(436px,calc(100vw-96px))] rounded-xl border border-[#443E40] bg-white px-3 py-0 text-base text-[#5E5E5E]"
+                  ? "h-[50px] w-[min(436px,calc(100vw-96px))] rounded-md border border-border bg-background-basic px-3 py-0 text-base text-text-subtle"
                   : "md:w-96 lg:w-[560px]",
               )}
               type="search"
@@ -62,7 +62,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                 <button
                   type="submit"
                   aria-label="Submit search"
-                  className="flex size-6 shrink-0 cursor-pointer items-center justify-center text-[#3B3333]"
+                  className="flex size-6 shrink-0 cursor-pointer items-center justify-center text-text-primary"
                 >
                   <IconSearch
                     className={cn("size-6", !inline && "opacity-55")}
@@ -77,7 +77,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                     type="button"
                     onClick={onClose}
                     aria-label="Close search"
-                    className="flex size-6 shrink-0 items-center justify-center text-[#5E5E5E]"
+                    className="flex size-6 shrink-0 items-center justify-center text-text-subtle"
                   >
                     <IconClose className="size-5" strokeWidth={2} />
                   </button>

@@ -27,7 +27,7 @@ const Review = ({
       data-motion="fade-up"
       ref={ref}
       {...rest}
-      className="border rounded border-[var(--border-color)] gap-2 p-6 flex flex-col relative"
+      className="relative flex flex-col gap-2 rounded-md border border-[var(--border-color)] p-6"
     >
       {name && <h4 className="font-medium text-[var(--text-color)]">{name}</h4>}
       <p className="flex gap-1">{renderStars()}</p>

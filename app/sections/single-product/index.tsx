@@ -190,7 +190,7 @@ let SingleProduct = ({
                       <Money
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
-                        className="text-[#AB2E2E] line-through"
+                        className="text-label-sale-background line-through"
                         as="span"
                       />
                     )}

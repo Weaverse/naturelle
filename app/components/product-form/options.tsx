@@ -93,7 +93,7 @@ export function VariantOption(props: VariantOptionProps) {
             <button
               key={value.value}
               className={clsx(
-                "rounded p-0.5 border-2 cursor-pointer",
+                "cursor-pointer rounded-md border-2 p-0.5",
                 selectedOptionValue === value.value
                   ? "border-border/90 bg-[#E5E6D4]"
                   : value.isAvailable
@@ -117,7 +117,7 @@ export function VariantOption(props: VariantOptionProps) {
     return (
       <div>
         <select
-          className="min-w-[120px] w-fit rounded-sm border p-1"
+          className="min-w-[120px] w-fit rounded-md border p-1"
           onChange={(e) => {
             onSelectOptionValue(e.target.value);
           }}
@@ -140,7 +140,7 @@ export function VariantOption(props: VariantOptionProps) {
           <div
             key={value.value}
             className={clsx(
-              "!leading-none py-3 px-3 cursor-pointer transition-all duration-200 font-normal border-2 rounded",
+              "cursor-pointer rounded-md border-2 px-3 py-3 font-normal !leading-none transition-all duration-200",
               value.isAvailable && selectedOptionValue === value.value
                 ? "border-border/90 bg-[#E5E6D4]"
                 : value.isAvailable

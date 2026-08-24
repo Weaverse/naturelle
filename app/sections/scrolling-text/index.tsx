@@ -130,13 +130,13 @@ export const schema = createSchema({
           type: "color",
           name: "borderColor",
           label: "Border color",
-          defaultValue: "#3D490B",
+          defaultValue: "#443E40",
         },
         {
           type: "color",
           name: "backgroundColor",
           label: "Background color",
-          defaultValue: "#E5E7D4",
+          defaultValue: "#DCD8D6",
         },
         {
           type: "select",

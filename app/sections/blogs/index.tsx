@@ -180,11 +180,11 @@ const Blogs = ({
             >
               <div
                 key={idx.id}
-                className="flex w-full h-full cursor-pointer flex-col items-center gap-4 rounded p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6"
+                className="flex h-full w-full cursor-pointer flex-col items-center gap-4 rounded-md p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6"
               >
                 {idx.image ? (
                   <div
-                    className="w-full overflow-hidden rounded"
+                    className="w-full overflow-hidden rounded-md"
                     style={{ aspectRatio }}
                   >
                     <Image
@@ -195,7 +195,7 @@ const Blogs = ({
                   </div>
                 ) : (
                   <div
-                    className="flex w-full items-center justify-center bg-[var(--calculate-color)] rounded overflow-hidden"
+                    className="flex w-full items-center justify-center overflow-hidden rounded-md bg-[var(--calculate-color)]"
                     style={{ aspectRatio }}
                   >
                     <IconImageBlank
@@ -259,7 +259,7 @@ export const schema = createSchema({
           type: "color",
           label: "Background color",
           name: "backgroundColor",
-          defaultValue: "#F8F8F0",
+          defaultValue: "#F4F4F4",
         },
         {
           type: "range",
