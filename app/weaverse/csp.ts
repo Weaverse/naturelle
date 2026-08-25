@@ -40,7 +40,12 @@ export function getWeaverseCsp(
       "vimeo.com",
       ...weaverseHosts,
     ],
-    scriptSrc: ["https://cdn.shopify.com", "https://www.youtube.com"],
+    scriptSrc: [
+      "'self'",
+      "https://cdn.shopify.com",
+      "https://www.youtube.com",
+      ...weaverseHosts,
+    ],
   };
 
   if (isDesignMode) {
