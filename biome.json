@@ -1,6 +1,14 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["@weaverse/biome"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["!.weaverse"]
+  },
   "linter": {
     "rules": {
       "security": {
@@ -14,6 +22,7 @@
         "noMagicNumbers": "off",
         "noDescendingSpecificity": "off",
         "useConsistentTypeDefinitions": "off",
+        "useConsistentArrowReturn": "off",
         "noNestedTernary": "off"
       },
       "suspicious": {
@@ -21,10 +30,7 @@
         "useAwait": "off",
         "noConsole": "off",
         "noAlert": "off",
-        "noArrayIndexKey": "off"
-      },
-      "nursery": {
-        "useConsistentArrowReturn": "off",
+        "noArrayIndexKey": "off",
         "noUnnecessaryConditions": "off"
       },
       "correctness": {

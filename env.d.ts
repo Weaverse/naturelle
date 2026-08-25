@@ -5,7 +5,8 @@
 import "@total-typescript/ts-reset";
 import type { HydrogenEnv, HydrogenSessionData } from "@shopify/hydrogen";
 import type { WeaverseClient } from "@weaverse/hydrogen";
-import type { createAppLoadContext } from "./app/lib/utils/context";
+import type { createHydrogenRouterContext } from "./app/.server/context";
+import type { I18nLocale } from "./app/types/type-locale";
 
 declare global {
   /**
@@ -18,17 +19,25 @@ declare global {
     PUBLIC_GOOGLE_GTM_ID: string;
     JUDGEME_PRIVATE_API_TOKEN: string;
     PRODUCT_CUSTOM_DATA_METAFIELD: string;
+    METAOBJECT_COLORS_TYPE: string;
+    PUBLIC_CHECKOUT_DOMAIN: string;
+    PUBLIC_STOREFRONT_ID: string;
+    WEAVERSE_HOST?: string;
+    WEAVERSE_API_BASE?: string;
   }
 }
 
-import type { Storefront } from "~/lib/types/type-locale";
-
 declare module "react-router" {
+  import type { Storefront as StorefrontBase } from "@shopify/hydrogen";
+
   interface AppLoadContext
-    extends Awaited<ReturnType<typeof createAppLoadContext>> {
-    // to change context type, change the return of createAppLoadContext() instead
+    extends Awaited<ReturnType<typeof createHydrogenRouterContext>> {
+    // to change context type, change the return of createHydrogenRouterContext() instead
+    storefront: Omit<StorefrontBase, "i18n"> & {
+      i18n: I18nLocale;
+    };
     weaverse: WeaverseClient;
-    storefront: Storefront;
+    additionalContext: HydrogenAdditionalContext;
   }
 
   // TODO: remove this once we've migrated our loaders to `Route.ActionArgs`

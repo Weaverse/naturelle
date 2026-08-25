@@ -748,6 +748,7 @@ export type ProductQuery = {
           reference?: StorefrontAPI.Maybe<
             | {
                 __typename:
+                  | 'Article'
                   | 'Collection'
                   | 'GenericFile'
                   | 'MediaImage'
@@ -2159,7 +2160,7 @@ export type PageDetailsQueryVariables = StorefrontAPI.Exact<{
 
 export type PageDetailsQuery = {
   page?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'handle' | 'body'> & {
       seo?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.Seo, 'description' | 'title'>
       >;
@@ -2413,7 +2414,7 @@ interface GeneratedQueryTypes {
     return: BlogsQuery;
     variables: BlogsQueryVariables;
   };
-  '#graphql\n  query PageDetails($language: LanguageCode, $handle: String!)\n  @inContext(language: $language) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
+  '#graphql\n  query PageDetails($language: LanguageCode, $handle: String!)\n  @inContext(language: $language) {\n    page(handle: $handle) {\n      id\n      title\n      handle\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
     return: PageDetailsQuery;
     variables: PageDetailsQueryVariables;
   };

@@ -100,7 +100,13 @@ function AddressPopup({
   onClose: () => void;
 }) {
   return (
-    <Dialog open={open} onClose={() => {}} className="relative z-50">
+    <Dialog
+      open={open}
+      onClose={() => {
+        // This confirmation dialog must be closed with an explicit action.
+      }}
+      className="relative z-50"
+    >
       <div className="fixed inset-0 flex w-screen items-center justify-center bg-black/60 p-4">
         <Dialog.Panel className="w-full max-w-[446px] space-y-4 border bg-white p-6">
           <div className="flex items-center justify-between">
@@ -255,7 +261,7 @@ export function AddressForm({
     if (state === "loading" && action) {
       onSucess?.();
     }
-  }, [action, state]);
+  }, [action, state, onSucess]);
   return (
     <Form id={addressId}>
       <fieldset className="space-y-3">

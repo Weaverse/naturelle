@@ -21,7 +21,9 @@ export function CartPopularCollections({ layout }: { layout?: string }) {
   useEffect(() => {
     load(productsApiPath);
   }, [load, productsApiPath]);
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
   let { collections } = data;
   let nodes = collections.nodes.slice(0, layout === "aside" ? 4 : 6);
 
@@ -63,7 +65,7 @@ function PopularCard({
   let settings = useThemeSettings();
   let { colorBackground } = settings;
   const calculateColor = (hex: string) =>
-    `#${[...Array(3)]
+    `#${[...new Array(3)]
       .map((_, i) =>
         Math.max(
           0,

@@ -44,7 +44,7 @@ export function ProductMedia(props: ProductMediaProps) {
         swiper.slideTo(index);
       }
     }
-  }, [selectedVariant]);
+  }, [selectedVariant, swiper.slideTo, swiper.activeIndex, swiper, media]);
 
   return (
     <div className="overflow-hidden product-media-slider">
@@ -70,7 +70,7 @@ export function ProductMedia(props: ProductMediaProps) {
             spaceBetween={10}
             thumbs={{ swiper: thumbsSwiper }}
             onSwiper={setSwiper}
-            onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
+            onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
             className="vt-product-image max-w-full !pb-5 md:!pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
             style={
               {
@@ -182,7 +182,9 @@ function getSelectedVariantMediaIndex(
   media: MediaFragment[],
   selectedVariant: any,
 ) {
-  if (!selectedVariant) return 0;
+  if (!selectedVariant) {
+    return 0;
+  }
   let mediaUrl = selectedVariant.image?.url;
   return media.findIndex((med) => med.previewImage?.url === mediaUrl);
 }

@@ -3,7 +3,7 @@ import type { CartBuyerIdentityInput } from "@shopify/hydrogen/storefront-api-ty
 import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useFetcher, useLocation, useRouteLoaderData } from "react-router";
+import { useFetcher, useLocation } from "react-router";
 import { Button } from "~/components/button";
 import { IconCaret, IconCheck } from "~/components/icon";
 import { useRootLoaderData } from "~/root";
@@ -23,24 +23,21 @@ export function CountrySelector() {
   )}${search}`;
 
   const countries = (fetcher.data ?? {}) as Localizations;
-  const defaultLocale = countries?.["default"];
+  const defaultLocale = countries?.default;
   const defaultLocalePrefix = defaultLocale
     ? `${defaultLocale?.language}-${defaultLocale?.country}`
     : "";
 
-  const { ref, inView } = useInView({
+  const { ref: observerRef, inView } = useInView({
     threshold: 0,
     triggerOnce: true,
   });
 
-  const observerRef = useRef(null);
-  useEffect(() => {
-    ref(observerRef.current);
-  }, [ref, observerRef]);
-
   // Get available countries list when in view
   useEffect(() => {
-    if (!inView || fetcher.data || fetcher.state === "loading") return;
+    if (!inView || fetcher.data || fetcher.state === "loading") {
+      return;
+    }
     fetcher.load("/api/countries");
   }, [inView, fetcher]);
 
@@ -164,10 +161,8 @@ function ChangeLocaleForm({
         buyerIdentity,
       }}
     >
-      <>
-        <input type="hidden" name="redirectTo" value={redirectTo} />
-        {children}
-      </>
+      <input type="hidden" name="redirectTo" value={redirectTo} />
+      {children}
     </CartForm>
   );
 }

@@ -22,10 +22,13 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     collections,
     url: request.url,
   });
+  const weaverseData = await context.weaverse.loadPage({
+    type: "COLLECTION_LIST",
+  });
   return data({
     collections,
     seo,
-    weaverseData: await context.weaverse.loadPage({ type: "COLLECTION_LIST" }),
+    weaverseData,
   });
 }
 

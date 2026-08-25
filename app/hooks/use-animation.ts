@@ -22,7 +22,6 @@ export function useAnimation(ref?: ForwardedRef<any>) {
     Object.assign(ref, { current: scope.current });
   }, [scope, ref]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation> --- IGNORE ---
   useEffect(() => {
     if (!enableScrollReveal) {
       return;
@@ -47,7 +46,7 @@ export function useAnimation(ref?: ForwardedRef<any>) {
         );
       });
     }
-  }, []);
+  }, [scope.current, enableScrollReveal]);
 
   return [scope] as const;
 }

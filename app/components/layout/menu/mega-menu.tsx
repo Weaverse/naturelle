@@ -18,7 +18,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let [value, setValue] = useState<string | null>(null);
 
   if (menu?.items?.length) {
-    let items = menu.items as unknown as SingleMenuItem[];
+    let menuItems = menu.items as unknown as SingleMenuItem[];
     return (
       <Menubar.Root
         asChild
@@ -27,7 +27,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
         onMouseLeave={() => setValue(null)}
       >
         <nav className="hidden lg:flex grow justify-center h-full z-30">
-          {items.map((menuItem) => {
+          {menuItems.map((menuItem) => {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
             let hasSubmenu = level > 1;
@@ -48,9 +48,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   }}
                 >
                   {hasSubmenu ? (
-                    <>
-                      <span className="text-animation">{title}</span>
-                    </>
+                    <span className="text-animation">{title}</span>
                   ) : (
                     <Link to={to} className="transition-none">
                       <span className="text-animation">{title}</span>

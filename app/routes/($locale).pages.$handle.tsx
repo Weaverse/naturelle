@@ -56,6 +56,7 @@ const PAGE_QUERY = `#graphql
     page(handle: $handle) {
       id
       title
+      handle
       body
       seo {
         description

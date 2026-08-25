@@ -19,30 +19,28 @@ export function Logo({ className }: { className?: string }) {
         className="relative"
         style={{ width: logoData ? logoWidth : "auto" }}
       >
-        <>
-          {logoData && (
-            <Image
-              data={logoData}
-              sizes="auto"
-              className={clsx(
-                "main-logo",
-                "w-full h-full object-cover",
-                "group-hover/header:opacity-100",
-              )}
-            />
-          )}
-          {transparentLogoData && (
-            <Image
-              data={transparentLogoData}
-              sizes="auto"
-              className={clsx(
-                "transparent-logo",
-                "absolute top-0 left-0 w-full h-full object-cover",
-                "group-hover/header:opacity-0",
-              )}
-            />
-          )}
-        </>
+        {logoData && (
+          <Image
+            data={logoData}
+            sizes="auto"
+            className={clsx(
+              "main-logo",
+              "w-full h-full object-cover",
+              "group-hover/header:opacity-100",
+            )}
+          />
+        )}
+        {transparentLogoData && (
+          <Image
+            data={transparentLogoData}
+            sizes="auto"
+            className={clsx(
+              "transparent-logo",
+              "absolute top-0 left-0 w-full h-full object-cover",
+              "group-hover/header:opacity-0",
+            )}
+          />
+        )}
       </div>
     </Link>
   );

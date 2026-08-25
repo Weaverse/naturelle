@@ -58,7 +58,7 @@ export function PredictiveSearchResult({
 function pluralToSingularSearchType(
   type:
     | NormalizedPredictiveSearchResults[number]["type"]
-    | Array<NormalizedPredictiveSearchResults[number]["type"]>,
+    | NormalizedPredictiveSearchResults[number]["type"][],
 ) {
   const plural = {
     articles: "ARTICLE",

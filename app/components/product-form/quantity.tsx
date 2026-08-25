@@ -15,7 +15,7 @@ export function Quantity(props: QuantityProps) {
       e.key !== "Delete" &&
       e.key !== "ArrowLeft" &&
       e.key !== "ArrowRight" &&
-      isNaN(Number(e.key))
+      Number.isNaN(Number(e.key))
     ) {
       e.preventDefault();
     }
@@ -32,6 +32,7 @@ export function Quantity(props: QuantityProps) {
         )}
       >
         <button
+          type="button"
           name="decrease-quantity"
           aria-label="Decrease quantity"
           className={clsx(
@@ -51,6 +52,7 @@ export function Quantity(props: QuantityProps) {
           disabled={isDisabled}
         />
         <button
+          type="button"
           className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
           name="increase-quantity"
           aria-label="Increase quantity"

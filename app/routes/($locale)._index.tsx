@@ -7,7 +7,7 @@ import type { PageType } from "@weaverse/hydrogen";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/.server/seo";
 import type { Storefront } from "~/types/type-locale";
-import { WeaverseContent } from "~/weaverse";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const storefront = context.storefront as Storefront;
@@ -20,9 +20,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     type = "CUSTOM";
   }
   let weaverseData = await context.weaverse.loadPage({ type });
-  if (!weaverseData?.page?.id || weaverseData.page.id.includes("fallback")) {
-    throw new Response(null, { status: 404 });
-  }
+  validateWeaverseData(weaverseData);
   let seo = seoPayload.home();
 
   return {

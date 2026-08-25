@@ -50,12 +50,13 @@ export async function loader({
     },
   });
 
+  const weaverseData = await weaverse.loadPage({
+    type: "ALL_PRODUCTS",
+  });
   return response({
     products: data.products,
     seo,
-    weaverseData: await weaverse.loadPage({
-      type: "ALL_PRODUCTS",
-    }),
+    weaverseData,
   });
 }
 

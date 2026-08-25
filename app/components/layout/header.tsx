@@ -2,7 +2,7 @@ import { useThemeSettings } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { useRouteError } from "react-router";
-import useWindowScroll from "react-use/lib/useWindowScroll";
+import { useWindowScroll } from "react-use";
 import { Logo } from "~/components/layout/logo";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn } from "~/utils/cn";
@@ -60,7 +60,6 @@ export function Header() {
     <>
       {enableTrialShipping && <ScrollingAnnouncement />}
       <header
-        role="banner"
         className={cn(
           "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
           "bg-header-bg text-(--color-header-text) border-(--color-header-text)",

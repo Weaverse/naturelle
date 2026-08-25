@@ -14,7 +14,9 @@ function resolveToFromType(
     customPrefixes: {},
   },
 ) {
-  if (!pathname || !type) return "";
+  if (!pathname || !type) {
+    return "";
+  }
 
   /*
     MenuItemType enum

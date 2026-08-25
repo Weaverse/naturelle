@@ -23,9 +23,10 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     },
   });
 
+  const weaverseData = await context.weaverse.loadPage({ type: "BLOG" });
   return data({
     blogs,
-    weaverseData: await context.weaverse.loadPage({ type: "BLOG" }),
+    weaverseData,
   });
 };
 

@@ -56,14 +56,15 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const seo = seoPayload.blog({ blog, url: request.url });
 
+  const weaverseData = await context.weaverse.loadPage({
+    type: "BLOG",
+    handle: params.blogHandle,
+  });
   return data({
     blog,
     articles,
     seo,
-    weaverseData: await context.weaverse.loadPage({
-      type: "BLOG",
-      handle: params.blogHandle,
-    }),
+    weaverseData,
   });
 };
 

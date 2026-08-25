@@ -38,14 +38,14 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     searchParams.get("sort") as SortParam,
   );
   const filters = [...searchParams.entries()].reduce(
-    (filters, [key, value]) => {
+    (filterList, [key, value]) => {
       if (key.startsWith(FILTER_URL_PREFIX)) {
         const filterKey = key.substring(FILTER_URL_PREFIX.length);
-        filters.push({
+        filterList.push({
           [filterKey]: JSON.parse(value),
         });
       }
-      return filters;
+      return filterList;
     },
     [] as ProductFilter[],
   );

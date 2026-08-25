@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import {
   type ActionFunctionArgs,
   data,
-  type HeadersFunction,
   type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,

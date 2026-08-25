@@ -3,7 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { parseGid } from "@shopify/hydrogen";
 import clsx from "clsx";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type {
   Media_MediaImage_Fragment,
   Media_Video_Fragment,
@@ -32,9 +32,9 @@ export function ZoomModal({
   let zoomMedia = media.find((med) => med.id === zoomMediaId);
   let zoomMediaIndex = media.findIndex((med) => med.id === zoomMediaId);
   let nextMedia = media[zoomMediaIndex + 1] ?? media[0];
-  let prevMedia = media[zoomMediaIndex - 1] ?? media[media.length - 1];
+  let prevMedia = media[zoomMediaIndex - 1] ?? media.at(-1);
 
-  function scrollToMedia(id: string) {
+  const scrollToMedia = useCallback(function scrollToMediaElement(id: string) {
     let { id: mediaId } = parseGid(id);
     let mediaElement = document.getElementById(`zoom-media--${mediaId}`);
     if (
@@ -44,9 +44,8 @@ export function ZoomModal({
     ) {
       mediaElement.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "ArrowRight" || event.key === "ArrowDown") {
@@ -66,7 +65,7 @@ export function ZoomModal({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, zoomMediaId, setZoomMediaId, nextMedia, prevMedia]);
+  }, [open, zoomMediaId, setZoomMediaId, nextMedia, prevMedia, scrollToMedia]);
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -170,7 +169,9 @@ export function ZoomModal({
 }
 
 function ZoomMedia({ media }: { media: MediaFragment }) {
-  if (!media) return null;
+  if (!media) {
+    return null;
+  }
   if (media.mediaContentType === "IMAGE") {
     let { image, alt } = media as Media_MediaImage_Fragment;
     return (
