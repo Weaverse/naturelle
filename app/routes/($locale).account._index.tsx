@@ -334,8 +334,8 @@ type ActionResponse = {
 function AccountProfile() {
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
-  const action = useActionData<ActionResponse>();
-  const customer = action?.customer ?? account?.customer;
+  const actionData = useActionData<ActionResponse>();
+  const customer = actionData?.customer ?? account?.customer;
   console.log("🚀 ~ customer2:", customer);
 
   return (
@@ -383,10 +383,10 @@ function AccountProfile() {
               minLength={2}
             />
           </fieldset>
-          {action?.error ? (
+          {actionData?.error ? (
             <p>
               <mark>
-                <small>{action.error}</small>
+                <small>{actionData.error}</small>
               </mark>
             </p>
           ) : (

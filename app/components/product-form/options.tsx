@@ -40,6 +40,7 @@ export function VariantOption(props: VariantOptionProps) {
               ?.value || value.value;
           return (
             <button
+              type="button"
               key={value.value}
               className={clsx(
                 "p-0.5 border-2 rounded-full cursor-pointer h-11 w-11",
@@ -68,6 +69,7 @@ export function VariantOption(props: VariantOptionProps) {
       <div className="flex gap-4 flex-wrap">
         {values.map((value) => (
           <button
+            type="button"
             key={value.value}
             className={cn(
               "border-2 rounded-full cursor-pointer h-[50px] px-5 py-3",
@@ -91,6 +93,7 @@ export function VariantOption(props: VariantOptionProps) {
         {values.map((value) => {
           return (
             <button
+              type="button"
               key={value.value}
               className={clsx(
                 "cursor-pointer rounded-md border-2 p-0.5",

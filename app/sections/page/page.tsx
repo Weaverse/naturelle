@@ -4,7 +4,7 @@ import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { PageDetailsQuery } from "storefront-api.generated";
 import { PageHeader, Section } from "~/components/text";
-import { prefixClassNames } from "~/utils/misc";
+import { usePrefixClassNames } from "~/utils/misc";
 
 interface PageProps extends HydrogenComponentProps {
   paddingTop: number;
@@ -18,7 +18,7 @@ let Page = ({
   let { page } = useLoaderData<PageDetailsQuery>();
   let { paddingTop, paddingBottom, ...rest } = props;
 
-  let pageContent = prefixClassNames(page?.body ?? "", "wv-");
+  let pageContent = usePrefixClassNames(page?.body ?? "", "wv-");
 
   if (page) {
     return (

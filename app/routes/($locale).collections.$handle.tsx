@@ -19,7 +19,7 @@ import { routeHeaders } from "~/utils/cache";
 import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
 import { parseAsCurrency } from "~/utils/locale";
-import { validateWeaverseData, WeaverseContent } from "~/weaverse";
+import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -38,14 +38,14 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     searchParams.get("sort") as SortParam,
   );
   const filters = [...searchParams.entries()].reduce(
-    (filters, [key, value]) => {
+    (filterList, [key, value]) => {
       if (key.startsWith(FILTER_URL_PREFIX)) {
         const filterKey = key.substring(FILTER_URL_PREFIX.length);
-        filters.push({
+        filterList.push({
           [filterKey]: JSON.parse(value),
         });
       }
-      return filters;
+      return filterList;
     },
     [] as ProductFilter[],
   );
@@ -67,8 +67,6 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       handle: handle,
     }),
   ]);
-
-  validateWeaverseData(weaverseData);
 
   const { collection, collections } = shopAndCollections;
 

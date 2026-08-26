@@ -54,7 +54,7 @@ export function Logo({
             sizes="auto"
             className={clsx(
               "transparent-logo",
-              "absolute top-0 left-0 h-full w-full object-cover",
+              "absolute top-0 left-0 w-full h-full object-cover",
               "group-hover/header:opacity-0",
             )}
           />

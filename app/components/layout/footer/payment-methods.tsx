@@ -92,18 +92,42 @@ export function PaymentMethods({
   }
 
   const payments: PaymentIcon[] = [];
-  if (showAmazonPay) payments.push(PAYMENT_ICONS["amazon-pay"]);
-  if (showPayPal) payments.push(PAYMENT_ICONS.paypal);
-  if (showKlarna) payments.push(PAYMENT_ICONS.klarna);
-  if (showGooglePay) payments.push(PAYMENT_ICONS["google-pay"]);
-  if (showApplePay) payments.push(PAYMENT_ICONS["apple-pay"]);
-  if (showJCB) payments.push(PAYMENT_ICONS.jcb);
-  if (showAmericanExpress) payments.push(PAYMENT_ICONS["american-express"]);
-  if (showVisa) payments.push(PAYMENT_ICONS.visa);
-  if (showMastercard) payments.push(PAYMENT_ICONS["master-card"]);
-  if (showDiners) payments.push(PAYMENT_ICONS.diners);
-  if (showDiscover) payments.push(PAYMENT_ICONS.discover);
-  if (showAlipay) payments.push(PAYMENT_ICONS.alipay);
+  if (showAmazonPay) {
+    payments.push(PAYMENT_ICONS["amazon-pay"]);
+  }
+  if (showPayPal) {
+    payments.push(PAYMENT_ICONS.paypal);
+  }
+  if (showKlarna) {
+    payments.push(PAYMENT_ICONS.klarna);
+  }
+  if (showGooglePay) {
+    payments.push(PAYMENT_ICONS["google-pay"]);
+  }
+  if (showApplePay) {
+    payments.push(PAYMENT_ICONS["apple-pay"]);
+  }
+  if (showJCB) {
+    payments.push(PAYMENT_ICONS.jcb);
+  }
+  if (showAmericanExpress) {
+    payments.push(PAYMENT_ICONS["american-express"]);
+  }
+  if (showVisa) {
+    payments.push(PAYMENT_ICONS.visa);
+  }
+  if (showMastercard) {
+    payments.push(PAYMENT_ICONS["master-card"]);
+  }
+  if (showDiners) {
+    payments.push(PAYMENT_ICONS.diners);
+  }
+  if (showDiscover) {
+    payments.push(PAYMENT_ICONS.discover);
+  }
+  if (showAlipay) {
+    payments.push(PAYMENT_ICONS.alipay);
+  }
 
   return (
     <div className="flex items-start gap-1.5 py-4 md:p-0">

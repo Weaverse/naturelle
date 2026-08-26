@@ -66,7 +66,8 @@ function DrawerMenu({
         let isResourceType =
           item.items.length &&
           item.items.every(
-            (item) => item?.resource?.image && item.items.length === 0,
+            (childItem) =>
+              childItem?.resource?.image && childItem.items.length === 0,
           );
         let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
           isResourceType
@@ -94,22 +95,20 @@ function ItemHeader({
   closeDrawer: () => void;
 }) {
   return (
-    <div
-      className="flex items-center justify-between py-3"
-      role="button"
+    <Link
+      to={to}
       onClick={closeDrawer}
+      className={({ isActive }) =>
+        clsx(
+          "flex items-center justify-between py-3",
+          isActive && "text-text-primary underline",
+        )
+      }
     >
-      <Link
-        to={to}
-        className={({ isActive }) =>
-          isActive ? "text-text-primary underline" : undefined
-        }
-      >
-        <h5 className="font-medium text-xl uppercase hover:text-text-primary">
-          {title}
-        </h5>
-      </Link>
-    </div>
+      <h5 className="font-medium text-xl uppercase hover:text-text-primary">
+        {title}
+      </h5>
+    </Link>
   );
 }
 
@@ -206,14 +205,14 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
   );
   return (
     <div className="">
-      <div
-        className="flex items-center justify-between py-3 hover:text-text-primary"
-        role="button"
+      <button
+        type="button"
+        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
         onClick={openMenu}
       >
         <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
-      </div>
+      </button>
       {content}
     </div>
   );
@@ -222,7 +221,6 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
 function ImageMenu({
   title,
   items,
-  to,
   closeDrawer,
 }: SingleMenuItem & { closeDrawer: () => void }) {
   const {
@@ -274,14 +272,14 @@ function ImageMenu({
   );
   return (
     <div className="">
-      <div
-        className="flex items-center justify-between py-3 hover:text-text-primary"
-        role="button"
+      <button
+        type="button"
+        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
         onClick={openMenu}
       >
         <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
-      </div>
+      </button>
       {content}
     </div>
   );
@@ -331,14 +329,14 @@ function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
   );
   return (
     <div className="">
-      <div
-        className="flex items-center justify-between py-3 hover:text-text-primary"
-        role="button"
+      <button
+        type="button"
+        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
         onClick={openMenu}
       >
         <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
-      </div>
+      </button>
       {content}
     </div>
   );

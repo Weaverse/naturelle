@@ -23,15 +23,7 @@
         "noDescendingSpecificity": "off",
         "useConsistentTypeDefinitions": "off",
         "useConsistentArrowReturn": "off",
-        "noNestedTernary": "off",
-        "useBlockStatements": "off",
-        "useConsistentArrayType": "off",
-        "useReadonlyClassProperties": "off",
-        "useConsistentMemberAccessibility": "off",
-        "useConsistentBuiltinInstantiation": "off",
-        "useAtIndex": "off",
-        "noIncrementDecrement": "off",
-        "noNonNullAssertion": "off"
+        "noNestedTernary": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",
@@ -39,27 +31,15 @@
         "noConsole": "off",
         "noAlert": "off",
         "noArrayIndexKey": "off",
-        "noUnnecessaryConditions": "off",
-        "noNonNullAssertedOptionalChain": "off",
-        "noShadow": "off",
-        "noImplicitAnyLet": "off",
-        "noEvolvingTypes": "off",
-        "noDeprecatedImports": "off",
-        "noReactForwardRef": "off",
-        "noGlobalIsNan": "off",
-        "noEmptyBlockStatements": "off"
+        "noUnnecessaryConditions": "off"
       },
       "correctness": {
         "noUnusedVariables": "off",
-        "useUniqueElementIds": "off",
-        "useExhaustiveDependencies": "off",
-        "noUnusedFunctionParameters": "off",
-        "useHookAtTopLevel": "off"
+        "useUniqueElementIds": "off"
       },
       "performance": {
         "noNamespaceImport": "off",
-        "useTopLevelRegex": "off",
-        "noImgElement": "off"
+        "useTopLevelRegex": "off"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": {
@@ -68,24 +48,12 @@
             "maxAllowedComplexity": 50
           }
         },
-        "noExcessiveLinesPerFunction": "off",
-        "noForEach": "off",
-        "noUselessFragments": "off",
-        "noBannedTypes": "off",
-        "useOptionalChain": "off",
-        "useLiteralKeys": "off",
-        "noImplicitCoercions": "off"
+        "noExcessiveLinesPerFunction": "off"
       },
       "a11y": {
         "noNoninteractiveElementInteractions": "off",
         "useKeyWithClickEvents": "off",
-        "noStaticElementInteractions": "off",
-        "noRedundantRoles": "off",
-        "noInteractiveElementToNoninteractiveRole": "off",
-        "useButtonType": "off",
-        "useAriaPropsSupportedByRole": "off",
-        "useFocusableInteractive": "off",
-        "useSemanticElements": "off"
+        "noStaticElementInteractions": "off"
       }
     }
   },

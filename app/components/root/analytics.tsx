@@ -18,7 +18,7 @@ export function CustomAnalytics() {
     });
 
     ready();
-  }, []);
+  }, [subscribe, ready]);
 
   return null;
 }

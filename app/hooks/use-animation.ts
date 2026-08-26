@@ -46,7 +46,7 @@ export function useAnimation(ref?: ForwardedRef<any>) {
         );
       });
     }
-  }, []);
+  }, [scope.current, enableScrollReveal]);
 
   return [scope] as const;
 }

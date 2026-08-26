@@ -29,7 +29,7 @@ import {
 import type { Storefront } from "~/types/type-locale";
 import { routeHeaders } from "~/utils/cache";
 import { createJudgemeReview, getJudgemeReviews } from "~/utils/judgeme";
-import { validateWeaverseData, WeaverseContent } from "~/weaverse";
+import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -65,8 +65,6 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       handle: handle,
     }),
   ]);
-
-  validateWeaverseData(weaverseData);
 
   const { shop, product } = shopAndProduct;
 

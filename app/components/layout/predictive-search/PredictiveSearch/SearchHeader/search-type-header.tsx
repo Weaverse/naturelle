@@ -44,7 +44,9 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                 const staysInForm =
                   nextTarget instanceof Node &&
                   event.currentTarget.closest("form")?.contains(nextTarget);
-                if (inline && !staysInForm) onClose?.();
+                if (inline && !staysInForm) {
+                  onClose?.();
+                }
               }}
               onClear={fetchResults}
               placeholder={inline ? "Search..." : "Enter a keyword"}

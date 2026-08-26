@@ -36,9 +36,9 @@ export function getVariantUrl({
     ? `${match?.[0]}products/${handle}`
     : `/products/${handle}`;
 
-  selectedOptions.forEach((option) => {
+  for (const option of selectedOptions) {
     searchParams.set(option.name, option.value);
-  });
+  }
 
   const searchString = searchParams.toString();
 

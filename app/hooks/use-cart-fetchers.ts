@@ -24,6 +24,6 @@ export function useCartFetchers(actionName: string, onFinished?: () => void) {
       setCartAdding(false);
       onFinished?.();
     }
-  }, [fetchers, actionName, cartAdding, onFinished]);
+  }, [fetchers, actionName, cartAdding, onFinished, cartFetchers.push]);
   return { cartAdding, cartFetchers };
 }

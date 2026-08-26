@@ -49,6 +49,7 @@ export function CartDrawer({ compact = false }: { compact?: boolean }) {
         <Await resolve={rootData?.cart}>
           {(cart) => (
             <button
+              type="button"
               onClick={openCart}
               className={cn(
                 "focus:ring-border relative flex items-center justify-center",

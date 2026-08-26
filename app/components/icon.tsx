@@ -328,7 +328,7 @@ export function IconCaret({
   stroke = "currentColor",
   ...props
 }: IconProps) {
-  let rotate;
+  let rotate: string;
 
   switch (direction) {
     case "down":

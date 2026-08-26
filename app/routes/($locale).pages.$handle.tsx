@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 import { redirectIfHandleIsLocalized } from "~/.server/redirect";
 import { seoPayload } from "~/.server/seo";
 import { routeHeaders } from "~/utils/cache";
-import { validateWeaverseData, WeaverseContent } from "~/weaverse";
+import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
 
@@ -24,8 +24,6 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       handle: params.handle,
     }),
   ]);
-
-  validateWeaverseData(weaverseData);
 
   const { page } = shopAndPage;
 

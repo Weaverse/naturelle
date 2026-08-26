@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import { type SyntheticEvent, useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
 import { IconFilledStar, IconStarReview } from "~/components/icon";
@@ -41,7 +41,7 @@ export function ReviewForm({
     setRating(value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
     fetcher.submit(event.currentTarget);
   };
 

@@ -32,7 +32,9 @@ export function useCountrySelector() {
   });
 
   useEffect(() => {
-    if (!inView || fetcher.data || fetcher.state === "loading") return;
+    if (!inView || fetcher.data || fetcher.state === "loading") {
+      return;
+    }
     fetcher.load("/api/countries");
   }, [inView, fetcher]);
 

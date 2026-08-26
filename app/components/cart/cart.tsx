@@ -49,12 +49,14 @@ export function CartMain({ layout, cart }: CartMainProps) {
 }
 
 function CartDetails({ layout, cart }: CartMainProps) {
-  const cartHasItems = !!cart && cart.totalQuantity > 0;
+  const cartHasItems = Boolean(cart) && cart.totalQuantity > 0;
   let styles = {
     page: "cart-details grid gap-y-6 lg:gap-10 grid-cols-1 lg:grid-cols-3",
     aside: "cart-details flex flex-col gap-6 relative justify-between h-full",
   };
-  if (!cart) return null;
+  if (!cart) {
+    return null;
+  }
   return (
     <div className={styles[layout]}>
       <CartLines lines={cart?.lines} layout={layout} />
@@ -70,13 +72,15 @@ function CartLines({
   layout: CartMainProps["layout"];
   lines: CartApiQueryFragment["lines"] | undefined;
 }) {
-  if (!lines) return null;
+  if (!lines) {
+    return null;
+  }
   const styles = {
     page: "col-span-2",
     aside: "flex-1 overflow-y-auto overflow-hidden custom-scroll",
   };
   return (
-    <div aria-labelledby="cart-lines" className={styles[layout]}>
+    <section aria-labelledby="cart-lines" className={styles[layout]}>
       <table className="table-auto w-full">
         {layout === "page" && (
           <thead>
@@ -107,7 +111,7 @@ function CartLines({
           ))}
         </tbody>
       </table>
-    </div>
+    </section>
   );
 }
 
@@ -301,7 +305,9 @@ function CartCheckoutActions({
   checkoutUrl: string;
   layout: string;
 }) {
-  if (!checkoutUrl) return null;
+  if (!checkoutUrl) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -335,7 +341,7 @@ export function CartSummary({
     aside: "font-semibold",
   };
   return (
-    <div aria-labelledby="cart-summary" className={styles[layout]}>
+    <section aria-labelledby="cart-summary" className={styles[layout]}>
       <div
         className={clsx(
           "flex items-center justify-between font-medium",
@@ -354,7 +360,7 @@ export function CartSummary({
       {/* <p className="text-sm">Shipping & taxes calculated at checkout</p> */}
       {/* <p className="underline">Add delivery note</p> */}
       {children}
-    </div>
+    </section>
   );
 }
 
@@ -383,7 +389,9 @@ function CartLineQuantity({
   let optimisticId = line?.id;
   let optimisticData = useOptimisticData<OptimisticData>(optimisticId);
 
-  if (!line || typeof line?.quantity === "undefined") return null;
+  if (!line || typeof line?.quantity === "undefined") {
+    return null;
+  }
 
   let optimisticQuantity = optimisticData?.quantity || line.quantity;
   const { id: lineId, quantity } = line;
@@ -401,6 +409,7 @@ function CartLineQuantity({
       <div className="flex w-fit items-center rounded-md border border-border-subtle">
         <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
           <button
+            type="submit"
             className={cn(
               buttonStyles[layout],
               quantity <= 1 && "opacity-50 cursor-not-allowed",
@@ -422,6 +431,7 @@ function CartLineQuantity({
         </div>
         <CartLineUpdateButton lines={[{ id: lineId, quantity: nextQuantity }]}>
           <button
+            type="submit"
             className={buttonStyles[layout]}
             aria-label="Increase quantity"
             name="increase-quantity"
@@ -448,7 +458,9 @@ function CartLinePrice({
   priceType?: "regular" | "compareAt";
   [key: string]: any;
 }) {
-  if (!line?.cost?.amountPerQuantity || !line?.cost?.totalAmount) return null;
+  if (!line?.cost?.amountPerQuantity || !line?.cost?.totalAmount) {
+    return null;
+  }
 
   const moneyV2 =
     priceType === "regular"
@@ -518,7 +530,7 @@ function CartDiscounts({
             <div className="cart-discount">
               <code>{codes?.join(", ")}</code>
               &nbsp;
-              <button>Remove</button>
+              <button type="submit">Remove</button>
             </div>
           </UpdateDiscountForm>
         </div>

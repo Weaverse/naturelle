@@ -6,7 +6,7 @@ import {
   type MetaFunction,
   useLoaderData,
 } from "react-router";
-import { validateWeaverseData, WeaverseContent } from "~/weaverse";
+import { WeaverseContent } from "~/weaverse";
 
 export const meta: MetaFunction = () => {
   return [{ title: `Hydrogen | Blogs` }];
@@ -24,8 +24,6 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   });
 
   const weaverseData = await context.weaverse.loadPage({ type: "BLOG" });
-  validateWeaverseData(weaverseData);
-
   return data({
     blogs,
     weaverseData,

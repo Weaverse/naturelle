@@ -19,7 +19,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let [value, setValue] = useState<string | null>(null);
 
   if (menu?.items?.length) {
-    let items = menu.items as unknown as SingleMenuItem[];
+    let menuItems = menu.items as unknown as SingleMenuItem[];
     return (
       <Menubar.Root
         asChild
@@ -28,7 +28,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
         onMouseLeave={() => setValue(null)}
       >
         <nav className="z-30 hidden h-full grow items-center justify-center gap-9 md:flex">
-          {items.map((menuItem) => {
+          {menuItems.map((menuItem) => {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
             let hasSubmenu = level > 1;

@@ -129,14 +129,18 @@ export function ScrollingAnnouncement() {
   }, [segments.length]);
 
   useEffect(() => {
-    if (!enableScrollingText || segments.length <= 1) return;
+    if (!enableScrollingText || segments.length <= 1) {
+      return;
+    }
     const intervalMs = Math.max(Number(speed) || 9, 2) * 1000;
     const timer = window.setInterval(goNext, intervalMs);
     return () => window.clearInterval(timer);
   }, [enableScrollingText, goNext, segments.length, speed]);
 
   const visibleSegments = useMemo(() => {
-    if (segments.length === 0) return [];
+    if (segments.length === 0) {
+      return [];
+    }
     const count = Math.min(3, segments.length);
     return Array.from({ length: count }, (_, offset) => {
       return segments[(activeIndex + offset) % segments.length];
