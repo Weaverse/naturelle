@@ -3,13 +3,13 @@ import { cva } from "class-variance-authority";
 import { useEffect, useState } from "react";
 import { useRouteError } from "react-router";
 import { useWindowScroll } from "react-use";
-import { IconCaret } from "~/components/icon";
 import { Logo } from "~/components/layout/logo";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn } from "~/utils/cn";
 import { useIsHomePath } from "~/utils/locale";
 import { AccountLink } from "../account/account-link";
 import { CartDrawer } from "../cart/cart-drawer";
+import { HeaderCountrySelector } from "./country-selector/header-country-selector";
 import { HeaderMenuDrawer } from "./menu/drawer-menu";
 import { MegaMenu } from "./menu/mega-menu";
 import { ScrollingAnnouncement } from "./scrolling-announcement";
@@ -20,7 +20,7 @@ let variants = cva("", {
     width: {
       full: "h-full w-full",
       stretch: "h-full w-full",
-      fixed: "mx-auto h-full w-full lg:max-w-[1152px]",
+      fixed: "mx-auto h-full w-full lg:max-w-[1440px]",
     },
     padding: {
       full: "",
@@ -41,7 +41,6 @@ export function Header() {
     headerWidth,
     enableTransparentHeader,
   } = settings;
-  console.log("🚀 ~ Header ~ typeMenuHeader:", typeMenuHeader);
   const isHome = useIsHomePath();
   const { y } = useWindowScroll();
   const [top, setCalculatedTop] = useState(0);
@@ -96,14 +95,7 @@ export function Header() {
             <div className="flex w-77.75 shrink-0 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal">
               {!isUtilitySearchOpen && (
                 <>
-                  <div className="flex items-center gap-1.5">
-                    <span>EN</span>
-                    <IconCaret direction="down" className="size-3.5" />
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span>USD</span>
-                    <IconCaret direction="down" className="size-3.5" />
-                  </div>
+                  <HeaderCountrySelector />
                   <AccountLink variant="label" className="whitespace-nowrap" />
                 </>
               )}
@@ -120,8 +112,8 @@ export function Header() {
         </div>
         <div
           className={cn(
-            "z-40 flex h-14.5 md:h-16.5 max-w-208.5 items-center justify-center gap-2.5 bg-white px-6",
-            "mx-auto w-full",
+            "z-40 flex h-14.5 items-center justify-center gap-2.5 bg-header-bg md:h-16.5",
+            variants({ width: headerWidth, padding: headerWidth }),
           )}
         >
           {typeMenuHeader === "drawer" ? (

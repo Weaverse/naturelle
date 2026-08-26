@@ -279,7 +279,9 @@ input[type="search"]::-webkit-search-cancel-button {
   transition: all 0.3s ease;
 }
 
-.text-animation:hover::after {
+.text-animation:hover::after,
+.text-animation.is-active::after,
+.is-active .text-animation::after {
   left: 0;
   width: 100%;
 }

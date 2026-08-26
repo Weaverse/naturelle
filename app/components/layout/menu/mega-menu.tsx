@@ -3,9 +3,9 @@ import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type React from "react";
 import { useState } from "react";
-import { Link } from "react-router";
 import { IconCaret } from "~/components/icon";
 import { Image } from "~/components/image";
+import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
@@ -54,8 +54,16 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                       <IconCaret direction="down" className="size-4" />
                     </>
                   ) : (
-                    <Link to={to} className="transition-none">
-                      <span className="text-animation">{title}</span>
+                    <Link
+                      to={to}
+                      className={({ isActive }) =>
+                        cn(
+                          "text-animation transition-none",
+                          isActive && "is-active",
+                        )
+                      }
+                    >
+                      <span>{title}</span>
                     </Link>
                   )}
                 </Menubar.Trigger>
@@ -91,14 +99,17 @@ function DropdownSubMenu({ items }: { items: SingleMenuItem[] }) {
       style={{ "--fade-in-duration": "150ms" } as React.CSSProperties}
     >
       {items.map(({ id, to, title }) => (
-        <Link
-          key={id}
-          to={to}
-          prefetch="intent"
-          className="transition-none block"
-        >
-          <span className="text-animation line-clamp-2">{title}</span>
-        </Link>
+        <li key={id}>
+          <Link
+            to={to}
+            prefetch="intent"
+            className={({ isActive }) =>
+              cn("block transition-none", isActive && "is-active")
+            }
+          >
+            <span className="text-animation line-clamp-2">{title}</span>
+          </Link>
+        </li>
       ))}
     </ul>
   );
@@ -141,7 +152,12 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
             <Link
               to={to}
               prefetch="intent"
-              className="uppercase inline transition-none"
+              className={({ isActive }) =>
+                cn(
+                  "text-animation inline uppercase transition-none",
+                  isActive && "is-active",
+                )
+              }
             >
               <span className="text-animation font-semibold text-xl font-heading">
                 {title}
@@ -153,7 +169,12 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                   key={cItem.id}
                   to={cItem.to}
                   prefetch="intent"
-                  className="relative inline transition-none"
+                  className={({ isActive }) =>
+                    cn(
+                      "text-animation relative inline transition-none",
+                      isActive && "is-active",
+                    )
+                  }
                 >
                   <span className="text-animation">{cItem.title}</span>
                 </Link>

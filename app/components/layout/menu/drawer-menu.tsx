@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
-import { Link } from "react-router";
 import { Image } from "~/components/image";
+import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
@@ -99,7 +99,12 @@ function ItemHeader({
       role="button"
       onClick={closeDrawer}
     >
-      <Link to={to}>
+      <Link
+        to={to}
+        className={({ isActive }) =>
+          isActive ? "text-text-primary underline" : undefined
+        }
+      >
         <h5 className="font-medium text-xl uppercase hover:text-text-primary">
           {title}
         </h5>
@@ -143,6 +148,9 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                           to={item.to}
                           prefetch="intent"
                           onClick={handleCloseAll}
+                          className={({ isActive }) =>
+                            isActive ? "text-text-primary underline" : undefined
+                          }
                         >
                           {item.title}
                         </Link>
@@ -172,7 +180,11 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                                 to={subItem.to}
                                 onClick={handleCloseAll}
                                 prefetch="intent"
-                                className="text-text-subtle"
+                                className={({ isActive }) =>
+                                  isActive
+                                    ? "text-text-primary underline"
+                                    : "text-text-subtle"
+                                }
                               >
                                 <span className="font-body hover:text-text-primary text-base font-normal">
                                   {subItem.title}
@@ -238,6 +250,9 @@ function ImageMenu({
             prefetch="intent"
             key={id}
             onClick={handleCloseAll}
+            className={({ isActive }) =>
+              isActive ? "underline decoration-text-inverse" : undefined
+            }
           >
             <div className="relative aspect-square w-full group">
               <Image
@@ -300,7 +315,9 @@ function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                 key={ind}
                 to={subItem.to}
                 prefetch="intent"
-                className="text-text-subtle"
+                className={({ isActive }) =>
+                  isActive ? "text-text-primary underline" : "text-text-subtle"
+                }
               >
                 <span className="font-body hover:text-text-primary text-base font-normal">
                   {subItem.title}

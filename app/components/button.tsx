@@ -55,7 +55,7 @@ const Button = ({
   loading,
   variant,
   size = "default",
-  shape = "round",
+  shape = "default",
   fontFamily = "body",
   asChild,
   as = "button",
