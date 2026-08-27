@@ -12,6 +12,7 @@ import * as CollectionBanner from "~/sections/collection-banner/collection-banne
 import * as CollectionFilters from "~/sections/collection-filters/index";
 import * as CollectionListItem from "~/sections/collection-list/collection-list";
 import * as CollectionList from "~/sections/collection-list/index";
+import * as Collections from "~/sections/collections/index";
 import * as ContactForm from "~/sections/contact-form/contact-form";
 import * as Countdown from "~/sections/countdown/index";
 import * as CountdownTimer from "~/sections/countdown/timer";
@@ -79,6 +80,7 @@ export const components: HydrogenComponent[] = [
   FeaturedProductsList,
   CollectionList,
   CollectionListItem,
+  Collections,
   AllProducts,
   ProductInformation,
   SingleProduct,
