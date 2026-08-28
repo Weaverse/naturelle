@@ -1,8 +1,7 @@
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
-import type { RefObject } from "react";
-import { type CSSProperties, useEffect, useState } from "react";
-import { EffectFade, Pagination } from "swiper/modules";
+import type { CSSProperties, RefObject } from "react";
+import { EffectFade } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -24,24 +23,10 @@ const Slides = ({
   ...props
 }: SlidesProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { sectionHeight, width, children, ...rest } = props;
-  const [isMobile, setIsMobile] = useState(false);
   const [scope] = useAnimation(ref);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   let sectionStyle: CSSProperties = {
     "--section-height": `${sectionHeight}px`,
-    "--swiper-pagination-bottom": "50%",
-    "--swiper-pagination-top": "50%",
-    "--swiper-theme-color": "var(--color-text-primary)",
   } as CSSProperties;
 
   return (
@@ -50,7 +35,7 @@ const Slides = ({
       {...rest}
       style={sectionStyle}
       className={clsx(
-        "relative w-full sm:h-[var(--section-height)]",
+        "relative w-full px-5 py-10 md:h-(--section-height) md:px-6 lg:px-10",
         widthClasses[width],
       )}
     >
@@ -62,12 +47,7 @@ const Slides = ({
         fadeEffect={{
           crossFade: true,
         }}
-        pagination={
-          isMobile && {
-            clickable: true,
-          }
-        }
-        modules={[EffectFade, Pagination]}
+        modules={[EffectFade]}
       >
         {children?.map((child, index) => (
           <SwiperSlide key={index}>{child}</SwiperSlide>

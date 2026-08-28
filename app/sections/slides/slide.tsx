@@ -1,3 +1,4 @@
+import { PawPrint } from "@phosphor-icons/react";
 import { Image } from "@shopify/hydrogen";
 import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
@@ -27,8 +28,8 @@ let alignmentClasses: Record<Alignment, string> = {
 };
 
 let AlignImageClasses: Record<AlignImage, string> = {
-  left: "sm:flex-row",
-  right: "sm:flex-row-reverse",
+  left: "md:flex-row",
+  right: "md:flex-row-reverse",
 };
 
 const Slide = ({
@@ -56,18 +57,18 @@ const Slide = ({
       ref={ref}
       {...rest}
       style={sectionStyle}
-      className="group sm:h-full h-auto"
+      className="group h-auto md:h-full"
     >
-      <div className="h-full w-full sm:px-0">
+      <div className="h-full w-full">
         <div
           className={clsx(
-            "flex flex-col justify-center items-center h-full w-full",
+            "flex h-full w-full flex-col items-center justify-center gap-5 lg:gap-5",
             AlignImageClasses[imageAlignment],
           )}
         >
           <div
             data-motion="zoom-in"
-            className="w-full h-1/2 sm:h-full flex flex-1 items-center justify-center sm:w-1/2 aspect-square overflow-hidden"
+            className="flex aspect-square w-full flex-1 items-center justify-center overflow-hidden rounded-2xl md:h-full md:w-1/2"
           >
             {backgroundImage ? (
               <Image
@@ -89,29 +90,52 @@ const Slide = ({
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-0 md:gap-6 lg:gap-20 items-center justify-center px-6 py-12 bg-(--background-color) aspect-square w-full h-1/2 sm:w-1/2 sm:h-full sm:px-14 sm:py-20">
-            <div
-              className={clsx(
-                "flex flex-col justify-center gap-4",
-                alignmentClasses[textAlignment],
-              )}
-            >
-              {children}
+          <div className="relative flex aspect-square w-full flex-col items-center justify-center gap-6 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 md:h-full md:w-1/2 lg:gap-20 lg:px-16 lg:py-20">
+            <span
+              aria-hidden="true"
+              className="absolute top-6 h-px w-16 bg-white opacity-60"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute bottom-6 h-px w-16 bg-[#D4AF37] opacity-60"
+            />
+            <div className="flex flex-[1_0_0] flex-col items-center justify-center gap-6">
+              <div
+                data-motion="fade-up"
+                className="flex size-16 shrink-0 items-center justify-center rounded-full border border-current lg:size-20"
+              >
+                <PawPrint className="size-8 lg:size-10" weight="regular" />
+              </div>
+
+              <div
+                className={clsx(
+                  "flex w-full flex-col justify-center gap-4 [&_.paragraph]:w-full",
+                  alignmentClasses[textAlignment],
+                )}
+              >
+                {children}
+              </div>
             </div>
+
             <div
               data-motion="fade-up"
-              className="sm:flex gap-4 justify-center items-center hidden"
+              className="flex items-center justify-center gap-4"
             >
-              <IconArrowLeft
-                onClick={() => swiper.slidePrev()}
-                className="w-8 h-8 cursor-pointer"
-                viewBox="0 0 32 32"
-              />
-              <IconArrowRight
-                onClick={() => swiper.slideNext()}
-                className="w-8 h-8 cursor-pointer"
-                viewBox="0 0 32 32"
-              />
+              <div className="flex items-center px-6 py-3 rounded-[999px] bg-[#F9F7F2]">
+                <IconArrowLeft
+                  onClick={() => swiper.slidePrev()}
+                  className="w-8 h-8 cursor-pointer"
+                  viewBox="0 0 32 32"
+                />
+              </div>
+
+              <div className="flex items-center px-6 py-3 rounded-[999px] bg-[#F9F7F2]">
+                <IconArrowRight
+                  onClick={() => swiper.slideNext()}
+                  className="w-8 h-8 cursor-pointer"
+                  viewBox="0 0 32 32"
+                />
+              </div>
             </div>
           </div>
         </div>

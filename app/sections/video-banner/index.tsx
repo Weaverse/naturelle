@@ -259,7 +259,7 @@ export const schema = createSchema({
 					configs: {
 						min: 400,
 						max: 1000,
-						step: 10,
+						step: 1,
 						unit: "px",
 					},
 					condition: "height.eq.custom",

@@ -1,4 +1,5 @@
 import { createSchema } from "@weaverse/hydrogen";
+import clsx from "clsx";
 import type { RefObject } from "react";
 import {
   Section,
@@ -12,10 +13,15 @@ const Highlights = ({
   ref,
   ...props
 }: HighlightsProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, ...rest } = props;
+  let { children, className, ...rest } = props;
 
   return (
-    <Section ref={ref} {...rest}>
+    <Section
+      ref={ref}
+      {...rest}
+      className={clsx("bg-[#F3F3F3]", className)}
+      containerClassName="py-20 lg:max-w-[1440px] lg:py-[120px]"
+    >
       {children}
     </Section>
   );
