@@ -159,7 +159,7 @@ export const layoutInputs: InspectorGroup["inputs"] = [
     label: "Items spacing",
     configs: {
       min: 0,
-      max: 60,
+      max: 64,
       step: 4,
       unit: "px",
     },

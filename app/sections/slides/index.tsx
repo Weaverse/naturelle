@@ -35,7 +35,7 @@ const Slides = ({
       {...rest}
       style={sectionStyle}
       className={clsx(
-        "relative w-full px-5 py-10 md:h-(--section-height) md:px-6 lg:px-10",
+        "relative w-full px-5 py-10 md:h-(--section-height) md:px-6 lg:px-10 bg-background-basic",
         widthClasses[width],
       )}
     >

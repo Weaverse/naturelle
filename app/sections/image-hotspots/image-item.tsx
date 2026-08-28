@@ -1,8 +1,7 @@
 import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
 import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
-import type { RefObject } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { Image } from "~/components/image";
-import { getImageAspectRatio } from "~/utils/image";
 
 interface HotspotsImageProps extends HydrogenComponentProps {
   image: string;
@@ -22,15 +21,24 @@ const HotspotsImage = ({
     <div
       ref={ref}
       {...rest}
-      className="relative w-full h-full"
-      style={{ aspectRatio: getImageAspectRatio(imageData, aspectRatio) }}
+      data-aspect-ratio={aspectRatio}
+      style={
+        {
+          "--hotspot-background-image": imageData.url
+            ? `url("${imageData.url}")`
+            : "none",
+        } as CSSProperties
+      }
+      className="relative mb-[900px] w-full md:mb-0 md:h-[clamp(780px,50vw,863px)] md:w-1/2"
     >
-      <Image
-        data={imageData}
-        sizes="auto"
-        className="object-cover z-0 w-full h-full"
-      />
-      {children}
+      <div className="relative aspect-square w-full overflow-visible md:h-full md:aspect-auto">
+        <Image
+          data={imageData}
+          sizes="auto"
+          className="z-0 h-full w-full object-cover"
+        />
+        {children}
+      </div>
     </div>
   );
 };

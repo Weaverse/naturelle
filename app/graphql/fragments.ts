@@ -103,6 +103,12 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     publishedAt
     handle
     vendor
+    rating: metafield(namespace: "reviews", key: "rating") {
+      value
+    }
+    ratingCount: metafield(namespace: "reviews", key: "rating_count") {
+      value
+    }
     images(first: 50) {
       nodes {
         id

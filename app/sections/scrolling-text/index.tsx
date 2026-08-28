@@ -131,7 +131,7 @@ export const schema = createSchema({
           type: "color",
           name: "textColor",
           label: "Text color",
-          defaultValue: "#CF9D71"
+          defaultValue: "#CF9D71",
         },
         {
           type: "color",

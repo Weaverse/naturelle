@@ -80,6 +80,19 @@ export const PRODUCT_QUERY = `#graphql
       handle
       descriptionHtml
       description
+      collections(first: 1) {
+        nodes {
+          id
+          title
+          handle
+        }
+      }
+      rating: metafield(namespace: "reviews", key: "rating") {
+        value
+      }
+      ratingCount: metafield(namespace: "reviews", key: "rating_count") {
+        value
+      }
       options {
         ...ProductOption
       }

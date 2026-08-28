@@ -2,14 +2,13 @@ import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { useSwiper } from "swiper/react";
+import type { SwiperClass } from "swiper/react";
 import { IconArrowLeft, IconArrowRight, IconCaret } from "~/components/icon";
 
 let variants = cva(
   [
-    "z-10",
-    "absolute top-1/2 -translate-y-1/2 z-1",
-    "p-2 text-center cursor-pointer",
+    "absolute top-1/2 z-50 -translate-y-1/2",
+    "p-4 text-center cursor-pointer",
     "transition-all duration-200",
   ],
   {
@@ -28,13 +27,16 @@ let variants = cva(
         false: "",
       },
       showArrowsOnHover: { true: "", false: "" },
-      side: { left: "", right: "" },
+      side: {
+        left: "-translate-x-1/2",
+        right: "translate-x-1/2",
+      },
     },
     compoundVariants: [
       {
         showArrowsOnHover: true,
         side: "left",
-        className: "lg:-left-12 lg:group-hover/arrow:left-0 left-0",
+        className: "left-0",
       },
       {
         showArrowsOnHover: false,
@@ -44,7 +46,7 @@ let variants = cva(
       {
         showArrowsOnHover: true,
         side: "right",
-        className: "lg:-right-12 lg:group-hover/arrow:right-0 right-0",
+        className: "right-0",
       },
       {
         showArrowsOnHover: false,
@@ -61,10 +63,17 @@ export interface SlideshowArrowsProps extends VariantProps<typeof variants> {
   showArrowsOnHover: boolean;
 }
 
-export function Arrows(props: SlideshowArrowsProps) {
-  let { arrowsIcon, iconSize, arrowsColor, showArrowsOnHover, arrowsShape } =
-    props;
-  let swiper = useSwiper();
+export function Arrows(
+  props: SlideshowArrowsProps & { instance?: SwiperClass | null },
+) {
+  let {
+    arrowsIcon,
+    iconSize,
+    arrowsColor,
+    showArrowsOnHover,
+    arrowsShape,
+    instance: swiper,
+  } = props;
   let [canNext, setCanNext] = useState(true);
   let [canPrev, setCanPrev] = useState(true);
   useEffect(() => {
@@ -96,6 +105,7 @@ export function Arrows(props: SlideshowArrowsProps) {
           }),
         )}
         disabled={!canPrev}
+        onClick={() => swiper?.slidePrev()}
       >
         {arrowsIcon === "caret" ? (
           <IconCaret
@@ -119,6 +129,7 @@ export function Arrows(props: SlideshowArrowsProps) {
           }),
         )}
         disabled={!canNext}
+        onClick={() => swiper?.slideNext()}
       >
         {arrowsIcon === "caret" ? (
           <IconCaret

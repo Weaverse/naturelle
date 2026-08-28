@@ -15,7 +15,16 @@ const FeaturedProducts = ({
   let { children, ...rest } = props;
 
   return (
-    <Section ref={ref} {...rest}>
+    <Section
+      ref={ref}
+      {...rest}
+      overflow="unset"
+      style={{
+        ...rest.style,
+        backgroundColor: "var(--color-background-basic)",
+      }}
+      containerClassName="lg:max-w-[1440px] lg:space-y-[72px]"
+    >
       {children}
     </Section>
   );

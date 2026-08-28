@@ -35,6 +35,8 @@ import * as Newsletter from "~/sections/newsletter/index";
 import * as NewsletterInput from "~/sections/newsletter/input-email";
 import * as NewsletterIcon from "~/sections/newsletter/newsletter-icon";
 import * as Page from "~/sections/page/page";
+import * as ProductGrid from "~/sections/product-grid/index";
+import * as ProductGridList from "~/sections/product-grid/list-products";
 import * as ProductInformation from "~/sections/product-information/index";
 import * as ProductPlacement from "~/sections/product-placement/index";
 import * as ProductPlacementItems from "~/sections/product-placement/items";
@@ -101,6 +103,8 @@ export const components: HydrogenComponent[] = [
   ProductPlacement,
   ProductPlacementItems,
   ProductPlacementItem,
+  ProductGrid,
+  ProductGridList,
   Hotspots,
   HotspotsItem,
   HotspotsImage,
