@@ -18,12 +18,7 @@ const ContentReview = ({
   let displayedChildren = children?.slice(0, review);
 
   return (
-    <div
-      ref={ref}
-      {...rest}
-      className="flex flex-col gap-[var(--gap)]"
-      style={style}
-    >
+    <div ref={ref} {...rest} className="flex flex-col gap-5" style={style}>
       {displayedChildren}
     </div>
   );
