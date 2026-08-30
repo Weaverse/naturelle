@@ -22,7 +22,7 @@ interface CollectionsData {
   showCount?: boolean;
 }
 
-interface CollectionNode {
+export interface CollectionNode {
   id: string;
   title: string;
   handle: string;
@@ -33,7 +33,7 @@ interface CollectionsProps
   extends SectionProps<CollectionsLoaderData>,
     CollectionsData {}
 
-const COLLECTIONS_QUERY = `#graphql
+export const COLLECTIONS_QUERY = `#graphql
   query collectionsByIds(
     $country: CountryCode
     $language: LanguageCode

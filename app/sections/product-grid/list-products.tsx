@@ -151,7 +151,7 @@ export default function ProductGridList({
       {...rest}
       className="order-2 flex max-w-lg flex-col gap-10 lg:gap-12"
     >
-      <div className="grid w-full items-stretch gap-6 lg:grid-cols-2">
+      <div className="grid w-full items-stretch gap-6 md:grid-cols-2">
         <Link
           to={`/collections/${collectionHandle}`}
           className="group relative min-h-[30rem] overflow-hidden rounded-(--border-radius-xl) bg-background-subtle-2 lg:min-h-full"
