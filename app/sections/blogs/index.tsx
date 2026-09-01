@@ -5,9 +5,8 @@ import type {
 } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
-import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
-import { IconImageBlank } from "~/components/icon";
+import { IconArrowRight, IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { BLOG_QUERY } from "~/graphql/queries";
@@ -92,11 +91,10 @@ export interface BlogProps
     VariantProps<typeof variants>,
     VariantProps<typeof fontSizeVariants> {}
 
-let articlesPerRowClasses: { [item: number]: string } = {
-  1: "sm:grid-cols-1",
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-3",
-  4: "sm:grid-cols-4",
+const articlesPerRowClasses: Record<number, string> = {
+  2: "md:grid-cols-2",
+  3: "md:grid-cols-3",
+  4: "md:grid-cols-4",
 };
 
 const Blogs = ({
@@ -148,8 +146,6 @@ const Blogs = ({
   const defaultArticles = Array.from({ length: 3 }).map((_, i) => ({
     id: i,
     title: "Trendy items for this Winter Fall 2025 season",
-    excerpt:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
     image: null,
     handle: null,
   }));
@@ -166,22 +162,19 @@ const Blogs = ({
       <div className="container flex flex-col gap-6 px-4 py-12 sm:px-6 sm:py-20">
         {children}
         <div
-          className={clsx(
-            "flex flex-col gap-[var(--gap-row)] sm:grid sm:gap-0 sm:justify-self-center sm:gap-y-[var(--gap-row)]",
-            articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)],
+          className={cn(
+            "grid grid-cols-1 gap-(--gap-row) md:gap-x-0",
+            articlesPerRowClasses[articlePerRow] || "md:grid-cols-2",
           )}
         >
-          {res?.map((idx, i) => (
+          {res?.map((idx) => (
             <Link
-              key={i}
+              key={idx.id}
               to={idx.handle ? `/blogs/${blogs.handle}/${idx.handle}` : "#"}
               data-motion="slide-in"
               className={"group"}
             >
-              <div
-                key={idx.id}
-                className="flex h-full w-full cursor-pointer flex-col items-center gap-4 rounded-md p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6"
-              >
+              <div className="flex h-full w-full cursor-pointer flex-col items-center gap-4 rounded-md p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6">
                 {idx.image ? (
                   <div
                     className="w-full overflow-hidden rounded-md"
@@ -190,7 +183,7 @@ const Blogs = ({
                     <Image
                       data={idx.image}
                       sizes="auto"
-                      className="!h-full !w-full object-cover"
+                      className="h-full! w-full! object-cover"
                     />
                   </div>
                 ) : (
@@ -217,7 +210,10 @@ const Blogs = ({
                   {showSeperator && (
                     <div className="w-full border-b border-border-subtle"></div>
                   )}
-                  <p className="line-clamp-3">{idx.excerpt}</p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium">
+                    Read more
+                    <IconArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
                 </div>
               </div>
             </Link>
@@ -232,7 +228,7 @@ export default Blogs;
 
 export const loader = async (args: ComponentLoaderArgs<BlogData>) => {
   let { weaverse, data } = args;
-  let { storefront, request } = weaverse;
+  let { storefront } = weaverse;
   if (data.blogs) {
     const res = await storefront.query(BLOG_QUERY, {
       variables: {
@@ -265,9 +261,9 @@ export const schema = createSchema({
           type: "range",
           name: "articlePerRow",
           label: "Articles per row",
-          defaultValue: 3,
+          defaultValue: 2,
           configs: {
-            min: 1,
+            min: 2,
             max: 4,
             step: 1,
           },

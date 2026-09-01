@@ -33,6 +33,8 @@ import * as ImageWithText from "~/sections/image-with-text/index";
 import * as Instagram from "~/sections/instagram";
 import * as JudgemeReviewSection from "~/sections/judgeme-reviews/index";
 import * as JudgemeReviewIndex from "~/sections/judgeme-reviews/review-index";
+import * as MapSection from "~/sections/map";
+import * as MapItem from "~/sections/map/item";
 import * as Newsletter from "~/sections/newsletter/index";
 import * as NewsletterInput from "~/sections/newsletter/input-email";
 import * as NewsletterIcon from "~/sections/newsletter/newsletter-icon";
@@ -79,6 +81,8 @@ export const components: HydrogenComponent[] = [
   Slide,
   Blogs,
   Instagram,
+  MapSection,
+  MapItem,
   BeforeAndAfter,
   BeforeAndAfterSlide,
   FeaturedProducts,
