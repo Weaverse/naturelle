@@ -1,6 +1,6 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -30,7 +30,10 @@ export function ProductMedia(props: ProductMediaProps) {
     enableZoom,
   } = props;
 
-  let media = _media.filter((med) => med.__typename === "MediaImage");
+  const media = useMemo(
+    () => _media.filter((med) => med.__typename === "MediaImage"),
+    [_media],
+  );
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [zoomMediaId, setZoomMediaId] = useState<string | null>(null);
@@ -39,12 +42,13 @@ export function ProductMedia(props: ProductMediaProps) {
 
   useEffect(() => {
     if (selectedVariant && swiper) {
-      let index = getSelectedVariantMediaIndex(media, selectedVariant);
-      if (index !== swiper.activeIndex) {
+      const index = getSelectedVariantMediaIndex(media, selectedVariant);
+
+      if (index >= 0 && index !== swiper.activeIndex) {
         swiper.slideTo(index);
       }
     }
-  }, [selectedVariant, swiper.slideTo, swiper.activeIndex, swiper, media]);
+  }, [media, selectedVariant, swiper]);
 
   return (
     <div className="overflow-hidden product-media-slider">
