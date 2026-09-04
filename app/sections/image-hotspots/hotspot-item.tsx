@@ -9,7 +9,6 @@ import type { ProductQuery } from "storefront-api.generated";
 import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
 import { ProductCard } from "~/components/product/product-card";
 import { PRODUCT_QUERY } from "~/graphql/queries";
-import { getJudgemeReviews } from "~/utils/judgeme";
 
 export interface HotspotsItemData {
   badgeText: string;
@@ -110,7 +109,6 @@ let HotspotsItem = ({
         {loaderData?.product && (
           <ProductCard
             product={loaderData.product}
-            reviewData={loaderData.judgemeReviews}
             badgeText={badgeText}
             showBadge={showBadge}
             showPrice={showPrice}
@@ -152,15 +150,7 @@ export const loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
     },
   });
 
-  let judgemeReviews = env.JUDGEME_PRIVATE_API_TOKEN
-    ? await getJudgemeReviews(
-        env.JUDGEME_PRIVATE_API_TOKEN,
-        env.PUBLIC_STORE_DOMAIN,
-        productHandle,
-      )
-    : null;
-
-  return { product, judgemeReviews };
+  return { product };
 };
 
 export const schema = createSchema({

@@ -35,6 +35,7 @@ import { Header } from "~/components/layout/header";
 import { CustomAnalytics } from "~/components/root/analytics";
 import { GlobalLoading } from "~/components/root/global-loading";
 import { Preloader } from "~/components/root/preloader";
+import { POLICIES_QUERY } from "~/routes/($locale).policies._index";
 import { getErrorMessage } from "~/utils/define-message-error";
 import { DEFAULT_LOCALE } from "./utils/const";
 import { parseMenu } from "./utils/menu";
@@ -285,6 +286,14 @@ const LAYOUT_QUERY = `#graphql
     resourceId
     resource {
       ... on Collection {
+        title
+        products(first: 5) {
+          nodes {
+            id
+            title
+            handle
+          }
+        }
         image {
           altText
           height
@@ -294,12 +303,67 @@ const LAYOUT_QUERY = `#graphql
         }
       }
       ... on Product {
+        title
+        description
         image: featuredImage {
           altText
           height
           id
           url
           width
+        }
+        collections(first: 1) {
+          nodes {
+            id
+            title
+          }
+        }
+      }
+      ... on Blog {
+        title
+        handle
+        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
+          nodes {
+            id
+            title
+            handle
+            image {
+              altText
+              height
+              id
+              url
+              width
+            }
+          }
+        }
+      }
+      ... on Article {
+        title
+        handle
+        image {
+          altText
+          height
+          id
+          url
+          width
+        }
+        blog {
+          title
+          handle
+          articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
+            nodes {
+              id
+              title
+              handle
+              image {
+                altText
+                height
+                id
+                url
+                width
+              }
+            }
+          }
         }
       }
     }
@@ -333,15 +397,22 @@ const LAYOUT_QUERY = `#graphql
 ` as const;
 
 async function getLayoutData({ storefront, env }: AppLoadContext) {
-  const data = await storefront.query(LAYOUT_QUERY, {
-    variables: {
-      headerMenuHandle: "main-menu",
-      footerMenuHandle: "footer",
-      language: storefront.i18n.language,
-    },
-  });
+  const [layoutData, policiesData] = await Promise.all([
+    storefront.query(LAYOUT_QUERY, {
+      variables: {
+        headerMenuHandle: "main-menu",
+        footerMenuHandle: "footer",
+        language: storefront.i18n.language,
+      },
+    }),
+    storefront.query(POLICIES_QUERY, {
+      variables: {
+        language: storefront.i18n.language,
+      },
+    }),
+  ]);
 
-  invariant(data, "No data returned from Shopify API");
+  invariant(layoutData && policiesData, "No data returned from Shopify API");
 
   /*
       Modify specific links/routes (optional)
@@ -353,25 +424,32 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
     */
   let customPrefixes = { CATALOG: "products" };
 
-  const headerMenu = data?.headerMenu
+  const headerMenu = layoutData?.headerMenu
     ? parseMenu(
-        data.headerMenu,
-        data.shop.primaryDomain.url,
+        layoutData.headerMenu,
+        layoutData.shop.primaryDomain.url,
         env,
         customPrefixes,
       )
     : undefined;
 
-  const footerMenu = data?.footerMenu
+  const footerMenu = layoutData?.footerMenu
     ? parseMenu(
-        data.footerMenu,
-        data.shop.primaryDomain.url,
+        layoutData.footerMenu,
+        layoutData.shop.primaryDomain.url,
         env,
         customPrefixes,
       )
     : undefined;
 
-  return { shop: data.shop, headerMenu, footerMenu };
+  return {
+    shop: {
+      ...layoutData.shop,
+      ...policiesData.shop,
+    },
+    headerMenu,
+    footerMenu,
+  };
 }
 
 type Swatch = {

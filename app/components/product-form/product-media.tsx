@@ -75,7 +75,7 @@ export function ProductMedia(props: ProductMediaProps) {
             thumbs={{ swiper: thumbsSwiper }}
             onSwiper={setSwiper}
             onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
-            className="vt-product-image max-w-full !pb-5 md:!pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
+            className="vt-product-image max-w-full pb-5! md:pb-0! md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
             style={
               {
                 "--swiper-pagination-bottom": "-6px",

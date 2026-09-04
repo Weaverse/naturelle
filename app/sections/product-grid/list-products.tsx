@@ -13,9 +13,7 @@ import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { PRODUCT_CARD_FRAGMENT } from "~/graphql/fragments";
-import type { JudgemeReviewsData } from "~/types/judgeme";
 import { getImageLoadingPriority } from "~/utils/image";
-import { getJudgemeReviews } from "~/utils/judgeme";
 
 type ProductGridListData = {
   collection?: WeaverseCollection;
@@ -78,25 +76,9 @@ export const loader = async ({
     variables: { handle: data.collection.handle, country, language },
   });
 
-  const ratings: Record<string, JudgemeReviewsData | null> = {};
-  if (weaverse.env.JUDGEME_PRIVATE_API_TOKEN && result.collection) {
-    const entries = await Promise.all(
-      result.collection.products.nodes.map(
-        async (product) =>
-          [
-            product.id,
-            await getJudgemeReviews(
-              weaverse.env.JUDGEME_PRIVATE_API_TOKEN,
-              weaverse.env.PUBLIC_STORE_DOMAIN,
-              product.handle,
-            ),
-          ] as const,
-      ),
-    );
-    Object.assign(ratings, Object.fromEntries(entries));
-  }
-
-  return { ...result, ratings };
+  // Keep the empty map for compatibility with section instances that may still
+  // be rendering the previous module during a Weaverse/Vite hot reload.
+  return { ...result, ratings: {} };
 };
 
 function ProductPlaceholder() {
@@ -197,9 +179,7 @@ export default function ProductGridList({
                     }}
                     loading={getImageLoadingPriority(index)}
                     showBadge={showProductBadge}
-                    reviewData={
-                      showRating ? loaderData?.ratings[product.id] : null
-                    }
+                    showStar={showRating}
                   />
                 ))
               : Array.from({ length: 4 }, (_, index) => (

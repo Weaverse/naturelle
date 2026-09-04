@@ -10,16 +10,12 @@ import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
 import { cn } from "~/utils/cn";
 
-let variants = cva("w-full h-auto basis-full md:basis-1/2", {
+let wrapperVariants = cva("w-full h-auto basis-full md:basis-1/2", {
   variants: {
     width: {
       small: "md:w-[40%]",
       medium: "md:w-[50%]",
       large: "md:w-[60%]",
-    },
-    objectFit: {
-      cover: "object-cover",
-      contain: "object-contain",
     },
     borderRadius: {
       0: "",
@@ -47,8 +43,21 @@ let variants = cva("w-full h-auto basis-full md:basis-1/2", {
   },
 });
 
+let imageVariants = cva(
+  "h-auto transition-transform duration-700 ease-out group-hover:scale-105",
+  {
+    variants: {
+      objectFit: {
+        cover: "object-cover",
+        contain: "object-contain",
+      },
+    },
+  },
+);
+
 interface ImageWithTextImageProps
-  extends VariantProps<typeof variants>,
+  extends VariantProps<typeof wrapperVariants>,
+    VariantProps<typeof imageVariants>,
     HydrogenComponentProps {
   image: WeaverseImage | string;
   aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
@@ -82,13 +91,16 @@ let ImageWithTextImage = ({
       data-motion="zoom-in"
       ref={ref}
       {...rest}
-      className={cn(variants({ width }))}
+      className={cn(
+        "group overflow-hidden",
+        wrapperVariants({ width, borderRadius }),
+      )}
     >
       <Image
         data={imageData}
         sizes="auto"
         aspectRatio={aspRt}
-        className={cn("h-auto", variants({ objectFit, borderRadius }))}
+        className={imageVariants({ objectFit })}
       />
     </div>
   );

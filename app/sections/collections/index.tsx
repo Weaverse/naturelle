@@ -179,7 +179,7 @@ export default function Collections({
                         ? "(min-width: 90em) 33vw, 50vw"
                         : "(min-width: 90em) 25vw, 50vw"
                     }
-                    className="transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover"
                   />
                 )}
               </div>
@@ -189,7 +189,7 @@ export default function Collections({
                   {collection.title}
                 </p>
                 {showArrow && (
-                  <span className="flex size-6 shrink-0 items-center justify-center transition-transform group-hover:translate-x-1">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-none transition-[background-color,border-radius] duration-700 ease-out group-hover:rounded-full group-hover:bg-background-subtle-2">
                     <IconCaret direction="right" aria-hidden="true" />
                   </span>
                 )}

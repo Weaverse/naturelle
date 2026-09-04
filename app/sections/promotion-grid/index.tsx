@@ -6,14 +6,18 @@ import {
   type WeaverseCollection,
 } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
+import { buttonVariants } from "~/components/button";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { Section, type SectionProps } from "~/components/section";
 import { COLLECTIONS_QUERY, type CollectionNode } from "~/sections/collections";
+import { cn } from "~/utils/cn";
 
 interface PromotionGridData {
   firstCollection?: WeaverseCollection;
   secondCollection?: WeaverseCollection;
+  firstHeading?: string;
+  secondHeading?: string;
   buttonText?: string;
 }
 
@@ -78,10 +82,21 @@ export default function PromotionGrid({
   ref,
   ...props
 }: PromotionGridProps & { ref?: RefObject<HTMLElement | null> }) {
-  const { loaderData, buttonText, children, ...rest } = props;
+  const {
+    loaderData,
+    firstHeading,
+    secondHeading,
+    buttonText,
+    children,
+    ...rest
+  } = props;
   const collections = PLACEHOLDERS.map(
     (placeholder, index) => loaderData?.collections[index] ?? placeholder,
   );
+  const headings = [
+    firstHeading ?? "Glow from within",
+    secondHeading ?? "Your best skin awaits",
+  ];
 
   return (
     <Section
@@ -89,12 +104,12 @@ export default function PromotionGrid({
       {...rest}
       containerClassName="grid grid-cols-1 gap-6 px-5 py-10 md:grid-cols-2 md:px-6 lg:px-10 lg:py-20"
     >
-      {collections.map((collection) => (
+      {collections.map((collection, index) => (
         <Link
           key={collection.id}
           to={`/collections/${collection.handle}`}
           aria-label={`View ${collection.title} collection`}
-          className="group relative aspect-video min-w-0 overflow-hidden rounded-sm bg-background-subtle-2 text-text-inverse"
+          className="group relative aspect-video min-w-0 overflow-hidden rounded-xl bg-background-subtle-2 text-text-inverse"
           data-motion="fade-up"
         >
           {collection.image && (
@@ -105,12 +120,24 @@ export default function PromotionGrid({
             />
           )}
           <div className="absolute inset-0 bg-black/30" />
-          <div className="absolute inset-0 flex flex-col items-start justify-between p-6 md:p-9">
-            <h3 className="max-w-sm font-heading text-3xl font-normal leading-tight md:text-4xl">
+          <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-9">
+            <p className="text-sm font-normal leading-normal">
               {collection.title}
+            </p>
+            <h3 className="mt-1 max-w-sm font-heading text-3xl font-normal leading-tight md:text-4xl">
+              {headings[index]}
             </h3>
-            <span className="border-b border-current pb-1 text-sm font-medium">
-              {buttonText || "Shop collection"}
+            <span
+              className={cn(
+                buttonVariants({
+                  variant: "secondary",
+                  size: "sm",
+                  shape: "default",
+                }),
+                "mt-5 px-5",
+              )}
+            >
+              {buttonText ?? "Explore Now"}
             </span>
           </div>
         </Link>
@@ -139,15 +166,29 @@ export const schema = createSchema({
         },
         {
           type: "text",
+          name: "firstHeading",
+          label: "First heading",
+          defaultValue: "Glow from within",
+        },
+        {
+          type: "text",
+          name: "secondHeading",
+          label: "Second heading",
+          defaultValue: "Your best skin awaits",
+        },
+        {
+          type: "text",
           name: "buttonText",
           label: "Button text",
-          defaultValue: "Shop collection",
+          defaultValue: "Explore Now",
         },
       ],
     },
   ],
   presets: {
-    buttonText: "Shop collection",
+    firstHeading: "Glow from within",
+    secondHeading: "Your best skin awaits",
+    buttonText: "Explore Now",
     width: "full",
     verticalPadding: "none",
   },

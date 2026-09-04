@@ -10,9 +10,9 @@ import type {
 } from "storefront-api.generated";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
-import { StarRating } from "~/components/star-rating";
 import type { JudgemeReviewsData } from "~/types/judgeme";
 import { isDiscounted, isNewArrival } from "~/utils/product";
+import { ProductCardRating } from "./product-card-rating";
 
 type CardProduct = ProductCardFragment | NonNullable<ProductQuery["product"]>;
 
@@ -31,18 +31,6 @@ export interface ProductCardProps {
   showStar?: boolean;
   showViewDetailsLink?: boolean;
   viewDetailsLinkText?: string;
-}
-
-function parseRating(value?: string) {
-  if (!value) {
-    return 0;
-  }
-  try {
-    const parsed = JSON.parse(value) as { value?: string | number };
-    return Number(parsed.value ?? 0);
-  } catch {
-    return Number(value) || 0;
-  }
 }
 
 export function ProductCard({
@@ -81,11 +69,6 @@ export function ProductCard({
   const image = cardProduct.images?.nodes[0] ?? mediaImage?.image;
   const collection = collectionProp ?? cardProduct.collections?.nodes[0];
   const { price, compareAtPrice } = variant;
-  const rating =
-    reviewData?.averageRating ?? parseRating(cardProduct.rating?.value);
-  const reviewCount =
-    reviewData?.totalReviews ?? Number(cardProduct.ratingCount?.value ?? 0);
-
   let badge = label ?? badgeText;
   if (!badge && isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2)) {
     badge = "Sale";
@@ -142,12 +125,12 @@ export function ProductCard({
           {product.title}
         </Link>
         {showStar && (
-          <div className="flex flex-wrap items-center gap-2">
-            <StarRating rating={rating} />
-            <span className="text-xs text-[#3B3333]">
-              {rating.toFixed(1)} ({reviewCount})
-            </span>
-          </div>
+          <ProductCardRating
+            ratingValue={cardProduct.rating?.value}
+            ratingCountValue={cardProduct.ratingCount?.value}
+            rating={reviewData?.averageRating}
+            ratingCount={reviewData?.totalReviews}
+          />
         )}
         {showPrice && (
           <div className="flex items-center gap-1.5">

@@ -6,6 +6,7 @@ import { NavLink, useFetcher } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 import { useShopMenu } from "~/hooks/use-menu-shop";
+import { useRootLoaderData } from "~/root";
 import {
   type EnhancedMenu,
   getMaxDepth,
@@ -38,6 +39,14 @@ export function Footer() {
   let { footerMenu } = useShopMenu();
   let fetcher = useFetcher<any>();
   let isError = fetcher.state === "idle" && fetcher.data?.errors;
+  const { layout } = useRootLoaderData();
+  const policyItems = [
+    layout?.shop?.privacyPolicy,
+    layout?.shop?.shippingPolicy,
+    layout?.shop?.termsOfService,
+    layout?.shop?.refundPolicy,
+    layout?.shop?.subscriptionPolicy,
+  ].filter(Boolean);
   const settings = useThemeSettings();
   let {
     footerWidth,
@@ -174,7 +183,7 @@ export function Footer() {
           <div className="hidden md:flex w-full border-t border-[#DEDEDE]/50" />
           <div className="mx-auto flex w-full max-w-[1440px] flex-col items-start justify-center gap-4 lg:flex-row lg:justify-between lg:items-center">
             <p className="text-sm opacity-70">{footerTextCopyright}</p>
-            <PolicyLinks />
+            <PolicyLinks policyItems={policyItems} />
             <FooterCountrySelector />
           </div>
         </div>

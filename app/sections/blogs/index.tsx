@@ -75,7 +75,6 @@ let variants = cva("heading", {
 
 type BlogData = {
   blogs: WeaverseBlog;
-  backgroundColor: string;
   articlePerRow: number;
   gapRow: number;
   showSeperator: boolean;
@@ -104,7 +103,6 @@ const Blogs = ({
   const [scope] = useAnimation(ref);
   let {
     blogs,
-    backgroundColor,
     articlePerRow,
     gapRow,
     showSeperator,
@@ -121,22 +119,7 @@ const Blogs = ({
     ...rest
   } = props;
 
-  const calculateColor = (hex: string) =>
-    `#${[...new Array(3)]
-      .map((_, i) =>
-        Math.max(
-          0,
-          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
-            [19, 18, 28][i],
-        )
-          .toString(16)
-          .padStart(2, "0"),
-      )
-      .join("")}`;
-
   let sectionStyle: CSSProperties = {
-    "--background-color": backgroundColor,
-    "--calculate-color": calculateColor(backgroundColor),
     "--min-size-px": `${minSize}px`,
     "--min-size": minSize,
     "--max-size": maxSize,
@@ -156,7 +139,7 @@ const Blogs = ({
     <section
       ref={scope}
       {...rest}
-      className="flex h-full w-full justify-center bg-[var(--background-color)]"
+      className="flex h-full w-full justify-center bg-(--color-background-basic)"
       style={sectionStyle}
     >
       <div className="container flex flex-col gap-6 px-4 py-12 sm:px-6 sm:py-20">
@@ -174,7 +157,7 @@ const Blogs = ({
               data-motion="slide-in"
               className={"group"}
             >
-              <div className="flex h-full w-full cursor-pointer flex-col items-center gap-4 rounded-md p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6">
+              <div className="flex h-full w-full cursor-pointer flex-col items-center gap-4 rounded-md p-0 transition-colors duration-500 group-hover:bg-background-subtle-1 sm:p-6">
                 {idx.image ? (
                   <div
                     className="w-full overflow-hidden rounded-md"
@@ -188,7 +171,7 @@ const Blogs = ({
                   </div>
                 ) : (
                   <div
-                    className="flex w-full items-center justify-center overflow-hidden rounded-md bg-[var(--calculate-color)]"
+                    className="flex w-full items-center justify-center overflow-hidden rounded-md bg-background-subtle-2"
                     style={{ aspectRatio }}
                   >
                     <IconImageBlank
@@ -250,12 +233,6 @@ export const schema = createSchema({
           type: "blog",
           name: "blogs",
           label: "Blog",
-        },
-        {
-          type: "color",
-          label: "Background color",
-          name: "backgroundColor",
-          defaultValue: "#F4F4F4",
         },
         {
           type: "range",

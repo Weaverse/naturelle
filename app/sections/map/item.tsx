@@ -1,19 +1,37 @@
-import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
-import type { RefObject } from "react";
+import {
+  createSchema,
+  type HydrogenComponentProps,
+  useChildInstances,
+  useItemInstance,
+  useParentInstance,
+} from "@weaverse/hydrogen";
+import { type RefObject, useContext, useEffect } from "react";
+import { MapContext } from "./index";
 
-type MapItemData = {
-  title: string;
-  paragraph: string;
-};
-
-type MapItemProps = HydrogenComponentProps & MapItemData;
+type MapItemData = { title: string; address: string; paragraph: string };
 
 export default function MapItem({
   ref,
   ...props
-}: MapItemProps & { ref?: RefObject<HTMLDivElement | null> }) {
-  const { title, paragraph, ...rest } = props;
+}: HydrogenComponentProps &
+  MapItemData & { ref?: RefObject<HTMLDivElement | null> }) {
+  const { title, address, paragraph, ...rest } = props;
+  const { activeItem, selectAddress } = useContext(MapContext);
+  const itemInstance = useItemInstance();
+  const parentInstance = useParentInstance();
+  const siblings = useChildInstances(parentInstance?._id);
+  const instanceIndex = siblings.findIndex(
+    (instance) => instance._id === itemInstance?._id,
+  );
+  const itemIndex = instanceIndex >= 0 ? instanceIndex : 0;
+  const isActive = activeItem === itemIndex;
+  const mapAddress = address || (paragraph || "").replace(/<[^>]*>/g, "");
+
+  useEffect(() => {
+    if (isActive && mapAddress) {
+      selectAddress(itemIndex, mapAddress);
+    }
+  }, [isActive, itemIndex, mapAddress, selectAddress]);
 
   return (
     <div
@@ -21,6 +39,7 @@ export default function MapItem({
       {...rest}
       className="flex flex-col gap-2"
       data-motion="fade-up"
+      onClick={() => selectAddress(itemIndex, mapAddress)}
     >
       {title && (
         <p className="font-body text-xs font-normal uppercase leading-none tracking-[-0.01em] text-text-primary/50">
@@ -51,6 +70,14 @@ export const schema = createSchema({
           defaultValue: "Opening hours",
         },
         {
+          type: "text",
+          name: "address",
+          label: "Map address",
+          defaultValue: "123 Naturelle Street, New York, NY 10001",
+          helpText:
+            "Use a complete street address so the embedded map can locate it accurately.",
+        },
+        {
           type: "richtext",
           name: "paragraph",
           label: "Paragraph",
@@ -61,6 +88,7 @@ export const schema = createSchema({
   ],
   presets: {
     title: "Opening hours",
+    address: "123 Naturelle Street, New York, NY 10001",
     paragraph: "Monday–Friday, 9:00 AM–6:00 PM",
   },
 });

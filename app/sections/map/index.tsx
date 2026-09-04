@@ -1,17 +1,20 @@
 import {
   createSchema,
   type HydrogenComponentProps,
-  IMAGES_PLACEHOLDERS,
-  type WeaverseImage,
+  useChildInstances,
 } from "@weaverse/hydrogen";
-import type { RefObject } from "react";
+import {
+  createContext,
+  type RefObject,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Button } from "~/components/button";
 import Heading from "~/components/heading";
-import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
 
 type MapData = {
-  mapImage: WeaverseImage | string;
   mapPosition: "left" | "right";
   heading: string;
   buttonText: string;
@@ -19,15 +22,37 @@ type MapData = {
   buttonTarget: "_self" | "_blank";
 };
 
-type MapProps = HydrogenComponentProps & MapData;
+type MapContextValue = {
+  activeItem: number;
+  selectAddress: (index: number, address: string) => void;
+};
+
+export const MapContext = createContext<MapContextValue>({
+  activeItem: 0,
+  selectAddress: () => undefined,
+});
+
+function MapFrame({ address }: { address: string }) {
+  return (
+    <div className="map-media relative min-h-90 min-w-0 overflow-hidden bg-background-subtle-1 md:min-h-140 md:flex-[1_1_var(--container-xl)]">
+      <iframe
+        key={address}
+        title="Store location map"
+        src={`https://maps.google.com/maps?t=m&q=${encodeURIComponent(address)}&ie=UTF8&output=embed`}
+        className="absolute inset-0 h-full w-full border-0"
+        loading="lazy"
+        allowFullScreen
+      />
+    </div>
+  );
+}
 
 export default function MapSection({
   ref,
   ...props
-}: MapProps & { ref?: RefObject<HTMLElement | null> }) {
+}: HydrogenComponentProps & MapData & { ref?: RefObject<HTMLElement | null> }) {
   const {
-    mapImage = IMAGES_PLACEHOLDERS.image,
-    mapPosition,
+    mapPosition = "right",
     heading,
     buttonText,
     buttonLink,
@@ -35,64 +60,83 @@ export default function MapSection({
     children,
     ...rest
   } = props;
-  const imageData: Partial<WeaverseImage> =
-    typeof mapImage === "string"
-      ? { url: mapImage, altText: "Store location map" }
-      : mapImage;
+  const childInstances = useChildInstances();
+  const firstItem = childInstances.find(
+    (instance) => instance.data.type === "map--item",
+  );
+  const firstAddress =
+    (firstItem?.data.address as string | undefined) ||
+    ((firstItem?.data.paragraph as string | undefined) || "").replace(
+      /<[^>]*>/g,
+      "",
+    );
+  const [activeItem, setActiveItem] = useState(0);
+  const [activeAddress, setActiveAddress] = useState(firstAddress);
+
+  useEffect(() => {
+    setActiveItem(0);
+    setActiveAddress(firstAddress);
+  }, [firstAddress]);
+
+  const contextValue = useMemo(
+    () => ({
+      activeItem,
+      selectAddress: (index: number, address: string) => {
+        setActiveItem(index);
+        setActiveAddress(address);
+      },
+    }),
+    [activeItem],
+  );
 
   return (
-    <section
-      ref={ref}
-      {...rest}
-      className="w-full bg-(--color-background-basic)"
-    >
-      <div
-        className={cn(
-          "flex min-h-140 flex-col md:flex-row",
-          mapPosition === "right" && "flex-col-reverse md:flex-row-reverse",
-        )}
+    <MapContext.Provider value={contextValue}>
+      <section
+        ref={ref}
+        {...rest}
+        className="w-full bg-(--color-background-basic)"
       >
-        <div className="map-media min-h-90 min-w-0 overflow-hidden md:min-h-140 md:flex-[1_1_var(--container-xl)]">
-          <Image
-            data={imageData}
-            sizes="(min-width: 72rem) calc(100vw - 36rem), (min-width: 49.125em) 50vw, 100vw"
-            className="h-full w-full object-cover"
-          />
-        </div>
-
-        <div className="flex w-full min-w-0 p-12 md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
-          <div className="flex w-full flex-col items-start gap-6">
-            {heading && (
-              <Heading
-                as="h2"
-                content={heading}
-                size="custom"
-                mobileSize="4xl"
-                desktopSize="5xl"
-                alignment="left"
-                className="leading-tight"
-              />
-            )}
-            {children && (
-              <div className="flex w-full max-w-lg flex-col gap-5">
-                {children}
-              </div>
-            )}
-            {buttonText && (
-              <Button
-                to={buttonLink || "#"}
-                target={buttonTarget}
-                variant="primary"
-                data-motion="fade-up"
-                className="rounded-2xl"
-              >
-                {buttonText}
-              </Button>
-            )}
+        <div
+          className={cn(
+            "flex min-h-140 flex-col md:flex-row",
+            mapPosition === "right" && "flex-col-reverse md:flex-row-reverse",
+          )}
+        >
+          <MapFrame address={activeAddress} />
+          <div className="flex w-full min-w-0 p-12 md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
+            <div className="flex w-full flex-col items-start gap-6">
+              {heading && (
+                <Heading
+                  as="h2"
+                  content={heading}
+                  size="custom"
+                  mobileSize="4xl"
+                  desktopSize="5xl"
+                  alignment="left"
+                  className="leading-tight"
+                />
+              )}
+              {children && (
+                <div className="flex w-full max-w-lg flex-col gap-5">
+                  {children}
+                </div>
+              )}
+              {buttonText && (
+                <Button
+                  to={buttonLink || "#"}
+                  target={buttonTarget}
+                  variant="primary"
+                  data-motion="fade-up"
+                  className="rounded-2xl"
+                >
+                  {buttonText}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </MapContext.Provider>
   );
 }
 
@@ -104,11 +148,6 @@ export const schema = createSchema({
       group: "Map",
       inputs: [
         {
-          type: "image",
-          name: "mapImage",
-          label: "Map image",
-        },
-        {
           type: "select",
           name: "mapPosition",
           label: "Map position",
@@ -118,7 +157,7 @@ export const schema = createSchema({
               { value: "right", label: "Right" },
             ],
           },
-          defaultValue: "left",
+          defaultValue: "right",
         },
       ],
     },
@@ -160,8 +199,7 @@ export const schema = createSchema({
   ],
   childTypes: ["map--item"],
   presets: {
-    mapImage: IMAGES_PLACEHOLDERS.image,
-    mapPosition: "left",
+    mapPosition: "right",
     heading: "Visit our store",
     buttonText: "Get directions",
     buttonLink: "https://maps.google.com",
@@ -170,11 +208,13 @@ export const schema = createSchema({
       {
         type: "map--item",
         title: "Our address",
+        address: "123 Naturelle Street, New York, NY 10001",
         paragraph: "123 Naturelle Street, New York, NY 10001",
       },
       {
         type: "map--item",
         title: "Opening hours",
+        address: "123 Naturelle Street, New York, NY 10001",
         paragraph: "Monday–Friday, 9:00 AM–6:00 PM",
       },
     ],
