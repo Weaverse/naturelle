@@ -64,12 +64,7 @@ export default function MapSection({
   const firstItem = childInstances.find(
     (instance) => instance.data.type === "map--item",
   );
-  const firstAddress =
-    (firstItem?.data.address as string | undefined) ||
-    ((firstItem?.data.paragraph as string | undefined) || "").replace(
-      /<[^>]*>/g,
-      "",
-    );
+  const firstAddress = (firstItem?.data.address as string | undefined) || "";
   const [activeItem, setActiveItem] = useState(0);
   const [activeAddress, setActiveAddress] = useState(firstAddress);
 

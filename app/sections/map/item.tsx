@@ -25,13 +25,12 @@ export default function MapItem({
   );
   const itemIndex = instanceIndex >= 0 ? instanceIndex : 0;
   const isActive = activeItem === itemIndex;
-  const mapAddress = address || (paragraph || "").replace(/<[^>]*>/g, "");
 
   useEffect(() => {
-    if (isActive && mapAddress) {
-      selectAddress(itemIndex, mapAddress);
+    if (isActive && address) {
+      selectAddress(itemIndex, address);
     }
-  }, [isActive, itemIndex, mapAddress, selectAddress]);
+  }, [address, isActive, itemIndex, selectAddress]);
 
   return (
     <div
@@ -39,7 +38,7 @@ export default function MapItem({
       {...rest}
       className="flex flex-col gap-2"
       data-motion="fade-up"
-      onClick={() => selectAddress(itemIndex, mapAddress)}
+      onClick={() => selectAddress(itemIndex, address)}
     >
       {title && (
         <p className="font-body text-xs font-normal uppercase leading-none tracking-[-0.01em] text-text-primary/50">
@@ -47,10 +46,7 @@ export default function MapItem({
         </p>
       )}
       {paragraph && (
-        <div
-          className="text-sm leading-relaxed text-text"
-          dangerouslySetInnerHTML={{ __html: paragraph }}
-        />
+        <div className="text-sm leading-relaxed text-text">{paragraph}</div>
       )}
     </div>
   );
@@ -78,7 +74,7 @@ export const schema = createSchema({
             "Use a complete street address so the embedded map can locate it accurately.",
         },
         {
-          type: "richtext",
+          type: "text",
           name: "paragraph",
           label: "Paragraph",
           defaultValue: "Monday–Friday, 9:00 AM–6:00 PM",

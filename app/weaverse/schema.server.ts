@@ -1083,7 +1083,6 @@ export const themeSchema: HydrogenThemeSchema = {
           label: "Show sale price",
           name: "pcardShowSalePrice",
           defaultValue: true,
-          condition: "pcardShowLowestPrice.ne.true",
         },
       ],
     },
