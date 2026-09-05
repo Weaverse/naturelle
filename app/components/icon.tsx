@@ -433,6 +433,68 @@ export function IconFacebook(props: IconProps) {
   );
 }
 
+export function IconQuickViewFacebook(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="16" fill="white" />
+      <path
+        d="M16 25C20.9706 25 25 20.9706 25 16C25 11.0294 20.9706 7 16 7C11.0294 7 7 11.0294 7 16C7 20.9706 11.0294 25 16 25Z"
+        stroke="#3B3333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19.75 12.25H18.25C17.9542 12.2488 17.6611 12.3061 17.3875 12.4188C17.114 12.5314 16.8654 12.6971 16.6563 12.9063C16.4471 13.1154 16.2814 13.364 16.1688 13.6375C16.0561 13.9111 15.9988 14.2042 16 14.5V25"
+        stroke="#3B3333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13 17.5H19"
+        stroke="#3B3333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
+export function IconQuickViewInstagram(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="16" fill="white" />
+      <path
+        d="M16 19.75C18.071 19.75 19.75 18.0711 19.75 16C19.75 13.9289 18.071 12.25 16 12.25C13.929 12.25 12.25 13.9289 12.25 16C12.25 18.0711 13.929 19.75 16 19.75Z"
+        stroke="#3B3333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20.125 7.375H11.875C9.39 7.375 7.375 9.3897 7.375 11.875V20.125C7.375 22.6103 9.39 24.625 11.875 24.625H20.125C22.61 24.625 24.625 22.6103 24.625 20.125V11.875C24.625 9.3897 22.61 7.375 20.125 7.375Z"
+        stroke="#3B3333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="20.875" cy="11.125" r="0.75" fill="#3B3333" />
+    </Icon>
+  );
+}
+
+export function IconQuickViewX(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 32.5833 32.5833" fill="none">
+      <rect width="32.5833" height="32.5833" rx="16.2917" fill="white" />
+      <path
+        d="M15.248 16.9675L9.451 23.5825M22.048 9.0008L16.893 15.0708M9 9L20.433 23.5833H23.583L12.15 9H9Z"
+        stroke="#3B3333"
+        strokeWidth="0.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
 export function IconPinterest(props: IconProps) {
   return (
     <Icon {...props} fill="transparent" stroke={props.stroke || "currentColor"}>

@@ -3,6 +3,7 @@ import type {
   MediaImage,
   MoneyV2,
 } from "@shopify/hydrogen/storefront-api-types";
+import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type {
   ProductCardFragment,
@@ -13,6 +14,7 @@ import { Link } from "~/components/link";
 import type { JudgemeReviewsData } from "~/types/judgeme";
 import { isDiscounted, isNewArrival } from "~/utils/product";
 import { ProductCardRating } from "./product-card-rating";
+import { QuickViewTrigger } from "./quick-view";
 
 type CardProduct = ProductCardFragment | NonNullable<ProductQuery["product"]>;
 
@@ -25,7 +27,7 @@ export interface ProductCardProps {
   className?: string;
   loading?: HTMLImageElement["loading"];
   onClick?: () => void;
-  quickAdd?: boolean;
+  enableQuickView?: boolean;
   showBadge?: boolean;
   showPrice?: boolean;
   showStar?: boolean;
@@ -35,19 +37,29 @@ export interface ProductCardProps {
 
 export function ProductCard({
   product,
-  collection: collectionProp,
   reviewData,
   label,
   badgeText,
   className,
   loading,
   onClick,
+  enableQuickView = true,
   showBadge = true,
   showPrice = true,
   showStar = true,
   showViewDetailsLink = false,
   viewDetailsLinkText = "View full details",
 }: ProductCardProps) {
+  const {
+    pcardEnableQuickView,
+    pcardQuickViewButtonText,
+    pcardShowImageOnHover,
+    pcardBorderRadius = 16,
+    pcardImageRatio = "1/1",
+    pcardAlignment = "left",
+    pcardShowVendor = false,
+    pcardShowSalePrice = true,
+  } = useThemeSettings();
   const variant = product.variants.nodes[0];
   if (!variant) {
     return null;
@@ -56,18 +68,15 @@ export function ProductCard({
   const cardProduct = product as CardProduct & {
     images?: ProductCardFragment["images"];
     media?: NonNullable<ProductQuery["product"]>["media"];
-    collections?: {
-      nodes: Array<{ id: string; title: string; handle: string }>;
-    };
     rating?: { value: string } | null;
     ratingCount?: { value: string } | null;
     publishedAt?: string;
   };
-  const mediaImage = cardProduct.media?.nodes.find(
+  const mediaImages = cardProduct.media?.nodes.filter(
     (node) => node.__typename === "MediaImage",
-  ) as MediaImage | undefined;
-  const image = cardProduct.images?.nodes[0] ?? mediaImage?.image;
-  const collection = collectionProp ?? cardProduct.collections?.nodes[0];
+  ) as MediaImage[] | undefined;
+  const image = cardProduct.images?.nodes[0] ?? mediaImages?.[0]?.image;
+  const secondImage = cardProduct.images?.nodes[1] ?? mediaImages?.[1]?.image;
   const { price, compareAtPrice } = variant;
   let badge = label ?? badgeText;
   if (!badge && isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2)) {
@@ -81,40 +90,75 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        "flex min-w-0 w-full flex-col gap-3 rounded-2xl bg-background p-3",
+        "flex min-w-0 w-full flex-col gap-3 rounded-[var(--pcard-border-radius)] bg-background p-3 transition-[border-radius] duration-300 hover:rounded-none",
         className,
       )}
+      style={
+        {
+          "--pcard-border-radius": `${pcardBorderRadius}px`,
+        } as React.CSSProperties
+      }
     >
-      <Link
-        to={`/products/${product.handle}`}
-        onClick={onClick}
-        prefetch="intent"
-        className="group relative block aspect-square overflow-hidden rounded-xl bg-background-subtle-2"
+      <div
+        className="group/product-card relative"
+        style={{ aspectRatio: pcardImageRatio.replace("/", " / ") }}
       >
-        {image && (
-          <Image
-            data={image}
-            alt={image.altText || product.title}
-            loading={loading}
-            sizes="(min-width: 64em) 25vw, 50vw"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        )}
+        <Link
+          to={`/products/${product.handle}`}
+          onClick={onClick}
+          prefetch="intent"
+          className="group block h-full overflow-hidden bg-background-subtle-2"
+          style={{ borderRadius: `${Math.max(0, pcardBorderRadius - 4)}px` }}
+        >
+          {image && (
+            <Image
+              data={image}
+              alt={image.altText || product.title}
+              loading={loading}
+              sizes="(min-width: 64em) 25vw, 50vw"
+              className={clsx(
+                "h-full w-full object-cover",
+                pcardShowImageOnHover &&
+                  secondImage &&
+                  "transition-opacity duration-300 group-hover:opacity-50",
+              )}
+            />
+          )}
+          {pcardShowImageOnHover && secondImage && (
+            <Image
+              data={secondImage}
+              alt={secondImage.altText || `Second picture of ${product.title}`}
+              loading="lazy"
+              sizes="(min-width: 64em) 25vw, 50vw"
+              className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            />
+          )}
+        </Link>
         {showBadge && badge && (
-          <span className="absolute right-2 top-2 rounded-full bg-[#77A96D] px-3 py-1.5 text-xs text-white">
+          <span className="pointer-events-none absolute right-2 top-2 rounded-full bg-[#77A96D] px-3 py-1.5 text-xs text-white">
             {badge}
           </span>
         )}
-      </Link>
+        {enableQuickView && pcardEnableQuickView !== false && (
+          <QuickViewTrigger
+            productHandle={product.handle}
+            buttonText={pcardQuickViewButtonText || "Select options"}
+          />
+        )}
+      </div>
 
-      <div className="flex flex-col gap-2 px-2 pb-2 pt-1 font-sans">
-        {collection && (
-          <Link
-            to={`/collections/${collection.handle}`}
-            className="w-fit rounded-full bg-[#DCD8D6] px-3 py-1 text-xs leading-none"
-          >
-            {collection.title}
-          </Link>
+      <div
+        className={clsx(
+          "flex flex-col gap-2 px-2 pb-2 pt-1 font-sans",
+          pcardAlignment === "center" && "items-center text-center",
+          pcardAlignment === "right" && "items-end text-right",
+          pcardAlignment === "left" && "items-start text-left",
+        )}
+      >
+        {pcardShowVendor && product.vendor && (
+          <span className="w-fit rounded-full bg-[#DCD8D6] px-3 py-1 text-xs leading-none">
+            {product.vendor}
+          </span>
         )}
         <Link
           to={`/products/${product.handle}`}
@@ -134,7 +178,8 @@ export function ProductCard({
         )}
         {showPrice && (
           <div className="flex items-center gap-1.5">
-            {compareAtPrice &&
+            {pcardShowSalePrice &&
+              compareAtPrice &&
               isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                 <Money
                   withoutTrailingZeros

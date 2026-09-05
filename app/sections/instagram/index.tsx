@@ -143,42 +143,53 @@ const Instagram = ({
                 className="min-w-0 w-full"
               >
                 {displayedImages.map((item) => {
+                  const content = (
+                    <>
+                      {item.media_url ? (
+                        <Image
+                          key={item.id}
+                          src={item.media_url}
+                          alt={item.username || "Instagram post"}
+                          className="block aspect-square h-full w-full max-w-full object-cover"
+                          sizes="auto"
+                        />
+                      ) : (
+                        imageItemBlank()
+                      )}
+                      {item.username && (
+                        <>
+                          <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                            <span className="font-heading text-xl font-medium text-white">
+                              {item.username}
+                            </span>
+                          </div>
+                          <IconInstagram
+                            className="absolute right-3 top-3 z-20 size-7 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+                            viewBox="0 0 24 24"
+                          />
+                          <div className="absolute inset-0 bg-[#554612]/50 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100" />
+                        </>
+                      )}
+                    </>
+                  );
+
                   return (
                     <SwiperSlide key={item.id} className="min-w-0">
-                      <div className="group relative aspect-square w-full min-w-0 overflow-hidden rounded-md border border-border-subtle">
-                        {item.media_url ? (
-                          <Image
-                            key={item.id}
-                            src={item.media_url}
-                            alt={item.username || "Instagram post"}
-                            className="block aspect-square h-full w-full max-w-full object-cover"
-                            sizes="auto"
-                          />
-                        ) : (
-                          imageItemBlank()
-                        )}
-                        {item.username && (
-                          <>
-                            <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
-                              <a
-                                href={`https://www.instagram.com/${item.username}/`}
-                                target="_blank"
-                                className="flex items-center justify-center gap-2"
-                                rel="noreferrer"
-                              >
-                                <IconInstagram
-                                  className="h-7 w-7"
-                                  viewBox="0 0 24 24"
-                                />
-                                <span className="font-heading text-xl font-medium text-white">
-                                  {item.username}
-                                </span>
-                              </a>
-                            </div>
-                            <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
-                          </>
-                        )}
-                      </div>
+                      {item.username ? (
+                        <a
+                          href={`https://www.instagram.com/${item.username}/`}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Instagram post by ${item.username}`}
+                          className="group relative block aspect-square w-full min-w-0 overflow-hidden rounded-md border border-border-subtle"
+                        >
+                          {content}
+                        </a>
+                      ) : (
+                        <div className="group relative aspect-square w-full min-w-0 overflow-hidden rounded-md border border-border-subtle">
+                          {content}
+                        </div>
+                      )}
                     </SwiperSlide>
                   );
                 })}

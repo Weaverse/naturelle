@@ -151,8 +151,8 @@ export function ProductMedia(props: ProductMediaProps) {
                   <SwiperSlide
                     key={med.id}
                     className={clsx(
-                      "h-fit! w-fit! cursor-pointer rounded-sm border-2 border-transparent p-0.5 transition-colors",
-                      "[&.swiper-slide-thumb-active]:border-border",
+                      "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
+                      "[&.swiper-slide-thumb-active]:border-border/60",
                     )}
                   >
                     <Image

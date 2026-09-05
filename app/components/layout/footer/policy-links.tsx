@@ -1,7 +1,7 @@
 import { NavLink } from "react-router";
 
 type Policy = {
-  id: string;
+  id?: string | null;
   title: string;
   handle: string;
 };
@@ -18,9 +18,9 @@ export function PolicyLinks({
     >
       {policyItems
         .filter((policy): policy is Policy => Boolean(policy))
-        .map(({ id, title, handle }) => (
+        .map(({ title, handle }) => (
           <NavLink
-            key={id}
+            key={handle}
             to={`/policies/${handle}`}
             prefetch="intent"
             className="text-sm opacity-70 transition-opacity hover:opacity-100"

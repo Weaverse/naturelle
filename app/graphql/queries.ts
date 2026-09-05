@@ -29,6 +29,7 @@ export const FEATURED_PRODUCTS_QUERY = `#graphql
   @inContext(country: $country, language: $language) {
       collection(handle: $handle){
         id
+        title
         handle
         products(first: 24) {
         nodes {
@@ -76,7 +77,9 @@ export const PRODUCT_QUERY = `#graphql
     product(handle: $handle) {
       id
       title
+      publishedAt
       vendor
+      productType
       handle
       descriptionHtml
       description

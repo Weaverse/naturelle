@@ -23,7 +23,7 @@ export function Modal({
 
   return (
     <div
-      className="relative z-50 hidden lg:block"
+      className="relative z-50 block"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
@@ -40,17 +40,25 @@ export function Modal({
               e.stopPropagation();
             }}
           >
-            <div className="absolute right-0 top-0">
+            <div className="absolute right-2 top-2 z-50 md:right-0 md:top-0">
               {cancelLink ? (
                 <Link
                   to={cancelLink}
-                  className="text-body hover:text-body/50 -m-4 transition"
+                  aria-label="Close panel"
+                  className="flex size-10 items-center justify-center text-body transition hover:text-body/50"
                 >
-                  <IconClose aria-label="Close panel" />
+                  <IconClose aria-hidden="true" />
                 </Link>
               ) : (
-                <Button variant="link" onClick={onClose}>
-                  <IconClose aria-label="Close panel" />
+                <Button
+                  type="button"
+                  variant="custom"
+                  size="icon"
+                  aria-label="Close panel"
+                  className="text-body hover:text-body/50"
+                  onClick={onClose}
+                >
+                  <IconClose aria-hidden="true" />
                 </Button>
               )}
             </div>

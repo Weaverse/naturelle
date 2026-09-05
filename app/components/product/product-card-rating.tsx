@@ -24,11 +24,13 @@ export function ProductCardRating({
   ratingCountValue,
   rating: ratingOverride,
   ratingCount: ratingCountOverride,
+  detailed = false,
 }: {
   ratingValue?: string | null;
   ratingCountValue?: string | null;
   rating?: number;
   ratingCount?: number;
+  detailed?: boolean;
 }) {
   const rating = ratingOverride ?? parseProductRating(ratingValue);
   const parsedRatingCount = Number(ratingCountValue);
@@ -39,8 +41,14 @@ export function ProductCardRating({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <StarRating rating={rating} />
-      <span className="text-xs text-[#3B3333]">
-        {rating.toFixed(1)} ({ratingCount})
+      <span
+        className={
+          detailed ? "text-sm text-[#3B3333]" : "text-xs text-[#3B3333]"
+        }
+      >
+        {detailed
+          ? `${rating.toFixed(1)}/5.0 (${ratingCount} reviews)`
+          : `${rating.toFixed(1)} (${ratingCount} reviews)`}
       </span>
     </div>
   );

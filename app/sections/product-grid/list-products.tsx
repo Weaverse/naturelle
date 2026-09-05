@@ -8,7 +8,8 @@ import {
 } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import type { ProductCardFragment } from "storefront-api.generated";
-import { IconCaret, IconImageBlank } from "~/components/icon";
+import { buttonVariants } from "~/components/button";
+import { IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
@@ -157,9 +158,15 @@ export default function ProductGridList({
                 {collectionHeading || collectionTitle}
               </h3>
               {collectionButtonText && (
-                <span className="mt-6 inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-sm text-[#3B3333] transition-transform group-hover:translate-y-[-2px]">
+                <span
+                  className={buttonVariants({
+                    variant: "secondary",
+                    size: "sm",
+                    className:
+                      "mt-6 gap-3 rounded-xl px-5 group-hover:translate-y-[-2px]",
+                  })}
+                >
                   {collectionButtonText}
-                  <IconCaret direction="right" aria-hidden="true" />
                 </span>
               )}
             </div>

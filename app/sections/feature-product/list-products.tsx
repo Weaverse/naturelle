@@ -89,7 +89,7 @@ const ListProducts = ({
       return displayedProducts.map((product, i) => (
         <SwiperSlide key={product.id}>
           <ProductCard
-            quickAdd
+            enableQuickView
             product={product}
             collection={loaderData.collection}
             loading={getImageLoadingPriority(i)}

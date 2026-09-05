@@ -889,6 +889,31 @@ export const themeSchema: HydrogenThemeSchema = {
           placeholder: "Unavailable",
         },
         {
+          type: "range",
+          label: "Low stock threshold",
+          name: "quickViewLowStockThreshold",
+          configs: {
+            min: 0,
+            max: 20,
+            step: 1,
+          },
+          defaultValue: 5,
+          helpText:
+            "Show the Quick View low-stock message when inventory is at or below this value.",
+        },
+        {
+          type: "color",
+          label: "Low stock bar color",
+          name: "quickViewLowStockProgressColor",
+          defaultValue: "#4BAE42",
+        },
+        {
+          type: "color",
+          label: "Shop Pay background",
+          name: "shopPayButtonBgColor",
+          defaultValue: "#5A31F4",
+        },
+        {
           type: "switch",
           label: "Show vendor",
           name: "showVendor",
@@ -979,6 +1004,21 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Product card",
       inputs: [
+        { type: "heading", label: "Quick view" },
+        {
+          type: "switch",
+          name: "pcardEnableQuickView",
+          label: "Enable quick view",
+          defaultValue: true,
+        },
+        {
+          type: "text",
+          name: "pcardQuickViewButtonText",
+          label: "Quick view button text",
+          defaultValue: "Select options",
+          placeholder: "Select options",
+          condition: "pcardEnableQuickView.eq.true",
+        },
         { type: "heading", label: "Image" },
         {
           type: "range",
@@ -990,13 +1030,13 @@ export const themeSchema: HydrogenThemeSchema = {
             step: 2,
             unit: "px",
           },
-          defaultValue: 4,
+          defaultValue: 16,
         },
         {
           type: "switch",
           name: "pcardShowImageOnHover",
           label: "Show second image on hover",
-          defaultValue: true,
+          defaultValue: false,
         },
         {
           type: "select",
@@ -1030,11 +1070,11 @@ export const themeSchema: HydrogenThemeSchema = {
               { value: "right", label: "Right", icon: "align-end-vertical" },
             ],
           },
-          defaultValue: "center",
+          defaultValue: "left",
         },
         {
           type: "switch",
-          label: "Show vendor",
+          label: "Show vendor badge",
           name: "pcardShowVendor",
           defaultValue: true,
         },
@@ -1044,31 +1084,6 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "pcardShowSalePrice",
           defaultValue: true,
           condition: "pcardShowLowestPrice.ne.true",
-        },
-        {
-          type: "switch",
-          label: "Show option values",
-          name: "pcardShowOptionValues",
-          defaultValue: true,
-        },
-        {
-          type: "text",
-          label: "Option to show",
-          name: "pcardOptionToShow",
-          defaultValue: "Color",
-          placeholder: "Color",
-          condition: "pcardShowOptionValues.eq.true",
-        },
-        {
-          type: "range",
-          label: "Max option values to show",
-          name: "pcardMaxOptionValues",
-          configs: {
-            min: 2,
-            max: 10,
-          },
-          defaultValue: 2,
-          condition: "pcardShowOptionValues.eq.true",
         },
       ],
     },
