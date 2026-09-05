@@ -42,7 +42,7 @@ export function ProductSwimlane({
       <div ref={swimlaneRef} className="swimlane hiddenScroll scroll-px-0 px-0">
         {featuredProducts.nodes.slice(0, count).map((product) => (
           <ProductCard
-            quickAdd
+            enableQuickView
             product={product}
             key={product.id}
             className="snap-start w-80"

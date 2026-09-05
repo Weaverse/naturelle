@@ -83,7 +83,7 @@ export function ProductPlaceholder(_props: any) {
             <legend className="whitespace-pre-wrap max-w-prose font-bold text-lg leading-snug">
               Quantity
             </legend>
-            <div className="rounded-sm border w-fit">
+            <div className="rounded-md border w-fit">
               <button
                 type="button"
                 name="decrease-quantity"
@@ -109,7 +109,7 @@ export function ProductPlaceholder(_props: any) {
           </div>
           <div>
             <button
-              className="inline-block rounded font-medium text-center py-3 px-4 text-sm border-2 border-btn hover:bg-inv-btn hover:text-inv-btn-content bg-btn text-btn-content w-full"
+              className="inline-block w-full rounded-md border-2 border-btn bg-btn px-4 py-3 text-center font-medium text-btn-content text-sm hover:bg-inv-btn hover:text-inv-btn-content"
               type="submit"
               data-test="add-to-cart"
             >

@@ -1,19 +1,35 @@
-import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  IMAGES_PLACEHOLDERS,
+  useChildInstances,
+} from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import type { RefObject } from "react";
+import React, { type RefObject } from "react";
 import { backgroundInputs } from "~/components/background-image";
 import { overlayInputs } from "~/components/overlay";
 import { Section, type SectionProps } from "~/components/section";
 
-let variants = cva("flex flex-col [&_.paragraph]:mx-[unset] px-4 sm:px-16", {
+let variants = cva("px-0 py-20 md:px-10 [&_.paragraph]:mx-[unset]", {
   variants: {
-    alignment: {
-      left: "items-start [&_.paragraph]:[text-align:left] [&_.countdown--timer]:-ml-4",
-      center: "items-center [&_.paragraph]:[text-align:center]",
-      right:
-        "items-end [&_.paragraph]:[text-align:right] [&_.countdown--timer]:-mr-4",
+    layout: {
+      col: "flex flex-col gap-10",
+      row: [
+        "flex flex-col gap-10",
+        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-10",
+        "lg:[&_.countdown-content]:!items-start lg:[&_.heading]:!text-left lg:[&_.paragraph]:!text-left",
+      ],
     },
+    alignment: {
+      left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
+      center:
+        "items-center justify-items-center [&_.countdown-content]:items-center [&_.paragraph]:[text-align:center]",
+      right:
+        "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
+    },
+  },
+  defaultVariants: {
+    layout: "row",
   },
 });
 
@@ -23,10 +39,57 @@ let Countdown = ({
   ref,
   ...props
 }: CountdownProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, alignment, ...rest } = props;
+  let { children, alignment, layout = "row", ...rest } = props;
+  let childItems = React.Children.toArray(children);
+  let childInstances = useChildInstances();
+  let childTypes = new Map(
+    childInstances.map((instance) => [instance.data.id, instance.data.type]),
+  );
+  let getChildType = (child: React.ReactNode) => {
+    if (!React.isValidElement(child)) {
+      return;
+    }
+    let childId = (child.props as { id?: string }).id;
+    return childId ? childTypes.get(childId) : undefined;
+  };
+  let timerChildren = childItems.filter(
+    (child) => getChildType(child) === "countdown--timer",
+  );
+  let buttonChildren = childItems.filter(
+    (child) => getChildType(child) === "button",
+  );
+  let contentChildren = childItems.filter((child) => {
+    let type = getChildType(child);
+    return type !== "countdown--timer" && type !== "button";
+  });
+
   return (
-    <Section ref={ref} {...rest} containerClassName={variants({ alignment })}>
-      {children}
+    <Section
+      ref={ref}
+      {...rest}
+      verticalPadding="none"
+      containerClassName={variants({ alignment, layout })}
+    >
+      {layout === "row" ? (
+        <>
+          <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-0">
+            {timerChildren}
+            <div className="h-px w-28 border-t border-current opacity-30 lg:h-auto lg:w-auto lg:self-stretch lg:border-t-0 lg:border-r lg:pl-10" />
+          </div>
+          <div className="countdown-content w-full flex flex-col items-start gap-2">
+            {contentChildren}
+          </div>
+          {buttonChildren}
+        </>
+      ) : (
+        <>
+          <div className="countdown-content flex flex-col gap-2">
+            {contentChildren}
+          </div>
+          {timerChildren}
+          {buttonChildren}
+        </>
+      )}
     </Section>
   );
 };
@@ -55,8 +118,21 @@ export const schema = createSchema({
         },
         {
           type: "toggle-group",
+          name: "layout",
+          label: "Layout",
+          configs: {
+            options: [
+              { value: "row", label: "Row", icon: "columns-3" },
+              { value: "col", label: "Column", icon: "rows-3" },
+            ],
+          },
+          defaultValue: "row",
+        },
+        {
+          type: "toggle-group",
           name: "alignment",
           label: "Alignment",
+          condition: "layout.ne.col",
           configs: {
             options: [
               { value: "left", label: "Left", icon: "align-start-vertical" },
@@ -69,32 +145,6 @@ export const schema = createSchema({
             ],
           },
           defaultValue: "center",
-        },
-        {
-          type: "range",
-          name: "gap",
-          label: "Items spacing",
-          configs: {
-            min: 0,
-            max: 60,
-            step: 4,
-            unit: "px",
-          },
-          defaultValue: 20,
-        },
-        {
-          type: "select",
-          name: "verticalPadding",
-          label: "Vertical padding",
-          configs: {
-            options: [
-              { value: "none", label: "None" },
-              { value: "small", label: "Small" },
-              { value: "medium", label: "Medium" },
-              { value: "large", label: "Large" },
-            ],
-          },
-          defaultValue: "medium",
         },
         {
           type: "range",
@@ -117,6 +167,7 @@ export const schema = createSchema({
   presets: {
     backgroundImage: IMAGES_PLACEHOLDERS.banner_1,
     width: "stretch",
+    layout: "row",
     backgroundFor: "content",
     borderRadius: 30,
     alignment: "left",

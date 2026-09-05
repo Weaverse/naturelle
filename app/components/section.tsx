@@ -34,19 +34,19 @@ export interface SectionProps<T = any>
 let variants = cva("relative", {
   variants: {
     width: {
-      full: "w-full h-full",
-      stretch: "w-full h-full",
-      fixed: "w-full h-full max-w-[var(--page-width,1440px)] mx-auto",
+      full: "h-full w-full",
+      stretch: "h-full w-full",
+      fixed: "mx-auto h-full w-full lg:max-w-[1152px]",
     },
     padding: {
       full: "",
-      stretch: "px-3 md:px-10 lg:px-16",
-      fixed: "px-3 md:px-4 lg:px-6 mx-auto",
+      stretch: "px-5 md:px-6 lg:px-10",
+      fixed: "mx-auto px-5 md:px-6 lg:px-10",
     },
     verticalPadding: {
       none: "",
       small: "py-4 md:py-6 lg:py-8",
-      medium: "py-8 md:py-12 lg:py-16",
+      medium: "py-20",
       large: "py-12 md:py-24 lg:py-32",
     },
     gap: {
@@ -159,7 +159,7 @@ export const layoutInputs: InspectorGroup["inputs"] = [
     label: "Items spacing",
     configs: {
       min: 0,
-      max: 60,
+      max: 64,
       step: 4,
       unit: "px",
     },

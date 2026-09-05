@@ -3,27 +3,36 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  /* Fonts - Naturelle uses Nunito Sans (body) and Cormorant (heading) */
-  --font-body: Nunito Sans Variable, ui-sans-serif, system-ui, sans-serif;
-  --font-heading: Cormorant Variable, ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+  /* Fonts - Naturelle uses Montserrat (body/UI) and Belleza (headings) */
+  --font-body: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Belleza", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
   /* Breakpoints */
-  --breakpoint-sm: 32em;
-  --breakpoint-md: 48em;
-  --breakpoint-lg: 64em;
-  --breakpoint-xl: 80em;
+  --breakpoint-sm: 26.875em;
+  --breakpoint-md: 49.125em;
+  --breakpoint-lg: 90em;
   --breakpoint-2xl: 90rem;
 
   /* Container */
   --container-2xl: 1440px;
+  --container-lg: 1440px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-xl: 12px;
 
   /* Colors */
   --color-background: var(--color-background);
+  --color-background-subtle-1: var(--color-background-subtle-1);
+  --color-background-subtle-2: var(--color-background-subtle-2);
+  --color-background-basic: var(--color-background-basic);
   --color-text-primary: var(--color-text-primary);
   --color-text-subtle: var(--color-text-subtle);
   --color-text-inverse: var(--color-text-inverse);
 
   --color-header-bg: var(--color-header-bg);
+  --color-header-bg-secondary: var(--color-header-bg-secondary);
 
   --color-border: var(--color-border);
   --color-border-subtle: var(--color-border-subtle);
@@ -32,6 +41,8 @@
   --color-label-sale-background: var(--color-label-bg-sale);
   --color-label-new-background: var(--color-label-bg-new);
   --color-label-soldout-background: var(--color-label-bg-soldout);
+  --color-button-primary-text: var(--color-button-primary-text);
+  --color-button-primary-background: var(--color-button-primary-background);
 
   /* Height Overrides */
   --height-screen: var(--screen-height, 100vh);
@@ -48,15 +59,15 @@
   --text-scale--line-height: 1;
 
   --text-xs: calc(var(--body-base-size) * 0.75);
-  --text-xs--line-height: 1;
+  --text-xs--line-height: 1.6;
   --text-sm: calc(var(--body-base-size) * 0.875);
-  --text-sm--line-height: 1.25;
+  --text-sm--line-height: 1.6;
   --text-base: var(--body-base-size);
   --text-base--line-height: var(--body-base-line-height);
   --text-lg: calc(var(--body-base-size) * 1.125);
   --text-lg--line-height: 1.75;
   --text-xl: calc(var(--body-base-size) * 1.25);
-  --text-xl--line-height: 1.75;
+  --text-xl--line-height: 1.6;
   --text-2xl: calc(var(--body-base-size) * 1.5);
   --text-2xl--line-height: 2;
   --text-3xl: calc(var(--body-base-size) * 1.875);
@@ -166,7 +177,7 @@
   }
 
   img {
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
 }
 
@@ -268,7 +279,9 @@ input[type="search"]::-webkit-search-cancel-button {
   transition: all 0.3s ease;
 }
 
-.text-animation:hover::after {
+.text-animation:hover::after,
+.text-animation.is-active::after,
+.is-active .text-animation::after {
   left: 0;
   width: 100%;
 }

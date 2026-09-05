@@ -35,6 +35,54 @@ export interface SingleMenuItem {
   items: SingleMenuItem[];
   to: string;
   resource?: {
+    title?: string;
+    description?: string;
+    collections?: {
+      nodes: Array<{
+        id: string;
+        title: string;
+      }>;
+    };
+    products?: {
+      nodes: Array<{
+        id: string;
+        title: string;
+        handle: string;
+      }>;
+    };
+    handle?: string;
+    articles?: {
+      nodes: Array<{
+        id: string;
+        title: string;
+        handle: string;
+        image?: {
+          altText: string | null;
+          height: number;
+          id: string;
+          url: string;
+          width: number;
+        } | null;
+      }>;
+    };
+    blog?: {
+      title: string;
+      handle: string;
+      articles: {
+        nodes: Array<{
+          id: string;
+          title: string;
+          handle: string;
+          image?: {
+            altText: string | null;
+            height: number;
+            id: string;
+            url: string;
+            width: number;
+          } | null;
+        }>;
+      };
+    };
     image?: {
       altText: string;
       height: number;

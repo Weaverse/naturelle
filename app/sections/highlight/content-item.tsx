@@ -10,10 +10,10 @@ interface ContentProps extends HydrogenComponentProps {
 }
 
 let itemsPerRowClasses: { [item: number]: string } = {
-  1: "sm:grid-cols-1",
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-3",
-  4: "sm:grid-cols-4",
+  1: "md:grid-cols-1",
+  2: "md:grid-cols-2",
+  3: "md:grid-cols-3",
+  4: "md:grid-cols-4",
 };
 
 const HighlightContent = ({
@@ -31,7 +31,7 @@ const HighlightContent = ({
       ref={ref}
       {...rest}
       className={clsx(
-        "flex flex-col sm:grid gap-y-6 gap-x-(--item-gap)",
+        "flex flex-col gap-y-6 md:grid md:gap-x-(--item-gap)",
         itemsPerRowClasses[actualItemPerRow],
       )}
       style={style}
@@ -70,7 +70,7 @@ export const schema = createSchema({
             max: 40,
             step: 6,
           },
-          defaultValue: 16,
+          defaultValue: 24,
         },
         {
           type: "color",

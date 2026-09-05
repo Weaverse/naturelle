@@ -30,7 +30,7 @@ const SECTION_HEIGHTS = {
     mobile: "80vh",
   },
   full: {
-    desktop: "calc(var(--screen-height, 100vh)",
+    desktop: "calc(var(--screen-height, 100vh))",
     mobile: "calc(var(--screen-height, 80vh))",
   },
   custom: null,
@@ -57,7 +57,7 @@ export interface VideoBannerProps
 }
 
 let variants = cva(
-  "absolute inset-0 max-w-[100vw] mx-auto px-3 flex flex-col justify-center items-center z-10",
+  "absolute inset-0 max-w-[100vw] mx-auto flex flex-col justify-center items-center z-10",
   {
     variants: {
       gap: {
@@ -71,7 +71,7 @@ let variants = cva(
         28: "space-y-3.5 lg:space-y-7",
         32: "space-y-4 lg:space-y-8",
         36: "space-y-4 lg:space-y-9",
-        40: "space-y-5 lg:space-y-10",
+        40: "space-y-10",
         44: "space-y-5 lg:space-y-11",
         48: "space-y-6 lg:space-y-12",
         52: "space-y-6 lg:space-y-[52px]",
@@ -172,7 +172,7 @@ let VideoBanner = ({
       <div
         className={clsx(
           "relative flex items-center justify-center overflow-hidden",
-          "h-[var(--mobile-height)] sm:h-[var(--desktop-height)]",
+          "h-(--mobile-height) sm:h-(--desktop-height)",
           "w-[max(var(--mobile-height)/9*16,100vw)] sm:w-[max(var(--desktop-height)/9*16,100vw)]",
           "translate-x-[min(0px,calc((var(--mobile-height)/9*16-100vw)/-2))] sm:translate-x-[min(0px,calc((var(--desktop-height)/9*16-100vw)/-2))]",
         )}
@@ -255,11 +255,11 @@ export const schema = createSchema({
           type: "range",
           name: "heightOnDesktop",
           label: "Height on desktop",
-          defaultValue: 650,
+          defaultValue: 844,
           configs: {
             min: 400,
-            max: 800,
-            step: 10,
+            max: 1000,
+            step: 1,
             unit: "px",
           },
           condition: "height.eq.custom",
@@ -287,7 +287,7 @@ export const schema = createSchema({
             step: 4,
             unit: "px",
           },
-          defaultValue: 20,
+          defaultValue: 40,
         },
       ],
     },

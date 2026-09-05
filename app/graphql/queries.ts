@@ -29,6 +29,7 @@ export const FEATURED_PRODUCTS_QUERY = `#graphql
   @inContext(country: $country, language: $language) {
       collection(handle: $handle){
         id
+        title
         handle
         products(first: 24) {
         nodes {
@@ -76,10 +77,25 @@ export const PRODUCT_QUERY = `#graphql
     product(handle: $handle) {
       id
       title
+      publishedAt
       vendor
+      productType
       handle
       descriptionHtml
       description
+      collections(first: 1) {
+        nodes {
+          id
+          title
+          handle
+        }
+      }
+      rating: metafield(namespace: "reviews", key: "rating") {
+        value
+      }
+      ratingCount: metafield(namespace: "reviews", key: "rating_count") {
+        value
+      }
       options {
         ...ProductOption
       }

@@ -12,9 +12,12 @@ import * as CollectionBanner from "~/sections/collection-banner/collection-banne
 import * as CollectionFilters from "~/sections/collection-filters/index";
 import * as CollectionListItem from "~/sections/collection-list/collection-list";
 import * as CollectionList from "~/sections/collection-list/index";
+import * as Collections from "~/sections/collections/index";
 import * as ContactForm from "~/sections/contact-form/contact-form";
 import * as Countdown from "~/sections/countdown/index";
 import * as CountdownTimer from "~/sections/countdown/timer";
+import * as FaqItem from "~/sections/faqs/faq-item";
+import * as Faqs from "~/sections/faqs/index";
 import * as FeaturedProducts from "~/sections/feature-product/index";
 import * as FeaturedProductsList from "~/sections/feature-product/list-products";
 import * as HighlightContent from "~/sections/highlight/content-item";
@@ -30,14 +33,19 @@ import * as ImageWithText from "~/sections/image-with-text/index";
 import * as Instagram from "~/sections/instagram";
 import * as JudgemeReviewSection from "~/sections/judgeme-reviews/index";
 import * as JudgemeReviewIndex from "~/sections/judgeme-reviews/review-index";
+import * as MapSection from "~/sections/map";
+import * as MapItem from "~/sections/map/item";
 import * as Newsletter from "~/sections/newsletter/index";
 import * as NewsletterInput from "~/sections/newsletter/input-email";
 import * as NewsletterIcon from "~/sections/newsletter/newsletter-icon";
 import * as Page from "~/sections/page/page";
+import * as ProductGrid from "~/sections/product-grid/index";
+import * as ProductGridList from "~/sections/product-grid/list-products";
 import * as ProductInformation from "~/sections/product-information/index";
 import * as ProductPlacement from "~/sections/product-placement/index";
 import * as ProductPlacementItems from "~/sections/product-placement/items";
 import * as ProductPlacementItem from "~/sections/product-placement/product-item";
+import * as PromotionGrid from "~/sections/promotion-grid";
 import * as RelatedArticles from "~/sections/related-articles/related-articles";
 import * as ScrollingText from "~/sections/scrolling-text/index";
 import * as SingleProduct from "~/sections/single-product/index";
@@ -73,12 +81,17 @@ export const components: HydrogenComponent[] = [
   Slide,
   Blogs,
   Instagram,
+  MapSection,
+  MapItem,
   BeforeAndAfter,
   BeforeAndAfterSlide,
   FeaturedProducts,
   FeaturedProductsList,
+  Faqs,
+  FaqItem,
   CollectionList,
   CollectionListItem,
+  Collections,
   AllProducts,
   ProductInformation,
   SingleProduct,
@@ -99,6 +112,9 @@ export const components: HydrogenComponent[] = [
   ProductPlacement,
   ProductPlacementItems,
   ProductPlacementItem,
+  PromotionGrid,
+  ProductGrid,
+  ProductGridList,
   Hotspots,
   HotspotsItem,
   HotspotsImage,

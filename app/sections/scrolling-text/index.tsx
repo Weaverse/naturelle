@@ -68,17 +68,17 @@ const ScrollingText = ({
         "border-y border-y-[var(--border-color)]",
         "overflow-hidden",
         variants({ width: scrollWidth }),
-        !visibleOnMobile && "hidden sm:block",
+        !visibleOnMobile && "hidden md:block",
       )}
     >
-      <div className="sm:hidden block text-center font-heading text-base">
+      <div className="block text-center font-heading text-base md:hidden">
         {content}
       </div>
-      <ul className="hidden list-none sm:inline-flex">
+      <ul className="hidden list-none md:inline-flex">
         {Array.from({ length: 50 }).map((_, i) => (
           <li
             key={i}
-            className="animate-scrollContent whitespace-nowrap font-heading font-medium text-[var(--text-color)] pr-[var(--gap)]"
+            className="animate-scrollContent whitespace-nowrap font-heading font-medium text-[var(--text-color)] pr-[var(--gap)] uppercase"
             style={{
               animationDuration: `var(--speed)`,
               fontSize: `${textSize}px`,
@@ -101,6 +101,12 @@ export const schema = createSchema({
     {
       group: "Scrolling Text",
       inputs: [
+        {
+          type: "switch",
+          name: "visibleOnMobile",
+          label: "Visible on mobile",
+          defaultValue: true,
+        },
         {
           type: "textarea",
           name: "content",
@@ -125,18 +131,19 @@ export const schema = createSchema({
           type: "color",
           name: "textColor",
           label: "Text color",
+          defaultValue: "#CF9D71",
         },
         {
           type: "color",
           name: "borderColor",
           label: "Border color",
-          defaultValue: "#3D490B",
+          defaultValue: "#443E40",
         },
         {
           type: "color",
           name: "backgroundColor",
           label: "Background color",
-          defaultValue: "#E5E7D4",
+          defaultValue: "#D2EDE2",
         },
         {
           type: "select",
@@ -197,12 +204,6 @@ export const schema = createSchema({
             step: 1,
             unit: "px",
           },
-        },
-        {
-          type: "switch",
-          name: "visibleOnMobile",
-          label: "Visible on mobile",
-          defaultValue: true,
         },
       ],
     },

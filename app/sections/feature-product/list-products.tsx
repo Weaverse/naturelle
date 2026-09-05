@@ -12,8 +12,6 @@ import { FEATURED_PRODUCTS_QUERY } from "~/graphql/queries";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import clsx from "clsx";
-import { Navigation } from "swiper/modules";
 import { ProductCard } from "~/components/product/product-card";
 import { getImageLoadingPriority } from "~/utils/image";
 import { Arrows, type SlideshowArrowsProps } from "./arrows";
@@ -25,7 +23,11 @@ type FeaturedProductsData = {
   productsPerRow: number;
   showArrows: boolean;
   showNumber: boolean;
+  showPrice: boolean;
+  showStar: boolean;
+  showViewDetailsLink: boolean;
   numberPosition: "top" | "bottom";
+  viewDetailsLinkText: string;
 };
 
 interface FeaturedProductsProps
@@ -48,7 +50,11 @@ const ListProducts = ({
     arrowsColor,
     arrowsShape,
     showNumber,
+    showPrice,
+    showStar,
+    showViewDetailsLink,
     numberPosition,
+    viewDetailsLinkText,
     loaderData,
     ...rest
   } = props;
@@ -58,7 +64,7 @@ const ListProducts = ({
   const productItemBlank = () => {
     return (
       <div className="flex w-full cursor-pointer flex-col gap-4">
-        <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
+        <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-2">
           <IconImageBlank
             viewBox="0 0 526 526"
             className="h-full w-full opacity-80"
@@ -83,9 +89,14 @@ const ListProducts = ({
       return displayedProducts.map((product, i) => (
         <SwiperSlide key={product.id}>
           <ProductCard
-            quickAdd
+            enableQuickView
             product={product}
+            collection={loaderData.collection}
             loading={getImageLoadingPriority(i)}
+            showPrice={showPrice}
+            showStar={showStar}
+            showViewDetailsLink={showViewDetailsLink}
+            viewDetailsLinkText={viewDetailsLinkText}
           />
         </SwiperSlide>
       ));
@@ -100,43 +111,35 @@ const ListProducts = ({
       ref={ref}
       {...rest}
       data-motion="fade-up"
-      className={clsx(
-        "group/arrow flex flex-col gap-12",
-        showArrows && "px-0 md:px-8 lg:px-12",
-      )}
+      className="group/arrow flex flex-col gap-12"
     >
-      <Swiper
-        onSwiper={setSwiperInstance}
-        navigation={
-          showArrows && {
-            nextEl: ".slideshow-arrow-next",
-            prevEl: ".slideshow-arrow-prev",
-          }
-        }
-        modules={[showArrows ? Navigation : null].filter(Boolean)}
-        breakpoints={{
-          320: {
-            slidesPerView: 2,
-            spaceBetween: 10,
-          },
-          640: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
-          1024: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
-        }}
-        className="w-full !static"
-      >
-        {renderProducts()}
-        {showArrows && <Arrows {...props} />}
-      </Swiper>
+      <div className="relative">
+        <Swiper
+          onSwiper={setSwiperInstance}
+          breakpoints={{
+            320: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+            },
+            640: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+          }}
+          className="w-full"
+        >
+          {renderProducts()}
+        </Swiper>
+        {showArrows && <Arrows {...props} instance={swiperInstance} />}
+      </div>
       {showNumber && <SlideNumber {...props} instance={swiperInstance} />}
     </div>
   );
@@ -188,6 +191,36 @@ export const schema = createSchema({
       ],
     },
     {
+      group: "Product card",
+      inputs: [
+        {
+          type: "switch",
+          label: "Show star rating",
+          name: "showStar",
+          defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show price",
+          name: "showPrice",
+          defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show view details link",
+          name: "showViewDetailsLink",
+          defaultValue: true,
+        },
+        {
+          type: "text",
+          label: "View details link text",
+          name: "viewDetailsLinkText",
+          defaultValue: "View full details",
+          condition: "showViewDetailsLink.eq.true",
+        },
+      ],
+    },
+    {
       group: "Navigation & Controls",
       inputs: [
         {
@@ -198,7 +231,7 @@ export const schema = createSchema({
           type: "switch",
           label: "Show arrows",
           name: "showArrows",
-          defaultValue: false,
+          defaultValue: true,
         },
         {
           type: "select",
@@ -229,7 +262,7 @@ export const schema = createSchema({
           type: "switch",
           label: "Show arrows on hover",
           name: "showArrowsOnHover",
-          defaultValue: true,
+          defaultValue: false,
           condition: "showArrows.eq.true",
         },
         {

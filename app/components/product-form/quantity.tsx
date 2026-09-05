@@ -36,7 +36,7 @@ export function Quantity(props: QuantityProps) {
           name="decrease-quantity"
           aria-label="Decrease quantity"
           className={clsx(
-            "transition py-2.5 px-5 border-2 rounded border-border-subtle",
+            "rounded-md border-2 border-border-subtle px-5 py-2.5 transition",
             value <= 1 && "opacity-50 cursor-not-allowed",
           )}
           disabled={isDisabled || value <= 1}
@@ -45,7 +45,7 @@ export function Quantity(props: QuantityProps) {
           <span>&#8722;</span>
         </button>
         <Input
-          className="py-2.5 w-24 text-center border-2 rounded bg-background"
+          className="w-24 rounded-md border-2 bg-background py-2.5 text-center"
           value={value}
           onKeyDown={handleKeyDown}
           onChange={(e) => onChange(Number(e.currentTarget.value))}
@@ -53,7 +53,7 @@ export function Quantity(props: QuantityProps) {
         />
         <button
           type="button"
-          className="transition py-2.5 px-5 border-2 rounded border-border-subtle"
+          className="rounded-md border-2 border-border-subtle px-5 py-2.5 transition"
           name="increase-quantity"
           aria-label="Increase quantity"
           onClick={() => onChange(value + 1)}

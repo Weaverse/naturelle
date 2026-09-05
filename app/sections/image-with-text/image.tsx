@@ -10,31 +10,27 @@ import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
 import { cn } from "~/utils/cn";
 
-let variants = cva("w-full h-auto basis-full md:basis-1/2", {
+let wrapperVariants = cva("w-full h-auto basis-full md:basis-1/2", {
   variants: {
     width: {
       small: "md:w-[40%]",
       medium: "md:w-[50%]",
       large: "md:w-[60%]",
     },
-    objectFit: {
-      cover: "object-cover",
-      contain: "object-contain",
-    },
     borderRadius: {
       0: "",
-      2: "rounded-sm",
-      4: "rounded",
-      6: "rounded-md",
-      8: "rounded-lg",
+      2: "rounded-[2px]",
+      4: "rounded-[4px]",
+      6: "rounded-[6px]",
+      8: "rounded-[8px]",
       10: "rounded-[10px]",
-      12: "rounded-xl",
+      12: "rounded-[12px]",
       14: "rounded-[14px]",
-      16: "rounded-2xl",
+      16: "rounded-[16px]",
       18: "rounded-[18px]",
       20: "rounded-[20px]",
       22: "rounded-[22px]",
-      24: "rounded-3xl",
+      24: "rounded-[24px]",
       26: "rounded-[26px]",
       28: "rounded-[28px]",
       30: "rounded-[30px]",
@@ -47,8 +43,21 @@ let variants = cva("w-full h-auto basis-full md:basis-1/2", {
   },
 });
 
+let imageVariants = cva(
+  "h-auto transition-transform duration-700 ease-out group-hover:scale-105",
+  {
+    variants: {
+      objectFit: {
+        cover: "object-cover",
+        contain: "object-contain",
+      },
+    },
+  },
+);
+
 interface ImageWithTextImageProps
-  extends VariantProps<typeof variants>,
+  extends VariantProps<typeof wrapperVariants>,
+    VariantProps<typeof imageVariants>,
     HydrogenComponentProps {
   image: WeaverseImage | string;
   aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
@@ -82,13 +91,16 @@ let ImageWithTextImage = ({
       data-motion="zoom-in"
       ref={ref}
       {...rest}
-      className={cn(variants({ width }))}
+      className={cn(
+        "group overflow-hidden",
+        wrapperVariants({ width, borderRadius }),
+      )}
     >
       <Image
         data={imageData}
         sizes="auto"
         aspectRatio={aspRt}
-        className={cn("h-auto", variants({ objectFit, borderRadius }))}
+        className={imageVariants({ objectFit })}
       />
     </div>
   );

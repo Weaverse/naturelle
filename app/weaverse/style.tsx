@@ -5,6 +5,9 @@ export function GlobalStyle() {
   if (settings) {
     const {
       colorBackground,
+      colorBackgroundSubtle1,
+      colorBackgroundSubtle2,
+      colorBackgroundBasic,
       colorTextPrimary,
       colorTextSubtle,
       colorTextInverse,
@@ -14,6 +17,7 @@ export function GlobalStyle() {
       headerText,
       transparentHeader,
       headerBgColor,
+      headerBgColorSecondary,
       footerText,
       footerBgColor,
       borderColor,
@@ -25,16 +29,24 @@ export function GlobalStyle() {
       buttonTextHoverPrimary,
       buttonBgHoverPrimary,
       buttonBorderHoverPrimary,
+      buttonTextActivePrimary,
+      buttonBgActivePrimary,
+      buttonBorderActivePrimary,
       buttonTextSecondary,
       buttonBgColorSecondary,
       buttonBorderColorSecondary,
       buttonTextHoverSecondary,
       buttonBgHoverSecondary,
       buttonBorderHoverSecondary,
+      buttonTextActiveSecondary,
+      buttonBgActiveSecondary,
+      buttonBorderActiveSecondary,
       buttonTextOutline,
       buttonBorderColorOutline,
       buttonTextHoverOutline,
       buttonBorderHoverOutline,
+      buttonTextActiveOutline,
+      buttonBorderActiveOutline,
       labelText,
       labelBgSale,
       labelBgNew,
@@ -61,6 +73,9 @@ export function GlobalStyle() {
             :root {
               /* Colors */
               --color-background: ${colorBackground};
+              --color-background-subtle-1: ${colorBackgroundSubtle1};
+              --color-background-subtle-2: ${colorBackgroundSubtle2};
+              --color-background-basic: ${colorBackgroundBasic};
               --color-text-primary: ${colorTextPrimary};
               --color-text-subtle: ${colorTextSubtle};
               --color-text-inverse: ${colorTextInverse};
@@ -72,6 +87,7 @@ export function GlobalStyle() {
               --color-header-text: ${headerText};
               --color-transparent-header: ${transparentHeader};
               --color-header-bg: ${headerBgColor};
+              --color-header-bg-secondary: ${headerBgColorSecondary};
 
               --color-footer-text: ${footerText};
               --color-footer-bg: ${footerBgColor};
@@ -84,6 +100,9 @@ export function GlobalStyle() {
               --color-label-bg-sale: ${labelBgSale};
               --color-label-bg-new: ${labelBgNew};
               --color-label-bg-soldout: ${labelBgSoldOut};
+
+              --color-button-primary-text: ${buttonTextPrimary};
+              --color-button-primary-background: ${buttonBgColorPrimary};
               
 
               /* Typography */
@@ -178,6 +197,11 @@ export function GlobalStyle() {
               border: 1px solid ${buttonBorderHoverPrimary}!important;
               transition: 0.3s background-color color border;
             }
+            .btn-primary:active{
+              background-color: ${buttonBgActivePrimary}!important;
+              color: ${buttonTextActivePrimary}!important;
+              border-color: ${buttonBorderActivePrimary}!important;
+            }
             .btn-secondary{
               background-color: ${buttonBgColorSecondary};
               color: ${buttonTextSecondary}!important;
@@ -190,6 +214,11 @@ export function GlobalStyle() {
               border: 1px solid ${buttonBorderHoverSecondary}!important;
               transition: 0.3s background-color color border;
             }
+            .btn-secondary:active{
+              background-color: ${buttonBgActiveSecondary}!important;
+              color: ${buttonTextActiveSecondary}!important;
+              border-color: ${buttonBorderActiveSecondary}!important;
+            }
             .btn-outline{
               color: ${buttonTextOutline}!important;
               border: 1px solid ${buttonBorderColorOutline};
@@ -198,7 +227,11 @@ export function GlobalStyle() {
             .btn-outline:hover{
               color: ${buttonTextHoverOutline}!important;
               border: 1px solid ${buttonBorderHoverOutline} !important;
-              transition: 0.3s background-color color border;
+              transition: 0.3s color border;
+            }
+            .btn-outline:active{
+              color: ${buttonTextActiveOutline}!important;
+              border-color: ${buttonBorderActiveOutline}!important;
             }
           `,
         }}

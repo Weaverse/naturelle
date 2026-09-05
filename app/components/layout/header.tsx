@@ -9,6 +9,7 @@ import { cn } from "~/utils/cn";
 import { useIsHomePath } from "~/utils/locale";
 import { AccountLink } from "../account/account-link";
 import { CartDrawer } from "../cart/cart-drawer";
+import { HeaderCountrySelector } from "./country-selector/header-country-selector";
 import { HeaderMenuDrawer } from "./menu/drawer-menu";
 import { MegaMenu } from "./menu/mega-menu";
 import { ScrollingAnnouncement } from "./scrolling-announcement";
@@ -17,14 +18,14 @@ import { SearchToggle } from "./search-toggle";
 let variants = cva("", {
   variants: {
     width: {
-      full: "w-full h-full",
-      stretch: "w-full h-full",
-      fixed: "w-full h-full container mx-auto",
+      full: "h-full w-full",
+      stretch: "h-full w-full",
+      fixed: "mx-auto h-full w-full lg:max-w-[1440px]",
     },
     padding: {
       full: "",
-      stretch: "px-3 md:px-10 lg:px-16",
-      fixed: "px-6 md:px-8 lg:px-6 mx-auto",
+      stretch: "px-5 md:px-6 lg:px-10",
+      fixed: "mx-auto px-5 md:px-6 lg:px-10",
     },
   },
 });
@@ -43,6 +44,7 @@ export function Header() {
   const isHome = useIsHomePath();
   const { y } = useWindowScroll();
   const [top, setCalculatedTop] = useState(0);
+  const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
 
   let scrolled = y < 50;
@@ -75,27 +77,56 @@ export function Header() {
                 "[&_.transparent-logo]:opacity-100",
               ]
             : ["[&_.main-logo]:opacity-100", "[&_.transparent-logo]:opacity-0"],
-          variants({ padding: headerWidth }),
         )}
         style={{ ["--announcement-bar-height" as string]: `${top}px` }}
       >
+        <div className="hidden w-full items-center justify-center bg-background-subtle-1 px-6 py-3 text-(--color-header-text) md:flex lg:py-4 [&_.main-logo]:!opacity-100 [&_.transparent-logo]:!opacity-0">
+          <div className="mx-auto flex w-full max-w-lg items-center justify-between px-6">
+            <div className="flex w-77.75 shrink-0 items-center gap-5 text-[13px] font-medium leading-normal text-text-subtle">
+              <span>Store Locator</span>
+              <span>Help &amp; FAQ</span>
+            </div>
+
+            <Logo
+              width={87}
+              className="z-30 flex h-11.5! w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px] px-0.5 pt-0.75 pb-[1.768px]"
+            />
+
+            <div className="flex w-77.75 shrink-0 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal">
+              {!isUtilitySearchOpen && (
+                <>
+                  <HeaderCountrySelector />
+                  <AccountLink variant="label" className="whitespace-nowrap" />
+                </>
+              )}
+              <div className="flex items-center justify-end gap-3">
+                <SearchToggle
+                  inline
+                  compact
+                  onInlineOpenChange={setIsUtilitySearchOpen}
+                />
+                <CartDrawer compact />
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           className={cn(
-            "z-40 flex h-nav py-1.5 items-center justify-between gap-3",
-            variants({ width: headerWidth }),
+            "z-40 flex h-14.5 items-center justify-center gap-2.5 bg-header-bg md:h-16.5",
+            variants({ width: headerWidth, padding: headerWidth }),
           )}
         >
           {typeMenuHeader === "drawer" ? (
             <HeaderMenuDrawer menu={headerMenu} />
           ) : (
-            <HeaderMenuDrawer menu={headerMenu} className="xl:hidden block" />
+            <HeaderMenuDrawer menu={headerMenu} className="block md:hidden" />
           )}
-          <Logo className="z-30 flex justify-start" />
+          <div className="shrink-0">
+            <Logo className="z-30 flex justify-start md:hidden" />
+          </div>
           {typeMenuHeader === "mega" && <MegaMenu menu={headerMenu} />}
-          <div className="z-30 flex items-center justify-end gap-2">
-            {typeMenuHeader === "mega" && (
-              <SearchToggle isOpenDrawerHearder className="xl:block hidden" />
-            )}
+          <div className="z-30 flex min-w-0 flex-1 items-center justify-end gap-2 md:hidden">
+            <SearchToggle inline />
             <AccountLink />
             <CartDrawer />
           </div>
