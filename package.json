@@ -43,7 +43,7 @@
     "format": "biome format --write",
     "format:check": "biome format",
     "cf-typegen": "wrangler types && react-router typegen",
-    "check": "tsc --noEmit && react-router build && wrangler deploy --dry-run",
+    "check": "react-router typegen && tsc --noEmit && react-router build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "cf-dev": "wrangler dev --port 8787"
   },
