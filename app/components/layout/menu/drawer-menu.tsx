@@ -63,14 +63,19 @@ function DrawerMenu({
       {items.map((item, id) => {
         let { title, ...rest } = item;
         let level = getMaxDepth(item);
-        let isCollectionMenu =
-          item.items.length &&
-          item.items.some((childItem) => childItem.resource?.products);
+        let isCollectionMenu = item.items.some(
+          (childItem) => childItem.resource?.products,
+        );
         let isBrandMenu =
-          item.title.trim().toLowerCase() === "brands" &&
           item.items.length > 0 &&
-          item.items.every((childItem) => childItem.resource?.image);
-        let isJournalMenu = item.title.trim().toLowerCase() === "journal";
+          item.items.every(
+            (childItem) =>
+              childItem.resource?.image && !childItem.resource.products,
+          );
+        let isJournalMenu = item.items.some(
+          (childItem) =>
+            childItem.resource?.articles || childItem.resource?.blog,
+        );
         let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
           isCollectionMenu
             ? CollectionMenu
@@ -108,7 +113,7 @@ function ItemHeader({
         clsx(
           "flex items-center justify-between py-3",
           isActive && "text-text-primary",
-          isActive && title.trim().toLowerCase() !== "home" && "underline",
+          isActive && to !== "/" && "underline",
         )
       }
     >
@@ -145,7 +150,7 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
           <div key={id}>
             <Disclosure>
               {({ open }) => (
-                <>
+                <div className="contents">
                   <Disclosure.Button className="w-full text-left">
                     <h5 className="flex w-full text-xl justify-between py-3 font-medium uppercase text-text-subtle hover:text-text-primary">
                       {item.items.length > 0 ? (
@@ -203,7 +208,7 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                       </Disclosure.Panel>
                     </div>
                   ) : null}
-                </>
+                </div>
               )}
             </Disclosure>
           </div>
@@ -240,9 +245,7 @@ function CollectionMenu({
     closeMenu();
     closeDrawer();
   };
-  const collectionItems = items.filter(
-    (item) => item.title.trim().toLowerCase() !== "all collections",
-  );
+  const collectionItems = items.filter((item) => item.resource?.products);
   let content = (
     <Drawer
       open={isMenuOpen}
@@ -364,7 +367,7 @@ function BrandMenu({
               width={600}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-            <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-white">
+            <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse">
               {item.resource?.title || item.title}
             </span>
           </Link>

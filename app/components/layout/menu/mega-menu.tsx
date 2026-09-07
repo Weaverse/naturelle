@@ -32,7 +32,9 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
             let hasSubmenu = level > 1;
-            let isJournal = title.trim().toLowerCase() === "journal";
+            let isJournal = items.some(
+              ({ resource }) => resource?.articles || resource?.blog,
+            );
             let isDropdown =
               !isJournal &&
               level === 2 &&
@@ -137,7 +139,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
     );
 
     return (
-      <div className="mx-auto flex min-h-70 w-full max-w-lg justify-center">
+      <div className="mx-auto flex min-h-70 w-full max-w-page justify-center">
         <div className="grid min-w-0 flex-1 grid-cols-3">
           {collectionItems.map(({ id, title, to, resource }, idx) => (
             <SlideIn
@@ -185,7 +187,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                 width={280}
               />
               <div className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover/featured:bg-black/40" />
-              <p className="absolute inset-x-5 top-1/2 line-clamp-1 -translate-y-1/2 text-center font-heading text-xl text-white underline-offset-4 group-hover/featured:underline">
+              <p className="absolute inset-x-5 top-1/2 line-clamp-1 -translate-y-1/2 text-center font-heading text-xl text-text-inverse underline-offset-4 group-hover/featured:underline">
                 {featuredCollection.resource.title || featuredCollection.title}
               </p>
             </Link>
@@ -213,7 +215,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                   width={300}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-                <p className="absolute line-clamp-1 right-3 bottom-3 left-3 font-heading text-base text-white">
+                <p className="absolute line-clamp-1 right-3 bottom-3 left-3 font-heading text-base text-text-inverse">
                   {resource.title || title}
                 </p>
               </div>
@@ -309,7 +311,7 @@ function JournalMenu({ items }: { items: SingleMenuItem[] }) {
   }));
 
   return (
-    <div className="mx-auto grid min-h-76 w-full max-w-lg grid-cols-[250px_minmax(0,1fr)]">
+    <div className="mx-auto grid min-h-76 w-full max-w-page grid-cols-[250px_minmax(0,1fr)]">
       <div className="border-border-subtle flex flex-col gap-2 border-r px-4 py-1">
         {blogs.map((blog) => {
           const isActive = blog.id === activeBlog?.id;
@@ -353,7 +355,7 @@ function JournalMenu({ items }: { items: SingleMenuItem[] }) {
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-              <p className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-white underline-offset-4 group-hover/article:underline">
+              <p className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse underline-offset-4 group-hover/article:underline">
                 {article.title}
               </p>
             </Link>

@@ -45,29 +45,22 @@ export function Footer() {
     layout?.shop?.shippingPolicy,
     layout?.shop?.termsOfService,
     layout?.shop?.refundPolicy,
-    layout?.shop?.subscriptionPolicy,
   ].filter(Boolean);
   const settings = useThemeSettings();
   let {
+    footerBrandName,
+    footerTagline,
     footerWidth,
     footerTextCopyright,
     newsletterTitle,
     newsletterDescription,
     newsletterPlaceholder,
     newsletterButtonText,
-    showPaymentMethods,
-    showAmazonPay,
-    showPayPal,
-    showKlarna,
-    showGooglePay,
-    showApplePay,
-    showJCB,
-    showAmericanExpress,
-    showVisa,
-    showMastercard,
-    showDiners,
-    showDiscover,
-    showAlipay,
+    trustBadgeVeganLabel,
+    trustBadgeCrueltyFreeLabel,
+    trustBadgeDermatologistTestedLabel,
+    showPolicyLinks,
+    paymentMethods,
     tagNameTitle: Tag = "h6",
   } = settings;
   return (
@@ -83,7 +76,7 @@ export function Footer() {
     >
       {/* Newsletter bannder */}
       <div className="flex w-full items-start justify-center px-6 lg:px-20 py-16 bg-(--color-footer-text)">
-        <div className="flex w-full max-w-lg flex-[1_0_0] flex-col items-center gap-10 md:flex-row md:items-start lg:px-20">
+        <div className="flex w-full max-w-page flex-[1_0_0] flex-col items-center gap-10 md:flex-row md:items-start lg:px-20">
           <div className="flex flex-1 flex-col items-start gap-3">
             {newsletterTitle && (
               <Tag className="font-normal text-(--color-footer-bg)">
@@ -105,7 +98,7 @@ export function Footer() {
               >
                 <Input
                   variant="custom"
-                  className="min-w-0 max-w-90 flex-1 rounded-l-xl rounded-r-none border border-(--color-footer-bg) bg-white/8 px-5 py-3.5 text-(--color-footer-bg) placeholder:text-(--color-footer-bg) placeholder:opacity-70"
+                  className="min-w-0 max-w-90 flex-1 rounded-l-xl rounded-r-none border border-(--color-footer-bg) bg-(--color-footer-text)/8 px-5 py-3.5 text-(--color-footer-bg) placeholder:text-(--color-footer-bg) placeholder:opacity-70"
                   type="email"
                   name="email"
                   placeholder={newsletterPlaceholder}
@@ -141,49 +134,45 @@ export function Footer() {
           )}
         >
           <div className="flex flex-col items-center gap-3 self-stretch">
-            <h1 className="font-normal leading-none text-(--color-footer-text)">
-              NATURÉLLE
-            </h1>
-            <p className="text-xs font-normal uppercase text-(--color-footer-text)">
-              Pure Botanical Alchemy
-            </p>
+            {footerBrandName && (
+              <p className="h1 font-heading font-normal leading-none text-(--color-footer-text)">
+                {footerBrandName}
+              </p>
+            )}
+            {footerTagline && (
+              <p className="text-xs font-normal uppercase text-(--color-footer-text)">
+                {footerTagline}
+              </p>
+            )}
           </div>
 
-          <hr className="w-full border-0 border-t border-[#443E40]/50" />
+          <hr className="w-full border-0 border-t border-border opacity-50" />
 
-          <div className="mx-auto w-full max-w-[1440px] self-stretch">
+          <div className="mx-auto w-full max-w-page self-stretch">
             {footerMenu && <FooterMenu menu={footerMenu} />}
           </div>
         </div>
 
         {/* Trust badges and payment methods */}
         <div className="w-full flex flex-col md:gap-5 justify-between items-center self-stretch lg:px-20 lg:h-43 lg:py-12">
-          <div className="w-full border-t border-[#DEDEDE] opacity-50" />
-          <div className="flex w-full flex-col items-start gap-4 lg:flex-row lg:justify-between lg:items-center">
-            <TrustBadges />
-            <PaymentMethods
-              showPaymentMethods={showPaymentMethods}
-              showAmazonPay={showAmazonPay}
-              showPayPal={showPayPal}
-              showKlarna={showKlarna}
-              showGooglePay={showGooglePay}
-              showApplePay={showApplePay}
-              showJCB={showJCB}
-              showAmericanExpress={showAmericanExpress}
-              showVisa={showVisa}
-              showMastercard={showMastercard}
-              showDiners={showDiners}
-              showDiscover={showDiscover}
-              showAlipay={showAlipay}
+          <div className="w-full border-t border-border-subtle opacity-50" />
+          <div className="mx-auto flex w-full max-w-page flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+            <TrustBadges
+              veganLabel={trustBadgeVeganLabel}
+              crueltyFreeLabel={trustBadgeCrueltyFreeLabel}
+              dermatologistTestedLabel={trustBadgeDermatologistTestedLabel}
             />
+            <PaymentMethods paymentMethods={paymentMethods} />
           </div>
         </div>
 
         <div className="w-full gap-8 flex flex-col lg:justify-between items-center md:py-6 lg:pt-8 lg:px-20 lg:pb-12 lg:h-40">
-          <div className="hidden md:flex w-full border-t border-[#DEDEDE]/50" />
-          <div className="mx-auto flex w-full max-w-[1440px] flex-col items-start justify-center gap-4 lg:flex-row lg:justify-between lg:items-center">
-            <p className="text-sm opacity-70">{footerTextCopyright}</p>
-            <PolicyLinks policyItems={policyItems} />
+          <div className="hidden w-full border-t border-border-subtle opacity-50 md:flex" />
+          <div className="mx-auto flex w-full max-w-page flex-col items-start justify-center gap-4 lg:flex-row lg:justify-between lg:items-center">
+            <p>{footerTextCopyright}</p>
+            {showPolicyLinks !== false && (
+              <PolicyLinks policyItems={policyItems} />
+            )}
             <FooterCountrySelector />
           </div>
         </div>
@@ -255,7 +244,7 @@ function MenuLink(props: SingleMenuItem) {
       <div className="block w-full border-b border-foreground/50 pt-2 pb-4 md:hidden">
         <Disclosure>
           {({ open }) => (
-            <>
+            <div className="contents">
               <Disclosure.Button className="w-full text-left">
                 <h6 className="flex justify-between font-body text-[16px] font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text)">
                   {title}
@@ -288,7 +277,7 @@ function MenuLink(props: SingleMenuItem) {
                   </ul>
                 </Disclosure.Panel>
               </div>
-            </>
+            </div>
           )}
         </Disclosure>
       </div>

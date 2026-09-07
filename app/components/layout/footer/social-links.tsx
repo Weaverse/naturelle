@@ -58,7 +58,7 @@ export function SocialLinks({
             aria-label={name}
             className="flex items-center gap-2 text-base font-normal text-(--color-footer-text) py-1"
           >
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-background-basic">
               <Icon className="size-3.5" />
             </span>
             <span>{name}</span>

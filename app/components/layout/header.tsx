@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouteError } from "react-router";
 import { useWindowScroll } from "react-use";
 import { Logo } from "~/components/layout/logo";
+import { Link } from "~/components/link";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn } from "~/utils/cn";
 import { useIsHomePath } from "~/utils/locale";
@@ -36,6 +37,16 @@ export function Header() {
   const {
     typeMenuHeader,
     enableTrialShipping,
+    announcementMessage1,
+    announcementMessage2,
+    announcementMessage3,
+    announcementMessage4,
+    announcementMessage5,
+    announcementMessage6,
+    storeLocatorText,
+    storeLocatorLink,
+    headerHelpFaqText,
+    headerHelpFaqLink,
     stickyAnnouncementBar,
     announcementBarHeight,
     headerWidth,
@@ -51,16 +62,28 @@ export function Header() {
 
   let enableTransparent = enableTransparentHeader && isHome && !routeError;
   let isTransparent = enableTransparent && scrolled;
+  const hasAnnouncement =
+    enableTrialShipping &&
+    [
+      announcementMessage1,
+      announcementMessage2,
+      announcementMessage3,
+      announcementMessage4,
+      announcementMessage5,
+      announcementMessage6,
+    ].some((message) => message?.trim());
   useEffect(() => {
-    let calculatedTop = stickyAnnouncementBar
-      ? announcementBarHeight
-      : Math.max(announcementBarHeight - y, 0);
+    let calculatedTop = hasAnnouncement
+      ? stickyAnnouncementBar
+        ? announcementBarHeight
+        : Math.max(announcementBarHeight - y, 0)
+      : 0;
     setCalculatedTop(calculatedTop);
-  }, [y, stickyAnnouncementBar, announcementBarHeight]);
+  }, [y, hasAnnouncement, stickyAnnouncementBar, announcementBarHeight]);
 
   return (
     <>
-      {enableTrialShipping && <ScrollingAnnouncement />}
+      {hasAnnouncement && <ScrollingAnnouncement />}
       <header
         className={cn(
           "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
@@ -81,10 +104,14 @@ export function Header() {
         style={{ ["--announcement-bar-height" as string]: `${top}px` }}
       >
         <div className="hidden w-full items-center justify-center bg-background-subtle-1 px-6 py-3 text-(--color-header-text) md:flex lg:py-4 [&_.main-logo]:!opacity-100 [&_.transparent-logo]:!opacity-0">
-          <div className="mx-auto flex w-full max-w-lg items-center justify-between px-6">
+          <div className="mx-auto flex w-full max-w-page items-center justify-between px-6">
             <div className="flex w-77.75 shrink-0 items-center gap-5 text-[13px] font-medium leading-normal text-text-subtle">
-              <span>Store Locator</span>
-              <span>Help &amp; FAQ</span>
+              {storeLocatorText && (
+                <Link to={storeLocatorLink}>{storeLocatorText}</Link>
+              )}
+              {headerHelpFaqText && (
+                <Link to={headerHelpFaqLink}>{headerHelpFaqText}</Link>
+              )}
             </div>
 
             <Logo

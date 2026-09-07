@@ -12,11 +12,6 @@ export function Logo({
 }) {
   let settings = useThemeSettings();
   let { logoData, transparentLogoData, logoWidth } = settings;
-  let logoUrl = logoData?.url;
-  let aspectRatio =
-    logoData?.width && logoData?.height
-      ? `${logoData.width} / ${logoData.height}`
-      : "80 / 29";
   return (
     <Link
       className={clsx(
@@ -30,22 +25,16 @@ export function Logo({
         className="relative text-inherit"
         style={{ width: logoData ? (width ?? logoWidth) : "auto" }}
       >
-        {logoUrl && (
-          <span
-            aria-label={logoData.altText || "Naturélle"}
-            className="main-logo block w-full bg-(--color-header-text) group-hover/header:opacity-100"
-            role="img"
-            style={{
-              aspectRatio,
-              maskImage: `url(${logoUrl})`,
-              maskPosition: "center",
-              maskRepeat: "no-repeat",
-              maskSize: "contain",
-              WebkitMaskImage: `url(${logoUrl})`,
-              WebkitMaskPosition: "center",
-              WebkitMaskRepeat: "no-repeat",
-              WebkitMaskSize: "contain",
-            }}
+        {logoData && (
+          <Image
+            data={logoData}
+            sizes="auto"
+            loading="eager"
+            className={clsx(
+              "main-logo",
+              "w-full h-full object-cover",
+              "group-hover/header:opacity-100",
+            )}
           />
         )}
         {transparentLogoData && (

@@ -19,32 +19,8 @@ type AnnouncementSegment = {
   id: string;
   text: string;
   icon: "sparkle" | "ticket" | "tree";
+  trailingStar: boolean;
 };
-
-const ICONS: AnnouncementSegment["icon"][] = ["sparkle", "ticket", "tree"];
-
-function parseSegments(content: string | undefined): AnnouncementSegment[] {
-  const lines = (content ?? "")
-    .split(/\n|\|/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (lines.length === 0) {
-    return [
-      {
-        id: "fallback",
-        text: "FREE SHIPPING OVER $100",
-        icon: "sparkle",
-      },
-    ];
-  }
-
-  return lines.map((text, index) => ({
-    id: `${index}-${text.slice(0, 16)}`,
-    text,
-    icon: ICONS[index % ICONS.length],
-  }));
-}
 
 function SegmentIcon({
   icon,
@@ -64,11 +40,15 @@ function SegmentIcon({
 
 function AnnouncementItem({
   segment,
-  index,
+  ctaText,
+  ctaLink,
+  showCta,
   className,
 }: {
   segment: AnnouncementSegment;
-  index: number;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
   className?: string;
 }) {
   return (
@@ -76,30 +56,26 @@ function AnnouncementItem({
       <SegmentIcon
         icon={segment.icon}
         className={clsx(
-          "shrink-0 text-[#DEDEDE]",
+          "shrink-0 text-border-subtle",
           segment.icon === "sparkle" && "size-5",
           segment.icon === "ticket" && "h-4 w-5",
           segment.icon === "tree" && "size-5",
         )}
       />
 
-      <span
-        className={clsx(
-          "font-sans text-xs leading-normal tracking-[0.96px] text-(--color-topbar-text) uppercase",
-          index === 0 && "font-semibold",
-          index === 1 && "font-normal",
-          index === 2 && "font-medium",
-        )}
-      >
+      <span className="font-sans font-medium leading-normal tracking-[0.96px] text-(--color-topbar-text) uppercase">
         {segment.text}
       </span>
-      {index === 1 && (
+      {segment.trailingStar && (
         <IconAnnouncementStar className="size-2.5 shrink-0 text-(--color-topbar-text) opacity-60" />
       )}
-      {index === 2 && (
-        <span className="font-sans text-xs font-bold leading-normal tracking-[0.96px] text-[#F5EDEA] uppercase">
-          → JOIN NOW
-        </span>
+      {showCta && ctaText && ctaLink && (
+        <a
+          href={ctaLink}
+          className="font-sans font-bold leading-normal tracking-[0.96px] text-(--color-topbar-text) uppercase"
+        >
+          → {ctaText}
+        </a>
       )}
     </span>
   );
@@ -108,14 +84,97 @@ function AnnouncementItem({
 export function ScrollingAnnouncement() {
   const settings = useThemeSettings();
   const {
-    content,
+    announcementMessage1,
+    announcementMessage1Icon,
+    announcementMessage1TrailingStar,
+    announcementMessage2,
+    announcementMessage2Icon,
+    announcementMessage2TrailingStar,
+    announcementMessage3,
+    announcementMessage3Icon,
+    announcementMessage3TrailingStar,
+    announcementMessage4,
+    announcementMessage4Icon,
+    announcementMessage4TrailingStar,
+    announcementMessage5,
+    announcementMessage5Icon,
+    announcementMessage5TrailingStar,
+    announcementMessage6,
+    announcementMessage6Icon,
+    announcementMessage6TrailingStar,
     textSize,
     announcementBarHeight,
     speed,
+    gap,
+    announcementCtaText,
+    announcementCtaLink,
+    stickyAnnouncementBar,
     enableScrollingText,
   } = settings;
 
-  const segments = useMemo(() => parseSegments(content), [content]);
+  const segments = useMemo(
+    () =>
+      [
+        {
+          id: "announcement-1",
+          text: announcementMessage1,
+          icon: announcementMessage1Icon,
+          trailingStar: announcementMessage1TrailingStar,
+        },
+        {
+          id: "announcement-2",
+          text: announcementMessage2,
+          icon: announcementMessage2Icon,
+          trailingStar: announcementMessage2TrailingStar,
+        },
+        {
+          id: "announcement-3",
+          text: announcementMessage3,
+          icon: announcementMessage3Icon,
+          trailingStar: announcementMessage3TrailingStar,
+        },
+        {
+          id: "announcement-4",
+          text: announcementMessage4,
+          icon: announcementMessage4Icon,
+          trailingStar: announcementMessage4TrailingStar,
+        },
+        {
+          id: "announcement-5",
+          text: announcementMessage5,
+          icon: announcementMessage5Icon,
+          trailingStar: announcementMessage5TrailingStar,
+        },
+        {
+          id: "announcement-6",
+          text: announcementMessage6,
+          icon: announcementMessage6Icon,
+          trailingStar: announcementMessage6TrailingStar,
+        },
+      ].filter((segment): segment is AnnouncementSegment =>
+        Boolean(segment.text?.trim()),
+      ),
+    [
+      announcementMessage1,
+      announcementMessage1Icon,
+      announcementMessage1TrailingStar,
+      announcementMessage2,
+      announcementMessage2Icon,
+      announcementMessage2TrailingStar,
+      announcementMessage3,
+      announcementMessage3Icon,
+      announcementMessage3TrailingStar,
+      announcementMessage4,
+      announcementMessage4Icon,
+      announcementMessage4TrailingStar,
+      announcementMessage5,
+      announcementMessage5Icon,
+      announcementMessage5TrailingStar,
+      announcementMessage6,
+      announcementMessage6Icon,
+      announcementMessage6TrailingStar,
+    ],
+  );
   const [activeIndex, setActiveIndex] = useState(0);
 
   const goPrev = useCallback(() => {
@@ -149,6 +208,7 @@ export function ScrollingAnnouncement() {
 
   const style = {
     "--height-bar": `${announcementBarHeight || 48}px`,
+    "--announcement-gap": `${gap || 32}px`,
     fontSize: `${textSize || 12}px`,
   } as CSSProperties;
 
@@ -159,12 +219,13 @@ export function ScrollingAnnouncement() {
       id="announcement-bar"
       style={style}
       className={clsx(
-        "relative z-40 flex h-(--height-bar) items-center justify-center overflow-hidden",
+        "flex h-(--height-bar) items-center justify-center overflow-hidden",
         "bg-(--color-topbar-bg) text-(--color-topbar-text)",
         "border-b border-(--color-topbar-border)",
+        stickyAnnouncementBar ? "sticky top-0 z-50" : "relative z-40",
       )}
     >
-      <div className="mx-auto flex w-97.5 md:w-208.5 lg:w-370 px-8 py-2.5 items-center justify-center gap-6 shrink-0 border-b-(--color-topbar-border)">
+      <div className="mx-auto flex w-full max-w-page shrink-0 items-center justify-center gap-(--announcement-gap) border-b-(--color-topbar-border) px-8 py-2.5 md:w-208.5 lg:w-full">
         <button
           type="button"
           onClick={goPrev}
@@ -188,7 +249,9 @@ export function ScrollingAnnouncement() {
           <AnnouncementItem
             key={`${segment.id}-${index}`}
             segment={segment}
-            index={index}
+            ctaText={announcementCtaText}
+            ctaLink={announcementCtaLink}
+            showCta={index === 2}
             className={clsx(
               "min-w-0 overflow-hidden font-body leading-none",
               index === 0 && "flex-[1_0_0] gap-2",

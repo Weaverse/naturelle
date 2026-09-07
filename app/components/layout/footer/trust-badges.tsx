@@ -4,13 +4,23 @@ import {
   IconTrustShield,
 } from "~/components/icon";
 
-const badges = [
-  { label: "100% Vegan", Icon: IconTrustLeaf },
-  { label: "Certified Cruelty-Free", Icon: IconTrustHeart },
-  { label: "Dermatologist Tested", Icon: IconTrustShield },
-];
+export function TrustBadges({
+  veganLabel,
+  crueltyFreeLabel,
+  dermatologistTestedLabel,
+}: {
+  veganLabel?: string;
+  crueltyFreeLabel?: string;
+  dermatologistTestedLabel?: string;
+}) {
+  const badges = [
+    { label: veganLabel, Icon: IconTrustLeaf },
+    { label: crueltyFreeLabel, Icon: IconTrustHeart },
+    { label: dermatologistTestedLabel, Icon: IconTrustShield },
+  ].filter((badge): badge is { label: string; Icon: typeof IconTrustLeaf } =>
+    Boolean(badge.label),
+  );
 
-export function TrustBadges() {
   return (
     <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
       {badges.map(({ label, Icon }) => (
