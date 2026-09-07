@@ -1,0 +1,81 @@
+name: Sync main to worker-deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: sync-main-to-worker-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Merge and validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout worker-deploy
+        uses: actions/checkout@v7
+        with:
+          ref: worker-deploy
+          fetch-depth: 0
+
+      - name: Merge main into worker-deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin \
+            main:refs/remotes/origin/main \
+            worker-deploy:refs/remotes/origin/worker-deploy
+
+          git merge --no-edit origin/main
+
+      - name: Verify Cloudflare-only differences
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git diff --name-only origin/main HEAD > /tmp/worker-diff.txt
+
+          unexpected_files="$(
+            grep -Ev '^(\.gitignore|package-lock\.json|package\.json|react-router\.config\.ts|vite\.config\.ts|wrangler\.json)$' \
+              /tmp/worker-diff.txt || true
+          )"
+
+          if [ -n "$unexpected_files" ]; then
+            echo "::error::Unexpected differences from main:"
+            echo "$unexpected_files"
+            exit 1
+          fi
+
+          echo "Cloudflare differences:"
+          cat /tmp/worker-diff.txt
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.12.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Cloudflare build
+        run: npm run check
+
+      - name: Verify main is included
+        run: git merge-base --is-ancestor origin/main HEAD
+
+      - name: Push worker-deploy
+        run: git push origin HEAD:worker-deploy
