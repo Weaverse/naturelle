@@ -9,6 +9,46 @@ let variantSwatch = {
     colorSwatches: [],
   },
 };
+
+const announcementIconOptions = [
+  { value: "sparkle", label: "Sparkle" },
+  { value: "ticket", label: "Ticket" },
+  { value: "tree", label: "Tree" },
+];
+
+function announcementMessageInputs(
+  index: number,
+  defaultValue: string,
+  defaultIcon: string,
+  defaultTrailingStar = false,
+): InspectorGroup["inputs"] {
+  return [
+    {
+      type: "heading",
+      label: `Message ${index}`,
+    },
+    {
+      type: "text",
+      name: `announcementMessage${index}`,
+      label: "Text",
+      defaultValue,
+    },
+    {
+      type: "select",
+      name: `announcementMessage${index}Icon`,
+      label: "Icon",
+      configs: { options: announcementIconOptions },
+      defaultValue: defaultIcon,
+    },
+    {
+      type: "switch",
+      name: `announcementMessage${index}TrailingStar`,
+      label: "Show trailing star",
+      defaultValue: defaultTrailingStar,
+    },
+  ];
+}
+
 export const themeSchema: HydrogenThemeSchema = {
   info: {
     version,
@@ -34,6 +74,20 @@ export const themeSchema: HydrogenThemeSchema = {
     ),
   },
   settings: [
+    {
+      group: "Search",
+      inputs: [
+        {
+          type: "textarea",
+          name: "popularSearchKeywords",
+          label: "Popular search keywords",
+          defaultValue: "skin, day cream, moisturization, night cream",
+          placeholder: "skin, day cream, moisturization, night cream",
+          helpText:
+            "Enter popular search keywords separated by commas. E.g. <strong>skin, day cream, moisturization</strong>",
+        },
+      ],
+    },
     {
       group: "Product swatches",
       inputs: [
@@ -101,15 +155,17 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Announcement bar",
       inputs: [
-        {
-          type: "textarea",
-          name: "content",
-          label: "Messages",
-          defaultValue:
-            "FREE SHIPPING OVER $100\nSUMMER SALE - UP TO 40% OFF\nNATURÉLLE · BEAUTY RITUALS",
-          helpText:
-            "One message per line. Desktop shows up to 3, tablet 2, mobile 1. Use arrows or autoplay to cycle.",
-        },
+        ...announcementMessageInputs(1, "FREE SHIPPING OVER $100", "sparkle"),
+        ...announcementMessageInputs(
+          2,
+          "SUMMER SALE - UP TO 40% OFF",
+          "ticket",
+          true,
+        ),
+        ...announcementMessageInputs(3, "NATURÉLLE · BEAUTY RITUALS", "tree"),
+        ...announcementMessageInputs(4, "", "sparkle"),
+        ...announcementMessageInputs(5, "", "ticket"),
+        ...announcementMessageInputs(6, "", "tree"),
         {
           type: "toggle-group",
           label: "Text size",
@@ -167,6 +223,19 @@ export const themeSchema: HydrogenThemeSchema = {
           },
         },
         {
+          type: "text",
+          name: "announcementCtaText",
+          label: "CTA text",
+          defaultValue: "JOIN NOW",
+          placeholder: "JOIN NOW",
+        },
+        {
+          type: "url",
+          name: "announcementCtaLink",
+          label: "CTA link",
+          defaultValue: "/account/register",
+        },
+        {
           type: "switch",
           label: "Sticky",
           name: "stickyAnnouncementBar",
@@ -183,6 +252,32 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Header",
       inputs: [
+        {
+          type: "text",
+          name: "storeLocatorText",
+          label: "Store locator text",
+          defaultValue: "Store Locator",
+          placeholder: "Store Locator",
+        },
+        {
+          type: "url",
+          name: "storeLocatorLink",
+          label: "Store locator link",
+          defaultValue: "/pages/store-locator",
+        },
+        {
+          type: "text",
+          name: "headerHelpFaqText",
+          label: "Help & FAQ text",
+          defaultValue: "Help & FAQ",
+          placeholder: "Help & FAQ",
+        },
+        {
+          type: "url",
+          name: "headerHelpFaqLink",
+          label: "Help & FAQ link",
+          defaultValue: "/pages/faq",
+        },
         {
           type: "select",
           name: "headerWidth",
@@ -242,6 +337,20 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Footer",
       inputs: [
+        {
+          type: "text",
+          name: "footerBrandName",
+          label: "Brand name",
+          defaultValue: "NATURÉLLE",
+          placeholder: "NATURÉLLE",
+        },
+        {
+          type: "text",
+          name: "footerTagline",
+          label: "Tagline",
+          defaultValue: "Pure Botanical Alchemy",
+          placeholder: "Pure Botanical Alchemy",
+        },
         {
           type: "select",
           name: "footerWidth",
@@ -342,97 +451,48 @@ export const themeSchema: HydrogenThemeSchema = {
         },
         {
           type: "heading",
+          label: "Trust badges",
+        },
+        {
+          type: "text",
+          name: "trustBadgeVeganLabel",
+          label: "Vegan label",
+          defaultValue: "100% Vegan",
+        },
+        {
+          type: "text",
+          name: "trustBadgeCrueltyFreeLabel",
+          label: "Cruelty-free label",
+          defaultValue: "Certified Cruelty-Free",
+        },
+        {
+          type: "text",
+          name: "trustBadgeDermatologistTestedLabel",
+          label: "Dermatologist-tested label",
+          defaultValue: "Dermatologist Tested",
+        },
+        {
+          type: "heading",
+          label: "Policies",
+        },
+        {
+          type: "switch",
+          name: "showPolicyLinks",
+          label: "Show policy links",
+          defaultValue: true,
+        },
+        {
+          type: "heading",
           label: "Payment methods",
         },
         {
-          type: "switch",
-          name: "showPaymentMethods",
-          label: "Show payment method icons",
-          defaultValue: false,
-        },
-        {
-          type: "switch",
-          name: "showAmazonPay",
-          label: "Amazon Pay",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showPayPal",
-          label: "PayPal",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showKlarna",
-          label: "Klarna",
-          defaultValue: false,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showGooglePay",
-          label: "Google Pay",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showApplePay",
-          label: "Apple Pay",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showJCB",
-          label: "JCB",
-          defaultValue: false,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showAmericanExpress",
-          label: "American Express",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showVisa",
-          label: "Visa",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showMastercard",
-          label: "Mastercard",
-          defaultValue: true,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showDiners",
-          label: "Diners Club",
-          defaultValue: false,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showDiscover",
-          label: "Discover",
-          defaultValue: false,
-          condition: "showPaymentMethods.eq.true",
-        },
-        {
-          type: "switch",
-          name: "showAlipay",
-          label: "Alipay",
-          defaultValue: false,
-          condition: "showPaymentMethods.eq.true",
+          type: "textarea",
+          name: "paymentMethods",
+          label: "Payment methods",
+          defaultValue: "visa, mastercard, american-express, paypal",
+          placeholder: "visa, mastercard, american-express, paypal, diners",
+          helpText:
+            "Enter payment methods separated by commas. Available values: <strong>visa, mastercard, american-express, paypal, diners</strong>. Leave empty to hide payment icons.",
         },
       ],
     },
@@ -466,6 +526,12 @@ export const themeSchema: HydrogenThemeSchema = {
           label: "Background (basic)",
           name: "colorBackgroundBasic",
           defaultValue: "#FFFFFF",
+        },
+        {
+          type: "color",
+          label: "Text",
+          name: "colorText",
+          defaultValue: "#3B3333",
         },
         {
           type: "color",
@@ -725,9 +791,9 @@ export const themeSchema: HydrogenThemeSchema = {
         },
         {
           type: "color",
-          label: "Label background (sale)",
-          name: "labelBgSale",
-          defaultValue: "#C44040",
+          label: "Label background (save)",
+          name: "labelBgSave",
+          defaultValue: "#C14D4D",
         },
         {
           type: "color",
@@ -739,7 +805,46 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "color",
           label: "Label background (sold out)",
           name: "labelBgSoldOut",
-          defaultValue: "#B5ADA8",
+          defaultValue: "#A0A0A0",
+        },
+      ],
+    },
+    {
+      group: "Product badges",
+      inputs: [
+        {
+          type: "text",
+          label: "Save text",
+          name: "saveBadgeText",
+          defaultValue: "Save [percentage]%",
+          placeholder: "Save [percentage]%",
+          helpText:
+            "Use <strong>[percentage]</strong> to display the calculated discount percentage.",
+        },
+        {
+          type: "text",
+          label: "New arrival text",
+          name: "newBadgeText",
+          defaultValue: "New arrival",
+          placeholder: "New arrival",
+        },
+        {
+          type: "range",
+          label: "New arrival days",
+          name: "newBadgeDaysOld",
+          configs: {
+            min: 0,
+            max: 365,
+            step: 1,
+          },
+          defaultValue: 30,
+        },
+        {
+          type: "text",
+          label: "Out of stock text",
+          name: "soldOutBadgeText",
+          defaultValue: "Out of stock",
+          placeholder: "Out of stock",
         },
       ],
     },

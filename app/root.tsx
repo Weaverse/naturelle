@@ -263,7 +263,7 @@ const LAYOUT_QUERY = `#graphql
       ...Menu
     }
     footerMenu: menu(handle: $footerMenuHandle) {
-      ...Menu
+      ...FooterMenu
     }
   }
   fragment Shop on Shop {
@@ -394,6 +394,36 @@ const LAYOUT_QUERY = `#graphql
       ...ParentMenuItem
     }
   }
+
+  fragment FooterMenuItem on MenuItem {
+    id
+    resourceId
+    tags
+    title
+    type
+    url
+  }
+  fragment FooterChildMenuItem on MenuItem {
+    ...FooterMenuItem
+  }
+  fragment FooterParentMenuItem2 on MenuItem {
+    ...FooterMenuItem
+    items {
+      ...FooterChildMenuItem
+    }
+  }
+  fragment FooterParentMenuItem on MenuItem {
+    ...FooterMenuItem
+    items {
+      ...FooterParentMenuItem2
+    }
+  }
+  fragment FooterMenu on Menu {
+    id
+    items {
+      ...FooterParentMenuItem
+    }
+  }
 ` as const;
 
 async function getLayoutData({ storefront, env }: AppLoadContext) {
@@ -404,6 +434,7 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
         footerMenuHandle: "footer",
         language: storefront.i18n.language,
       },
+      cache: storefront.CacheLong(),
     }),
     storefront.query(POLICIES_QUERY, {
       variables: {

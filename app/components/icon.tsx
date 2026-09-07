@@ -1,3 +1,4 @@
+import { PinterestLogoIcon, TiktokLogoIcon } from "@phosphor-icons/react";
 import { cn } from "~/utils/cn";
 
 type IconProps = React.SVGProps<SVGSVGElement> & {
@@ -439,19 +440,19 @@ export function IconQuickViewFacebook(props: IconProps) {
       <rect width="32" height="32" rx="16" fill="white" />
       <path
         d="M16 25C20.9706 25 25 20.9706 25 16C25 11.0294 20.9706 7 16 7C11.0294 7 7 11.0294 7 16C7 20.9706 11.0294 25 16 25Z"
-        stroke="#3B3333"
+        stroke="var(--color-text)"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M19.75 12.25H18.25C17.9542 12.2488 17.6611 12.3061 17.3875 12.4188C17.114 12.5314 16.8654 12.6971 16.6563 12.9063C16.4471 13.1154 16.2814 13.364 16.1688 13.6375C16.0561 13.9111 15.9988 14.2042 16 14.5V25"
-        stroke="#3B3333"
+        stroke="var(--color-text)"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M13 17.5H19"
-        stroke="#3B3333"
+        stroke="var(--color-text)"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -465,17 +466,17 @@ export function IconQuickViewInstagram(props: IconProps) {
       <rect width="32" height="32" rx="16" fill="white" />
       <path
         d="M16 19.75C18.071 19.75 19.75 18.0711 19.75 16C19.75 13.9289 18.071 12.25 16 12.25C13.929 12.25 12.25 13.9289 12.25 16C12.25 18.0711 13.929 19.75 16 19.75Z"
-        stroke="#3B3333"
+        stroke="var(--color-text)"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M20.125 7.375H11.875C9.39 7.375 7.375 9.3897 7.375 11.875V20.125C7.375 22.6103 9.39 24.625 11.875 24.625H20.125C22.61 24.625 24.625 22.6103 24.625 20.125V11.875C24.625 9.3897 22.61 7.375 20.125 7.375Z"
-        stroke="#3B3333"
+        stroke="var(--color-text)"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="20.875" cy="11.125" r="0.75" fill="#3B3333" />
+      <circle cx="20.875" cy="11.125" r="0.75" fill="var(--color-text)" />
     </Icon>
   );
 }
@@ -486,7 +487,7 @@ export function IconQuickViewX(props: IconProps) {
       <rect width="32.5833" height="32.5833" rx="16.2917" fill="white" />
       <path
         d="M15.248 16.9675L9.451 23.5825M22.048 9.0008L16.893 15.0708M9 9L20.433 23.5833H23.583L12.15 9H9Z"
-        stroke="#3B3333"
+        stroke="var(--color-text)"
         strokeWidth="0.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -700,19 +701,11 @@ export function IconFooterFacebook(props: IconProps) {
 }
 
 export function IconFooterPinterest(props: IconProps) {
-  return (
-    <Icon {...props} viewBox="0 0 14 14" fill="none">
-      <path
-        d="M8.75 5.2497L5.25 8.75M5.25 5.2497L8.75 8.75M12.834 6.9998C12.834 10.2217 10.222 12.8336 7 12.8336C3.778 12.8336 1.166 10.2217 1.166 6.9998C1.166 3.7779 3.778 1.166 7 1.166C10.222 1.166 12.834 3.7779 12.834 6.9998Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-      />
-    </Icon>
-  );
+  return <PinterestLogoIcon {...props} />;
 }
 
 export function IconFooterTikTok(props: IconProps) {
-  return <IconFooterPinterest {...props} />;
+  return <TiktokLogoIcon {...props} />;
 }
 
 export function IconFooterYouTube(props: IconProps) {
@@ -986,31 +979,31 @@ export function IconAnnouncementStar(props: IconProps) {
 
 export function IconAnnouncementTree(props: IconProps) {
   return (
-    <Icon {...props} viewBox="1060 34 20 20" fill="none">
+    <Icon {...props} viewBox="0 0 20 20" fill="none">
       <title>Tree</title>
       <path
-        d="M1070 52.125V40.875"
+        d="M10 18.125V6.875"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M1070 45.875L1066.25 44"
+        d="M10 11.875L6.25 10"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M1070 44L1073.75 42.125"
+        d="M10 10L13.75 8.125"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M1070.35 48.1562C1070.93 48.5468 1071.57 48.8137 1072.26 48.9401C1072.94 49.0664 1073.64 49.0494 1074.31 48.8902C1074.99 48.7309 1075.62 48.4328 1076.18 48.015C1076.73 47.5971 1077.19 47.0685 1077.53 46.4629C1077.87 45.8573 1078.08 45.1878 1078.14 44.4971C1078.21 43.8065 1078.13 43.1097 1077.91 42.4511C1077.69 41.7925 1077.34 41.1866 1076.88 40.6718C1076.41 40.157 1075.84 39.7446 1075.21 39.4609C1075.07 39.391 1074.96 39.275 1074.9 39.1328C1074.49 38.1679 1073.81 37.3441 1072.94 36.7648C1072.07 36.1855 1071.05 35.8765 1070 35.8765C1068.95 35.8765 1067.93 36.1855 1067.06 36.7648C1066.19 37.3441 1065.51 38.1679 1065.1 39.1328C1065.04 39.275 1064.93 39.391 1064.79 39.4609C1064.16 39.7446 1063.59 40.157 1063.12 40.6718C1062.66 41.1866 1062.31 41.7925 1062.09 42.4511C1061.87 43.1097 1061.79 43.8065 1061.86 44.4971C1061.92 45.1878 1062.13 45.8573 1062.47 46.4629C1062.81 47.0685 1063.27 47.5971 1063.82 48.015C1064.38 48.4328 1065.01 48.7309 1065.69 48.8902C1066.36 49.0494 1067.06 49.0664 1067.74 48.9401C1068.43 48.8137 1069.08 48.5468 1069.65 48.1562C1069.75 48.0876 1069.88 48.0511 1070 48.0511C1070.13 48.0511 1070.25 48.0876 1070.35 48.1562Z"
+        d="M10.35 14.1562C10.93 14.5468 11.57 14.8137 12.26 14.9401C12.94 15.0664 13.64 15.0494 14.31 14.8902C14.99 14.7309 15.62 14.4328 16.18 14.015C16.73 13.5971 17.19 13.0685 17.53 12.4629C17.87 11.8573 18.08 11.1878 18.14 10.4971C18.21 9.8065 18.13 9.1097 17.91 8.4511C17.69 7.7925 17.34 7.1866 16.88 6.6718C16.41 6.157 15.84 5.7446 15.21 5.4609C15.07 5.391 14.96 5.275 14.9 5.1328C14.49 4.1679 13.81 3.3441 12.94 2.7648C12.07 2.1855 11.05 1.8765 10 1.8765C8.95 1.8765 7.93 2.1855 7.06 2.7648C6.19 3.3441 5.51 4.1679 5.1 5.1328C5.04 5.275 4.93 5.391 4.79 5.4609C4.16 5.7446 3.59 6.157 3.12 6.6718C2.66 7.1866 2.31 7.7925 2.09 8.4511C1.87 9.1097 1.79 9.8065 1.86 10.4971C1.92 11.1878 2.13 11.8573 2.47 12.4629C2.81 13.0685 3.27 13.5971 3.82 14.015C4.38 14.4328 5.01 14.7309 5.69 14.8902C6.36 15.0494 7.06 15.0664 7.74 14.9401C8.43 14.8137 9.08 14.5468 9.65 14.1562C9.75 14.0876 9.88 14.0511 10 14.0511C10.13 14.0511 10.25 14.0876 10.35 14.1562Z"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"

@@ -8,14 +8,13 @@
   --font-heading: "Belleza", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
   /* Breakpoints */
-  --breakpoint-sm: 26.875em;
-  --breakpoint-md: 49.125em;
-  --breakpoint-lg: 90em;
-  --breakpoint-2xl: 90rem;
+  --breakpoint-*: initial;
+  --breakpoint-sm: 26.875rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 90rem;
 
   /* Container */
-  --container-2xl: 1440px;
-  --container-lg: 1440px;
+  --container-page: 90rem;
 
   /* Radius */
   --radius-sm: 4px;
@@ -28,6 +27,7 @@
   --color-background-subtle-2: var(--color-background-subtle-2);
   --color-background-basic: var(--color-background-basic);
   --color-text-primary: var(--color-text-primary);
+  --color-text: var(--color-text);
   --color-text-subtle: var(--color-text-subtle);
   --color-text-inverse: var(--color-text-inverse);
 
@@ -38,7 +38,7 @@
   --color-border-subtle: var(--color-border-subtle);
   
   --color-label-text: var(--color-label-text);
-  --color-label-sale-background: var(--color-label-bg-sale);
+  --color-label-save-background: var(--color-label-bg-save);
   --color-label-new-background: var(--color-label-bg-new);
   --color-label-soldout-background: var(--color-label-bg-soldout);
   --color-button-primary-text: var(--color-button-primary-text);
