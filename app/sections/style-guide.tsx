@@ -55,7 +55,7 @@ const TestSection = ({
             </div>
             <div className="grid grid-cols-5 items-center gap-3">
               <span>Label</span>
-              <div className="border w-12 h-12 bg-label-sale-background"></div>
+              <div className="border w-12 h-12 bg-label-save-background"></div>
               <div className="border w-12 h-12 bg-label-new-background"></div>
               <div className="border w-12 h-12 bg-label-soldout-background"></div>
             </div>

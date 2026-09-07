@@ -21,7 +21,7 @@ export default function ProductGrid({
       className="px-5 py-20 lg:px-0 bg-background-basic"
     >
       <div
-        className="mx-auto flex w-full max-w-lg flex-col gap-10 md:gap-(--section-gap)"
+        className="mx-auto flex w-full max-w-page flex-col gap-10 md:gap-(--section-gap)"
         style={
           {
             "--section-gap": typeof gap === "number" ? `${gap}px` : "10px",

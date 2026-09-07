@@ -133,7 +133,7 @@ export default function Collections({
         containerClassName,
       )}
     >
-      <div className="mx-auto flex w-full max-w-lg flex-col items-start gap-16 self-stretch">
+      <div className="mx-auto flex w-full max-w-page flex-col items-start gap-16 self-stretch">
         <div className="flex w-full flex-col items-center justify-center">
           {heading && (
             <h3

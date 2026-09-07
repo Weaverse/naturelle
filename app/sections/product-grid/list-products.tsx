@@ -22,6 +22,7 @@ type ProductGridListData = {
   showCount: boolean;
   showRating: boolean;
   showProductBadge: boolean;
+  productsCount: number;
   collectionEyebrow: string;
   collectionHeading: string;
   collectionButtonText: string;
@@ -33,7 +34,6 @@ interface CollectionData {
   handle: string;
   image: Partial<ShopifyImage> | null;
   products: { nodes: ProductCardFragment[] };
-  productCount: { nodes: Array<{ id: string }> };
 }
 
 interface ProductGridListProps
@@ -45,17 +45,15 @@ const PRODUCT_GRID_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $handle: String!
+    $productsCount: Int!
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
       title
       handle
       image { id altText width height url }
-      products(first: 4) {
+      products(first: $productsCount) {
         nodes { ...ProductCard }
-      }
-      productCount: products(first: 250) {
-        nodes { id }
       }
     }
   }
@@ -71,15 +69,19 @@ export const loader = async ({
   }
 
   const { country, language } = weaverse.storefront.i18n;
+  const productsCount = Math.min(16, Math.max(5, data.productsCount ?? 16));
   const result = await weaverse.storefront.query<{
     collection: CollectionData | null;
   }>(PRODUCT_GRID_QUERY, {
-    variables: { handle: data.collection.handle, country, language },
+    variables: {
+      handle: data.collection.handle,
+      country,
+      language,
+      productsCount,
+    },
   });
 
-  // Keep the empty map for compatibility with section instances that may still
-  // be rendering the previous module during a Weaverse/Vite hot reload.
-  return { ...result, ratings: {} };
+  return result;
 };
 
 function ProductPlaceholder() {
@@ -110,6 +112,7 @@ export default function ProductGridList({
     showCount,
     showRating,
     showProductBadge,
+    productsCount = 16,
     collectionEyebrow,
     collectionHeading,
     collectionButtonText,
@@ -125,14 +128,14 @@ export default function ProductGridList({
   };
   const collectionTitle = collection?.title ?? "New arrivals";
   const collectionHandle = collection?.handle ?? "all";
-  const visibleCount = Math.min(4, products.length || 4);
-  const totalCount = collection?.productCount.nodes.length ?? 4;
+  const visibleCount = collection ? Math.min(4, products.length) : 4;
+  const totalCount = collection ? products.length : productsCount;
 
   return (
     <div
       ref={ref}
       {...rest}
-      className="order-2 flex max-w-lg flex-col gap-10 lg:gap-12"
+      className="order-2 flex max-w-page flex-col gap-10 lg:gap-12"
     >
       <div className="grid w-full items-stretch gap-6 md:grid-cols-2">
         <Link
@@ -148,7 +151,7 @@ export default function ProductGridList({
           />
           <div className="absolute inset-0 bg-black/20" />
           {showCollectionTitle && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white lg:p-10">
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-text-inverse lg:p-10">
               {collectionEyebrow && (
                 <p className="mb-3 text-sm uppercase tracking-[0.16em]">
                   {collectionEyebrow}
@@ -239,6 +242,18 @@ export const schema = createSchema({
           defaultValue: "Shop collection",
         },
         {
+          type: "range",
+          name: "productsCount",
+          label: "Total products",
+          helpText: "Sets the total number of products for this section.",
+          configs: {
+            min: 5,
+            max: 16,
+            step: 1,
+          },
+          defaultValue: 16,
+        },
+        {
           type: "switch",
           name: "showCollectionTitle",
           label: "Show collection title",
@@ -254,14 +269,15 @@ export const schema = createSchema({
           type: "switch",
           name: "showRating",
           label: "Show product ratings",
-          helpText: "Uses Judge.me ratings when the integration is configured.",
+          helpText:
+            "Uses the product's reviews.rating and reviews.rating_count metafields.",
           defaultValue: true,
         },
         {
           type: "switch",
           name: "showCount",
           label: "Show product count",
-          helpText: "Shows 4 / total products in the selected collection.",
+          helpText: "Shows visible products / total products, such as 4 / 16.",
           defaultValue: true,
         },
       ],

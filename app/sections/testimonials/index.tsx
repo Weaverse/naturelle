@@ -8,9 +8,11 @@ import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
-import { IconCaret, IconImageBlank, IconStar } from "~/components/icon";
+import { IconCaret, IconImageBlank } from "~/components/icon";
 import { Link } from "~/components/link";
+import { parseProductRating } from "~/components/product/product-card-rating";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { StarRating } from "~/components/star-rating";
 import { PRODUCT_QUERY } from "~/graphql/queries";
 
 interface TestimonialsData {
@@ -20,9 +22,10 @@ interface TestimonialsData {
   textColor?: string;
   borderColor?: string;
   ratingText?: string;
-  ratingValue?: number;
   ratingLink?: string;
   ratingButtonText?: string;
+  ratingOverlayColor?: string;
+  desktopContentPadding?: number;
 }
 
 export const loader = async ({
@@ -75,9 +78,10 @@ const Testimonials = ({
     textColor,
     borderColor,
     ratingText = "Overall rating",
-    ratingValue = 4.8,
     ratingLink,
     ratingButtonText = "See what buyers think about this product",
+    ratingOverlayColor,
+    desktopContentPadding = 80,
     children,
     loaderData,
     ...rest
@@ -89,17 +93,21 @@ const Testimonials = ({
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
     : ratingLink || "#";
+  const productRating = parseProductRating(selectedProduct?.rating?.value);
+  const productRatingCount = Number(selectedProduct?.ratingCount?.value) || 0;
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
     "--border-color": borderColor,
+    "--rating-overlay-background": `color-mix(in srgb, ${ratingOverlayColor} 40%, transparent)`,
+    "--desktop-content-padding": `${desktopContentPadding}px`,
   } as CSSProperties;
   return (
     <Section
       ref={ref}
       {...rest}
       verticalPadding="none"
-      className="relative bg-[#f8f8f0] overflow-hidden px-0"
+      className="relative overflow-hidden px-0"
       containerClassName="max-w-none p-0"
       style={sectionStyle}
     >
@@ -160,36 +168,36 @@ const Testimonials = ({
             />
           </div>
         )}
-        {reviewsPosition === "right" && (
-          <div className="absolute inset-0 z-10">
-            <div className="absolute top-[32.5px] left-5 flex h-[145px] w-[calc(100%-40px)] max-w-[320px] flex-col justify-center rounded-2xl border border-(--border-color) bg-black/40 px-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
-              <p className="text-xs font-semibold uppercase tracking-wide opacity-90">
+      </div>
+      {reviewsPosition === "right" && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 grid grid-cols-1 md:grid-cols-2">
+          <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-16">
+            <div className="flex w-full max-w-[247px] flex-col gap-3 rounded-xl border border-(--border-color) bg-(--rating-overlay-background) p-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+              <p className="text-xs font-semibold leading-none uppercase tracking-wide opacity-90">
                 {ratingText}
               </p>
-              <div className="mt-3 flex gap-2">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <IconStar
-                    key={index}
-                    className="size-6"
-                    fill="var(--text-color)"
-                    stroke="var(--text-color)"
-                  />
-                ))}
+              <div className="flex leading-none [&_svg]:size-6">
+                <StarRating rating={productRating} />
               </div>
-              <div className="mt-3 flex items-baseline gap-2">
-                <strong className="font-serif text-3xl font-normal">
-                  {ratingValue.toFixed(1)}
+              <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                <strong className="h5 font-heading font-normal">
+                  {productRating.toFixed(1)}
                 </strong>
-                <span className="text-base opacity-90">out of 5</span>
+                <span className="text-xs font-semibold leading-none opacity-90">
+                  out of 5
+                </span>
+                <span className="text-xs font-semibold leading-none opacity-90">
+                  ({productRatingCount.toLocaleString("en-US")} reviews)
+                </span>
               </div>
             </div>
             {ratingButtonText && (
               <Link
                 to={productUrl}
                 prefetch="intent"
-                className="absolute top-[188px] left-[20.5px] flex h-11 w-[214px] items-center justify-between rounded-xl border border-(--border-color) bg-(--color-button-primary-background) px-[18px] text-sm text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
+                className="pointer-events-auto flex min-h-9 w-fit max-w-[247px] items-center justify-between gap-3 rounded-lg border border-(--border-color) bg-(--color-button-primary-background) px-3 py-2 text-xs font-semibold text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
               >
-                <span className="truncate">{ratingButtonText}</span>
+                <span>{ratingButtonText}</span>
                 <IconCaret
                   direction="right"
                   className="size-4 shrink-0"
@@ -198,45 +206,6 @@ const Testimonials = ({
               </Link>
             )}
           </div>
-        )}
-      </div>
-      {reviewsPosition === "right" && (
-        <div className="pointer-events-none absolute inset-0 z-20 hidden md:block">
-          <div className="absolute top-[73px] left-[71px] flex h-[145px] w-[320px] flex-col justify-center rounded-2xl border border-(--border-color) bg-black/40 px-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
-            <p className="text-xs font-semibold uppercase tracking-wide opacity-90">
-              {ratingText}
-            </p>
-            <div className="mt-3 flex gap-2">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <IconStar
-                  key={index}
-                  className="size-6"
-                  fill="var(--text-color)"
-                  stroke="var(--text-color)"
-                />
-              ))}
-            </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <strong className="font-serif text-3xl font-normal">
-                {ratingValue.toFixed(1)}
-              </strong>
-              <span className="text-base opacity-90">out of 5</span>
-            </div>
-          </div>
-          {ratingButtonText && (
-            <Link
-              to={productUrl}
-              prefetch="intent"
-              className="pointer-events-auto absolute top-[230px] left-[73px] flex h-11 w-[214px] items-center justify-between rounded-xl border border-(--border-color) bg-(--color-button-primary-background) px-[18px] text-sm text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
-            >
-              <span className="truncate">{ratingButtonText}</span>
-              <IconCaret
-                direction="right"
-                className="size-4 shrink-0"
-                aria-hidden="true"
-              />
-            </Link>
-          )}
         </div>
       )}
       <div
@@ -269,8 +238,8 @@ const Testimonials = ({
             )}
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
-          <div className="relative z-10 flex flex-col gap-12 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-20">
-            <h2 className="font-serif text-4xl leading-tight">
+          <div className="relative z-10 flex flex-col gap-12 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
+            <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
               {selectedProduct?.title || "Product name"}
             </h2>
             {children}
@@ -329,18 +298,10 @@ export const schema = createSchema({
           condition: "reviewsPosition.eq.right",
         },
         {
-          type: "range",
-          name: "ratingValue",
-          label: "Rating value",
-          configs: { min: 0, max: 5, step: 0.1 },
-          defaultValue: 4.8,
-          condition: "reviewsPosition.eq.right",
-        },
-        {
           type: "text",
           name: "ratingButtonText",
           label: "Rating button text",
-          defaultValue: "See what buyers think about this product",
+          defaultValue: "Explore this product",
           condition: "reviewsPosition.eq.right",
         },
         {
@@ -360,6 +321,25 @@ export const schema = createSchema({
           name: "borderColor",
           label: "Border color",
           defaultValue: "#443E40",
+        },
+        {
+          type: "color",
+          name: "ratingOverlayColor",
+          label: "Rating overlay color",
+          defaultValue: "#000000",
+          condition: "reviewsPosition.eq.right",
+        },
+        {
+          type: "range",
+          label: "Desktop content padding horizontal",
+          name: "desktopContentPadding",
+          configs: {
+            min: 20,
+            max: 120,
+            step: 4,
+            unit: "px",
+          },
+          defaultValue: 80,
         },
       ],
     },

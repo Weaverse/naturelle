@@ -1,5 +1,4 @@
 import { createSchema } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import type { RefObject } from "react";
 import {
   Section,
@@ -19,7 +18,7 @@ const Highlights = ({
     <Section
       ref={ref}
       {...rest}
-      className={clsx("bg-[#F3F3F3]", className)}
+      className={className}
       containerClassName="py-20 lg:max-w-[1440px] lg:py-[120px]"
     >
       {children}
@@ -35,6 +34,7 @@ export const schema = createSchema({
   settings: sectionInspector,
   childTypes: ["heading", "highlight-content--item"],
   presets: {
+    backgroundColor: "#F3F3F3",
     children: [
       {
         type: "heading",

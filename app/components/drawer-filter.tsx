@@ -139,7 +139,7 @@ export function FiltersDrawer({
         {filters.map((filter: Filter) => (
           <Disclosure as="div" key={filter.id} className="w-full pb-6 pt-5">
             {({ open }) => (
-              <>
+              <div className="contents">
                 <Disclosure.Button className="flex w-full items-center justify-between">
                   <span className="font-heading text-xl font-medium">
                     {filter.label}
@@ -155,7 +155,7 @@ export function FiltersDrawer({
                     })}
                   </ul>
                 </Disclosure.Panel>
-              </>
+              </div>
             )}
           </Disclosure>
         ))}

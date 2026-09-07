@@ -10,6 +10,7 @@ import { buttonVariants } from "~/components/button";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { Section, type SectionProps } from "~/components/section";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { COLLECTIONS_QUERY, type CollectionNode } from "~/sections/collections";
 import { cn } from "~/utils/cn";
 
@@ -90,9 +91,13 @@ export default function PromotionGrid({
     children,
     ...rest
   } = props;
-  const collections = PLACEHOLDERS.map(
-    (placeholder, index) => loaderData?.collections[index] ?? placeholder,
-  );
+  const isDesignMode = useWeaverseStudioCheck();
+  const loadedCollections = loaderData?.collections ?? [];
+  const collections = isDesignMode
+    ? PLACEHOLDERS.map(
+        (placeholder, index) => loadedCollections[index] ?? placeholder,
+      )
+    : loadedCollections;
   const headings = [
     firstHeading ?? "Glow from within",
     secondHeading ?? "Your best skin awaits",

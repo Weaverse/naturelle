@@ -9,6 +9,7 @@ export function GlobalStyle() {
       colorBackgroundSubtle2,
       colorBackgroundBasic,
       colorTextPrimary,
+      colorText,
       colorTextSubtle,
       colorTextInverse,
       topbarTextColor,
@@ -48,7 +49,7 @@ export function GlobalStyle() {
       buttonTextActiveOutline,
       buttonBorderActiveOutline,
       labelText,
-      labelBgSale,
+      labelBgSave,
       labelBgNew,
       labelBgSoldOut,
       bodyBaseSize,
@@ -77,6 +78,7 @@ export function GlobalStyle() {
               --color-background-subtle-2: ${colorBackgroundSubtle2};
               --color-background-basic: ${colorBackgroundBasic};
               --color-text-primary: ${colorTextPrimary};
+              --color-text: ${colorText};
               --color-text-subtle: ${colorTextSubtle};
               --color-text-inverse: ${colorTextInverse};
 
@@ -97,7 +99,7 @@ export function GlobalStyle() {
               --color-drawer-bg: ${drawerBgColor};
 
               --color-label-text: ${labelText};
-              --color-label-bg-sale: ${labelBgSale};
+              --color-label-bg-save: ${labelBgSave};
               --color-label-bg-new: ${labelBgNew};
               --color-label-bg-soldout: ${labelBgSoldOut};
 

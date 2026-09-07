@@ -3,12 +3,20 @@ import type {
   HydrogenComponentProps,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
-import type { CSSProperties, RefObject } from "react";
+import {
+  createSchema,
+  useChildInstances,
+  useItemInstance,
+  useParentInstance,
+} from "@weaverse/hydrogen";
+import clsx from "clsx";
+import { type CSSProperties, type RefObject, useContext } from "react";
+import { createPortal } from "react-dom";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
 import { ProductCard } from "~/components/product/product-card";
 import { PRODUCT_QUERY } from "~/graphql/queries";
+import { HotspotsContext } from "./image-item";
 
 export interface HotspotsItemData {
   badgeText: string;
@@ -18,6 +26,7 @@ export interface HotspotsItemData {
   iconSize: number;
   offsetX: number;
   offsetY: number;
+  overlayColor: string;
   paragraph: string;
   product: WeaverseProduct;
   showBadge: boolean;
@@ -41,7 +50,7 @@ const ICONS = {
 let HotspotsItem = ({
   ref,
   ...props
-}: HotspotsItemProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+}: HotspotsItemProps & { ref?: RefObject<HTMLButtonElement | null> }) => {
   let {
     badgeText,
     eyebrow,
@@ -50,6 +59,7 @@ let HotspotsItem = ({
     iconSize,
     offsetX,
     offsetY,
+    overlayColor = "#EEEFEA",
     paragraph,
     product,
     showBadge,
@@ -62,70 +72,93 @@ let HotspotsItem = ({
     ...rest
   } = props;
   let Icon = ICONS[icon];
+  const { activeItem, panelTarget, selectItem } = useContext(HotspotsContext);
+  const itemInstance = useItemInstance();
+  const parentInstance = useParentInstance();
+  const siblings = useChildInstances(parentInstance?._id);
+  const instanceIndex = siblings.findIndex(
+    (instance) => instance._id === itemInstance?._id,
+  );
+  const itemIndex = instanceIndex >= 0 ? instanceIndex : 0;
+  const isActive = activeItem === itemIndex;
 
   return (
-    <div
-      ref={ref}
-      {...rest}
-      className="group absolute inset-0 z-[1] pointer-events-none"
-      style={
-        {
-          "--translate-x-ratio": offsetX > 50 ? 1 : -1,
-          "--translate-y-ratio": offsetY > 50 ? 1 : -1,
-          "--spot-size": `${iconSize + 16}px`,
-        } as CSSProperties
-      }
-    >
-      <div
-        className="pointer-events-auto absolute flex -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-        style={{ top: `${offsetY}%`, left: `${offsetX}%` }}
+    <>
+      <button
+        ref={ref}
+        {...rest}
+        type="button"
+        aria-label={`Show ${loaderData?.product?.title ?? "product"}`}
+        aria-pressed={isActive}
+        className={clsx(
+          "absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full",
+          isActive && "ring-2 ring-background-basic ring-offset-2",
+        )}
+        style={
+          {
+            top: `${offsetY}%`,
+            left: `${offsetX}%`,
+            "--translate-x-ratio": offsetX > 50 ? 1 : -1,
+            "--translate-y-ratio": offsetY > 50 ? 1 : -1,
+            "--spot-size": `${iconSize + 16}px`,
+          } as CSSProperties
+        }
+        onClick={() => selectItem(itemIndex)}
       >
         <span
           className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-700 opacity-75"
           style={{ animationDuration: "1500ms" }}
         />
-        <span className="relative inline-flex rounded-full bg-white p-2">
+        <span className="relative inline-flex rounded-full bg-background-basic p-2">
           <Icon style={{ width: iconSize, height: iconSize }} />
         </span>
-      </div>
-      <div
-        className="pointer-events-auto absolute left-0 top-full z-10 flex min-h-[900px] w-full flex-col items-center justify-center bg-cover bg-center px-5 py-10 text-sm md:left-full md:top-0 md:h-full md:min-h-0 md:px-6 md:py-8 md:text-base xl:px-0 xl:py-20"
-        style={{ backgroundImage: "var(--hotspot-background-image)" }}
-      >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-[#EEEFEA]/10 backdrop-blur-[45px]"
-        />
-        {eyebrow && (
-          <div className="relative z-10 rounded-full bg-[#F0EDED] px-4 py-1.5 text-xs uppercase tracking-wide">
-            {eyebrow}
-          </div>
-        )}
-        {heading && (
-          <h2 className="relative z-10 mt-3 text-center font-heading text-2xl leading-tight xl:mt-4 xl:text-3xl">
-            {heading}
-          </h2>
-        )}
-        {loaderData?.product && (
-          <ProductCard
-            product={loaderData.product}
-            badgeText={badgeText}
-            showBadge={showBadge}
-            showPrice={showPrice}
-            showStar={showStar}
-            showViewDetailsLink={showViewDetailsLink}
-            viewDetailsLinkText={viewDetailsLinkText}
-            className="relative z-10 mt-4 max-w-[326px] xl:mt-10"
-          />
-        )}
-        {paragraph && (
+      </button>
+      {isActive &&
+        panelTarget &&
+        createPortal(
           <div
-            className="relative z-10 mt-6 max-w-[626px] text-center text-sm leading-relaxed text-[#3B3333] xl:mt-10"
-            dangerouslySetInnerHTML={{ __html: paragraph }}
-          />
+            className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-cover bg-center px-5 py-10 text-sm md:px-6 md:py-8 md:text-base lg:px-0 lg:py-20"
+            style={{ backgroundImage: "var(--hotspot-background-image)" }}
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 backdrop-blur-[45px]"
+              style={{
+                backgroundColor: `color-mix(in srgb, ${overlayColor} 10%, transparent)`,
+              }}
+            />
+            {eyebrow && (
+              <div className="relative z-10 rounded-full bg-background-subtle-1 px-4 py-1.5 text-xs uppercase tracking-wide">
+                {eyebrow}
+              </div>
+            )}
+            {heading && (
+              <h2 className="relative z-10 mt-3 text-center font-heading text-2xl leading-tight lg:mt-4 lg:text-3xl">
+                {heading}
+              </h2>
+            )}
+            {loaderData?.product && (
+              <ProductCard
+                product={loaderData.product}
+                badgeText={badgeText}
+                showBadge={showBadge}
+                showPrice={showPrice}
+                showStar={showStar}
+                showViewDetailsLink={showViewDetailsLink}
+                viewDetailsLinkText={viewDetailsLinkText}
+                className="relative z-10 mt-4 max-w-[326px] lg:mt-10"
+              />
+            )}
+            {paragraph && (
+              <div
+                className="relative z-10 mt-6 max-w-[626px] text-center text-sm leading-relaxed text-text lg:mt-10"
+                dangerouslySetInnerHTML={{ __html: paragraph }}
+              />
+            )}
+          </div>,
+          panelTarget,
         )}
-      </div>
-    </div>
+    </>
   );
 };
 
@@ -284,7 +317,7 @@ export const schema = createSchema({
           type: "switch",
           name: "showViewDetailsLink",
           label: "Show view details link",
-          defaultValue: true,
+          defaultValue: false,
         },
         {
           type: "text",
@@ -292,6 +325,17 @@ export const schema = createSchema({
           label: "View details link text",
           defaultValue: "View full details",
           condition: "showViewDetailsLink.eq.true",
+        },
+      ],
+    },
+    {
+      group: "Colors",
+      inputs: [
+        {
+          type: "color",
+          name: "overlayColor",
+          label: "Overlay color",
+          defaultValue: "#EEEFEA",
         },
       ],
     },

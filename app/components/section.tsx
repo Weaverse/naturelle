@@ -36,7 +36,7 @@ let variants = cva("relative", {
     width: {
       full: "h-full w-full",
       stretch: "h-full w-full",
-      fixed: "mx-auto h-full w-full lg:max-w-[1152px]",
+      fixed: "mx-auto h-full w-full lg:max-w-[var(--page-width,1440px)]",
     },
     padding: {
       full: "",

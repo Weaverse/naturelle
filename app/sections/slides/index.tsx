@@ -11,6 +11,7 @@ import { useAnimation } from "~/hooks/use-animation";
 interface SlidesProps extends HydrogenComponentProps {
   sectionHeight: number;
   width: string;
+  showIcons: boolean;
 }
 
 let widthClasses: { [item: string]: string } = {
@@ -22,7 +23,7 @@ const Slides = ({
   ref,
   ...props
 }: SlidesProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { sectionHeight, width, children, ...rest } = props;
+  let { sectionHeight, width, showIcons = true, children, ...rest } = props;
   const [scope] = useAnimation(ref);
 
   let sectionStyle: CSSProperties = {
@@ -36,6 +37,7 @@ const Slides = ({
       style={sectionStyle}
       className={clsx(
         "relative w-full px-5 py-10 md:h-(--section-height) md:px-6 lg:px-10 bg-background-basic",
+        !showIcons && "[&_.slide-icon]:hidden",
         widthClasses[width],
       )}
     >
@@ -89,6 +91,12 @@ export const schema = createSchema({
             ],
           },
           defaultValue: "fixed",
+        },
+        {
+          type: "switch",
+          name: "showIcons",
+          label: "Show icons",
+          defaultValue: true,
         },
       ],
     },

@@ -12,6 +12,7 @@ import {
 interface FaqsData {
   image?: WeaverseImage;
   imageAlt?: string;
+  imageBackgroundColor?: string;
   cardEyebrow?: string;
   cardHeading?: string;
   cardDescription?: string;
@@ -27,6 +28,7 @@ export default function Faqs({
   ref,
   image,
   imageAlt,
+  imageBackgroundColor,
   cardEyebrow = "Customer service",
   cardHeading = "Still need help?",
   cardDescription = "Our team is here to help with any questions you may have.",
@@ -47,7 +49,7 @@ export default function Faqs({
       gap={0}
       verticalPadding="none"
       className="py-20 px-5 md:px-6 lg:px-40"
-      containerClassName="mx-auto grid w-full max-w-lg items-stretch gap-(--faq-gap) md:grid-cols-2"
+      containerClassName="mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) md:grid-cols-2"
       style={
         {
           ...style,
@@ -55,7 +57,14 @@ export default function Faqs({
         } as CSSProperties
       }
     >
-      <div className="relative overflow-hidden rounded-2xl bg-[#382E23]">
+      <div
+        className="relative overflow-hidden rounded-2xl bg-(--faq-image-background)"
+        style={
+          {
+            "--faq-image-background": imageBackgroundColor,
+          } as CSSProperties
+        }
+      >
         {image ? (
           <Image
             data={image}
@@ -68,8 +77,8 @@ export default function Faqs({
             <IconImageBlank className="size-48 opacity-60" />
           </div>
         )}
-        <div className="absolute inset-0 bg-[#382E23]/30" />
-        <div className="relative z-10 flex h-full min-h-[440px] flex-col items-center justify-center px-8 text-center text-white md:min-h-[560px] lg:min-h-[600px]">
+        <div className="absolute inset-0 bg-(--faq-image-background) opacity-30" />
+        <div className="relative z-10 flex h-full min-h-[440px] flex-col items-center justify-center px-8 text-center text-text-inverse md:min-h-[560px] lg:min-h-[600px]">
           {cardEyebrow && (
             <p className="mb-4 text-sm uppercase tracking-[0.16em]">
               {cardEyebrow}
@@ -96,14 +105,14 @@ export default function Faqs({
         </div>
       </div>
 
-      <div className="flex w-full max-w-lg flex-col justify-center py-20 lg:pl-16 lg:pr-10">
+      <div className="flex w-full max-w-page flex-col justify-center py-20 lg:pl-16 lg:pr-10">
         {eyebrow && (
-          <p className="mb-4 text-sm uppercase tracking-[0.16em] text-[#6E6256]">
+          <p className="mb-4 text-sm uppercase tracking-[0.16em] text-text">
             {eyebrow}
           </p>
         )}
         {heading && (
-          <h2 className="font-heading text-4xl leading-tight text-[#3B3333] md:text-5xl">
+          <h2 className="font-heading text-4xl leading-tight text-text md:text-5xl">
             {heading}
           </h2>
         )}
@@ -121,6 +130,12 @@ export const schema = createSchema({
       group: "Content",
       inputs: [
         { type: "image", name: "image", label: "Card image" },
+        {
+          type: "color",
+          name: "imageBackgroundColor",
+          label: "Card image background and overlay",
+          defaultValue: "#382E23",
+        },
         {
           type: "text",
           name: "imageAlt",
@@ -195,7 +210,7 @@ export const schema = createSchema({
         type: "faq--item",
         contentType: "paragraph",
         question:
-          "Products are imported automatically from your Shopify admin. We estimate 2-3 hours for set-up. If you want to change the design of Honey, we estimate 3-5 hours for set-up.",
+          "Products are imported automatically from your Shopify admin. We estimate 2-3 hours for set-up. If you want to change the design of Naturelle, we estimate 3-5 hours for set-up.",
       },
       {
         type: "faq--item",

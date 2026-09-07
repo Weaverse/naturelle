@@ -31,6 +31,7 @@ import * as ImageWithTextContent from "~/sections/image-with-text/content";
 import * as ImageWithTextImage from "~/sections/image-with-text/image";
 import * as ImageWithText from "~/sections/image-with-text/index";
 import * as Instagram from "~/sections/instagram";
+import * as InstagramItem from "~/sections/instagram/item";
 import * as JudgemeReviewSection from "~/sections/judgeme-reviews/index";
 import * as JudgemeReviewIndex from "~/sections/judgeme-reviews/review-index";
 import * as MapSection from "~/sections/map";
@@ -49,7 +50,9 @@ import * as PromotionGrid from "~/sections/promotion-grid";
 import * as RelatedArticles from "~/sections/related-articles/related-articles";
 import * as ScrollingText from "~/sections/scrolling-text/index";
 import * as SingleProduct from "~/sections/single-product/index";
+import * as SlideHeading from "~/sections/slides/heading";
 import * as Slides from "~/sections/slides/index";
+import * as SlideParagraph from "~/sections/slides/paragraph";
 import * as Slide from "~/sections/slides/slide";
 import * as SlideShowBanner from "~/sections/slideshow-banner/index";
 import * as SlideShowBannerItem from "~/sections/slideshow-banner/slide-items";
@@ -79,8 +82,11 @@ export const components: HydrogenComponent[] = [
   Review,
   Slides,
   Slide,
+  SlideHeading,
+  SlideParagraph,
   Blogs,
   Instagram,
+  InstagramItem,
   MapSection,
   MapItem,
   BeforeAndAfter,

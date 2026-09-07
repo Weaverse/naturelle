@@ -153,11 +153,13 @@ export const loader = async (
   let { weaverse, data } = args;
   let { language, country } = weaverse.storefront.i18n;
   if (data.products) {
+    const totalProduct = Math.min(16, Math.max(5, data.totalProduct ?? 16));
     return await weaverse.storefront.query(FEATURED_PRODUCTS_QUERY, {
       variables: {
         handle: data.products.handle,
         country,
         language,
+        totalProduct,
       },
     });
   }
@@ -181,10 +183,10 @@ export const schema = createSchema({
           type: "range",
           name: "totalProduct",
           label: "Total products",
-          defaultValue: 4,
+          defaultValue: 16,
           configs: {
-            min: 1,
-            max: 24,
+            min: 5,
+            max: 16,
             step: 1,
           },
         },

@@ -11,6 +11,7 @@ interface ReviewProps extends HydrogenComponentProps {
   reviewTitle?: string;
   reviewDate?: string;
   verified?: boolean;
+  verifiedLabel?: string;
   content?: string;
 }
 
@@ -25,6 +26,7 @@ const Review = ({
     reviewTitle = "Amazing product",
     reviewDate = "August 20, 2026",
     verified = true,
+    verifiedLabel,
     content,
     children,
     ...rest
@@ -44,7 +46,7 @@ const Review = ({
       className="relative flex flex-col rounded-2xl border border-(--border-color) bg-black/20 px-6 py-4"
     >
       <div className="flex items-center gap-4">
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#251E20] font-medium text-white">
+        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-button-primary-background font-medium text-text-inverse">
           {name?.charAt(0).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
@@ -53,8 +55,8 @@ const Review = ({
               <h4 className="font-medium text-(--text-color)">{name}</h4>
             )}
             {verified && (
-              <span className="rounded-full bg-[#DCD8D6] px-3 py-1 text-xs leading-none text-[#5E5E5E]">
-                Verified Buyer
+              <span className="rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
+                {verifiedLabel}
               </span>
             )}
           </div>
@@ -66,7 +68,9 @@ const Review = ({
       </div>
       <div className="mt-3 flex items-center gap-4">
         <p className="flex gap-1">{renderStars()}</p>
-        <span className="text-xs text-[#5E5E5E]">{ratting.toFixed(1)}</span>
+        <span className="text-xs text-background-subtle-2">
+          {ratting.toFixed(1)}
+        </span>
       </div>
       {reviewTitle && (
         <h5 className="mt-4 font-medium text-(--text-color)">{reviewTitle}</h5>
@@ -107,6 +111,13 @@ export const schema = createSchema({
           name: "verified",
           label: "Show verified badge",
           defaultValue: true,
+        },
+        {
+          type: "text",
+          name: "verifiedLabel",
+          label: "Verified label",
+          defaultValue: "Verified Buyer",
+          condition: "verified.eq.true",
         },
         {
           type: "range",

@@ -19,19 +19,19 @@ export default function FaqItem({
   return (
     <div ref={ref} {...rest}>
       {contentType === "paragraph" ? (
-        <p className="py-2 text-sm leading-6 text-[#5E5E5E] md:text-base md:leading-7">
+        <p className="py-2 text-sm leading-6 text-text md:text-base md:leading-7">
           {question}
         </p>
       ) : (
         <Link
           to={href || "/policies/privacy-policy"}
           prefetch="intent"
-          className="group flex min-h-16 w-full items-center justify-between gap-6 py-5 text-left text-base text-[#3B3333] transition-colors hover:text-black md:min-h-20 md:py-6 md:text-lg"
+          className="group flex min-h-16 w-full items-center justify-between gap-6 py-5 text-left text-base text-text transition-opacity hover:opacity-70 md:min-h-20 md:py-6 md:text-lg"
         >
           <span>{question}</span>
           <ArrowRight
             aria-hidden="true"
-            className="size-4 shrink-0 text-[#5E5E5E] transition-transform duration-300 group-hover:translate-x-1"
+            className="size-4 shrink-0 text-text transition-transform duration-300 group-hover:translate-x-1"
             strokeWidth={1.5}
           />
         </Link>

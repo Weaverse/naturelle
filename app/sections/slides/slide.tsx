@@ -1,4 +1,11 @@
-import { PawPrint } from "@phosphor-icons/react";
+import {
+  Drop,
+  FlowerLotus,
+  Heart,
+  Leaf,
+  Sparkle,
+  Sun,
+} from "@phosphor-icons/react";
 import { Image } from "@shopify/hydrogen";
 import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
@@ -16,8 +23,10 @@ type Alignment = "left" | "center" | "right";
 interface SlideProps extends HydrogenComponentProps {
   backgroundImage?: WeaverseImage;
   backgroundColor: string;
+  navigationBackgroundColor: string;
   imageAlignment?: AlignImage;
   textAlignment?: Alignment;
+  icon?: "leaf" | "flower" | "sparkle" | "drop" | "sun" | "heart";
   enableImageAnimation?: boolean;
 }
 
@@ -40,16 +49,28 @@ const Slide = ({
     backgroundImage,
     imageAlignment = "left",
     backgroundColor,
+    navigationBackgroundColor,
     textAlignment = "center",
+    icon = "leaf",
     enableImageAnimation,
     children,
     ...rest
   } = props;
 
   const swiper = useSwiper();
+  const icons = {
+    leaf: Leaf,
+    flower: FlowerLotus,
+    sparkle: Sparkle,
+    drop: Drop,
+    sun: Sun,
+    heart: Heart,
+  };
+  const SlideIcon = icons[icon];
 
   let sectionStyle: CSSProperties = {
     "--background-color": backgroundColor,
+    "--navigation-background-color": navigationBackgroundColor,
   } as CSSProperties;
 
   return (
@@ -91,20 +112,12 @@ const Slide = ({
             )}
           </div>
           <div className="relative flex aspect-square w-full flex-col items-center justify-center gap-6 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 md:h-full md:w-1/2 lg:gap-20 lg:px-16 lg:py-20">
-            <span
-              aria-hidden="true"
-              className="absolute top-6 h-px w-16 bg-white opacity-60"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute bottom-6 h-px w-16 bg-[#D4AF37] opacity-60"
-            />
             <div className="flex flex-[1_0_0] flex-col items-center justify-center gap-6">
               <div
                 data-motion="fade-up"
-                className="flex size-16 shrink-0 items-center justify-center rounded-full border border-current lg:size-20"
+                className="slide-icon flex size-16 shrink-0 items-center justify-center rounded-full border border-current lg:size-20"
               >
-                <PawPrint className="size-8 lg:size-10" weight="regular" />
+                <SlideIcon className="size-8 lg:size-10" weight="regular" />
               </div>
 
               <div
@@ -121,7 +134,7 @@ const Slide = ({
               data-motion="fade-up"
               className="flex items-center justify-center gap-4"
             >
-              <div className="flex items-center px-6 py-3 rounded-[999px] bg-[#F9F7F2]">
+              <div className="flex items-center rounded-[999px] bg-(--navigation-background-color) px-6 py-3">
                 <IconArrowLeft
                   onClick={() => swiper.slidePrev()}
                   className="w-8 h-8 cursor-pointer"
@@ -129,7 +142,7 @@ const Slide = ({
                 />
               </div>
 
-              <div className="flex items-center px-6 py-3 rounded-[999px] bg-[#F9F7F2]">
+              <div className="flex items-center rounded-[999px] bg-(--navigation-background-color) px-6 py-3">
                 <IconArrowRight
                   onClick={() => swiper.slideNext()}
                   className="w-8 h-8 cursor-pointer"
@@ -190,6 +203,28 @@ export const schema = createSchema({
           defaultValue: "#f8f8f0",
         },
         {
+          type: "color",
+          name: "navigationBackgroundColor",
+          label: "Navigation background color",
+          defaultValue: "#F9F7F2",
+        },
+        {
+          type: "select",
+          name: "icon",
+          label: "Icon",
+          configs: {
+            options: [
+              { label: "Leaf", value: "leaf" },
+              { label: "Flower", value: "flower" },
+              { label: "Sparkle", value: "sparkle" },
+              { label: "Drop", value: "drop" },
+              { label: "Sun", value: "sun" },
+              { label: "Heart", value: "heart" },
+            ],
+          },
+          defaultValue: "leaf",
+        },
+        {
           type: "switch",
           name: "enableImageAnimation",
           label: "Enable image animation",
@@ -198,19 +233,15 @@ export const schema = createSchema({
       ],
     },
   ],
-  childTypes: ["subheading", "heading", "paragraph"],
+  childTypes: ["slides-heading", "slides-paragraph"],
   presets: {
     children: [
       {
-        type: "subheading",
-        content: "Subheading",
-      },
-      {
-        type: "heading",
+        type: "slides-heading",
         content: "Heading",
       },
       {
-        type: "paragraph",
+        type: "slides-paragraph",
         content:
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
       },

@@ -179,13 +179,13 @@ let ProductInformation = ({
                   {children}
                   <p
                     data-motion="fade-up"
-                    className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-2xl/[1.1] xl:text-3xl/[1.1] font-heading font-medium flex gap-3"
+                    className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
                   >
                     {selectedVariant?.compareAtPrice && (
                       <Money
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
-                        className="text-label-sale-background line-through"
+                        className="text-label-save-background line-through"
                         as="span"
                       />
                     )}

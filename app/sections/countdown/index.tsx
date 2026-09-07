@@ -10,13 +10,13 @@ import { backgroundInputs } from "~/components/background-image";
 import { overlayInputs } from "~/components/overlay";
 import { Section, type SectionProps } from "~/components/section";
 
-let variants = cva("px-0 py-20 md:px-10 [&_.paragraph]:mx-[unset]", {
+let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
   variants: {
     layout: {
-      col: "flex flex-col gap-10",
+      col: "flex flex-col gap-(--countdown-gap)",
       row: [
-        "flex flex-col gap-10",
-        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-10",
+        "flex flex-col gap-(--countdown-gap)",
+        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center",
         "lg:[&_.countdown-content]:!items-start lg:[&_.heading]:!text-left lg:[&_.paragraph]:!text-left",
       ],
     },
@@ -39,7 +39,15 @@ let Countdown = ({
   ref,
   ...props
 }: CountdownProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, alignment, layout = "row", ...rest } = props;
+  let {
+    children,
+    alignment,
+    layout = "row",
+    gap = 40,
+    verticalPadding = "medium",
+    style,
+    ...rest
+  } = props;
   let childItems = React.Children.toArray(children);
   let childInstances = useChildInstances();
   let childTypes = new Map(
@@ -67,8 +75,15 @@ let Countdown = ({
     <Section
       ref={ref}
       {...rest}
-      verticalPadding="none"
+      gap={0}
+      verticalPadding={verticalPadding}
       containerClassName={variants({ alignment, layout })}
+      style={
+        {
+          ...style,
+          "--countdown-gap": `${gap}px`,
+        } as React.CSSProperties
+      }
     >
       {layout === "row" ? (
         <>
@@ -157,6 +172,32 @@ export const schema = createSchema({
             unit: "px",
           },
           defaultValue: 0,
+        },
+        {
+          type: "range",
+          name: "gap",
+          label: "Items spacing",
+          configs: {
+            min: 0,
+            max: 60,
+            step: 4,
+            unit: "px",
+          },
+          defaultValue: 40,
+        },
+        {
+          type: "select",
+          name: "verticalPadding",
+          label: "Vertical padding",
+          configs: {
+            options: [
+              { value: "none", label: "None" },
+              { value: "small", label: "Small" },
+              { value: "medium", label: "Medium" },
+              { value: "large", label: "Large" },
+            ],
+          },
+          defaultValue: "medium",
         },
       ],
     },

@@ -78,6 +78,7 @@ type BlogData = {
   articlePerRow: number;
   gapRow: number;
   showSeperator: boolean;
+  readMoreText: string;
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   minSize?: number;
   maxSize?: number;
@@ -91,6 +92,7 @@ export interface BlogProps
     VariantProps<typeof fontSizeVariants> {}
 
 const articlesPerRowClasses: Record<number, string> = {
+  1: "md:grid-cols-1",
   2: "md:grid-cols-2",
   3: "md:grid-cols-3",
   4: "md:grid-cols-4",
@@ -106,6 +108,7 @@ const Blogs = ({
     articlePerRow,
     gapRow,
     showSeperator,
+    readMoreText = "Read more",
     as: Tag = "h4",
     size,
     mobileSize,
@@ -139,7 +142,7 @@ const Blogs = ({
     <section
       ref={scope}
       {...rest}
-      className="flex h-full w-full justify-center bg-(--color-background-basic)"
+      className="flex h-full w-full justify-center"
       style={sectionStyle}
     >
       <div className="container flex flex-col gap-6 px-4 py-12 sm:px-6 sm:py-20">
@@ -194,7 +197,7 @@ const Blogs = ({
                     <div className="w-full border-b border-border-subtle"></div>
                   )}
                   <span className="inline-flex items-center gap-2 text-sm font-medium">
-                    Read more
+                    {readMoreText}
                     <IconArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                 </div>
@@ -240,7 +243,7 @@ export const schema = createSchema({
           label: "Articles per row",
           defaultValue: 2,
           configs: {
-            min: 2,
+            min: 1,
             max: 4,
             step: 1,
           },
@@ -262,6 +265,12 @@ export const schema = createSchema({
           name: "showSeperator",
           label: "Seperator",
           defaultValue: true,
+        },
+        {
+          type: "text",
+          name: "readMoreText",
+          label: "Read more text",
+          defaultValue: "Read more",
         },
         {
           type: "select",

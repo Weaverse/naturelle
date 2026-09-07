@@ -40,7 +40,9 @@ export function Drawer({
       ? "max-w-[420px]"
       : isForm === "menu"
         ? "max-w-none md:w-1/2"
-        : "max-w-96";
+        : isForm === "search"
+          ? "max-w-none"
+          : "max-w-96";
 
   return (
     <Transition appear show={open} as={Fragment}>

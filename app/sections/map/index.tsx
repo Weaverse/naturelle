@@ -98,7 +98,7 @@ export default function MapSection({
           )}
         >
           <MapFrame address={activeAddress} />
-          <div className="flex w-full min-w-0 p-12 md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
+          <div className="flex w-full min-w-0 bg-background-subtle-1 p-12 md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
             <div className="flex w-full flex-col items-start gap-6">
               {heading && (
                 <Heading
@@ -112,7 +112,7 @@ export default function MapSection({
                 />
               )}
               {children && (
-                <div className="flex w-full max-w-lg flex-col gap-5">
+                <div className="flex w-full max-w-page flex-col gap-5">
                   {children}
                 </div>
               )}

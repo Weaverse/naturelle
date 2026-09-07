@@ -10,13 +10,14 @@ import {
 
 interface HightlightProps extends HydrogenComponentProps {
   visibleOnMobile: boolean;
+  iconColor: string;
 }
 
 const HighlightItem = ({
   ref,
   ...props
 }: HightlightProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
-  let { visibleOnMobile, children, ...rest } = props;
+  let { visibleOnMobile, iconColor, children, ...rest } = props;
 
   let parentInstance = useParentInstance();
   let firstChild = React.Children.toArray(children)[0] as
@@ -35,13 +36,14 @@ const HighlightItem = ({
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex w-full flex-col items-center rounded-2xl bg-white px-6 py-10",
+        "flex w-full flex-col items-center rounded-2xl bg-background-basic px-6 py-10",
         !visibleOnMobile && "hidden md:flex",
       )}
     >
       <Icon
         aria-hidden="true"
-        className="mb-6 size-12 shrink-0 text-[#4BAE42]"
+        className="mb-6 size-12 shrink-0"
+        style={{ color: iconColor }}
       />
       {React.Children.map(children, (child, index) => (
         <React.Fragment key={child?.key ?? index}>
@@ -49,7 +51,7 @@ const HighlightItem = ({
             {child}
           </div>
           {index < (children?.length ?? 0) - 1 && (
-            <div className="my-6 h-px w-full bg-[#DEDEDE]" />
+            <div className="my-6 w-full border-t border-border-subtle" />
           )}
         </React.Fragment>
       ))}
@@ -72,6 +74,12 @@ export const schema = createSchema({
           label: "Visible on Mobile",
           name: "visibleOnMobile",
           defaultValue: true,
+        },
+        {
+          type: "color",
+          label: "Icon color",
+          name: "iconColor",
+          defaultValue: "#4BAE42",
         },
       ],
     },
