@@ -29,6 +29,17 @@ export function isDiscounted(price: MoneyV2, compareAtPrice: MoneyV2) {
   return false;
 }
 
+export function getSavingsPercentage(price: MoneyV2, compareAtPrice: MoneyV2) {
+  const priceAmount = Number(price?.amount);
+  const originalAmount = Number(compareAtPrice?.amount);
+
+  if (!(originalAmount > priceAmount && originalAmount > 0)) {
+    return null;
+  }
+
+  return Math.round(((originalAmount - priceAmount) / originalAmount) * 100);
+}
+
 export const getProductData = async (
   storefront: Storefront,
   handle: string,

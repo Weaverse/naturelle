@@ -44,7 +44,12 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                 const staysInForm =
                   nextTarget instanceof Node &&
                   event.currentTarget.closest("form")?.contains(nextTarget);
-                if (inline && !staysInForm) {
+                const staysInResults =
+                  nextTarget instanceof Element &&
+                  Boolean(
+                    nextTarget.closest("[data-predictive-search-results]"),
+                  );
+                if (inline && !staysInForm && !staysInResults) {
                   onClose?.();
                 }
               }}
@@ -77,8 +82,22 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                 inline ? (
                   <button
                     type="button"
-                    onClick={onClose}
-                    aria-label="Close search"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => {
+                      const input = inputRef.current;
+                      const setValue = Object.getOwnPropertyDescriptor(
+                        HTMLInputElement.prototype,
+                        "value",
+                      )?.set;
+                      if (input && setValue) {
+                        setValue.call(input, "");
+                        input.dispatchEvent(
+                          new Event("input", { bubbles: true }),
+                        );
+                        input.focus();
+                      }
+                    }}
+                    aria-label="Clear search"
                     className="flex size-6 shrink-0 items-center justify-center text-text-subtle"
                   >
                     <IconClose className="size-5" strokeWidth={2} />
@@ -90,7 +109,9 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
           </div>
         )}
       </PredictiveSearchForm>
-      {!inline && isOpen && <SearchTypeHeaderResults />}
+      {((inline && isOpen !== false) || (!inline && isOpen)) && (
+        <SearchTypeHeaderResults inline={inline} />
+      )}
     </div>
   );
 }

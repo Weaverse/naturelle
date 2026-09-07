@@ -3,7 +3,7 @@ import type {
   ProductQuery,
   ProductVariantFragmentFragment,
 } from "storefront-api.generated";
-import { VariantOption } from "./options";
+import { isImageOption, VariantOption } from "./options";
 
 interface ProductVariantsProps {
   selectedVariant: ProductVariantFragmentFragment;
@@ -80,9 +80,7 @@ export function ProductVariants(props: ProductVariantsProps) {
     <div data-motion="fade-up" className="flex flex-col gap-6">
       {options.map((option) => {
         let optionName = option.name;
-        const isTypeOption = ["type", "types"].includes(
-          optionName.trim().toLowerCase(),
-        );
+        const shouldRenderAsImage = isImageOption(optionName);
         let clonedSelectedOptionMap = new Map(selectedOptionMap);
         let values = option.optionValues
           .map((optionValue) => {
@@ -92,7 +90,7 @@ export function ProductVariants(props: ProductVariantsProps) {
                 return opt.value === clonedSelectedOptionMap.get(opt.name);
               });
             });
-            const imageVariant = isTypeOption
+            const imageVariant = shouldRenderAsImage
               ? (optionValue.firstSelectableVariant ??
                 nodes?.find((candidateVariant) =>
                   candidateVariant.selectedOptions.some(
@@ -102,7 +100,7 @@ export function ProductVariants(props: ProductVariantsProps) {
                   ),
                 ))
               : matchingVariant;
-            if (isTypeOption) {
+            if (shouldRenderAsImage) {
               matchingVariant = imageVariant;
             }
             if (hideUnavailableOptions && !matchingVariant) {

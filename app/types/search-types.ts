@@ -3,7 +3,16 @@ import type {
   PredictiveArticleFragment,
   PredictiveCollectionFragment,
   PredictiveProductFragment,
+  ProductCardFragment,
 } from "storefront-api.generated";
+
+export const PREDICTIVE_SEARCH_FETCHER_KEY = "predictive-search";
+
+export type PredictiveSearchResponse = {
+  searchResults?: NormalizedPredictiveSearch;
+  searchTerm?: string;
+  error?: string;
+};
 
 export type UseSearchReturn = NormalizedPredictiveSearch & {
   searchInputRef: React.MutableRefObject<HTMLInputElement | null>;
@@ -37,6 +46,7 @@ export type NormalizedPredictiveSearchResultItem = {
   id: string;
   image?: PredicticeSearchResultItemImage;
   price?: PredictiveSearchResultItemPrice;
+  product?: ProductCardFragment;
   compareAtPrice?: PredictiveSearchResultItemPrice;
   styledTitle?: string;
   title: string;
@@ -60,7 +70,7 @@ export type SearchResultItemProps = Pick<
 
 type ChildrenRenderProps = {
   fetchResults: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  fetcher: ReturnType<typeof useFetcher<NormalizedPredictiveSearchResults>>;
+  fetcher: ReturnType<typeof useFetcher<PredictiveSearchResponse>>;
   inputRef: React.MutableRefObject<HTMLInputElement | null>;
 };
 

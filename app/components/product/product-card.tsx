@@ -12,7 +12,12 @@ import type {
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import type { JudgemeReviewsData } from "~/types/judgeme";
-import { isDiscounted, isNewArrival } from "~/utils/product";
+import {
+  getSavingsPercentage,
+  isDiscounted,
+  isNewArrival,
+} from "~/utils/product";
+import { ProductBadge, type ProductBadgeType } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 import { QuickViewTrigger } from "./quick-view";
 
@@ -59,6 +64,10 @@ export function ProductCard({
     pcardAlignment = "left",
     pcardShowVendor = false,
     pcardShowSalePrice = true,
+    saveBadgeText = "Save [percentage]%",
+    newBadgeText = "New arrival",
+    newBadgeDaysOld = 30,
+    soldOutBadgeText = "Out of stock",
   } = useThemeSettings();
   const variant = product.variants.nodes[0];
   if (!variant) {
@@ -78,13 +87,26 @@ export function ProductCard({
   const image = cardProduct.images?.nodes[0] ?? mediaImages?.[0]?.image;
   const secondImage = cardProduct.images?.nodes[1] ?? mediaImages?.[1]?.image;
   const { price, compareAtPrice } = variant;
-  let badge = label ?? badgeText;
-  if (!badge && isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2)) {
-    badge = "Sale";
-  } else if (!badge && isNewArrival(cardProduct.publishedAt)) {
-    badge = "New arrival";
-  } else if (!badge && !variant.availableForSale) {
-    badge = "Out of stock";
+  const customBadge = label ?? badgeText;
+  const savingsPercentage = getSavingsPercentage(
+    price as MoneyV2,
+    compareAtPrice as MoneyV2,
+  );
+  let badge: { text: string; type: ProductBadgeType } | null = customBadge
+    ? { text: customBadge, type: "new" }
+    : null;
+
+  if (!customBadge) {
+    if (!variant.availableForSale) {
+      badge = { text: soldOutBadgeText, type: "sold-out" };
+    } else if (savingsPercentage) {
+      badge = {
+        text: saveBadgeText.replace("[percentage]", savingsPercentage),
+        type: "save",
+      };
+    } else if (isNewArrival(cardProduct.publishedAt, newBadgeDaysOld)) {
+      badge = { text: newBadgeText, type: "new" };
+    }
   }
 
   return (
@@ -135,9 +157,11 @@ export function ProductCard({
           )}
         </Link>
         {showBadge && badge && (
-          <span className="pointer-events-none absolute right-2 top-2 rounded-full bg-[#77A96D] px-3 py-1.5 text-xs text-white">
-            {badge}
-          </span>
+          <ProductBadge
+            text={badge.text}
+            type={badge.type}
+            className="absolute right-2 top-2"
+          />
         )}
         {enableQuickView && pcardEnableQuickView !== false && (
           <QuickViewTrigger
@@ -156,7 +180,7 @@ export function ProductCard({
         )}
       >
         {pcardShowVendor && product.vendor && (
-          <span className="w-fit rounded-full bg-[#DCD8D6] px-3 py-1 text-xs leading-none">
+          <span className="w-fit rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none">
             {product.vendor}
           </span>
         )}
@@ -184,7 +208,7 @@ export function ProductCard({
                 <Money
                   withoutTrailingZeros
                   data={compareAtPrice}
-                  className="text-sm line-through text-label-sale-background"
+                  className="text-sm line-through text-label-save-background"
                 />
               )}
             <Money withoutTrailingZeros data={price} className="font-medium" />

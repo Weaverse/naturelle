@@ -109,7 +109,7 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     ratingCount: metafield(namespace: "reviews", key: "rating_count") {
       value
     }
-    images(first: 50) {
+    images(first: 2) {
       nodes {
         id
         url

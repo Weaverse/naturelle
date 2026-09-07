@@ -25,13 +25,18 @@ query BlogSingle(
 ` as const;
 
 export const FEATURED_PRODUCTS_QUERY = `#graphql
-  query Collection($country: CountryCode, $language: LanguageCode, $handle: String!)
+  query Collection(
+    $country: CountryCode
+    $language: LanguageCode
+    $handle: String!
+    $totalProduct: Int!
+  )
   @inContext(country: $country, language: $language) {
       collection(handle: $handle){
         id
         title
         handle
-        products(first: 24) {
+        products(first: $totalProduct) {
         nodes {
           ...ProductCard
         }

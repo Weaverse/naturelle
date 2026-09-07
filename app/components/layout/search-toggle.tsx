@@ -1,5 +1,6 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import { SearchTypeDrawer } from "~/components/layout/predictive-search/PredictiveSearch/SearchDrawer/search-type-drawer";
 import { SearchTypeHeader } from "~/components/layout/predictive-search/PredictiveSearch/SearchHeader/search-type-header";
 import { cn } from "~/utils/cn";
@@ -22,12 +23,20 @@ export function SearchToggle({
   onInlineOpenChange?: (isOpen: boolean) => void;
 }) {
   const { isOpen, closeDrawer, openDrawer } = useDrawer();
+  const location = useLocation();
   let settings = useThemeSettings();
   const [searchType, setSearchType] = useState(settings?.searchType);
   const [openFrom, setOpenFrom] = useState<TypeOpenFrom>(
     searchType === "popupSearch" ? "top" : "right",
   );
   const [isInlineOpen, setIsInlineOpen] = useState(false);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: close search only when the route changes
+  useEffect(() => {
+    setIsInlineOpen(false);
+    onInlineOpenChange?.(false);
+    closeDrawer();
+  }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
     const handleResize = () => {

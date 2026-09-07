@@ -20,7 +20,7 @@ export function ProductDetail({
       defaultOpen={true}
     >
       {({ open }) => (
-        <>
+        <div className="contents">
           <Disclosure.Button className="text-left">
             <div className="flex justify-between items-center bg-[#e0e5d6] py-3 px-4">
               <Text as="span" className="font-normal text-base uppercase">
@@ -60,7 +60,7 @@ export function ProductDetail({
               </div>
             )}
           </Disclosure.Panel>
-        </>
+        </div>
       )}
     </Disclosure>
   );

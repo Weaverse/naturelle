@@ -1,126 +1,129 @@
 import { Link } from "react-router";
-import { Button } from "~/components/button";
+import { ProductCard } from "~/components/product/product-card";
 import { usePredictiveSearch } from "~/hooks/use-predictive-search";
-import { PredictiveSearchResult } from "../../predictive-search-result";
+import type { NormalizedPredictiveSearchResultItem } from "~/types/search-types";
+import { PopularKeywords } from "../../popular-keywords";
 
 export function SearchTypeDrawerResults() {
   const { results, totalResults, searchTerm, searchInputRef } =
     usePredictiveSearch();
 
-  let queries = results?.find((result) => result.type === "queries");
-  let articles = results?.find((result) => result.type === "articles");
-  let products = results?.find((result) => result.type === "products");
-  let pages = results?.find((result) => result.type === "pages");
-  let totalResultsCount = totalResults || 0;
-  function goToSearchResult(event: React.MouseEvent<HTMLAnchorElement>) {
-    let type = event.currentTarget.dataset.type;
-    if (!searchInputRef.current) {
-      return;
-    }
-    if (type === "SearchQuerySuggestion") {
-      searchInputRef.current.value = event.currentTarget.innerText;
-      // dispatch event onchange for the search
-      searchInputRef.current.focus();
-    } else {
-      searchInputRef.current.blur();
-      searchInputRef.current.value = "";
-      // close the aside
-      window.location.href = event.currentTarget.href;
-    }
-  }
+  const items = (type: (typeof results)[number]["type"]) =>
+    results.find((result) => result.type === type)?.items || [];
+  const term = searchTerm.current.trim();
+  const hasMobileResults =
+    items("queries").length > 0 || items("products").length > 0;
 
-  if (!totalResults) {
+  const setSearchKeyword = (keyword: string) => {
+    const input = searchInputRef.current;
+    const setValue = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+    if (input && setValue) {
+      setValue.call(input, keyword);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+    }
+  };
+
+  if (!term) {
     return (
-      <div className="flex w-full items-center justify-center border-t border-border-subtle">
-        <NoPredictiveSearchResults searchTerm={searchTerm} />
+      <div className="custom-scroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
+        <PopularKeywords onKeywordClick={setSearchKeyword} />
+        <section className="mt-8">
+          <ResultHeading>Most searched products</ResultHeading>
+          <ProductGrid products={items("products")} />
+        </section>
       </div>
     );
   }
-  return (
-    <div className="relative flex items-center justify-center border-t border-border-subtle">
-      <div className="grid custom-scroll max-h-[81vh] w-screen grid-cols-1 gap-6 overflow-y-auto p-6">
-        <div className="space-y-8">
-          {queries && (
-            <div className="flex flex-col gap-4 divide-y divide-border-subtle">
-              <PredictiveSearchResult
-                goToSearchResult={goToSearchResult}
-                items={queries.items}
-                key={queries.type}
-                searchTerm={searchTerm}
-                type={queries.type}
-              />
-            </div>
-          )}
-          {articles && (
-            <div className="flex flex-col gap-4">
-              <PredictiveSearchResult
-                goToSearchResult={goToSearchResult}
-                items={articles.items}
-                key={articles.type}
-                searchTerm={searchTerm}
-                type={articles.type}
-              />
-            </div>
-          )}
-        </div>
-        {products && (
-          <div>
-            <PredictiveSearchResult
-              goToSearchResult={goToSearchResult}
-              items={products.items}
-              key={products.type}
-              searchTerm={searchTerm}
-              type={products.type}
-            />
-            {/* view all results /search?q=term */}
-          </div>
-        )}
-        {pages && (
-          <div>
-            <PredictiveSearchResult
-              goToSearchResult={goToSearchResult}
-              items={pages.items}
-              key={pages.type}
-              searchTerm={searchTerm}
-              type={pages.type}
-            />
-          </div>
-        )}
-        <div className="h-[50px] mt-2" />
-        {searchTerm.current && (
-          <div
-            className="flex justify-center absolute bottom-0 p-6 bg-(--color-drawer-bg) left-0 right-0"
-            style={{ boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)" }}
-          >
-            <Button variant={"primary"}>
-              <Link
-                onClick={goToSearchResult}
-                to={`/search?q=${searchTerm.current}`}
-              >
-                Show All Results ({totalResultsCount})
-              </Link>
-            </Button>
-          </div>
-        )}
+
+  if (!hasMobileResults) {
+    return (
+      <div className="w-full border-t border-border-subtle bg-background-basic p-6 text-text">
+        <ResultHeading>No results</ResultHeading>
+        <p className="text-sm">
+          No results found for <q>{term}</q>
+        </p>
       </div>
+    );
+  }
+
+  return (
+    <div className="custom-scroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
+      {items("queries").length > 0 && (
+        <section>
+          <ResultHeading>Suggestions</ResultHeading>
+          <ul className="space-y-2">
+            {items("queries").map((query) => (
+              <li key={query.id}>
+                <button
+                  type="button"
+                  onClick={() => setSearchKeyword(query.title)}
+                  className="text-left font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text"
+                >
+                  {query.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {items("products").length > 0 && (
+        <section className="mt-8">
+          <ResultHeading>Products</ResultHeading>
+          <ProductGrid products={items("products")} />
+          <div className="mt-6 flex justify-center">
+            <Link
+              to={`/search?q=${encodeURIComponent(term)}`}
+              className="rounded-md bg-text px-5 py-2 text-sm text-background-basic"
+            >
+              Show All Results ({totalResults})
+            </Link>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
 
-function NoPredictiveSearchResults({
-  searchTerm,
-}: {
-  searchTerm: React.MutableRefObject<string>;
-}) {
-  if (!searchTerm.current) {
-    return null;
-  }
+function ResultHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full p-6">
-      <p className="border-b border-border-subtle pb-3">NO RESULTS</p>
-      <p className="pt-5">
-        No results found for <q>{searchTerm.current}</q>
-      </p>
+    <div className="mb-4 font-heading text-sm uppercase leading-normal text-text-subtle">
+      {children}
+    </div>
+  );
+}
+
+function ProductGrid({
+  products,
+}: {
+  products: NormalizedPredictiveSearchResultItem[];
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {products.map((item) =>
+        item.product ? (
+          <ProductCard
+            key={item.id}
+            product={item.product}
+            className="h-full"
+            enableQuickView
+            showBadge
+            showPrice
+            showStar
+          />
+        ) : (
+          <Link
+            key={item.id}
+            to={item.url}
+            className="line-clamp-2 text-sm font-medium"
+          >
+            {item.title}
+          </Link>
+        ),
+      )}
     </div>
   );
 }

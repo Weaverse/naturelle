@@ -3,9 +3,17 @@ import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
 export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
-const OPTIONS_AS_IMAGE = ["Image", "Images", "Type", "Types"];
+const OPTIONS_AS_IMAGE = ["Image", "Images"];
 const OPTIONS_AS_DROPDOWN = ["Dropdown", "Dropdowns"];
 const OPTION_AS_MORPHOLOGY = ["Size", "Shape", "Sizes"];
+
+export function isImageOption(optionName: string) {
+  const normalizedOptionName = optionName.trim().toLowerCase();
+  return OPTIONS_AS_IMAGE.some(
+    (name) => name.toLowerCase() === normalizedOptionName,
+  );
+}
+
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
@@ -96,7 +104,7 @@ export function VariantOption(props: VariantOptionProps) {
       </div>
     );
   }
-  if (OPTIONS_AS_IMAGE.includes(name)) {
+  if (isImageOption(name)) {
     return (
       <div className="flex gap-4 flex-wrap">
         {values.map((value) => {

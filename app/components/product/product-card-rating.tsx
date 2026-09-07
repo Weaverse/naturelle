@@ -41,11 +41,7 @@ export function ProductCardRating({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <StarRating rating={rating} />
-      <span
-        className={
-          detailed ? "text-sm text-[#3B3333]" : "text-xs text-[#3B3333]"
-        }
-      >
+      <span className={detailed ? "text-sm text-text" : "text-xs text-text"}>
         {detailed
           ? `${rating.toFixed(1)}/5.0 (${ratingCount} reviews)`
           : `${rating.toFixed(1)} (${ratingCount} reviews)`}

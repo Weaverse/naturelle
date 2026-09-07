@@ -14,9 +14,15 @@ import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
+import { isImageOption } from "~/components/product-form/options";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
-import { isDiscounted, isNewArrival, type ProductData } from "~/utils/product";
+import {
+  getSavingsPercentage,
+  isNewArrival,
+  type ProductData,
+} from "~/utils/product";
+import { ProductBadge, type ProductBadgeType } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 
 export function QuickView({
@@ -60,13 +66,29 @@ export function QuickView({
     stock <= lowStockThreshold;
   const publishedAt = (product as typeof product & { publishedAt?: string })
     .publishedAt;
-  let badge: string | undefined;
-  if (isDiscounted(selectedVariant.price, selectedVariant.compareAtPrice)) {
-    badge = "Sale";
-  } else if (publishedAt && isNewArrival(publishedAt)) {
-    badge = "New arrival";
-  } else if (!selectedVariant.availableForSale) {
-    badge = "Out of stock";
+  const savingsPercentage = getSavingsPercentage(
+    selectedVariant.price,
+    selectedVariant.compareAtPrice,
+  );
+  let badge: { text: string; type: ProductBadgeType } | null = null;
+  if (!selectedVariant.availableForSale) {
+    badge = {
+      text: theme.soldOutBadgeText || "Out of stock",
+      type: "sold-out",
+    };
+  } else if (savingsPercentage) {
+    badge = {
+      text: (theme.saveBadgeText || "Save [percentage]%").replace(
+        "[percentage]",
+        savingsPercentage,
+      ),
+      type: "save",
+    };
+  } else if (
+    publishedAt &&
+    isNewArrival(publishedAt, theme.newBadgeDaysOld || 30)
+  ) {
+    badge = { text: theme.newBadgeText || "New arrival", type: "new" };
   }
   const productUrl = `${window.location.origin}/products/${product.handle}`;
 
@@ -84,9 +106,11 @@ export function QuickView({
             direction={theme.mediaDirection}
           />
           {badge && (
-            <span className="pointer-events-none absolute right-3 top-3 z-20 rounded-full bg-[#77A96D] px-3 py-1.5 text-xs text-white md:right-4 md:top-4">
-              {badge}
-            </span>
+            <ProductBadge
+              text={badge.text}
+              type={badge.type}
+              className="absolute right-3 top-3 z-20 md:right-4 md:top-4"
+            />
           )}
         </div>
 
@@ -154,8 +178,7 @@ export function QuickView({
                       <div
                         className="h-full w-full origin-left rounded-full transition-[transform,background-color]"
                         style={{
-                          backgroundColor:
-                            theme.quickViewLowStockProgressColor || "#4BAE42",
+                          backgroundColor: theme.quickViewLowStockProgressColor,
                           transform: `scaleX(${lowStockThreshold / 100})`,
                         }}
                       />
@@ -177,9 +200,7 @@ export function QuickView({
               />
             </div>
 
-            {!product.options.some((option) =>
-              ["type", "types"].includes(option.name.trim().toLowerCase()),
-            ) && (
+            {!product.options.some((option) => isImageOption(option.name)) && (
               <VariantImageSelector
                 variants={variants.nodes}
                 selectedVariantId={selectedVariant.id}
@@ -213,7 +234,7 @@ export function QuickView({
                 className="group/shop-pay relative h-12 w-full overflow-hidden rounded-lg border border-(--shop-pay-border) bg-(--shop-pay-bg) transition-colors hover:border-(--shop-pay-hover-border) hover:bg-(--shop-pay-hover) active:border-(--shop-pay-active-border) active:bg-(--shop-pay-active)"
                 style={
                   {
-                    "--shop-pay-bg": theme.shopPayButtonBgColor || "#5A31F4",
+                    "--shop-pay-bg": theme.shopPayButtonBgColor,
                     "--shop-pay-text": theme.buttonTextPrimary,
                     "--shop-pay-border": theme.buttonBorderColorPrimary,
                     "--shop-pay-hover": theme.buttonBgHoverPrimary,

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { IconSearch } from "~/components/icon";
+import { IconClose, IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
 import { PredictiveSearchForm } from "../../search-form";
 import { SearchTypeDrawerResults } from "./search-type-drawer-results";
@@ -31,7 +31,6 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
               name="q"
               onChange={fetchResults}
               onFocus={fetchResults}
-              onClear={fetchResults}
               onKeyDown={handleKeyDown}
               placeholder="Enter a keyword"
               ref={inputRef}
@@ -43,6 +42,30 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
                     className="h-6 w-6 opacity-55"
                     viewBox="0 0 24 24"
                   />
+                </button>
+              }
+              suffix={
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => {
+                    const input = inputRef.current;
+                    const setValue = Object.getOwnPropertyDescriptor(
+                      HTMLInputElement.prototype,
+                      "value",
+                    )?.set;
+                    if (input && setValue) {
+                      setValue.call(input, "");
+                      input.dispatchEvent(
+                        new Event("input", { bubbles: true }),
+                      );
+                      input.focus();
+                    }
+                  }}
+                  className="flex size-6 shrink-0 items-center justify-center text-text-subtle"
+                >
+                  <IconClose className="size-5" strokeWidth={2} />
                 </button>
               }
               autoFocus={true}
