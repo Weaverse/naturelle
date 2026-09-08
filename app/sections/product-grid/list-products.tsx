@@ -22,7 +22,6 @@ type ProductGridListData = {
   showCount: boolean;
   showRating: boolean;
   showProductBadge: boolean;
-  productsCount: number;
   collectionEyebrow: string;
   collectionHeading: string;
   collectionButtonText: string;
@@ -34,6 +33,7 @@ interface CollectionData {
   handle: string;
   image: Partial<ShopifyImage> | null;
   products: { nodes: ProductCardFragment[] };
+  productCountProbe?: { nodes: { id: string }[] };
 }
 
 interface ProductGridListProps
@@ -45,15 +45,17 @@ const PRODUCT_GRID_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $handle: String!
-    $productsCount: Int!
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
       title
       handle
       image { id altText width height url }
-      products(first: $productsCount) {
+      products(first: 4) {
         nodes { ...ProductCard }
+      }
+      productCountProbe: products(first: 17) {
+        nodes { id }
       }
     }
   }
@@ -69,7 +71,6 @@ export const loader = async ({
   }
 
   const { country, language } = weaverse.storefront.i18n;
-  const productsCount = Math.min(16, Math.max(5, data.productsCount ?? 16));
   const result = await weaverse.storefront.query<{
     collection: CollectionData | null;
   }>(PRODUCT_GRID_QUERY, {
@@ -77,7 +78,6 @@ export const loader = async ({
       handle: data.collection.handle,
       country,
       language,
-      productsCount,
     },
   });
 
@@ -112,7 +112,6 @@ export default function ProductGridList({
     showCount,
     showRating,
     showProductBadge,
-    productsCount = 16,
     collectionEyebrow,
     collectionHeading,
     collectionButtonText,
@@ -120,6 +119,7 @@ export default function ProductGridList({
   } = props;
   const collection = loaderData?.collection;
   const products = collection?.products.nodes ?? [];
+  const productCountProbe = collection?.productCountProbe?.nodes ?? products;
   const collectionImage = collection?.image ?? {
     url: IMAGES_PLACEHOLDERS.collection_1,
     altText: "Collection image",
@@ -129,7 +129,8 @@ export default function ProductGridList({
   const collectionTitle = collection?.title ?? "New arrivals";
   const collectionHandle = collection?.handle ?? "all";
   const visibleCount = collection ? Math.min(4, products.length) : 4;
-  const totalCount = collection ? products.length : productsCount;
+  const totalCount = collection ? Math.min(productCountProbe.length, 16) : 16;
+  const hasMoreProducts = productCountProbe.length > 16;
 
   return (
     <div
@@ -179,7 +180,7 @@ export default function ProductGridList({
         <div className="flex min-w-0 flex-col justify-center">
           <div className="grid grid-cols-2 gap-4 lg:gap-6">
             {products.length
-              ? products.slice(0, 4).map((product, index) => (
+              ? products.map((product, index) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -202,6 +203,7 @@ export default function ProductGridList({
       {showCount && (
         <p className="text-center text-sm font-medium text-text-subtle">
           {visibleCount} <span aria-hidden="true">/</span> {totalCount}
+          {hasMoreProducts && "+"}
         </p>
       )}
     </div>
@@ -242,18 +244,6 @@ export const schema = createSchema({
           defaultValue: "Shop collection",
         },
         {
-          type: "range",
-          name: "productsCount",
-          label: "Total products",
-          helpText: "Sets the total number of products for this section.",
-          configs: {
-            min: 5,
-            max: 16,
-            step: 1,
-          },
-          defaultValue: 16,
-        },
-        {
           type: "switch",
           name: "showCollectionTitle",
           label: "Show collection title",
@@ -277,7 +267,8 @@ export const schema = createSchema({
           type: "switch",
           name: "showCount",
           label: "Show product count",
-          helpText: "Shows visible products / total products, such as 4 / 16.",
+          helpText:
+            "Shows visible products / total products, such as 4 / 16 or 4 / 16+.",
           defaultValue: true,
         },
       ],

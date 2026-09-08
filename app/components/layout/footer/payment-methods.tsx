@@ -18,18 +18,27 @@ const PAYMENT_ICON_MAP = {
 type PaymentMethod = keyof typeof PAYMENT_ICON_MAP;
 
 interface PaymentMethodsProps {
-  paymentMethods?: string;
+  showVisa?: boolean;
+  showMastercard?: boolean;
+  showAmericanExpress?: boolean;
+  showPayPal?: boolean;
+  showDiners?: boolean;
 }
 
-export function PaymentMethods({ paymentMethods }: PaymentMethodsProps) {
-  const paymentIconKeys = Array.from(
-    new Set(
-      paymentMethods
-        ?.split(",")
-        .map((key) => key.trim().toLowerCase())
-        .filter((key): key is PaymentMethod => key in PAYMENT_ICON_MAP) ?? [],
-    ),
-  );
+export function PaymentMethods({
+  showVisa = true,
+  showMastercard = true,
+  showAmericanExpress = true,
+  showPayPal = true,
+  showDiners = false,
+}: PaymentMethodsProps) {
+  const paymentIconKeys: PaymentMethod[] = [
+    ...(showVisa ? (["visa"] as const) : []),
+    ...(showMastercard ? (["mastercard"] as const) : []),
+    ...(showAmericanExpress ? (["american-express"] as const) : []),
+    ...(showPayPal ? (["paypal"] as const) : []),
+    ...(showDiners ? (["diners"] as const) : []),
+  ];
 
   if (paymentIconKeys.length === 0) {
     return null;

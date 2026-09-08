@@ -60,7 +60,11 @@ export function Footer() {
     trustBadgeCrueltyFreeLabel,
     trustBadgeDermatologistTestedLabel,
     showPolicyLinks,
-    paymentMethods,
+    showVisa,
+    showMastercard,
+    showAmericanExpress,
+    showPayPal,
+    showDiners,
     tagNameTitle: Tag = "h6",
   } = settings;
   return (
@@ -162,7 +166,13 @@ export function Footer() {
               crueltyFreeLabel={trustBadgeCrueltyFreeLabel}
               dermatologistTestedLabel={trustBadgeDermatologistTestedLabel}
             />
-            <PaymentMethods paymentMethods={paymentMethods} />
+            <PaymentMethods
+              showVisa={showVisa}
+              showMastercard={showMastercard}
+              showAmericanExpress={showAmericanExpress}
+              showPayPal={showPayPal}
+              showDiners={showDiners}
+            />
           </div>
         </div>
 
