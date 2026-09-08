@@ -10,10 +10,11 @@ import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCaret, IconImageBlank } from "~/components/icon";
 import { Link } from "~/components/link";
-import { parseProductRating } from "~/components/product/product-card-rating";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { PRODUCT_QUERY } from "~/graphql/queries";
+import { getJudgemeReviews } from "~/utils/judgeme";
+import Review from "./review";
 
 interface TestimonialsData {
   backgroundImage?: WeaverseImage;
@@ -26,6 +27,7 @@ interface TestimonialsData {
   ratingButtonText?: string;
   ratingOverlayColor?: string;
   desktopContentPadding?: number;
+  reviewsToShow?: number;
 }
 
 export const loader = async ({
@@ -38,9 +40,8 @@ export const loader = async ({
 
   let metafield =
     weaverse.env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
-  let { product } = await weaverse.storefront.query<ProductQuery>(
-    PRODUCT_QUERY,
-    {
+  const [productData, judgemeReviews] = await Promise.all([
+    weaverse.storefront.query<ProductQuery>(PRODUCT_QUERY, {
       variables: {
         handle: data.product.handle,
         selectedOptions: [],
@@ -49,10 +50,16 @@ export const loader = async ({
         language: weaverse.storefront.i18n.language,
         country: weaverse.storefront.i18n.country,
       },
-    },
-  );
+    }),
+    getJudgemeReviews(
+      weaverse.env.JUDGEME_PRIVATE_API_TOKEN,
+      weaverse.env.PUBLIC_STORE_DOMAIN,
+      data.product.handle,
+      { weaverseContext: weaverse, perPage: 5 },
+    ),
+  ]);
 
-  return { product };
+  return { product: productData.product, judgemeReviews };
 };
 
 type TestimonialsLoaderData = Awaited<ReturnType<typeof loader>>;
@@ -82,7 +89,7 @@ const Testimonials = ({
     ratingButtonText = "See what buyers think about this product",
     ratingOverlayColor,
     desktopContentPadding = 80,
-    children,
+    reviewsToShow = 3,
     loaderData,
     ...rest
   } = props;
@@ -93,8 +100,10 @@ const Testimonials = ({
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
     : ratingLink || "#";
-  const productRating = parseProductRating(selectedProduct?.rating?.value);
-  const productRatingCount = Number(selectedProduct?.ratingCount?.value) || 0;
+  const reviews =
+    loaderData?.judgemeReviews.reviews.slice(0, reviewsToShow) || [];
+  const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
+  const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
@@ -107,8 +116,8 @@ const Testimonials = ({
       ref={ref}
       {...rest}
       verticalPadding="none"
-      className="relative overflow-hidden px-0"
-      containerClassName="max-w-none p-0"
+      className="relative overflow-hidden px-0 md:h-screen-no-nav"
+      containerClassName="max-w-none p-0 md:h-full"
       style={sectionStyle}
     >
       <div className="absolute inset-0 hidden md:block">
@@ -116,12 +125,12 @@ const Testimonials = ({
           <div className="grid h-full grid-cols-2">
             <Image
               data={productImage}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
               sizes="50vw"
             />
             <Image
               data={productImage}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
               sizes="50vw"
             />
           </div>
@@ -129,12 +138,12 @@ const Testimonials = ({
           <div className="grid h-full grid-cols-2">
             <Image
               data={backgroundImage}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
               sizes="50vw"
             />
             <Image
               data={backgroundImage}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
               sizes="50vw"
             />
           </div>
@@ -151,13 +160,13 @@ const Testimonials = ({
         {productImage ? (
           <Image
             data={productImage}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
             sizes="100vw"
           />
         ) : backgroundImage ? (
           <Image
             data={backgroundImage}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
             sizes="100vw"
           />
         ) : (
@@ -177,17 +186,17 @@ const Testimonials = ({
                 {ratingText}
               </p>
               <div className="flex leading-none [&_svg]:size-6">
-                <StarRating rating={productRating} />
+                <StarRating rating={displayedRating} />
               </div>
               <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                 <strong className="h5 font-heading font-normal">
-                  {productRating.toFixed(1)}
+                  {displayedRating.toFixed(1)}
                 </strong>
                 <span className="text-xs font-semibold leading-none opacity-90">
                   out of 5
                 </span>
                 <span className="text-xs font-semibold leading-none opacity-90">
-                  ({productRatingCount.toLocaleString("en-US")} reviews)
+                  ({displayedRatingCount.toLocaleString("en-US")} reviews)
                 </span>
               </div>
             </div>
@@ -210,13 +219,13 @@ const Testimonials = ({
       )}
       <div
         className={clsx(
-          "relative z-10 mt-0 flex w-full items-stretch",
+          "relative z-10 mt-0 flex w-full items-stretch md:h-full",
           reviewsPositionContent[reviewsPosition],
         )}
       >
         <div
           className={clsx(
-            "relative w-full bg-black/20 backdrop-blur-2xl",
+            "relative w-full bg-black/20 backdrop-blur-2xl md:h-full md:overflow-y-auto",
             reviewsPosition === "full" ? "md:w-full" : "md:w-1/2",
           )}
         >
@@ -224,13 +233,13 @@ const Testimonials = ({
             {productImage ? (
               <Image
                 data={productImage}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
                 sizes="100vw"
               />
             ) : backgroundImage ? (
               <Image
                 data={backgroundImage}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
                 sizes="100vw"
               />
             ) : (
@@ -238,11 +247,19 @@ const Testimonials = ({
             )}
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
-          <div className="relative z-10 flex flex-col gap-12 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
+          <div className="relative z-10 flex min-h-full flex-col gap-12 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
             <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
               {selectedProduct?.title || "Product name"}
             </h2>
-            {children}
+            <div className="flex flex-col gap-5">
+              {reviews.map((review) => (
+                <Review
+                  key={review.id}
+                  review={review}
+                  verifiedLabel="Verified Buyer"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -266,6 +283,17 @@ export const schema = createSchema({
     {
       group: "Testimonials",
       inputs: [
+        {
+          type: "range",
+          name: "reviewsToShow",
+          label: "Reviews to show",
+          defaultValue: 3,
+          configs: {
+            min: 2,
+            max: 5,
+            step: 1,
+          },
+        },
         {
           label: "Choose product",
           type: "product",
@@ -344,12 +372,4 @@ export const schema = createSchema({
       ],
     },
   ],
-  childTypes: ["heading", "content-reviews--review"],
-  presets: {
-    children: [
-      {
-        type: "content-reviews--review",
-      },
-    ],
-  },
 });

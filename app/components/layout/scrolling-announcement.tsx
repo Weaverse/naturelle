@@ -40,15 +40,9 @@ function SegmentIcon({
 
 function AnnouncementItem({
   segment,
-  ctaText,
-  ctaLink,
-  showCta,
   className,
 }: {
   segment: AnnouncementSegment;
-  ctaText?: string;
-  ctaLink?: string;
-  showCta?: boolean;
   className?: string;
 }) {
   return (
@@ -68,14 +62,6 @@ function AnnouncementItem({
       </span>
       {segment.trailingStar && (
         <IconAnnouncementStar className="size-2.5 shrink-0 text-(--color-topbar-text) opacity-60" />
-      )}
-      {showCta && ctaText && ctaLink && (
-        <a
-          href={ctaLink}
-          className="font-sans font-bold leading-normal tracking-[0.96px] text-(--color-topbar-text) uppercase"
-        >
-          → {ctaText}
-        </a>
       )}
     </span>
   );
@@ -245,21 +231,31 @@ export function ScrollingAnnouncement() {
           />
         </button>
 
-        {visibleSegments.map((segment, index) => (
-          <AnnouncementItem
-            key={`${segment.id}-${index}`}
-            segment={segment}
-            ctaText={announcementCtaText}
-            ctaLink={announcementCtaLink}
-            showCta={index === 2}
-            className={clsx(
-              "min-w-0 overflow-hidden font-body leading-none",
-              index === 0 && "flex-[1_0_0] gap-2",
-              index === 1 && "hidden flex-[1_0_0] gap-2 md:flex",
-              index === 2 && "hidden gap-1.5 lg:flex",
-            )}
-          />
-        ))}
+        <div className="mx-auto flex w-full">
+          <div className="mx-auto flex w-full gap-(--announcement-gap)">
+            {visibleSegments.map((segment, index) => (
+              <AnnouncementItem
+                key={`${segment.id}-${index}`}
+                segment={segment}
+                className={clsx(
+                  "min-w-0 overflow-hidden font-body leading-none",
+                  index === 0 && "flex-[1_0_0] gap-2",
+                  index === 1 && "hidden flex-[1_0_0] gap-2 md:flex",
+                  index === 2 && "hidden gap-1.5 lg:flex",
+                )}
+              />
+            ))}
+          </div>
+
+          {announcementCtaText && announcementCtaLink && (
+            <a
+              href={announcementCtaLink}
+              className="hidden shrink-0 font-sans font-bold leading-normal tracking-[0.96px] text-(--color-topbar-text) uppercase lg:inline-flex"
+            >
+              → {announcementCtaText}
+            </a>
+          )}
+        </div>
 
         <button
           type="button"

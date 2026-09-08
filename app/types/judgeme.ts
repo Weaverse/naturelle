@@ -23,7 +23,7 @@ export type JudgemeReviewImage = {
 
 export type JudgeMeReviewType = {
   id: string;
-  title: string;
+  title?: string | null;
   created_at: string;
   body: string;
   rating: number;
@@ -39,7 +39,7 @@ export type JudgeMeReviewType = {
   curated: boolean;
   published: boolean;
   hidden: boolean;
-  verified: boolean;
+  verified?: boolean;
   featured: boolean;
   pinned: boolean;
   has_published_pictures: boolean;

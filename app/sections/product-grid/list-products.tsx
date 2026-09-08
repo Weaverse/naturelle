@@ -140,7 +140,7 @@ export default function ProductGridList({
       <div className="grid w-full items-stretch gap-6 md:grid-cols-2">
         <Link
           to={`/collections/${collectionHandle}`}
-          className="group relative min-h-[30rem] overflow-hidden rounded-(--border-radius-xl) bg-background-subtle-2 lg:min-h-full"
+          className="group relative min-h-[30rem] overflow-hidden rounded-2xl bg-background-subtle-2 lg:min-h-full"
           aria-label={`View ${collectionTitle} collection`}
           data-motion="fade-up"
         >

@@ -1,83 +1,68 @@
-import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
-import type React from "react";
 import type { RefObject } from "react";
-import { IconStar } from "~/components/icon";
+import { StarRating } from "~/components/star-rating";
+import type { JudgeMeReviewType } from "~/types/judgeme";
 
-interface ReviewProps extends HydrogenComponentProps {
-  name?: string;
-  ratting: number;
-  role?: string;
-  reviewTitle?: string;
-  reviewDate?: string;
-  verified?: boolean;
+interface ReviewProps {
+  review: JudgeMeReviewType;
   verifiedLabel?: string;
-  content?: string;
+  ref?: RefObject<HTMLDivElement | null>;
 }
 
 const Review = ({
   ref,
-  ...props
-}: ReviewProps & { ref?: RefObject<HTMLDivElement | null> }) => {
-  let {
-    name,
-    ratting,
-    role = "Reviewer",
-    reviewTitle = "Amazing product",
-    reviewDate = "August 20, 2026",
-    verified = true,
-    verifiedLabel,
-    content,
-    children,
-    ...rest
-  } = props;
-  const renderStars = () => {
-    const stars: React.ReactElement[] = [];
-    for (let i = 0; i < ratting; i += 1) {
-      stars.push(<IconStar stroke="white" fill="var(--text-color)" key={i} />);
-    }
-    return stars;
-  };
+  review,
+  verifiedLabel = "Verified Buyer",
+}: ReviewProps) => {
+  const reviewerName = review.reviewer.name;
+  const date = review.created_at
+    ? new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(new Date(review.created_at))
+    : undefined;
   return (
     <div
       data-motion="fade-up"
       ref={ref}
-      {...rest}
       className="relative flex flex-col rounded-2xl border border-(--border-color) bg-black/20 px-6 py-4"
     >
       <div className="flex items-center gap-4">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-button-primary-background font-medium text-text-inverse">
-          {name?.charAt(0).toUpperCase()}
+          {reviewerName?.trim().charAt(0).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            {name && (
-              <h4 className="font-medium text-(--text-color)">{name}</h4>
+            {reviewerName && (
+              <h4 className="font-medium text-(--text-color)">
+                {reviewerName}
+              </h4>
             )}
-            {verified && (
+            {review.verified && (
               <span className="rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
                 {verifiedLabel}
               </span>
             )}
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-(--text-color)">
-            {role && <span>{role}</span>}
-            {reviewDate && <time>{reviewDate}</time>}
+            {date && <time dateTime={review.created_at}>{date}</time>}
           </div>
         </div>
       </div>
       <div className="mt-3 flex items-center gap-4">
-        <p className="flex gap-1">{renderStars()}</p>
+        <div className="flex [&_svg]:size-4">
+          <StarRating rating={review.rating} />
+        </div>
         <span className="text-xs text-background-subtle-2">
-          {ratting.toFixed(1)}
+          {review.rating.toFixed(1)}
         </span>
       </div>
-      {reviewTitle && (
-        <h5 className="mt-4 font-medium text-(--text-color)">{reviewTitle}</h5>
+      {review.title && (
+        <h5 className="mt-4 font-medium text-(--text-color)">{review.title}</h5>
       )}
-      {content && (
+      {review.body && (
         <p className="mt-2 text-sm font-normal text-(--text-color)">
-          {content}
+          {review.body}
         </p>
       )}
       <div className="hover:opacity-10 hover:bg-white opacity-0 absolute inset-0 transition-opacity duration-500" />
@@ -86,70 +71,3 @@ const Review = ({
 };
 
 export default Review;
-
-export const schema = createSchema({
-  type: "reviews",
-  title: "Reviews",
-  settings: [
-    {
-      group: "Review",
-      inputs: [
-        {
-          type: "text",
-          name: "name",
-          label: "Name",
-          defaultValue: "Debbie",
-        },
-        {
-          type: "text",
-          name: "role",
-          label: "Role",
-          defaultValue: "Reviewer",
-        },
-        {
-          type: "switch",
-          name: "verified",
-          label: "Show verified badge",
-          defaultValue: true,
-        },
-        {
-          type: "text",
-          name: "verifiedLabel",
-          label: "Verified label",
-          defaultValue: "Verified Buyer",
-          condition: "verified.eq.true",
-        },
-        {
-          type: "range",
-          name: "ratting",
-          label: "Reviews",
-          defaultValue: 3,
-          configs: {
-            min: 1,
-            max: 5,
-            step: 1,
-          },
-        },
-        {
-          type: "text",
-          name: "reviewTitle",
-          label: "Review title",
-          defaultValue: "Amazing product",
-        },
-        {
-          type: "text",
-          name: "reviewDate",
-          label: "Review date",
-          defaultValue: "August 20, 2026",
-        },
-        {
-          type: "textarea",
-          name: "content",
-          label: "Content",
-          defaultValue:
-            "“I love the way the app works. It's easy to use and I can see all my transactions in one place.”",
-        },
-      ],
-    },
-  ],
-});
