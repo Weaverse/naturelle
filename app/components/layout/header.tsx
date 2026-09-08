@@ -95,7 +95,7 @@ export function Header() {
           scrolled ? "shadow-header" : "shadow-none",
           isTransparent
             ? [
-                "border-(--color-transparent-header) bg-transparent text-(--color-transparent-header)",
+                "bg-transparent text-(--color-transparent-header) md:border-transparent",
                 "[&_.main-logo]:opacity-0",
                 "[&_.transparent-logo]:opacity-100",
               ]
@@ -139,7 +139,7 @@ export function Header() {
         </div>
         <div
           className={cn(
-            "z-40 flex h-14.5 items-center justify-center gap-2.5 bg-header-bg md:h-16.5",
+            "z-40 flex h-14.5 items-center justify-center gap-2.5 bg-header-bg md:h-16.5 md:bg-transparent",
             variants({ width: headerWidth, padding: headerWidth }),
           )}
         >
