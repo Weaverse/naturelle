@@ -46,7 +46,9 @@ export default function MapItem({
         </p>
       )}
       {paragraph && (
-        <div className="text-sm leading-relaxed text-text">{paragraph}</div>
+        <div className="whitespace-pre-line text-sm leading-relaxed text-text">
+          {paragraph}
+        </div>
       )}
     </div>
   );
@@ -74,10 +76,10 @@ export const schema = createSchema({
             "Use a complete street address so the embedded map can locate it accurately.",
         },
         {
-          type: "text",
+          type: "textarea",
           name: "paragraph",
           label: "Paragraph",
-          defaultValue: "Monday–Friday, 9:00 AM–6:00 PM",
+          defaultValue: "Mon - Fri: 08:00 - 22:00\nSat - Sun: 08:00 - 20:00",
         },
       ],
     },
@@ -85,6 +87,6 @@ export const schema = createSchema({
   presets: {
     title: "Opening hours",
     address: "123 Naturelle Street, New York, NY 10001",
-    paragraph: "Monday–Friday, 9:00 AM–6:00 PM",
+    paragraph: "Mon - Fri: 08:00 - 22:00\nSat - Sun: 08:00 - 20:00",
   },
 });

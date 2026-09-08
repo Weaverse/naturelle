@@ -210,7 +210,7 @@ export const schema = createSchema({
         type: "map--item",
         title: "Opening hours",
         address: "123 Naturelle Street, New York, NY 10001",
-        paragraph: "Monday–Friday, 9:00 AM–6:00 PM",
+        paragraph: "Mon - Fri: 08:00 - 22:00\nSat - Sun: 08:00 - 20:00",
       },
     ],
   },
