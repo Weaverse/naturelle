@@ -105,10 +105,10 @@ export function Header() {
       >
         <div
           className={cn(
-            "hidden w-full items-center justify-center px-6 py-3 md:flex lg:py-4",
+            "hidden w-full items-center justify-center px-6 py-3 transition-colors duration-300 md:flex lg:py-4",
             isTransparent
-              ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-header-bg group-hover/header:text-(--color-header-text)"
-              : "bg-background-subtle-1 text-(--color-header-text) group-hover/header:bg-header-bg",
+              ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text)"
+              : "bg-background-subtle-1 text-(--color-header-text) group-hover/header:bg-background-subtle-1",
           )}
         >
           <div className="mx-auto flex w-full max-w-page items-center justify-between px-6">

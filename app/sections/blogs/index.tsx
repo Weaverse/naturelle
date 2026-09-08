@@ -75,8 +75,7 @@ let variants = cva("heading", {
 
 type BlogData = {
   blogs: WeaverseBlog;
-  articlePerRow: number;
-  gapRow: number;
+  gap: number;
   showSeperator: boolean;
   readMoreText: string;
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -91,13 +90,6 @@ export interface BlogProps
     VariantProps<typeof variants>,
     VariantProps<typeof fontSizeVariants> {}
 
-const articlesPerRowClasses: Record<number, string> = {
-  1: "md:grid-cols-1",
-  2: "md:grid-cols-2",
-  3: "md:grid-cols-3",
-  4: "md:grid-cols-4",
-};
-
 const Blogs = ({
   ref,
   ...props
@@ -105,8 +97,7 @@ const Blogs = ({
   const [scope] = useAnimation(ref);
   let {
     blogs,
-    articlePerRow,
-    gapRow,
+    gap = 20,
     showSeperator,
     readMoreText = "Read more",
     as: Tag = "h4",
@@ -126,12 +117,13 @@ const Blogs = ({
     "--min-size-px": `${minSize}px`,
     "--min-size": minSize,
     "--max-size": maxSize,
-    "--gap-row": `${gapRow}px`,
+    "--blog-card-gap": `${gap}px`,
   } as CSSProperties;
 
   const defaultArticles = Array.from({ length: 3 }).map((_, i) => ({
     id: i,
     title: "Trendy items for this Winter Fall 2025 season",
+    tags: [],
     image: null,
     handle: null,
   }));
@@ -145,14 +137,9 @@ const Blogs = ({
       className="flex h-full w-full justify-center"
       style={sectionStyle}
     >
-      <div className="container flex flex-col gap-6 px-4 py-12 sm:px-6 sm:py-20">
+      <div className="container flex flex-col gap-6 px-5 py-20 md:px-6">
         {children}
-        <div
-          className={cn(
-            "grid grid-cols-1 gap-(--gap-row) md:gap-x-0",
-            articlesPerRowClasses[articlePerRow] || "md:grid-cols-2",
-          )}
-        >
+        <div className="grid grid-cols-1 gap-(--blog-card-gap) sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {res?.map((idx) => (
             <Link
               key={idx.id}
@@ -160,10 +147,10 @@ const Blogs = ({
               data-motion="slide-in"
               className={"group"}
             >
-              <div className="flex h-full w-full cursor-pointer flex-col items-center gap-4 rounded-md p-0 transition-colors duration-500 group-hover:bg-background-subtle-1 sm:p-6">
+              <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-md bg-background-basic">
                 {idx.image ? (
                   <div
-                    className="w-full overflow-hidden rounded-md"
+                    className="w-full overflow-hidden"
                     style={{ aspectRatio }}
                   >
                     <Image
@@ -174,7 +161,7 @@ const Blogs = ({
                   </div>
                 ) : (
                   <div
-                    className="flex w-full items-center justify-center overflow-hidden rounded-md bg-background-subtle-2"
+                    className="flex w-full items-center justify-center overflow-hidden bg-background-subtle-2"
                     style={{ aspectRatio }}
                   >
                     <IconImageBlank
@@ -183,7 +170,12 @@ const Blogs = ({
                     />
                   </div>
                 )}
-                <div className="flex flex-col gap-4">
+                <div className="flex w-full flex-col gap-4 px-5 py-6">
+                  {idx.tags[0] && (
+                    <span className="w-fit rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
+                      {idx.tags[0]}
+                    </span>
+                  )}
                   <Tag
                     className={cn(
                       size === "custom" &&
@@ -198,7 +190,7 @@ const Blogs = ({
                   )}
                   <span className="inline-flex items-center gap-2 text-sm font-medium">
                     {readMoreText}
-                    <IconArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    <IconArrowRight className="size-4" />
                   </span>
                 </div>
               </div>
@@ -239,26 +231,15 @@ export const schema = createSchema({
         },
         {
           type: "range",
-          name: "articlePerRow",
-          label: "Articles per row",
-          defaultValue: 2,
-          configs: {
-            min: 1,
-            max: 4,
-            step: 1,
-          },
-        },
-        {
-          type: "range",
-          label: "Spacing between rows",
-          name: "gapRow",
+          name: "gap",
+          label: "Gap",
+          defaultValue: 20,
           configs: {
             min: 0,
             max: 100,
             step: 1,
             unit: "px",
           },
-          defaultValue: 20,
         },
         {
           type: "switch",

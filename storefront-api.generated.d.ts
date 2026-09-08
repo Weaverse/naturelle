@@ -205,6 +205,7 @@ export type ArticleFragment = Pick<
   | 'id'
   | 'title'
   | 'handle'
+  | 'tags'
   | 'publishedAt'
   | 'excerpt'
   | 'excerptHtml'
@@ -434,6 +435,7 @@ export type BlogSingleQuery = {
           | 'id'
           | 'title'
           | 'handle'
+          | 'tags'
           | 'publishedAt'
           | 'excerpt'
           | 'excerptHtml'
@@ -1350,6 +1352,7 @@ export type BlogQuery = {
             | 'id'
             | 'title'
             | 'handle'
+            | 'tags'
             | 'publishedAt'
             | 'excerpt'
             | 'excerptHtml'
@@ -1390,6 +1393,7 @@ export type ArticleDetailsQuery = {
           | 'id'
           | 'title'
           | 'handle'
+          | 'tags'
           | 'publishedAt'
           | 'excerpt'
           | 'excerptHtml'
@@ -1417,6 +1421,7 @@ export type ArticleDetailsQuery = {
             | 'id'
             | 'title'
             | 'handle'
+            | 'tags'
             | 'publishedAt'
             | 'excerpt'
             | 'excerptHtml'
@@ -3565,7 +3570,7 @@ export type FeaturedProductsQuery = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\nquery BlogSingle(\n    $language: LanguageCode\n    $blogHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      articles(first: 8) {\n        nodes {\n          ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
+  '#graphql\nquery BlogSingle(\n    $language: LanguageCode\n    $blogHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      articles(first: 8) {\n        nodes {\n          ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    tags\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
     return: BlogSingleQuery;
     variables: BlogSingleQueryVariables;
   };
@@ -3597,11 +3602,11 @@ interface GeneratedQueryTypes {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
   };
-  '#graphql\n  query Blog(\n    $language: LanguageCode\n    $blogHandle: String!\n    $pageBy: Int!\n    $cursor: String\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      title\n      handle\n      seo {\n        title\n        description\n      }\n      articles(first: $pageBy, after: $cursor) {\n        edges {\n          node {\n            ...Article\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
+  '#graphql\n  query Blog(\n    $language: LanguageCode\n    $blogHandle: String!\n    $pageBy: Int!\n    $cursor: String\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      title\n      handle\n      seo {\n        title\n        description\n      }\n      articles(first: $pageBy, after: $cursor) {\n        edges {\n          node {\n            ...Article\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    tags\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
     return: BlogQuery;
     variables: BlogQueryVariables;
   };
-  '#graphql\n  query ArticleDetails(\n    $language: LanguageCode\n    $blogHandle: String!\n    $articleHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        ...Article\n      }\n      articles (first: 20) {\n        nodes {\n            ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
+  '#graphql\n  query ArticleDetails(\n    $language: LanguageCode\n    $blogHandle: String!\n    $articleHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        ...Article\n      }\n      articles (first: 20) {\n        nodes {\n            ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    tags\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
     return: ArticleDetailsQuery;
     variables: ArticleDetailsQueryVariables;
   };

@@ -170,6 +170,7 @@ export const ARTICLE_FRAGMENT = `#graphql
     id
     title
     handle
+    tags
     publishedAt
     excerpt
     excerptHtml

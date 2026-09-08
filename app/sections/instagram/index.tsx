@@ -88,7 +88,7 @@ const Instagram = ({
     >
       <div
         className={clsx(
-          "flex w-full min-w-0 max-w-page flex-col gap-12 px-5 py-20 md:px-6 lg:px-10",
+          "flex w-full min-w-0 max-w-page flex-col gap-12 px-5 py-20 md:px-6",
           widthClasses[width],
         )}
       >
