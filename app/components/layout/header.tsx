@@ -58,10 +58,10 @@ export function Header() {
   const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
 
-  let scrolled = y < 50;
+  let scrolled = y >= 50;
 
   let enableTransparent = enableTransparentHeader && isHome && !routeError;
-  let isTransparent = enableTransparent && scrolled;
+  let isTransparent = enableTransparent && !scrolled;
   const hasAnnouncement =
     enableTrialShipping &&
     [
@@ -95,17 +95,24 @@ export function Header() {
           scrolled ? "shadow-header" : "shadow-none",
           isTransparent
             ? [
-                "bg-transparent text-(--color-transparent-header) md:border-transparent",
-                "[&_.main-logo]:opacity-0",
-                "[&_.transparent-logo]:opacity-100",
+                "border-transparent bg-transparent text-(--color-transparent-header)",
+                "[&_.main-logo]:opacity-0 [&:hover_.main-logo]:opacity-100",
+                "[&_.transparent-logo]:opacity-100 [&:hover_.transparent-logo]:opacity-0",
               ]
             : ["[&_.main-logo]:opacity-100", "[&_.transparent-logo]:opacity-0"],
         )}
         style={{ ["--announcement-bar-height" as string]: `${top}px` }}
       >
-        <div className="hidden w-full items-center justify-center bg-background-subtle-1 px-6 py-3 text-(--color-header-text) md:flex lg:py-4 [&_.main-logo]:!opacity-100 [&_.transparent-logo]:!opacity-0">
+        <div
+          className={cn(
+            "hidden w-full items-center justify-center px-6 py-3 md:flex lg:py-4",
+            isTransparent
+              ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-header-bg group-hover/header:text-(--color-header-text)"
+              : "bg-background-subtle-1 text-(--color-header-text) group-hover/header:bg-header-bg",
+          )}
+        >
           <div className="mx-auto flex w-full max-w-page items-center justify-between px-6">
-            <div className="flex w-77.75 shrink-0 items-center gap-5 text-[13px] font-medium leading-normal text-text-subtle">
+            <div className="flex w-77.75 shrink-0 items-center gap-5 text-[13px] font-medium leading-normal">
               {storeLocatorText && (
                 <Link to={storeLocatorLink}>{storeLocatorText}</Link>
               )}
@@ -139,7 +146,8 @@ export function Header() {
         </div>
         <div
           className={cn(
-            "z-40 flex h-14.5 items-center justify-center gap-2.5 bg-header-bg md:h-16.5 md:bg-transparent",
+            "z-40 flex h-14.5 items-center justify-center gap-2.5 md:h-16.5",
+            isTransparent ? "bg-transparent" : "bg-header-bg md:bg-transparent",
             variants({ width: headerWidth, padding: headerWidth }),
           )}
         >
