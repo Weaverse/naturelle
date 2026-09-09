@@ -9,12 +9,14 @@ import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
+  type JournalBlog,
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
 
 export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let { menu } = props;
+  const journalBlogs = menu?.journalBlogs ?? [];
   let { typeOpenMenu } = useThemeSettings();
   let [value, setValue] = useState<string | null>(null);
 
@@ -32,15 +34,16 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
             let hasSubmenu = level > 1;
-            let isJournal = items.some(
-              ({ resource }) => resource?.articles || resource?.blog,
+            let isJournal = items.some(({ resource }) =>
+              ["Article", "Blog"].includes(resource?.__typename ?? ""),
             );
             let isDropdown =
               !isJournal &&
               level === 2 &&
               items.every(
                 ({ resource }) =>
-                  !resource?.image && !resource?.articles?.nodes.length,
+                  !resource?.image &&
+                  !["Article", "Blog"].includes(resource?.__typename ?? ""),
               );
             return (
               <Menubar.Menu key={id} value={id}>
@@ -86,7 +89,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                     {isDropdown ? (
                       <DropdownSubMenu items={items} />
                     ) : isJournal ? (
-                      <JournalMenu items={items} />
+                      <JournalMenu blogs={journalBlogs} />
                     ) : (
                       <LayoutMenu items={items} />
                     )}
@@ -126,12 +129,7 @@ function DropdownSubMenu({ items }: { items: SingleMenuItem[] }) {
 }
 
 function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
-  const blogItems = items.filter((item) => item.resource?.articles);
   const collectionItems = items.filter((item) => item.resource?.products);
-
-  if (blogItems.length) {
-    return <JournalMenu items={blogItems} />;
-  }
 
   if (collectionItems.length) {
     const featuredCollection = collectionItems.find(
@@ -277,32 +275,13 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
   );
 }
 
-function JournalMenu({ items }: { items: SingleMenuItem[] }) {
-  const blogs = items
-    .map((item) => {
-      if (item.resource?.articles) {
-        return {
-          id: item.id,
-          title: item.resource.title || item.title,
-          to: item.to,
-          articles: item.resource.articles.nodes,
-        };
-      }
-      if (item.resource?.blog) {
-        return {
-          id: item.resource.blog.handle,
-          title: item.resource.blog.title,
-          to: `/blogs/${item.resource.blog.handle}`,
-          articles: item.resource.blog.articles.nodes,
-        };
-      }
-      return null;
-    })
-    .filter((blog): blog is NonNullable<typeof blog> => Boolean(blog))
-    .filter(
-      (blog, index, allBlogs) =>
-        allBlogs.findIndex((candidate) => candidate.to === blog.to) === index,
-    );
+function JournalMenu({ blogs: blogData }: { blogs: JournalBlog[] }) {
+  const blogs = blogData.map((blog) => ({
+    id: blog.id,
+    title: blog.title,
+    to: `/blogs/${blog.handle}`,
+    articles: blog.articles.nodes,
+  }));
   const [activeId, setActiveId] = useState(blogs[0]?.id ?? "");
   const activeBlog = blogs.find((blog) => blog.id === activeId) ?? blogs[0];
   const articleCards = (activeBlog?.articles ?? []).map((article) => ({

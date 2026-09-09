@@ -27,6 +27,26 @@ export type ParentEnhancedMenuItem = (ParentMenuItemFragment &
 
 export type EnhancedMenu = Pick<MenuFragment, "id"> & {
   items: ParentEnhancedMenuItem[];
+  journalBlogs?: JournalBlog[];
+};
+
+export type JournalBlog = {
+  id: string;
+  title: string;
+  handle: string;
+  articles: {
+    nodes: Array<{
+      id: string;
+      title: string;
+      handle: string;
+      image?: {
+        altText: string | null;
+        height: number;
+        url: string;
+        width: number;
+      } | null;
+    }>;
+  };
 };
 
 export interface SingleMenuItem {
@@ -35,6 +55,7 @@ export interface SingleMenuItem {
   items: SingleMenuItem[];
   to: string;
   resource?: {
+    __typename?: string;
     title?: string;
     description?: string;
     collections?: {
@@ -51,38 +72,6 @@ export interface SingleMenuItem {
       }>;
     };
     handle?: string;
-    articles?: {
-      nodes: Array<{
-        id: string;
-        title: string;
-        handle: string;
-        image?: {
-          altText: string | null;
-          height: number;
-          id: string;
-          url: string;
-          width: number;
-        } | null;
-      }>;
-    };
-    blog?: {
-      title: string;
-      handle: string;
-      articles: {
-        nodes: Array<{
-          id: string;
-          title: string;
-          handle: string;
-          image?: {
-            altText: string | null;
-            height: number;
-            id: string;
-            url: string;
-            width: number;
-          } | null;
-        }>;
-      };
-    };
     image?: {
       altText: string;
       height: number;

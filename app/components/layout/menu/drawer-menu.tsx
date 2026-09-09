@@ -2,6 +2,7 @@ import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
+import { useShopMenu } from "~/hooks/use-menu-shop";
 import {
   type EnhancedMenu,
   getMaxDepth,
@@ -72,9 +73,8 @@ function DrawerMenu({
             (childItem) =>
               childItem.resource?.image && !childItem.resource.products,
           );
-        let isJournalMenu = item.items.some(
-          (childItem) =>
-            childItem.resource?.articles || childItem.resource?.blog,
+        let isJournalMenu = item.items.some((childItem) =>
+          ["Article", "Blog"].includes(childItem.resource?.__typename ?? ""),
         );
         let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
           isCollectionMenu
@@ -393,9 +393,10 @@ function BrandMenu({
 
 function JournalDrawerMenu({
   title,
-  items,
   closeDrawer,
 }: SingleMenuItem & { closeDrawer: () => void }) {
+  const { headerMenu } = useShopMenu();
+  const journalBlogs = headerMenu?.journalBlogs ?? [];
   const {
     isOpen: isMenuOpen,
     openDrawer: openMenu,
@@ -405,31 +406,12 @@ function JournalDrawerMenu({
     closeMenu();
     closeDrawer();
   };
-  const blogs = items
-    .map((item) => {
-      if (item.resource?.articles) {
-        return {
-          id: item.id,
-          title: item.resource.title || item.title,
-          to: item.to,
-          articles: item.resource.articles.nodes,
-        };
-      }
-      if (item.resource?.blog) {
-        return {
-          id: item.resource.blog.handle,
-          title: item.resource.blog.title,
-          to: `/blogs/${item.resource.blog.handle}`,
-          articles: item.resource.blog.articles.nodes,
-        };
-      }
-      return null;
-    })
-    .filter((blog): blog is NonNullable<typeof blog> => Boolean(blog))
-    .filter(
-      (blog, index, allBlogs) =>
-        allBlogs.findIndex((candidate) => candidate.to === blog.to) === index,
-    );
+  const blogs = journalBlogs.map((blog) => ({
+    id: blog.id,
+    title: blog.title,
+    to: `/blogs/${blog.handle}`,
+    articles: blog.articles.nodes,
+  }));
 
   const content = (
     <Drawer

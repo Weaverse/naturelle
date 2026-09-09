@@ -265,6 +265,26 @@ const LAYOUT_QUERY = `#graphql
     footerMenu: menu(handle: $footerMenuHandle) {
       ...FooterMenu
     }
+    journalBlogs: blogs(first: 5) {
+      nodes {
+        id
+        title
+        handle
+        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
+          nodes {
+            id
+            title
+            handle
+            image {
+              altText
+              height
+              url
+              width
+            }
+          }
+        }
+      }
+    }
   }
   fragment Shop on Shop {
     id
@@ -285,6 +305,7 @@ const LAYOUT_QUERY = `#graphql
     id
     resourceId
     resource {
+      __typename
       ... on Collection {
         title
         products(first: 5) {
@@ -297,7 +318,6 @@ const LAYOUT_QUERY = `#graphql
         image {
           altText
           height
-          id
           url
           width
         }
@@ -308,13 +328,11 @@ const LAYOUT_QUERY = `#graphql
         image: featuredImage {
           altText
           height
-          id
           url
           width
         }
         collections(first: 1) {
           nodes {
-            id
             title
           }
         }
@@ -322,49 +340,6 @@ const LAYOUT_QUERY = `#graphql
       ... on Blog {
         title
         handle
-        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
-          nodes {
-            id
-            title
-            handle
-            image {
-              altText
-              height
-              id
-              url
-              width
-            }
-          }
-        }
-      }
-      ... on Article {
-        title
-        handle
-        image {
-          altText
-          height
-          id
-          url
-          width
-        }
-        blog {
-          title
-          handle
-          articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
-            nodes {
-              id
-              title
-              handle
-              image {
-                altText
-                height
-                id
-                url
-                width
-              }
-            }
-          }
-        }
       }
     }
     tags
@@ -455,13 +430,19 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
     */
   let customPrefixes = { CATALOG: "products" };
 
-  const headerMenu = layoutData?.headerMenu
+  const parsedHeaderMenu = layoutData?.headerMenu
     ? parseMenu(
         layoutData.headerMenu,
         layoutData.shop.primaryDomain.url,
         env,
         customPrefixes,
       )
+    : undefined;
+  const headerMenu = parsedHeaderMenu
+    ? {
+        ...parsedHeaderMenu,
+        journalBlogs: layoutData.journalBlogs.nodes,
+      }
     : undefined;
 
   const footerMenu = layoutData?.footerMenu
