@@ -265,26 +265,6 @@ const LAYOUT_QUERY = `#graphql
     footerMenu: menu(handle: $footerMenuHandle) {
       ...FooterMenu
     }
-    journalBlogs: blogs(first: 5) {
-      nodes {
-        id
-        title
-        handle
-        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
-          nodes {
-            id
-            title
-            handle
-            image {
-              altText
-              height
-              url
-              width
-            }
-          }
-        }
-      }
-    }
   }
   fragment Shop on Shop {
     id
@@ -308,13 +288,6 @@ const LAYOUT_QUERY = `#graphql
       __typename
       ... on Collection {
         title
-        products(first: 5) {
-          nodes {
-            id
-            title
-            handle
-          }
-        }
         image {
           altText
           height
@@ -337,9 +310,13 @@ const LAYOUT_QUERY = `#graphql
           }
         }
       }
-      ... on Blog {
-        title
-        handle
+      ... on Article {
+        image {
+          altText
+          height
+          url
+          width
+        }
       }
     }
     tags
@@ -438,13 +415,6 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
         customPrefixes,
       )
     : undefined;
-  const headerMenu = parsedHeaderMenu
-    ? {
-        ...parsedHeaderMenu,
-        journalBlogs: layoutData.journalBlogs.nodes,
-      }
-    : undefined;
-
   const footerMenu = layoutData?.footerMenu
     ? parseMenu(
         layoutData.footerMenu,
@@ -459,7 +429,7 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
       ...layoutData.shop,
       ...policiesData.shop,
     },
-    headerMenu,
+    headerMenu: parsedHeaderMenu,
     footerMenu,
   };
 }

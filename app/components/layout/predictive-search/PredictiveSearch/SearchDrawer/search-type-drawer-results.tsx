@@ -3,6 +3,7 @@ import { ProductCard } from "~/components/product/product-card";
 import { usePredictiveSearch } from "~/hooks/use-predictive-search";
 import type { NormalizedPredictiveSearchResultItem } from "~/types/search-types";
 import { PopularKeywords } from "../../popular-keywords";
+import { setNativeInputValue } from "../../set-native-input-value";
 
 export function SearchTypeDrawerResults() {
   const { results, totalResults, searchTerm, searchInputRef } =
@@ -16,15 +17,8 @@ export function SearchTypeDrawerResults() {
 
   const setSearchKeyword = (keyword: string) => {
     const input = searchInputRef.current;
-    const setValue = Object.getOwnPropertyDescriptor(
-      HTMLInputElement.prototype,
-      "value",
-    )?.set;
-    if (input && setValue) {
-      setValue.call(input, keyword);
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.focus();
-    }
+    setNativeInputValue(input, keyword);
+    input?.focus();
   };
 
   if (!term) {

@@ -806,12 +806,6 @@ export const themeSchema: HydrogenThemeSchema = {
         { type: "heading", label: "Label" },
         {
           type: "color",
-          label: "Label text",
-          name: "labelText",
-          defaultValue: "#FFFFFF",
-        },
-        {
-          type: "color",
           label: "Label background (save)",
           name: "labelBgSave",
           defaultValue: "#C14D4D",

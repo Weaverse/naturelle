@@ -20,12 +20,11 @@ export function ProductBadge({
   return (
     <span
       className={clsx(
-        "pointer-events-none rounded-full px-3 py-1.5 text-xs",
+        "pointer-events-none rounded-full px-3 py-1.5 text-xs text-text-inverse",
         className,
       )}
       style={{
         backgroundColor: backgroundColors[type],
-        color: "var(--color-label-text)",
       }}
     >
       {text}

@@ -92,7 +92,13 @@ async function fetchPredictiveSearchResults({
     try {
       const popularResponse = (await context.storefront.query(
         POPULAR_PRODUCTS_QUERY,
-        { variables: { first: 4 } },
+        {
+          variables: {
+            country: context.storefront.i18n.country,
+            first: 4,
+            language: context.storefront.i18n.language,
+          },
+        },
       )) as { products?: { nodes?: ProductCardFragment[] } };
       popularProductsData = popularResponse.products?.nodes || [];
     } catch {
@@ -132,6 +138,8 @@ async function fetchPredictiveSearchResults({
       PREDICTIVE_SEARCH_QUERY,
       {
         variables: {
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
           limit,
           limitScope: "EACH",
           searchTerm,
@@ -397,7 +405,11 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
 ` as const;
 
 const POPULAR_PRODUCTS_QUERY = `#graphql
-  query PopularSearchProducts($first: Int!) {
+  query PopularSearchProducts(
+    $country: CountryCode
+    $first: Int!
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
     products(first: $first, sortKey: BEST_SELLING) {
       nodes {
         ...ProductCard

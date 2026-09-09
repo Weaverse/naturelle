@@ -211,7 +211,7 @@ export function ScrollingAnnouncement() {
         stickyAnnouncementBar ? "sticky top-0 z-50" : "relative z-40",
       )}
     >
-      <div className="mx-auto flex w-full max-w-page shrink-0 items-center justify-center gap-(--announcement-gap) border-b-(--color-topbar-border) px-8 py-2.5 md:w-208.5 lg:w-full">
+      <div className="mx-auto flex w-full max-w-page shrink-0 items-center justify-center gap-(--announcement-gap) border-b-(--color-topbar-border) px-8 py-2.5">
         <button
           type="button"
           onClick={goPrev}

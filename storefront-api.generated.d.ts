@@ -1728,17 +1728,21 @@ export type LayoutQuery = {
                   'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
                 > & {
                   resource?: StorefrontAPI.Maybe<
+                    | ({__typename: 'Article'} & {
+                        image?: StorefrontAPI.Maybe<
+                          Pick<
+                            StorefrontAPI.Image,
+                            'altText' | 'height' | 'url' | 'width'
+                          >
+                        >;
+                      })
                     | {
                         __typename:
-                          | 'Article'
+                          | 'Blog'
                           | 'Metaobject'
                           | 'Page'
                           | 'ShopPolicy';
                       }
-                    | ({__typename: 'Blog'} & Pick<
-                        StorefrontAPI.Blog,
-                        'title' | 'handle'
-                      >)
                     | ({__typename: 'Collection'} & Pick<
                         StorefrontAPI.Collection,
                         'title'
@@ -1778,11 +1782,15 @@ export type LayoutQuery = {
                 }
               >;
               resource?: StorefrontAPI.Maybe<
-                | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-                | ({__typename: 'Blog'} & Pick<
-                    StorefrontAPI.Blog,
-                    'title' | 'handle'
-                  >)
+                | ({__typename: 'Article'} & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'altText' | 'height' | 'url' | 'width'
+                      >
+                    >;
+                  })
+                | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
                 | ({__typename: 'Collection'} & Pick<
                     StorefrontAPI.Collection,
                     'title'
@@ -1817,11 +1825,15 @@ export type LayoutQuery = {
             }
           >;
           resource?: StorefrontAPI.Maybe<
-            | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-            | ({__typename: 'Blog'} & Pick<
-                StorefrontAPI.Blog,
-                'title' | 'handle'
-              >)
+            | ({__typename: 'Article'} & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'altText' | 'height' | 'url' | 'width'
+                  >
+                >;
+              })
+            | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
             | ({__typename: 'Collection'} & Pick<
                 StorefrontAPI.Collection,
                 'title'
@@ -1881,24 +1893,6 @@ export type LayoutQuery = {
       >;
     }
   >;
-  journalBlogs: {
-    nodes: Array<
-      Pick<StorefrontAPI.Blog, 'id' | 'title' | 'handle'> & {
-        articles: {
-          nodes: Array<
-            Pick<StorefrontAPI.Article, 'id' | 'title' | 'handle'> & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-            }
-          >;
-        };
-      }
-    >;
-  };
 };
 
 export type ShopFragment = Pick<
@@ -1918,8 +1912,12 @@ export type MenuItemFragment = Pick<
   'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
 > & {
   resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
     | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
           products: {
             nodes: Array<
@@ -1947,8 +1945,12 @@ export type ChildMenuItemFragment = Pick<
   'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
 > & {
   resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
     | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
           products: {
             nodes: Array<
@@ -1981,8 +1983,12 @@ export type ParentMenuItem2Fragment = Pick<
       'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
     > & {
       resource?: StorefrontAPI.Maybe<
-        | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-        | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+        | ({__typename: 'Article'} & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+            >;
+          })
+        | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
         | ({__typename: 'Collection'} & Pick<
             StorefrontAPI.Collection,
             'title'
@@ -2017,8 +2023,12 @@ export type ParentMenuItem2Fragment = Pick<
     }
   >;
   resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
     | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
           products: {
             nodes: Array<
@@ -2056,11 +2066,15 @@ export type ParentMenuItemFragment = Pick<
           'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
         > & {
           resource?: StorefrontAPI.Maybe<
-            | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-            | ({__typename: 'Blog'} & Pick<
-                StorefrontAPI.Blog,
-                'title' | 'handle'
-              >)
+            | ({__typename: 'Article'} & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'altText' | 'height' | 'url' | 'width'
+                  >
+                >;
+              })
+            | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
             | ({__typename: 'Collection'} & Pick<
                 StorefrontAPI.Collection,
                 'title'
@@ -2095,8 +2109,12 @@ export type ParentMenuItemFragment = Pick<
         }
       >;
       resource?: StorefrontAPI.Maybe<
-        | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-        | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+        | ({__typename: 'Article'} & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+            >;
+          })
+        | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
         | ({__typename: 'Collection'} & Pick<
             StorefrontAPI.Collection,
             'title'
@@ -2131,8 +2149,12 @@ export type ParentMenuItemFragment = Pick<
     }
   >;
   resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
     | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
           products: {
             nodes: Array<
@@ -2172,11 +2194,15 @@ export type MenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
               'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
             > & {
               resource?: StorefrontAPI.Maybe<
-                | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-                | ({__typename: 'Blog'} & Pick<
-                    StorefrontAPI.Blog,
-                    'title' | 'handle'
-                  >)
+                | ({__typename: 'Article'} & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'altText' | 'height' | 'url' | 'width'
+                      >
+                    >;
+                  })
+                | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
                 | ({__typename: 'Collection'} & Pick<
                     StorefrontAPI.Collection,
                     'title'
@@ -2211,11 +2237,15 @@ export type MenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
             }
           >;
           resource?: StorefrontAPI.Maybe<
-            | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-            | ({__typename: 'Blog'} & Pick<
-                StorefrontAPI.Blog,
-                'title' | 'handle'
-              >)
+            | ({__typename: 'Article'} & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'altText' | 'height' | 'url' | 'width'
+                  >
+                >;
+              })
+            | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
             | ({__typename: 'Collection'} & Pick<
                 StorefrontAPI.Collection,
                 'title'
@@ -2250,8 +2280,12 @@ export type MenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
         }
       >;
       resource?: StorefrontAPI.Maybe<
-        | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-        | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
+        | ({__typename: 'Article'} & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+            >;
+          })
+        | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
         | ({__typename: 'Collection'} & Pick<
             StorefrontAPI.Collection,
             'title'
@@ -3238,7 +3272,7 @@ interface GeneratedQueryTypes {
     return: FeaturedItemsQuery;
     variables: FeaturedItemsQueryVariables;
   };
-  '#graphql\n  query layout(\n    $language: LanguageCode\n    $headerMenuHandle: String!\n    $footerMenuHandle: String!\n  ) @inContext(language: $language) {\n    shop {\n      ...Shop\n    }\n    headerMenu: menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n    footerMenu: menu(handle: $footerMenuHandle) {\n      ...FooterMenu\n    }\n    journalBlogs: blogs(first: 5) {\n      nodes {\n        id\n        title\n        handle\n        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {\n          nodes {\n            id\n            title\n            handle\n            image {\n              altText\n              height\n              url\n              width\n            }\n          }\n        }\n      }\n    }\n  }\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    resource {\n      __typename\n      ... on Collection {\n        title\n        products(first: 5) {\n          nodes {\n            id\n            title\n            handle\n          }\n        }\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n      ... on Product {\n        title\n        description\n        image: featuredImage {\n          altText\n          height\n          url\n          width\n        }\n        collections(first: 1) {\n          nodes {\n            title\n          }\n        }\n      }\n      ... on Blog {\n        title\n        handle\n      }\n    }\n    tags\n    title\n    type\n    url\n  }\n\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem2 on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ParentMenuItem2\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n  fragment FooterMenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment FooterChildMenuItem on MenuItem {\n    ...FooterMenuItem\n  }\n  fragment FooterParentMenuItem2 on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterChildMenuItem\n    }\n  }\n  fragment FooterParentMenuItem on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterParentMenuItem2\n    }\n  }\n  fragment FooterMenu on Menu {\n    id\n    items {\n      ...FooterParentMenuItem\n    }\n  }\n': {
+  '#graphql\n  query layout(\n    $language: LanguageCode\n    $headerMenuHandle: String!\n    $footerMenuHandle: String!\n  ) @inContext(language: $language) {\n    shop {\n      ...Shop\n    }\n    headerMenu: menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n    footerMenu: menu(handle: $footerMenuHandle) {\n      ...FooterMenu\n    }\n  }\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    resource {\n      __typename\n      ... on Collection {\n        title\n        products(first: 5) {\n          nodes {\n            id\n            title\n            handle\n          }\n        }\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n      ... on Product {\n        title\n        description\n        image: featuredImage {\n          altText\n          height\n          url\n          width\n        }\n        collections(first: 1) {\n          nodes {\n            title\n          }\n        }\n      }\n      ... on Article {\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n    }\n    tags\n    title\n    type\n    url\n  }\n\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem2 on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ParentMenuItem2\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n  fragment FooterMenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment FooterChildMenuItem on MenuItem {\n    ...FooterMenuItem\n  }\n  fragment FooterParentMenuItem2 on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterChildMenuItem\n    }\n  }\n  fragment FooterParentMenuItem on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterParentMenuItem2\n    }\n  }\n  fragment FooterMenu on Menu {\n    id\n    items {\n      ...FooterParentMenuItem\n    }\n  }\n': {
     return: LayoutQuery;
     variables: LayoutQueryVariables;
   };

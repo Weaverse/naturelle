@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { IconClose, IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
 import { PredictiveSearchForm } from "../../search-form";
+import { setNativeInputValue } from "../../set-native-input-value";
 import { SearchTypeDrawerResults } from "./search-type-drawer-results";
 
 interface PredictiveSearchProps {
@@ -51,17 +52,8 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => {
                     const input = inputRef.current;
-                    const setValue = Object.getOwnPropertyDescriptor(
-                      HTMLInputElement.prototype,
-                      "value",
-                    )?.set;
-                    if (input && setValue) {
-                      setValue.call(input, "");
-                      input.dispatchEvent(
-                        new Event("input", { bubbles: true }),
-                      );
-                      input.focus();
-                    }
+                    setNativeInputValue(input, "");
+                    input?.focus();
                   }}
                   className="flex size-6 shrink-0 items-center justify-center text-text-subtle"
                 >

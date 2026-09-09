@@ -9,14 +9,12 @@ import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
-  type JournalBlog,
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
 
 export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let { menu } = props;
-  const journalBlogs = menu?.journalBlogs ?? [];
   let { typeOpenMenu } = useThemeSettings();
   let [value, setValue] = useState<string | null>(null);
 
@@ -34,16 +32,15 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
             let hasSubmenu = level > 1;
-            let isJournal = items.some(({ resource }) =>
-              ["Article", "Blog"].includes(resource?.__typename ?? ""),
+            let isJournal = items.some(
+              ({ resource }) => resource?.__typename === "Blog",
             );
             let isDropdown =
               !isJournal &&
               level === 2 &&
               items.every(
                 ({ resource }) =>
-                  !resource?.image &&
-                  !["Article", "Blog"].includes(resource?.__typename ?? ""),
+                  !resource?.image && resource?.__typename !== "Article",
               );
             return (
               <Menubar.Menu key={id} value={id}>
@@ -89,7 +86,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                     {isDropdown ? (
                       <DropdownSubMenu items={items} />
                     ) : isJournal ? (
-                      <JournalMenu blogs={journalBlogs} />
+                      <JournalMenu items={items} />
                     ) : (
                       <LayoutMenu items={items} />
                     )}
@@ -129,7 +126,9 @@ function DropdownSubMenu({ items }: { items: SingleMenuItem[] }) {
 }
 
 function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
-  const collectionItems = items.filter((item) => item.resource?.products);
+  const collectionItems = items.filter(
+    (item) => item.resource?.__typename === "Collection",
+  );
 
   if (collectionItems.length) {
     const featuredCollection = collectionItems.find(
@@ -139,33 +138,35 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
     return (
       <div className="mx-auto flex min-h-70 w-full max-w-page justify-center">
         <div className="grid min-w-0 flex-1 grid-cols-3">
-          {collectionItems.map(({ id, title, to, resource }, idx) => (
-            <SlideIn
-              key={id}
-              className="border-border-subtle border-r px-6 py-2 first:border-l"
-              style={{ "--idx": idx } as React.CSSProperties}
-            >
-              <Link
-                to={to}
-                prefetch="intent"
-                className="line-clamp-1 w-fit border-foreground border-b pb-2 font-heading text-base uppercase"
+          {collectionItems.map(
+            ({ id, title, to, items: products, resource }, idx) => (
+              <SlideIn
+                key={id}
+                className="border-border-subtle border-r px-6 py-2 first:border-l"
+                style={{ "--idx": idx } as React.CSSProperties}
               >
-                {resource?.title || title}
-              </Link>
-              <div className="mt-3 flex flex-col gap-2">
-                {resource?.products?.nodes.map((product) => (
-                  <Link
-                    key={product.id}
-                    to={`/products/${product.handle}`}
-                    prefetch="intent"
-                    className="block w-full truncate text-sm transition-none"
-                  >
-                    {product.title}
-                  </Link>
-                ))}
-              </div>
-            </SlideIn>
-          ))}
+                <Link
+                  to={to}
+                  prefetch="intent"
+                  className="line-clamp-1 w-fit border-foreground border-b pb-2 font-heading text-base uppercase"
+                >
+                  {resource?.title || title}
+                </Link>
+                <div className="mt-3 flex flex-col gap-2">
+                  {products.map((product) => (
+                    <Link
+                      key={product.id}
+                      to={product.to}
+                      prefetch="intent"
+                      className="block w-full truncate text-sm transition-none"
+                    >
+                      {product.title}
+                    </Link>
+                  ))}
+                </div>
+              </SlideIn>
+            ),
+          )}
         </div>
 
         {featuredCollection?.resource?.image && (
@@ -275,24 +276,15 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
   );
 }
 
-function JournalMenu({ blogs: blogData }: { blogs: JournalBlog[] }) {
-  const blogs = blogData.map((blog) => ({
-    id: blog.id,
-    title: blog.title,
-    to: `/blogs/${blog.handle}`,
-    articles: blog.articles.nodes,
-  }));
-  const [activeId, setActiveId] = useState(blogs[0]?.id ?? "");
-  const activeBlog = blogs.find((blog) => blog.id === activeId) ?? blogs[0];
-  const articleCards = (activeBlog?.articles ?? []).map((article) => ({
-    ...article,
-    to: `${activeBlog.to.replace(/\/$/, "")}/${article.handle}`,
-  }));
+function JournalMenu({ items }: { items: SingleMenuItem[] }) {
+  const [activeId, setActiveId] = useState(items[0]?.id ?? "");
+  const activeBlog = items.find((blog) => blog.id === activeId) ?? items[0];
+  const articles = activeBlog?.items ?? [];
 
   return (
     <div className="mx-auto grid min-h-76 w-full max-w-page grid-cols-[250px_minmax(0,1fr)]">
       <div className="border-border-subtle flex flex-col gap-2 border-r px-4 py-1">
-        {blogs.map((blog) => {
+        {items.map((blog) => {
           const isActive = blog.id === activeBlog?.id;
           return (
             <Link
@@ -314,7 +306,7 @@ function JournalMenu({ blogs: blogData }: { blogs: JournalBlog[] }) {
       </div>
 
       <div className="grid content-start grid-cols-3 gap-4 px-5 py-1">
-        {articleCards.slice(0, 6).map((article, idx) => (
+        {articles.slice(0, 6).map((article, idx) => (
           <SlideIn
             key={article.id}
             className="min-w-0"
@@ -325,9 +317,9 @@ function JournalMenu({ blogs: blogData }: { blogs: JournalBlog[] }) {
               prefetch="intent"
               className="group/article relative block aspect-[236/132] overflow-hidden rounded-lg bg-background-subtle-2"
             >
-              {article.image && (
+              {article.resource?.image && (
                 <Image
-                  data={article.image}
+                  data={article.resource.image}
                   sizes="(min-width: 768px) 236px, 50vw"
                   className="h-full w-full object-cover transition-transform duration-300 group-hover/article:scale-[1.03]"
                   width={300}

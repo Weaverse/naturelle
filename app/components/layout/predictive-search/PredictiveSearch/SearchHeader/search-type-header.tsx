@@ -3,6 +3,7 @@ import { IconClose, IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
 import { cn } from "~/utils/cn";
 import { PredictiveSearchForm } from "../../search-form";
+import { setNativeInputValue } from "../../set-native-input-value";
 import { SearchTypeHeaderResults } from "./search-type-header-results";
 
 interface PredictiveSearchProps {
@@ -85,17 +86,8 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={() => {
                       const input = inputRef.current;
-                      const setValue = Object.getOwnPropertyDescriptor(
-                        HTMLInputElement.prototype,
-                        "value",
-                      )?.set;
-                      if (input && setValue) {
-                        setValue.call(input, "");
-                        input.dispatchEvent(
-                          new Event("input", { bubbles: true }),
-                        );
-                        input.focus();
-                      }
+                      setNativeInputValue(input, "");
+                      input?.focus();
                     }}
                     aria-label="Clear search"
                     className="flex size-6 shrink-0 items-center justify-center text-text-subtle"
