@@ -83,12 +83,12 @@ function PopularCard({
   return (
     <Link
       to={`/collections/${collection.handle}`}
-      className="grid gap-4 group relative rounded"
+      className="group relative grid gap-4 rounded-md"
       style={style}
       data-motion="slide-in"
     >
-      <div className="w-full h-full flex justify-center items-center rounded">
-        <div className="card-image bg-primary/5 w-full h-full rounded">
+      <div className="flex h-full w-full items-center justify-center rounded-md">
+        <div className="card-image h-full w-full rounded-md bg-primary/5">
           {collection?.image && (
             <Image
               data={collection.image}
@@ -97,12 +97,12 @@ function PopularCard({
               aspectRatio={imageAspectRatio}
               sizes="(max-width: 32em) 100vw, 45vw"
               loading={loading}
-              className="w-full h-full object-cover rounded"
+              className="h-full w-full rounded-md object-cover"
             />
           )}
         </div>
       </div>
-      <div className="absolute inset-0 justify-center items-center z-10 flex rounded">
+      <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md">
         <h3
           className="text-white font-medium text-animation"
           style={
@@ -115,7 +115,7 @@ function PopularCard({
           {collection.title}
         </h3>
       </div>
-      <div className="absolute inset-0 group-hover:opacity-50 opacity-30 bg-(--calculate-color) transition-opacity duration-500 rounded" />
+      <div className="absolute inset-0 rounded-md bg-(--calculate-color) opacity-30 transition-opacity duration-500 group-hover:opacity-50" />
     </Link>
   );
 }

@@ -406,7 +406,7 @@ function CartLineQuantity({
       <label htmlFor={`quantity-${lineId}`} className="sr-only">
         Quantity, {optimisticQuantity}
       </label>
-      <div className="flex items-center border border-border-subtle rounded w-fit">
+      <div className="flex w-fit items-center rounded-md border border-border-subtle">
         <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
           <button
             type="submit"

@@ -5,9 +5,8 @@ import type {
 } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
-import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
-import { IconImageBlank } from "~/components/icon";
+import { IconArrowRight, IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { BLOG_QUERY } from "~/graphql/queries";
@@ -76,10 +75,9 @@ let variants = cva("heading", {
 
 type BlogData = {
   blogs: WeaverseBlog;
-  backgroundColor: string;
-  articlePerRow: number;
-  gapRow: number;
+  gap: number;
   showSeperator: boolean;
+  readMoreText: string;
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   minSize?: number;
   maxSize?: number;
@@ -92,13 +90,6 @@ export interface BlogProps
     VariantProps<typeof variants>,
     VariantProps<typeof fontSizeVariants> {}
 
-let articlesPerRowClasses: { [item: number]: string } = {
-  1: "sm:grid-cols-1",
-  2: "sm:grid-cols-2",
-  3: "sm:grid-cols-3",
-  4: "sm:grid-cols-4",
-};
-
 const Blogs = ({
   ref,
   ...props
@@ -106,10 +97,9 @@ const Blogs = ({
   const [scope] = useAnimation(ref);
   let {
     blogs,
-    backgroundColor,
-    articlePerRow,
-    gapRow,
+    gap = 20,
     showSeperator,
+    readMoreText = "Read more",
     as: Tag = "h4",
     size,
     mobileSize,
@@ -123,33 +113,17 @@ const Blogs = ({
     ...rest
   } = props;
 
-  const calculateColor = (hex: string) =>
-    `#${[...new Array(3)]
-      .map((_, i) =>
-        Math.max(
-          0,
-          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
-            [19, 18, 28][i],
-        )
-          .toString(16)
-          .padStart(2, "0"),
-      )
-      .join("")}`;
-
   let sectionStyle: CSSProperties = {
-    "--background-color": backgroundColor,
-    "--calculate-color": calculateColor(backgroundColor),
     "--min-size-px": `${minSize}px`,
     "--min-size": minSize,
     "--max-size": maxSize,
-    "--gap-row": `${gapRow}px`,
+    "--blog-card-gap": `${gap}px`,
   } as CSSProperties;
 
   const defaultArticles = Array.from({ length: 3 }).map((_, i) => ({
     id: i,
     title: "Trendy items for this Winter Fall 2025 season",
-    excerpt:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+    tags: [],
     image: null,
     handle: null,
   }));
@@ -160,42 +134,34 @@ const Blogs = ({
     <section
       ref={scope}
       {...rest}
-      className="flex h-full w-full justify-center bg-[var(--background-color)]"
+      className="flex h-full w-full justify-center"
       style={sectionStyle}
     >
-      <div className="container flex flex-col gap-6 px-4 py-12 sm:px-6 sm:py-20">
+      <div className="container flex flex-col gap-6 px-5 py-20 md:px-6">
         {children}
-        <div
-          className={clsx(
-            "flex flex-col gap-[var(--gap-row)] sm:grid sm:gap-0 sm:justify-self-center sm:gap-y-[var(--gap-row)]",
-            articlesPerRowClasses[Math.min(articlePerRow, res?.length || 1)],
-          )}
-        >
-          {res?.map((idx, i) => (
+        <div className="grid grid-cols-1 gap-(--blog-card-gap) sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {res?.map((idx) => (
             <Link
-              key={i}
+              key={idx.id}
               to={idx.handle ? `/blogs/${blogs.handle}/${idx.handle}` : "#"}
               data-motion="slide-in"
               className={"group"}
             >
-              <div
-                key={idx.id}
-                className="flex w-full h-full cursor-pointer flex-col items-center gap-4 rounded p-0 transition-colors duration-500 group-hover:bg-[var(--calculate-color)] sm:p-6"
-              >
+              <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-md bg-background-basic">
                 {idx.image ? (
                   <div
-                    className="w-full overflow-hidden rounded"
+                    className="w-full overflow-hidden"
                     style={{ aspectRatio }}
                   >
                     <Image
                       data={idx.image}
                       sizes="auto"
-                      className="!h-full !w-full object-cover"
+                      className="h-full! w-full! object-cover"
                     />
                   </div>
                 ) : (
                   <div
-                    className="flex w-full items-center justify-center bg-[var(--calculate-color)] rounded overflow-hidden"
+                    className="flex w-full items-center justify-center overflow-hidden bg-background-subtle-2"
                     style={{ aspectRatio }}
                   >
                     <IconImageBlank
@@ -204,7 +170,12 @@ const Blogs = ({
                     />
                   </div>
                 )}
-                <div className="flex flex-col gap-4">
+                <div className="flex w-full flex-col gap-4 px-5 py-6">
+                  {idx.tags[0] && (
+                    <span className="w-fit rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
+                      {idx.tags[0]}
+                    </span>
+                  )}
                   <Tag
                     className={cn(
                       size === "custom" &&
@@ -217,7 +188,10 @@ const Blogs = ({
                   {showSeperator && (
                     <div className="w-full border-b border-border-subtle"></div>
                   )}
-                  <p className="line-clamp-3">{idx.excerpt}</p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium">
+                    {readMoreText}
+                    <IconArrowRight className="size-4" />
+                  </span>
                 </div>
               </div>
             </Link>
@@ -232,7 +206,7 @@ export default Blogs;
 
 export const loader = async (args: ComponentLoaderArgs<BlogData>) => {
   let { weaverse, data } = args;
-  let { storefront, request } = weaverse;
+  let { storefront } = weaverse;
   if (data.blogs) {
     const res = await storefront.query(BLOG_QUERY, {
       variables: {
@@ -256,39 +230,28 @@ export const schema = createSchema({
           label: "Blog",
         },
         {
-          type: "color",
-          label: "Background color",
-          name: "backgroundColor",
-          defaultValue: "#F8F8F0",
-        },
-        {
           type: "range",
-          name: "articlePerRow",
-          label: "Articles per row",
-          defaultValue: 3,
-          configs: {
-            min: 1,
-            max: 4,
-            step: 1,
-          },
-        },
-        {
-          type: "range",
-          label: "Spacing between rows",
-          name: "gapRow",
+          name: "gap",
+          label: "Gap",
+          defaultValue: 20,
           configs: {
             min: 0,
             max: 100,
             step: 1,
             unit: "px",
           },
-          defaultValue: 20,
         },
         {
           type: "switch",
           name: "showSeperator",
           label: "Seperator",
           defaultValue: true,
+        },
+        {
+          type: "text",
+          name: "readMoreText",
+          label: "Read more text",
+          defaultValue: "Read more",
         },
         {
           type: "select",

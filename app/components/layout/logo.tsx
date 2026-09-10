@@ -3,7 +3,13 @@ import clsx from "clsx";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({
+  className,
+  width,
+}: {
+  className?: string;
+  width?: number;
+}) {
   let settings = useThemeSettings();
   let { logoData, transparentLogoData, logoWidth } = settings;
   return (
@@ -16,13 +22,14 @@ export function Logo({ className }: { className?: string }) {
       prefetch="intent"
     >
       <div
-        className="relative"
-        style={{ width: logoData ? logoWidth : "auto" }}
+        className="relative text-inherit"
+        style={{ width: logoData ? (width ?? logoWidth) : "auto" }}
       >
         {logoData && (
           <Image
             data={logoData}
             sizes="auto"
+            loading="eager"
             className={clsx(
               "main-logo",
               "w-full h-full object-cover",

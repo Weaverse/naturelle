@@ -35,6 +35,16 @@ export interface SingleMenuItem {
   items: SingleMenuItem[];
   to: string;
   resource?: {
+    __typename?: string;
+    title?: string;
+    description?: string;
+    collections?: {
+      nodes: Array<{
+        id: string;
+        title: string;
+      }>;
+    };
+    handle?: string;
     image?: {
       altText: string;
       height: number;

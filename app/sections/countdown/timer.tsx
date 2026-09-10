@@ -63,39 +63,43 @@ let CountdownTimer = ({
       ref={ref}
       {...rest}
       data-motion="fade-up"
-      className="countdown--timer flex text-[var(--timer-color)] py-3 sm:py-0"
+      className="countdown--timer flex text-[var(--timer-color)]"
       style={timerStyle}
     >
       <div className="space-y-1">
-        <div className="text-4xl leading-tight md:text-5xl font-medium flex items-center">
-          <div className="px-6">{remainingTime?.days || 0}</div>
-          <div className="h-6 border-r border-[var(--timer-color)]" />
+        <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
+          <div className="px-3 md:px-6 lg:px-12">
+            {remainingTime?.days || 0}
+          </div>
+          <div className="h-6 border-r border-[var(--timer-color)] md:h-8 lg:h-[38px]" />
         </div>
-        <div className="text-sm text-center md:text-base capitalize">Days</div>
+        <div className="text-center text-xs uppercase md:text-sm">Days</div>
       </div>
       <div className="space-y-1">
-        <div className="text-4xl leading-tight md:text-5xl font-medium flex items-center">
-          <div className="px-6">{remainingTime?.hours || 0}</div>
-          <div className="h-6 border-r border-[var(--timer-color)]" />
+        <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
+          <div className="px-3 md:px-6 lg:px-12">
+            {remainingTime?.hours || 0}
+          </div>
+          <div className="h-6 border-r border-[var(--timer-color)] md:h-8 lg:h-[38px]" />
         </div>
-        <div className="text-sm text-center md:text-base capitalize">hours</div>
+        <div className="text-center text-xs uppercase md:text-sm">hours</div>
       </div>
       <div className="space-y-1">
-        <div className="text-4xl leading-tight md:text-5xl font-medium flex items-center">
-          <div className="px-6">{remainingTime?.minutes || 0}</div>
-          <div className="h-6 border-r border-[var(--timer-color)]" />
+        <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
+          <div className="px-3 md:px-6 lg:px-12">
+            {remainingTime?.minutes || 0}
+          </div>
+          <div className="h-6 border-r border-[var(--timer-color)] md:h-8 lg:h-[38px]" />
         </div>
-        <div className="text-sm text-center md:text-base capitalize">
-          minutes
-        </div>
+        <div className="text-center text-xs uppercase md:text-sm">minutes</div>
       </div>
       <div className="space-y-1">
-        <div className="text-4xl leading-tight md:text-5xl font-medium flex items-center">
-          <div className="px-6">{remainingTime?.seconds || 0}</div>
+        <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
+          <div className="px-3 md:px-6 lg:px-12">
+            {remainingTime?.seconds || 0}
+          </div>
         </div>
-        <div className="text-sm text-center md:text-base capitalize">
-          seconds
-        </div>
+        <div className="text-center text-xs uppercase md:text-sm">seconds</div>
       </div>
     </div>
   );

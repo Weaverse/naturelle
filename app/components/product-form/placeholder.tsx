@@ -3,7 +3,7 @@ import { Image } from "~/components/image";
 export function ProductPlaceholder(_props: any) {
   return (
     <div className="container px-4 md:px-6 mx-auto pointer-events-none">
-      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
+      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-12">
         <Image
           data={{
             altText: "",
@@ -20,10 +20,10 @@ export function ProductPlaceholder(_props: any) {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
               PRODUCT TITLE
             </h2>
-            <p className="text-2xl text-zinc-500 md:text-3xl/relaxed lg:text-2xl/relaxed xl:text-3xl/relaxed dark:text-zinc-400">
+            <p className="text-2xl text-zinc-500 md:text-3xl/relaxed lg:text-3xl/relaxed dark:text-zinc-400">
               <span>₫0</span>
             </p>
-            <p className="max-w-[600px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
+            <p className="max-w-[600px] text-zinc-500 md:text-xl/relaxed lg:text-xl/relaxed dark:text-zinc-400">
               Product description
             </p>
             <div>
@@ -83,7 +83,7 @@ export function ProductPlaceholder(_props: any) {
             <legend className="whitespace-pre-wrap max-w-prose font-bold text-lg leading-snug">
               Quantity
             </legend>
-            <div className="rounded-sm border w-fit">
+            <div className="rounded-md border w-fit">
               <button
                 type="button"
                 name="decrease-quantity"
@@ -109,7 +109,7 @@ export function ProductPlaceholder(_props: any) {
           </div>
           <div>
             <button
-              className="inline-block rounded font-medium text-center py-3 px-4 text-sm border-2 border-btn hover:bg-inv-btn hover:text-inv-btn-content bg-btn text-btn-content w-full"
+              className="inline-block w-full rounded-md border-2 border-btn bg-btn px-4 py-3 text-center font-medium text-btn-content text-sm hover:bg-inv-btn hover:text-inv-btn-content"
               type="submit"
               data-test="add-to-cart"
             >

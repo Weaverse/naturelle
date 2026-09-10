@@ -1,6 +1,6 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -30,7 +30,10 @@ export function ProductMedia(props: ProductMediaProps) {
     enableZoom,
   } = props;
 
-  let media = _media.filter((med) => med.__typename === "MediaImage");
+  const media = useMemo(
+    () => _media.filter((med) => med.__typename === "MediaImage"),
+    [_media],
+  );
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [zoomMediaId, setZoomMediaId] = useState<string | null>(null);
@@ -39,12 +42,13 @@ export function ProductMedia(props: ProductMediaProps) {
 
   useEffect(() => {
     if (selectedVariant && swiper) {
-      let index = getSelectedVariantMediaIndex(media, selectedVariant);
-      if (index !== swiper.activeIndex) {
+      const index = getSelectedVariantMediaIndex(media, selectedVariant);
+
+      if (index >= 0 && index !== swiper.activeIndex) {
         swiper.slideTo(index);
       }
     }
-  }, [selectedVariant, swiper.slideTo, swiper.activeIndex, swiper, media]);
+  }, [media, selectedVariant, swiper]);
 
   return (
     <div className="overflow-hidden product-media-slider">
@@ -71,11 +75,11 @@ export function ProductMedia(props: ProductMediaProps) {
             thumbs={{ swiper: thumbsSwiper }}
             onSwiper={setSwiper}
             onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
-            className="vt-product-image max-w-full !pb-5 md:!pb-0 md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
+            className="vt-product-image max-w-full pb-5! md:pb-0! md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
             style={
               {
                 "--swiper-pagination-bottom": "-6px",
-                "--swiper-pagination-color": "#3D490B",
+                "--swiper-pagination-color": "var(--color-text-primary)",
               } as React.CSSProperties
             }
           >
@@ -87,7 +91,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     data={image}
                     loading={i === 0 ? "eager" : "lazy"}
                     aspectRatio={imageAspectRatio}
-                    className="object-cover w-full h-auto fadeIn rounded"
+                    className="fadeIn h-auto w-full rounded-sm object-cover"
                     sizes="auto"
                   />
                   {enableZoom && (
@@ -147,14 +151,14 @@ export function ProductMedia(props: ProductMediaProps) {
                   <SwiperSlide
                     key={med.id}
                     className={clsx(
-                      "!h-fit !w-fit border-2 transition-colors cursor-pointer border-transparent rounded p-0.5",
-                      "[&.swiper-slide-thumb-active]:border-border",
+                      "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
+                      "[&.swiper-slide-thumb-active]:border-border/60",
                     )}
                   >
                     <Image
                       data={image}
                       loading={i === 0 ? "eager" : "lazy"}
-                      className="fadeIn object-cover !h-[100px] rounded shadow-md"
+                      className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
                       aspectRatio={imageAspectRatio}
                       sizes="auto"
                     />

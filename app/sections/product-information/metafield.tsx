@@ -30,7 +30,7 @@ export function MetaFieldTable({ data }: MetaFieldTableProps) {
   };
 
   return (
-    <div className="w-full mt-6 border-2 border-border-subtle rounded overflow-hidden">
+    <div className="mt-6 w-full overflow-hidden rounded-md border-2 border-border-subtle">
       {/* Tabs Header */}
       <div className={clsx("flex")}>
         {validTabs.map((tab) => (
@@ -41,7 +41,9 @@ export function MetaFieldTable({ data }: MetaFieldTableProps) {
             className={clsx(
               "flex-1 py-4 px-6 text-sm font-medium uppercase text-center transition-colors",
               "border-r-2 last:border-r-0 border-border-subtle",
-              activeTab === tab.key ? "border-b-0 bg-[#E0E5D6]" : "border-b-2",
+              activeTab === tab.key
+                ? "border-b-0 bg-background-subtle-2"
+                : "border-b-2",
             )}
           >
             {tab.key.replace(/_/g, " ")}

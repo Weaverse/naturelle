@@ -6,7 +6,7 @@ import clsx from "clsx";
 import type { RefObject } from "react";
 
 let variants = cva(
-  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-4 md:px-8 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
+  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-16 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
   {
     variants: {
       alignment: {
@@ -16,9 +16,9 @@ let variants = cva(
       },
       verticalPadding: {
         none: "",
-        small: "py-9 md:py-11 lg:py-14",
-        medium: "py-11 md:py-14 lg:py-24",
-        large: "py-14 md:py-24 lg:py-32",
+        small: "py-4",
+        medium: "py-11 md:py-14 lg:py-16",
+        large: "py-14 md:py-24 lg:py-20",
       },
     },
     defaultVariants: {
