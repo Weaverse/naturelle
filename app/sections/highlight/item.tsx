@@ -2,46 +2,58 @@ import type { HydrogenComponentProps } from "@weaverse/hydrogen";
 import { createSchema, useParentInstance } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React from "react";
+import {
+  IconHighlightLeaf,
+  IconHighlightPaw,
+  IconHighlightSparkle,
+} from "~/components/icon";
 
 interface HightlightProps extends HydrogenComponentProps {
   visibleOnMobile: boolean;
+  iconColor: string;
 }
 
 const HighlightItem = ({
   ref,
   ...props
 }: HightlightProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
-  let { visibleOnMobile, children, ...rest } = props;
+  let { visibleOnMobile, iconColor, children, ...rest } = props;
 
   let parentInstance = useParentInstance();
+  let firstChild = React.Children.toArray(children)[0] as
+    | React.ReactElement<{ parentId?: string }>
+    | undefined;
+  let itemIndex = (
+    parentInstance?._store?.children as { id: string }[] | undefined
+  )?.findIndex((child) => child.id === firstChild?.props.parentId);
+  let safeIndex = itemIndex !== undefined && itemIndex >= 0 ? itemIndex : 0;
+  let icons = [IconHighlightPaw, IconHighlightLeaf, IconHighlightSparkle];
+  let Icon = icons[safeIndex % icons.length];
+
   return (
     <div
       ref={ref}
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex flex-col gap-4 items-center w-full border-2 border-(--border-color) rounded px-8 py-10",
-        !visibleOnMobile && "hidden sm:flex",
+        "flex w-full flex-col items-center rounded-2xl bg-background-basic px-6 py-10",
+        !visibleOnMobile && "hidden md:flex",
       )}
     >
+      <Icon
+        aria-hidden="true"
+        className="mb-6 size-12 shrink-0"
+        style={{ color: iconColor }}
+      />
       {React.Children.map(children, (child, index) => (
-        <>
-          <div className="w-full flex justify-center items-center gap-4">
-            {index === 0 && (
-              <div className="w-fit h-fit">
-                <span className="flex justify-center items-center border border-(--border-color) rounded-full font-heading font-medium w-11 h-11 text-2xl">
-                  {(
-                    parentInstance?._store?.children as { id: string }[]
-                  )?.findIndex((c) => c.id === child?.props.parentId) + 1}
-                </span>
-              </div>
-            )}
+        <React.Fragment key={child?.key ?? index}>
+          <div className="flex w-full items-center justify-center text-center">
             {child}
           </div>
           {index < (children?.length ?? 0) - 1 && (
-            <div className="border-b-2 border-(--border-color) w-full"></div>
+            <div className="my-6 w-full border-t border-border-subtle" />
           )}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );
@@ -62,6 +74,12 @@ export const schema = createSchema({
           label: "Visible on Mobile",
           name: "visibleOnMobile",
           defaultValue: true,
+        },
+        {
+          type: "color",
+          label: "Icon color",
+          name: "iconColor",
+          defaultValue: "#4BAE42",
         },
       ],
     },

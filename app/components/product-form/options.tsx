@@ -6,6 +6,14 @@ const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
 const OPTIONS_AS_IMAGE = ["Image", "Images"];
 const OPTIONS_AS_DROPDOWN = ["Dropdown", "Dropdowns"];
 const OPTION_AS_MORPHOLOGY = ["Size", "Shape", "Sizes"];
+
+export function isImageOption(optionName: string) {
+  const normalizedOptionName = optionName.trim().toLowerCase();
+  return OPTIONS_AS_IMAGE.some(
+    (name) => name.toLowerCase() === normalizedOptionName,
+  );
+}
+
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
@@ -14,6 +22,7 @@ interface VariantOptionProps {
     imageSwatches: any[];
     colorSwatches: any[];
   };
+  onSelectVariant?: (variant: unknown) => void;
   values: {
     isActive: boolean;
     isAvailable: boolean;
@@ -21,12 +30,20 @@ interface VariantOptionProps {
     to: string;
     value: string;
     image?: any;
+    variant?: unknown;
   }[];
 }
 
 export function VariantOption(props: VariantOptionProps) {
-  let { name, values, selectedOptionValue, onSelectOptionValue, swatches } =
-    props;
+  let {
+    name,
+    values,
+    selectedOptionValue,
+    onSelectOptionValue,
+    onSelectVariant,
+    swatches,
+  } = props;
+  const normalizedName = name.trim().toLowerCase();
 
   let disabledClassName = "diagonal opacity-50 cursor-not-allowed";
   // show value by Type
@@ -87,7 +104,7 @@ export function VariantOption(props: VariantOptionProps) {
       </div>
     );
   }
-  if (OPTIONS_AS_IMAGE.includes(name)) {
+  if (isImageOption(name)) {
     return (
       <div className="flex gap-4 flex-wrap">
         {values.map((value) => {
@@ -95,18 +112,31 @@ export function VariantOption(props: VariantOptionProps) {
             <button
               type="button"
               key={value.value}
+              disabled={!value.isAvailable}
+              aria-label={`${name}: ${value.value}`}
+              aria-pressed={selectedOptionValue === value.value}
               className={clsx(
-                "rounded p-0.5 border-2 cursor-pointer",
+                "size-12 cursor-pointer overflow-hidden rounded-lg border p-0.5 transition-colors",
                 selectedOptionValue === value.value
-                  ? "border-border/90 bg-[#E5E6D4]"
+                  ? "border-border"
                   : value.isAvailable
-                    ? "border-border-subtle"
-                    : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
+                    ? "border-transparent hover:border-border-subtle"
+                    : `${disabledClassName} border-border-subtle bg-background-subtle-1 text-text-subtle`,
               )}
-              onClick={() => onSelectOptionValue(value.value)}
+              onClick={() => {
+                if (value.variant && onSelectVariant) {
+                  onSelectVariant(value.variant);
+                } else {
+                  onSelectOptionValue(value.value);
+                }
+              }}
             >
               {value.image ? (
-                <Image data={value.image} sizes="auto" className="h-14 w-14" />
+                <Image
+                  data={value.image}
+                  sizes="48px"
+                  className="h-full w-full rounded-md object-cover"
+                />
               ) : (
                 value.value
               )}
@@ -120,7 +150,7 @@ export function VariantOption(props: VariantOptionProps) {
     return (
       <div>
         <select
-          className="min-w-[120px] w-fit rounded-sm border p-1"
+          className="min-w-[120px] w-fit rounded-md border p-1"
           onChange={(e) => {
             onSelectOptionValue(e.target.value);
           }}
@@ -136,26 +166,31 @@ export function VariantOption(props: VariantOptionProps) {
       </div>
     );
   }
-  if (OPTION_AS_MORPHOLOGY.includes(name)) {
-    return (
-      <div className="flex gap-3 flex-wrap">
-        {values.map((value) => (
-          <div
-            key={value.value}
-            className={clsx(
-              "!leading-none py-3 px-3 cursor-pointer transition-all duration-200 font-normal border-2 rounded",
-              value.isAvailable && selectedOptionValue === value.value
-                ? "border-border/90 bg-[#E5E6D4]"
-                : value.isAvailable
-                  ? "border-border-subtle"
-                  : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
-            )}
-            onClick={() => onSelectOptionValue(value.value)}
-          >
-            {value.value}
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const isMorphology = OPTION_AS_MORPHOLOGY.some(
+    (optionName) => optionName.toLowerCase() === normalizedName,
+  );
+
+  return (
+    <div className="flex flex-wrap gap-3">
+      {values.map((value) => (
+        <button
+          type="button"
+          key={value.value}
+          disabled={!value.isAvailable}
+          className={clsx(
+            "min-h-12 cursor-pointer rounded-xl border px-4 py-3 text-base font-semibold leading-none transition-colors",
+            isMorphology && "min-w-16",
+            value.isAvailable && selectedOptionValue === value.value
+              ? "border-button-primary-background bg-button-primary-background text-button-primary-text"
+              : value.isAvailable
+                ? "border-border-subtle bg-transparent text-text-primary hover:border-border"
+                : `${disabledClassName} border-border-subtle bg-background-subtle-1 text-text-subtle`,
+          )}
+          onClick={() => onSelectOptionValue(value.value)}
+        >
+          {value.value}
+        </button>
+      ))}
+    </div>
+  );
 }

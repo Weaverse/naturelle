@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
-import { Link } from "react-router";
 import { Image } from "~/components/image";
+import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
@@ -21,21 +21,31 @@ export function HeaderMenuDrawer({
   let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
   return (
     <nav
-      className={clsx("z-30 flex items-center justify-start gap-3", className)}
+      className={clsx(
+        "z-30 flex h-12.5 min-w-0 flex-1 flex-col items-start gap-2.5 py-2",
+        className,
+      )}
     >
-      <button type="button" className="text-left" onClick={openDrawer}>
-        <IconListMenu />
-      </button>
-      <SearchToggle isOpenDrawerHearder={true} />
-      <Drawer
-        open={showMenu}
-        onClose={closeDrawer}
-        openFrom="left"
-        heading="MENU"
-        isForm="menu"
-      >
-        <DrawerMenu menu={menu} closeDrawer={closeDrawer} />
-      </Drawer>
+      <div className="flex h-12.5 self-stretch items-center gap-3">
+        <button
+          type="button"
+          aria-label="Open menu"
+          className="flex size-6 shrink-0 items-center justify-center text-left"
+          onClick={openDrawer}
+        >
+          <IconListMenu className="size-6" />
+        </button>
+        <SearchToggle isOpenDrawerHearder={true} className="md:hidden" />
+        <Drawer
+          open={showMenu}
+          onClose={closeDrawer}
+          openFrom="left"
+          heading="MENU"
+          isForm="menu"
+        >
+          <DrawerMenu menu={menu} closeDrawer={closeDrawer} />
+        </Drawer>
+      </div>
     </nav>
   );
 }
@@ -53,20 +63,26 @@ function DrawerMenu({
       {items.map((item, id) => {
         let { title, ...rest } = item;
         let level = getMaxDepth(item);
-        let isResourceType =
-          item.items.length &&
+        let isCollectionMenu = item.items.some(
+          (childItem) => childItem.resource?.__typename === "Collection",
+        );
+        let isBrandMenu =
+          item.items.length > 0 &&
           item.items.every(
             (childItem) =>
-              childItem?.resource?.image && childItem.items.length === 0,
+              childItem.resource?.image &&
+              childItem.resource.__typename !== "Collection",
           );
         let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
-          isResourceType
-            ? ImageMenu
-            : level > 2
-              ? MultiMenu
-              : level === 2
-                ? SingleMenu
-                : ItemHeader;
+          isCollectionMenu
+            ? CollectionMenu
+            : isBrandMenu
+              ? BrandMenu
+              : level > 2
+                ? MultiMenu
+                : level === 2
+                  ? SingleMenu
+                  : ItemHeader;
         return (
           <Comp key={id} title={title} closeDrawer={closeDrawer} {...rest} />
         );
@@ -86,9 +102,15 @@ function ItemHeader({
 }) {
   return (
     <Link
-      className="flex items-center justify-between py-3"
       to={to}
       onClick={closeDrawer}
+      className={({ isActive }) =>
+        clsx(
+          "flex items-center justify-between py-3",
+          isActive && "text-text-primary",
+          isActive && to !== "/" && "underline",
+        )
+      }
     >
       <h5 className="font-medium text-xl uppercase hover:text-text-primary">
         {title}
@@ -114,6 +136,7 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
       onClose={closeMenu}
       openFrom="left"
       heading={title}
+      isForm="menu"
       isBackMenu
       // bordered
     >
@@ -122,7 +145,7 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
           <div key={id}>
             <Disclosure>
               {({ open }) => (
-                <>
+                <div className="contents">
                   <Disclosure.Button className="w-full text-left">
                     <h5 className="flex w-full text-xl justify-between py-3 font-medium uppercase text-text-subtle hover:text-text-primary">
                       {item.items.length > 0 ? (
@@ -132,6 +155,9 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                           to={item.to}
                           prefetch="intent"
                           onClick={handleCloseAll}
+                          className={({ isActive }) =>
+                            isActive ? "text-text-primary underline" : undefined
+                          }
                         >
                           {item.title}
                         </Link>
@@ -161,7 +187,11 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                                 to={subItem.to}
                                 onClick={handleCloseAll}
                                 prefetch="intent"
-                                className="text-text-subtle"
+                                className={({ isActive }) =>
+                                  isActive
+                                    ? "text-text-primary underline"
+                                    : "text-text-subtle"
+                                }
                               >
                                 <span className="font-body hover:text-text-primary text-base font-normal">
                                   {subItem.title}
@@ -173,7 +203,7 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                       </Disclosure.Panel>
                     </div>
                   ) : null}
-                </>
+                </div>
               )}
             </Disclosure>
           </div>
@@ -196,7 +226,7 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
   );
 }
 
-function ImageMenu({
+function CollectionMenu({
   title,
   items,
   closeDrawer,
@@ -210,37 +240,66 @@ function ImageMenu({
     closeMenu();
     closeDrawer();
   };
+  const collectionItems = items.filter(
+    (item) => item.resource?.__typename === "Collection",
+  );
   let content = (
     <Drawer
       open={isMenuOpen}
       onClose={closeMenu}
       openFrom="left"
       heading={title}
+      isForm="menu"
       isBackMenu
       // bordered
     >
-      <div className="grid grid-cols-2 gap-3 px-6 pb-16 pt-8 border-t border-border-subtle">
-        {items.map((item, id) => (
-          <Link
-            to={item.to}
-            prefetch="intent"
-            key={id}
-            onClick={handleCloseAll}
-          >
-            <div className="relative aspect-square w-full group">
-              <Image
-                data={item.resource?.image}
-                className="h-full w-full rounded object-cover"
-                sizes="auto"
-              />
-              <div className="absolute left-0 top-1/2 w-full -translate-y-1/2 text-center z-30 px-2">
-                <span className="font-medium font-heading text-center text-white transition-all duration-300 text-2xl group-hover:underline line-clamp-1">
-                  {item.title}
-                </span>
-              </div>
-              <div className="absolute inset-0 bg-[#5546124D]/20 group-hover:bg-[#5546124D]/40 transition-opacity duration-300" />
-            </div>
-          </Link>
+      <div className="grid overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
+        {collectionItems.map((item) => (
+          <Disclosure key={item.id}>
+            {({ open }) => {
+              const products = item.items;
+              return (
+                <div>
+                  {products.length > 0 ? (
+                    <Disclosure.Button className="flex w-full items-center justify-between py-3 text-left font-heading text-base uppercase text-text-subtle hover:text-text-primary">
+                      <span>{item.resource?.title || item.title}</span>
+                      <IconCaret
+                        className="size-4 shrink-0"
+                        direction={open ? "down" : "right"}
+                      />
+                    </Disclosure.Button>
+                  ) : (
+                    <Link
+                      to={item.to}
+                      prefetch="intent"
+                      onClick={handleCloseAll}
+                      className="block py-3 font-heading text-base uppercase text-text-subtle hover:text-text-primary"
+                    >
+                      {item.resource?.title || item.title}
+                    </Link>
+                  )}
+                  {products.length > 0 && (
+                    <Disclosure.Panel>
+                      <ul className="space-y-2 pb-3">
+                        {products.map((product) => (
+                          <li key={product.id}>
+                            <Link
+                              to={product.to}
+                              prefetch="intent"
+                              onClick={handleCloseAll}
+                              className="block text-sm text-text-subtle hover:text-text-primary"
+                            >
+                              {product.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </Disclosure.Panel>
+                  )}
+                </div>
+              );
+            }}
+          </Disclosure>
         ))}
       </div>
     </Drawer>
@@ -254,6 +313,75 @@ function ImageMenu({
       >
         <h5 className="font-medium text-xl uppercase">{title}</h5>
         <IconCaret direction="right" className="h-4 w-4" />
+      </button>
+      {content}
+    </div>
+  );
+}
+
+function BrandMenu({
+  title,
+  items,
+  closeDrawer,
+}: SingleMenuItem & { closeDrawer: () => void }) {
+  const {
+    isOpen: isMenuOpen,
+    openDrawer: openMenu,
+    closeDrawer: closeMenu,
+  } = useDrawer();
+  const handleCloseAll = () => {
+    closeMenu();
+    closeDrawer();
+  };
+  const uniqueItems = items.filter(
+    (item, index, allItems) =>
+      allItems.findIndex(
+        (candidate) => candidate.to === item.to || candidate.id === item.id,
+      ) === index,
+  );
+  const content = (
+    <Drawer
+      open={isMenuOpen}
+      onClose={closeMenu}
+      openFrom="left"
+      heading={title}
+      isForm="menu"
+      isBackMenu
+    >
+      <div className="grid grid-cols-1 overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
+        {uniqueItems.map((item) => (
+          <Link
+            key={item.id}
+            to={item.to}
+            prefetch="intent"
+            onClick={handleCloseAll}
+            className="group/brand relative mb-3 block h-[188px] max-h-[188px] w-full shrink-0 overflow-hidden rounded-xl bg-background-subtle-1 last:mb-0"
+          >
+            <Image
+              data={item.resource?.image}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover/brand:scale-[1.03]"
+              width={600}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+            <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse">
+              {item.resource?.title || item.title}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </Drawer>
+  );
+
+  return (
+    <div>
+      <button
+        type="button"
+        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
+        onClick={openMenu}
+      >
+        <h5 className="font-medium text-xl uppercase">{title}</h5>
+        <IconCaret direction="right" className="size-4" />
       </button>
       {content}
     </div>
@@ -277,6 +405,7 @@ function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
       onClose={closeMenu}
       openFrom="left"
       heading={title}
+      isForm="menu"
       isBackMenu
       // bordered
     >
@@ -288,7 +417,9 @@ function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                 key={ind}
                 to={subItem.to}
                 prefetch="intent"
-                className="text-text-subtle"
+                className={({ isActive }) =>
+                  isActive ? "text-text-primary underline" : "text-text-subtle"
+                }
               >
                 <span className="font-body hover:text-text-primary text-base font-normal">
                   {subItem.title}

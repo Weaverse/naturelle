@@ -1,203 +1,174 @@
-import { Image } from "@shopify/hydrogen";
-import type {
-  ComponentLoaderArgs,
-  HydrogenComponentProps,
-} from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
-import type { CSSProperties, RefObject } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.css";
-import "swiper/css/pagination";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { createSchema, useChildInstances } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { Pagination } from "swiper/modules";
-import { IconImageBlank, IconInstagram } from "~/components/icon";
+import React, { type RefObject, useState } from "react";
+import { Autoplay } from "swiper/modules";
+import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
+import { IconArrowLeft, IconArrowRight } from "~/components/icon";
+import { Link } from "~/components/link";
 import { useAnimation } from "~/hooks/use-animation";
 
 type InstagramData = {
-  instagramToken: string;
-  backgroundColor: string;
   width: string;
-  imagesPerRow: number;
+  heading: string;
+  handle: string;
+  profileUrl?: string;
+  imagesPerRow?: number;
   speed: number;
+  autoScroll: boolean;
   visibleOnMobile: boolean;
-  loaderData: {
-    data: {
-      id: string;
-      media_url: string;
-      username: string;
-    }[];
-  };
 };
 
-let widthClasses: { [item: string]: string } = {
+type InstagramProps = HydrogenComponentProps & InstagramData;
+
+let widthClasses: Record<string, string> = {
   full: "",
   fixed: "container",
 };
-
-type InstagramProps = HydrogenComponentProps<
-  Awaited<ReturnType<typeof loader>>
-> &
-  InstagramData;
 
 const Instagram = ({
   ref,
   ...props
 }: InstagramProps & { ref?: RefObject<HTMLElement | null> }) => {
   let {
-    instagramToken,
-    backgroundColor,
     width,
-    imagesPerRow,
+    heading,
+    handle,
+    profileUrl,
+    imagesPerRow = 6,
     speed,
+    autoScroll,
     visibleOnMobile,
-    loaderData,
     children,
     ...rest
   } = props;
   const [scope] = useAnimation(ref);
-
-  let sectionStyle: CSSProperties = {
-    backgroundColor: backgroundColor,
-    "--speed": `${speed}s`,
-    "--swiper-theme-color": "#3D490B",
-  } as CSSProperties;
-  const imageItemBlank = () => {
-    return (
-      <div className="flex aspect-square w-full items-center justify-center bg-[#e5e6d4]">
-        <IconImageBlank
-          viewBox="0 0 526 526"
-          className="h-full! w-full! opacity-80"
-        />
-      </div>
-    );
+  const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
+    null,
+  );
+  const [showArrows, setShowArrows] = useState(false);
+  const childItems = React.Children.toArray(children);
+  const childTypes = new Map(
+    useChildInstances().map((instance) => [
+      instance.data.id,
+      instance.data.type,
+    ]),
+  );
+  const getChildType = (child: React.ReactNode) => {
+    if (!React.isValidElement(child)) {
+      return;
+    }
+    const childId = (child.props as { id?: string }).id;
+    return childId ? childTypes.get(childId) : undefined;
   };
-
-  const defaultInstagramData = Array.from({ length: 3 }).map((_, i) => ({
-    id: i,
-    media_url: null,
-    username: null,
-  }));
-
-  let res = loaderData?.data ?? defaultInstagramData;
-  let displayedImages = res?.slice(0, imagesPerRow);
-  const imageItemRender = () => {
-    return (
-      <div
-        className="hidden items-center justify-center gap-4 sm:flex sm:animate-scrollContent"
-        style={{ animationDuration: `var(--speed)` }}
-      >
-        {displayedImages.map((item, index) => {
-          return (
-            <div
-              className="group relative aspect-square min-w-80 cursor-pointer rounded"
-              key={index}
-            >
-              {item.media_url ? (
-                <Image
-                  key={index}
-                  src={item.media_url}
-                  className="aspect-square w-full object-cover rounded"
-                  sizes="auto"
-                />
-              ) : (
-                imageItemBlank()
-              )}
-              {item.username && (
-                <>
-                  <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
-                    <a
-                      href={`https://www.instagram.com/${item.username}/`}
-                      target="_blank"
-                      className="flex items-center justify-center gap-2"
-                      rel="noreferrer"
-                    >
-                      <IconInstagram className="h-7 w-7" viewBox="0 0 24 24" />
-                      <span className="font-heading text-xl font-medium text-white">
-                        {item.username}
-                      </span>
-                    </a>
-                  </div>
-                  <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+  const instagramItems = childItems.filter(
+    (child) => getChildType(child) === "instagram--item",
+  );
+  const legacyContent = childItems.filter((child) => {
+    const type = getChildType(child);
+    return type === "heading" || type === "paragraph";
+  });
+  const desktopImagesPerRow = Math.min(
+    8,
+    Math.max(1, Number(imagesPerRow) || 6),
+  );
+  const mobileImagesPerRow = Math.min(2, desktopImagesPerRow);
+  const tabletImagesPerRow = Math.min(4, desktopImagesPerRow);
+  const handleLabel = <span>{handle}</span>;
 
   return (
     <section
       ref={scope}
       {...rest}
-      className={clsx("h-full w-full", !visibleOnMobile && "hidden sm:block")}
-      style={sectionStyle}
+      className={clsx(
+        "flex h-full w-full items-center justify-center bg-background-basic",
+        !visibleOnMobile && "hidden sm:flex",
+      )}
     >
       <div
         className={clsx(
-          "flex flex-col gap-12 px-7 py-12 sm:px-10 sm:py-20",
+          "flex w-full min-w-0 max-w-page flex-col gap-12 px-5 py-20 md:px-6",
           widthClasses[width],
         )}
       >
-        <div className="h-full w-full text-center">{children}</div>
-        <div className="flex gap-0 overflow-hidden sm:gap-4">
-          <div className="block sm:hidden w-full">
-            <Swiper
-              loop={true}
-              slidesPerView={1}
-              spaceBetween={100}
-              pagination={{
-                clickable: true,
-              }}
-              modules={[Pagination]}
-              className="w-full"
-            >
-              {displayedImages.map((item, index) => {
-                return (
-                  <SwiperSlide key={index}>
-                    <div className="group relative aspect-square min-w-80">
-                      {item.media_url ? (
-                        <Image
-                          key={index}
-                          src={item.media_url}
-                          className="aspect-square w-full object-cover"
-                          sizes="auto"
-                        />
-                      ) : (
-                        imageItemBlank()
-                      )}
-                      {item.username && (
-                        <>
-                          <div className="absolute inset-0 z-10 hidden items-center justify-center group-hover:flex">
-                            <a
-                              href={`https://www.instagram.com/${item.username}/`}
-                              target="_blank"
-                              className="flex items-center justify-center gap-2"
-                              rel="noreferrer"
-                            >
-                              <IconInstagram
-                                className="h-7 w-7"
-                                viewBox="0 0 24 24"
-                              />
-                              <span className="font-heading text-xl font-medium text-white">
-                                {item.username}
-                              </span>
-                            </a>
-                          </div>
-                          <div className="absolute inset-0 opacity-0 transition-colors duration-500 group-hover:bg-[#554612] group-hover:opacity-50" />
-                        </>
-                      )}
-                    </div>
-                    <div className="py-8"></div>
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+        {legacyContent.length > 0 ? (
+          <div className="flex w-full flex-col items-center justify-center gap-4 text-center">
+            {legacyContent}
           </div>
-          {Array.from({ length: 11 }).map((_idx, i) => (
-            <div key={i}>{imageItemRender()}</div>
-          ))}
+        ) : (
+          (heading || handle) && (
+            <div className="flex w-full flex-col items-center justify-center gap-4 text-center">
+              {heading && <h2>{heading}</h2>}
+              {handle &&
+                (profileUrl ? (
+                  <Link
+                    to={profileUrl}
+                    target="_blank"
+                    className="underline underline-offset-4"
+                  >
+                    {handleLabel}
+                  </Link>
+                ) : (
+                  handleLabel
+                ))}
+            </div>
+          )
+        )}
+
+        <div className="relative min-w-0 w-full">
+          <Swiper
+            onSwiper={(swiper) => {
+              setSwiperInstance(swiper);
+              setShowArrows(!swiper.isLocked);
+            }}
+            onResize={(swiper) => setShowArrows(!swiper.isLocked)}
+            onBreakpoint={(swiper) => setShowArrows(!swiper.isLocked)}
+            onSlidesUpdated={(swiper) => setShowArrows(!swiper.isLocked)}
+            onLock={() => setShowArrows(false)}
+            onUnlock={() => setShowArrows(true)}
+            loop={false}
+            rewind={showArrows}
+            autoplay={
+              autoScroll && showArrows ? { delay: speed * 1000 } : false
+            }
+            watchOverflow={true}
+            slidesPerView={mobileImagesPerRow}
+            spaceBetween={16}
+            breakpoints={{
+              786: { slidesPerView: tabletImagesPerRow, spaceBetween: 16 },
+              1440: { slidesPerView: desktopImagesPerRow, spaceBetween: 16 },
+            }}
+            modules={[Autoplay]}
+            className="min-w-0 w-full"
+          >
+            {instagramItems.map((child, index) => (
+              <SwiperSlide key={index} className="min-w-0">
+                {child}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {!autoScroll && showArrows && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous Instagram post"
+                className="absolute left-0 top-1/2 z-50 flex size-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
+                onClick={() => swiperInstance?.slidePrev()}
+              >
+                <IconArrowLeft className="size-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next Instagram post"
+                className="absolute right-0 top-1/2 z-50 flex size-10 translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
+                onClick={() => swiperInstance?.slideNext()}
+              >
+                <IconArrowRight className="size-5" />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </section>
@@ -205,26 +176,6 @@ const Instagram = ({
 };
 
 export default Instagram;
-
-export const loader = async (_args: ComponentLoaderArgs<InstagramData>) => {
-  /* Instagram loader disabled temporarily
-  let { weaverse, data } = args;
-  if (data.instagramToken) {
-    try {
-      let API = `https://graph.instagram.com/me/media?fields=id,media_url,username&access_token=${data.instagramToken}`;
-      let res = await weaverse.fetchWithCache(API);
-      return res;
-    } catch (err) {
-      console.error(
-        `Instagram loader failed for token ${data.instagramToken}:`,
-        err,
-      );
-      return null;
-    }
-  }
-  */
-  return null;
-};
 
 export const schema = createSchema({
   type: "instagram",
@@ -235,17 +186,21 @@ export const schema = createSchema({
       inputs: [
         {
           type: "text",
-          name: "instagramToken",
-          label: "Instagram api token",
-          placeholder: "@instagram",
-          helpText:
-            'Learn more about how to get <a href="https://docs.oceanwp.org/article/487-how-to-get-instagram-access-token" target="_blank">API token for Instagram</a> section.',
+          name: "heading",
+          label: "Heading",
+          defaultValue: "Instagram",
         },
         {
-          type: "color",
-          label: "Background color",
-          name: "backgroundColor",
-          defaultValue: "#F8F8F0",
+          type: "text",
+          name: "handle",
+          label: "Handle",
+          defaultValue: "@naturelle",
+        },
+        {
+          type: "url",
+          name: "profileUrl",
+          label: "Profile link",
+          defaultValue: "https://www.instagram.com/",
         },
         {
           type: "select",
@@ -262,25 +217,23 @@ export const schema = createSchema({
         {
           type: "range",
           name: "imagesPerRow",
-          label: "Images",
-          defaultValue: 3,
-          configs: {
-            min: 1,
-            max: 4,
-            step: 1,
-          },
+          label: "Images per row (desktop)",
+          defaultValue: 6,
+          configs: { min: 1, max: 8, step: 1 },
         },
         {
           type: "range",
           name: "speed",
           label: "Scrolling speed",
           defaultValue: 70,
-          configs: {
-            min: 10,
-            max: 100,
-            step: 5,
-            unit: "s",
-          },
+          configs: { min: 10, max: 100, step: 5, unit: "s" },
+          condition: "autoScroll.eq.true",
+        },
+        {
+          type: "switch",
+          name: "autoScroll",
+          label: "Auto scroll",
+          defaultValue: true,
         },
         {
           type: "switch",
@@ -291,13 +244,11 @@ export const schema = createSchema({
       ],
     },
   ],
-  childTypes: ["heading"],
+  childTypes: ["instagram--item"],
   presets: {
-    children: [
-      {
-        type: "heading",
-        content: "Instagram",
-      },
-    ],
+    heading: "Instagram",
+    handle: "@naturelle",
+    profileUrl: "https://www.instagram.com/",
+    children: Array.from({ length: 6 }, () => ({ type: "instagram--item" })),
   },
 });

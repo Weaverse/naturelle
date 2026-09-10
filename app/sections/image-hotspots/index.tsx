@@ -1,40 +1,25 @@
 import { createSchema } from "@weaverse/hydrogen";
-import clsx from "clsx";
-import React from "react";
-import Heading from "~/components/heading";
-import Paragraph from "~/components/paragraph";
+import type React from "react";
 import { Section, type SectionProps } from "~/components/section";
 
-type HotspotsProps = SectionProps & {
-  heading?: string;
-  description?: string;
-};
+type HotspotsProps = SectionProps;
 
 let Hotspots = ({
   ref,
   ...props
 }: HotspotsProps & { ref?: React.RefObject<HTMLElement | null> }) => {
-  let { heading, description, children, ...rest } = props;
+  let { children, ...rest } = props;
   return (
-    <Section ref={ref} {...rest} overflow="unset">
-      {heading && <Heading data-motion="fade-up" as="h2" content={heading} />}
-      {description && (
-        <Paragraph
-          data-motion="fade-up"
-          as="p"
-          content={description}
-          alignment="center"
-        />
-      )}
-      <div
-        data-motion="zoom-in"
-        className={clsx(
-          "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 w-full h-full",
-          React.Children.count(children) > 1
-            ? "sm:grid-cols-2"
-            : "sm:grid-cols-1",
-        )}
-      >
+    <Section
+      ref={ref}
+      {...rest}
+      width="full"
+      gap={0}
+      verticalPadding="none"
+      overflow="unset"
+      containerClassName="max-w-none p-0"
+    >
+      <div data-motion="zoom-in" className="w-full">
         {children}
       </div>
     </Section>
@@ -92,27 +77,11 @@ export const schema = createSchema({
         },
       ],
     },
-    {
-      group: "Heading (optional)",
-      inputs: [
-        {
-          type: "text",
-          name: "heading",
-          label: "Heading",
-          defaultValue: "Shop the look",
-          placeholder: "Shop the look",
-        },
-        {
-          type: "richtext",
-          name: "description",
-          label: "Description",
-        },
-      ],
-    },
   ],
   presets: {
-    heading: "Shop the look",
-    gap: 40,
+    width: "full",
+    gap: 0,
+    verticalPadding: "none",
     children: [
       {
         type: "image-hotspots",

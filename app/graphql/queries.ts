@@ -25,12 +25,18 @@ query BlogSingle(
 ` as const;
 
 export const FEATURED_PRODUCTS_QUERY = `#graphql
-  query Collection($country: CountryCode, $language: LanguageCode, $handle: String!)
+  query Collection(
+    $country: CountryCode
+    $language: LanguageCode
+    $handle: String!
+    $totalProduct: Int!
+  )
   @inContext(country: $country, language: $language) {
       collection(handle: $handle){
         id
+        title
         handle
-        products(first: 24) {
+        products(first: $totalProduct) {
         nodes {
           ...ProductCard
         }
@@ -76,10 +82,25 @@ export const PRODUCT_QUERY = `#graphql
     product(handle: $handle) {
       id
       title
+      publishedAt
       vendor
+      productType
       handle
       descriptionHtml
       description
+      collections(first: 1) {
+        nodes {
+          id
+          title
+          handle
+        }
+      }
+      rating: metafield(namespace: "reviews", key: "rating") {
+        value
+      }
+      ratingCount: metafield(namespace: "reviews", key: "rating_count") {
+        value
+      }
       options {
         ...ProductOption
       }

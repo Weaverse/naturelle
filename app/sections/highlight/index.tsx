@@ -12,10 +12,15 @@ const Highlights = ({
   ref,
   ...props
 }: HighlightsProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, ...rest } = props;
+  let { children, className, ...rest } = props;
 
   return (
-    <Section ref={ref} {...rest}>
+    <Section
+      ref={ref}
+      {...rest}
+      className={className}
+      containerClassName="py-20 lg:max-w-[1440px] lg:py-[120px]"
+    >
       {children}
     </Section>
   );
@@ -29,6 +34,7 @@ export const schema = createSchema({
   settings: sectionInspector,
   childTypes: ["heading", "highlight-content--item"],
   presets: {
+    backgroundColor: "#F3F3F3",
     children: [
       {
         type: "heading",

@@ -7,7 +7,9 @@ import type {
   PredictiveProductFragment,
   PredictiveQueryFragment,
   PredictiveSearchQuery,
+  ProductCardFragment,
 } from "storefront-api.generated";
+import { PRODUCT_CARD_FRAGMENT } from "~/graphql/fragments";
 import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/hooks/use-predictive-search";
 import type {
   NormalizedPredictiveSearch,
@@ -20,12 +22,16 @@ type PredictiveSearchResultItem =
   | PredictivePageFragment
   | PredictiveProductFragment;
 
-type PredictiveSearchTypes = "ARTICLE" | "PAGE" | "PRODUCT" | "QUERY";
+type PredictiveSearchTypes =
+  | "ARTICLE"
+  | "COLLECTION"
+  | "PAGE"
+  | "PRODUCT"
+  | "QUERY";
 
 const DEFAULT_SEARCH_TYPES: PredictiveSearchTypes[] = [
   "ARTICLE",
-  // 'COLLECTION',
-  // 'PAGE',
+  "COLLECTION",
   "PRODUCT",
   "QUERY",
 ];
@@ -61,8 +67,15 @@ async function fetchPredictiveSearchResults({
   } catch {
     // ignore
   }
-  const searchTerm = String(body?.get("q") || searchParams.get("q") || "");
-  const limit = Number(body?.get("limit") || searchParams.get("limit") || 10);
+  const searchTerm = String(body?.get("q") || searchParams.get("q") || "")
+    .trim()
+    .slice(0, 100);
+  const requestedLimit = Number(
+    body?.get("limit") || searchParams.get("limit") || 10,
+  );
+  const limit = Number.isFinite(requestedLimit)
+    ? Math.min(10, Math.max(1, Math.trunc(requestedLimit)))
+    : 10;
   const rawTypes = String(
     body?.get("type") || searchParams.get("type") || "ANY",
   );
@@ -75,35 +88,87 @@ async function fetchPredictiveSearchResults({
           .filter((t) => DEFAULT_SEARCH_TYPES.includes(t));
 
   if (!searchTerm) {
+    let popularProductsData: ProductCardFragment[] = [];
+    try {
+      const popularResponse = (await context.storefront.query(
+        POPULAR_PRODUCTS_QUERY,
+        {
+          variables: {
+            country: context.storefront.i18n.country,
+            first: 4,
+            language: context.storefront.i18n.language,
+          },
+        },
+      )) as { products?: { nodes?: ProductCardFragment[] } };
+      popularProductsData = popularResponse.products?.nodes || [];
+    } catch {
+      // Popular keywords remain usable if Shopify temporarily rejects this query.
+    }
+    const localePrefix = params.locale ? `/${params.locale}` : "";
+    const popularProducts = popularProductsData.map((product) => ({
+      __typename: "Product",
+      handle: product.handle,
+      id: product.id,
+      image: product.images.nodes[0],
+      title: product.title,
+      vendor: product.vendor,
+      url: `${localePrefix}/products/${product.handle}`,
+      price: product.variants.nodes[0]?.price,
+      compareAtPrice: product.variants.nodes[0]?.compareAtPrice,
+      product: product as ProductCardFragment,
+    }));
+
     return {
-      searchResults: { results: null, totalResults: 0 },
+      searchResults: {
+        results: [
+          ...NO_PREDICTIVE_SEARCH_RESULTS.filter(
+            (result) => result.type !== "products",
+          ),
+          { type: "products" as const, items: popularProducts },
+        ],
+        totalResults: popularProducts.length,
+      },
       searchTerm,
       searchTypes,
     };
   }
 
-  const searchResponse = await context.storefront.query(
-    PREDICTIVE_SEARCH_QUERY,
-    {
-      variables: {
-        limit,
-        limitScope: "EACH",
-        searchTerm,
-        types: searchTypes,
+  try {
+    const searchResponse = await context.storefront.query(
+      PREDICTIVE_SEARCH_QUERY,
+      {
+        variables: {
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
+          limit,
+          limitScope: "EACH",
+          searchTerm,
+          types: searchTypes,
+        },
       },
-    },
-  );
+    );
 
-  if (!searchResponse) {
-    throw new Error("No data returned from Shopify API");
+    if (!searchResponse) {
+      throw new Error("No data returned from Shopify API");
+    }
+
+    const searchResults = normalizePredictiveSearchResults(
+      searchResponse.predictiveSearch,
+      params.locale,
+    );
+
+    return { searchResults, searchTerm, searchTypes };
+  } catch {
+    return {
+      searchResults: {
+        results: NO_PREDICTIVE_SEARCH_RESULTS,
+        totalResults: 0,
+      },
+      searchTerm,
+      searchTypes,
+      error: "Search is temporarily unavailable",
+    };
   }
-
-  const searchResults = normalizePredictiveSearchResults(
-    searchResponse.predictiveSearch,
-    params.locale,
-  );
-
-  return { searchResults, searchTerm, searchTypes };
 }
 
 /**
@@ -179,6 +244,7 @@ export function normalizePredictiveSearchResults(
             url: `${localePrefix}/products/${product.handle}${trackingParams}`,
             price: product.variants.nodes[0].price,
             compareAtPrice: product.variants.nodes[0].compareAtPrice,
+            product: product as PredictiveProductFragment & ProductCardFragment,
           };
         },
       ),
@@ -290,24 +356,12 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
     handle
     trackingParameters
     vendor
+    ...ProductCard
     featuredImage {
       url
       altText
       width
       height
-    }
-    variants(first: 1) {
-      nodes {
-        id
-        price {
-          amount
-          currencyCode
-        }
-        compareAtPrice {
-          amount
-          currencyCode
-        }
-      }
     }
   }
   fragment PredictiveQuery on SearchQuerySuggestion {
@@ -347,4 +401,20 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       }
     }
   }
+  ${PRODUCT_CARD_FRAGMENT}
+` as const;
+
+const POPULAR_PRODUCTS_QUERY = `#graphql
+  query PopularSearchProducts(
+    $country: CountryCode
+    $first: Int!
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: $first, sortKey: BEST_SELLING) {
+      nodes {
+        ...ProductCard
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
 ` as const;

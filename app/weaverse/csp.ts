@@ -46,6 +46,12 @@ export function getWeaverseCsp(
       "https://www.youtube.com",
       ...weaverseHosts,
     ],
+    frameSrc: [
+      "'self'",
+      "https://maps.google.com",
+      "https://www.google.com",
+      ...weaverseHosts,
+    ],
   };
 
   if (isDesignMode) {

@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { useFetchers } from "react-router";
+import { useEffect, useRef } from "react";
+import { useFetcher } from "react-router";
 import type {
   NormalizedPredictiveSearch,
   NormalizedPredictiveSearchResults,
+  PredictiveSearchResponse,
   UseSearchReturn,
 } from "~/types/search-types";
+import { PREDICTIVE_SEARCH_FETCHER_KEY } from "~/types/search-types";
 
 export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
   { type: "queries", items: [] },
@@ -15,22 +17,23 @@ export const NO_PREDICTIVE_SEARCH_RESULTS: NormalizedPredictiveSearchResults = [
 ];
 
 export function usePredictiveSearch(): UseSearchReturn {
-  const fetchers = useFetchers();
   const searchTerm = useRef<string>("");
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const searchFetcher = fetchers.find((fetcher) => fetcher.data?.searchResults);
-  let [results, setResults] = useState<NormalizedPredictiveSearchResults>();
+  const searchFetcher = useFetcher<PredictiveSearchResponse>({
+    key: PREDICTIVE_SEARCH_FETCHER_KEY,
+  });
+  const submittedTerm = searchFetcher.formData?.get("q");
+  const responseTerm = searchFetcher.data?.searchTerm;
+
   useEffect(() => {
-    if (searchFetcher) {
-      setResults(searchFetcher.data?.searchResults);
+    if (typeof submittedTerm === "string") {
+      searchTerm.current = submittedTerm;
+    } else if (typeof responseTerm === "string") {
+      searchTerm.current = responseTerm;
     }
-  }, [searchFetcher]);
+  }, [submittedTerm, responseTerm]);
 
-  if (searchFetcher?.state === "loading") {
-    searchTerm.current = (searchFetcher.formData?.get("q") || "") as string;
-  }
-
-  const search = (results || {
+  const search = (searchFetcher.data?.searchResults || {
     results: NO_PREDICTIVE_SEARCH_RESULTS,
     totalResults: 0,
   }) as NormalizedPredictiveSearch;
@@ -40,7 +43,14 @@ export function usePredictiveSearch(): UseSearchReturn {
     if (searchInputRef.current) {
       return;
     }
-    searchInputRef.current = document.querySelector('input[type="search"]');
+    const activeElement = document.activeElement;
+    searchInputRef.current =
+      activeElement instanceof HTMLInputElement &&
+      activeElement.type === "search"
+        ? activeElement
+        : document.querySelector(
+            '[data-predictive-search-form] input[type="search"]',
+          );
   }, []);
 
   return { ...search, searchInputRef, searchTerm };

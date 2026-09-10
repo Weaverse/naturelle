@@ -25,8 +25,8 @@ import {
 } from "react-router";
 import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
-import "@fontsource-variable/cormorant";
-import "@fontsource-variable/nunito-sans";
+import "@fontsource-variable/montserrat";
+import "@fontsource/belleza";
 import invariant from "tiny-invariant";
 import { seoPayload } from "~/.server/seo";
 import { Button } from "~/components/button";
@@ -35,6 +35,7 @@ import { Header } from "~/components/layout/header";
 import { CustomAnalytics } from "~/components/root/analytics";
 import { GlobalLoading } from "~/components/root/global-loading";
 import { Preloader } from "~/components/root/preloader";
+import { POLICIES_QUERY } from "~/routes/($locale).policies._index";
 import { getErrorMessage } from "~/utils/define-message-error";
 import { DEFAULT_LOCALE } from "./utils/const";
 import { parseMenu } from "./utils/menu";
@@ -262,7 +263,7 @@ const LAYOUT_QUERY = `#graphql
       ...Menu
     }
     footerMenu: menu(handle: $footerMenuHandle) {
-      ...Menu
+      ...FooterMenu
     }
   }
   fragment Shop on Shop {
@@ -284,20 +285,35 @@ const LAYOUT_QUERY = `#graphql
     id
     resourceId
     resource {
+      __typename
       ... on Collection {
+        title
         image {
           altText
           height
-          id
           url
           width
         }
       }
       ... on Product {
+        title
+        description
         image: featuredImage {
           altText
           height
-          id
+          url
+          width
+        }
+        collections(first: 1) {
+          nodes {
+            title
+          }
+        }
+      }
+      ... on Article {
+        image {
+          altText
+          height
           url
           width
         }
@@ -330,18 +346,56 @@ const LAYOUT_QUERY = `#graphql
       ...ParentMenuItem
     }
   }
+
+  fragment FooterMenuItem on MenuItem {
+    id
+    resourceId
+    tags
+    title
+    type
+    url
+  }
+  fragment FooterChildMenuItem on MenuItem {
+    ...FooterMenuItem
+  }
+  fragment FooterParentMenuItem2 on MenuItem {
+    ...FooterMenuItem
+    items {
+      ...FooterChildMenuItem
+    }
+  }
+  fragment FooterParentMenuItem on MenuItem {
+    ...FooterMenuItem
+    items {
+      ...FooterParentMenuItem2
+    }
+  }
+  fragment FooterMenu on Menu {
+    id
+    items {
+      ...FooterParentMenuItem
+    }
+  }
 ` as const;
 
 async function getLayoutData({ storefront, env }: AppLoadContext) {
-  const data = await storefront.query(LAYOUT_QUERY, {
-    variables: {
-      headerMenuHandle: "main-menu",
-      footerMenuHandle: "footer",
-      language: storefront.i18n.language,
-    },
-  });
+  const [layoutData, policiesData] = await Promise.all([
+    storefront.query(LAYOUT_QUERY, {
+      variables: {
+        headerMenuHandle: "main-menu",
+        footerMenuHandle: "footer",
+        language: storefront.i18n.language,
+      },
+      cache: storefront.CacheLong(),
+    }),
+    storefront.query(POLICIES_QUERY, {
+      variables: {
+        language: storefront.i18n.language,
+      },
+    }),
+  ]);
 
-  invariant(data, "No data returned from Shopify API");
+  invariant(layoutData && policiesData, "No data returned from Shopify API");
 
   /*
       Modify specific links/routes (optional)
@@ -353,25 +407,31 @@ async function getLayoutData({ storefront, env }: AppLoadContext) {
     */
   let customPrefixes = { CATALOG: "products" };
 
-  const headerMenu = data?.headerMenu
+  const parsedHeaderMenu = layoutData?.headerMenu
     ? parseMenu(
-        data.headerMenu,
-        data.shop.primaryDomain.url,
+        layoutData.headerMenu,
+        layoutData.shop.primaryDomain.url,
+        env,
+        customPrefixes,
+      )
+    : undefined;
+  const footerMenu = layoutData?.footerMenu
+    ? parseMenu(
+        layoutData.footerMenu,
+        layoutData.shop.primaryDomain.url,
         env,
         customPrefixes,
       )
     : undefined;
 
-  const footerMenu = data?.footerMenu
-    ? parseMenu(
-        data.footerMenu,
-        data.shop.primaryDomain.url,
-        env,
-        customPrefixes,
-      )
-    : undefined;
-
-  return { shop: data.shop, headerMenu, footerMenu };
+  return {
+    shop: {
+      ...layoutData.shop,
+      ...policiesData.shop,
+    },
+    headerMenu: parsedHeaderMenu,
+    footerMenu,
+  };
 }
 
 type Swatch = {

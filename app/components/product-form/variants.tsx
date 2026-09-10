@@ -1,10 +1,9 @@
-import { getProductOptions } from "@shopify/hydrogen";
 import clsx from "clsx";
 import type {
   ProductQuery,
   ProductVariantFragmentFragment,
 } from "storefront-api.generated";
-import { VariantOption } from "./options";
+import { isImageOption, VariantOption } from "./options";
 
 interface ProductVariantsProps {
   selectedVariant: ProductVariantFragmentFragment;
@@ -28,7 +27,7 @@ export function ProductVariants(props: ProductVariantsProps) {
     selectedVariant,
     onSelectedVariantChange,
     variants,
-    product,
+    options,
     swatch,
     hideUnavailableOptions,
     isDisabled,
@@ -73,19 +72,15 @@ export function ProductVariants(props: ProductVariantsProps) {
     selectedOptionMap.set(opt.name, opt.value);
   }
 
-  const productOptions = getProductOptions({
-    ...product,
-    selectedOrFirstAvailableVariant: selectedVariant,
-  });
-
   if (selectedOptions?.every((opt) => opt.value === "Default Title")) {
     return null;
   }
 
   return (
     <div data-motion="fade-up" className="flex flex-col gap-6">
-      {productOptions.map((option) => {
+      {options.map((option) => {
         let optionName = option.name;
+        const shouldRenderAsImage = isImageOption(optionName);
         let clonedSelectedOptionMap = new Map(selectedOptionMap);
         let values = option.optionValues
           .map((optionValue) => {
@@ -95,6 +90,19 @@ export function ProductVariants(props: ProductVariantsProps) {
                 return opt.value === clonedSelectedOptionMap.get(opt.name);
               });
             });
+            const imageVariant = shouldRenderAsImage
+              ? (optionValue.firstSelectableVariant ??
+                nodes?.find((candidateVariant) =>
+                  candidateVariant.selectedOptions.some(
+                    (candidateOption) =>
+                      candidateOption.name === optionName &&
+                      candidateOption.value === optionValue.name,
+                  ),
+                ))
+              : matchingVariant;
+            if (shouldRenderAsImage) {
+              matchingVariant = imageVariant;
+            }
             if (hideUnavailableOptions && !matchingVariant) {
               return null;
             }
@@ -106,7 +114,8 @@ export function ProductVariants(props: ProductVariantsProps) {
               search: "",
               to: "",
               value: optionValue.name,
-              image: matchingVariant?.image,
+              image: imageVariant?.image,
+              variant: imageVariant,
             };
           })
           .filter(Boolean);
@@ -134,7 +143,7 @@ export function ProductVariants(props: ProductVariantsProps) {
               <span className="font-semibold text-base">
                 {config?.displayName || optionName}:
               </span>
-              <span className="ml-2 font-semibold text-base">
+              <span className="ml-1 font-normal text-base">
                 {selectedValue}
               </span>
             </legend>
@@ -143,6 +152,11 @@ export function ProductVariants(props: ProductVariantsProps) {
               values={values}
               selectedOptionValue={selectedValue}
               onSelectOptionValue={handleSelectOptionValue}
+              onSelectVariant={(variant) =>
+                onSelectedVariantChange(
+                  variant as ProductVariantFragmentFragment,
+                )
+              }
               swatches={swatch?.swatches}
             />
           </div>

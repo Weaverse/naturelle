@@ -38,7 +38,7 @@ export default function Policies() {
   );
 }
 
-const POLICIES_QUERY = `#graphql
+export const POLICIES_QUERY = `#graphql
   fragment PolicyItem on ShopPolicy {
     id
     title

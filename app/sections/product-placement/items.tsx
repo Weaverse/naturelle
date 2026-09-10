@@ -22,7 +22,7 @@ const ProductPlacementItems = ({
   let contentStyle: CSSProperties = {
     "--item-thumbs-ratio": thumbnailRatio,
     "--items-spacing": `${itemsSpacing}px`,
-    "--swiper-theme-color": "#3D490B",
+    "--swiper-theme-color": "var(--color-text-primary)",
     "--swiper-pagination-bullet-width": "12px",
     "--swiper-pagination-bullet-height": "2px",
     "--swiper-pagination-bullet-border-radius": "2px",

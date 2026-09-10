@@ -1,4 +1,6 @@
 import type {
+  JudgeMeReviewType,
+  JudgemeProduct,
   JudgemeRatingDistribution,
   JudgemeReviewsData,
   JudgemeStarsRatingData,
@@ -39,6 +41,54 @@ export function parseJudgemeWidgetHTML(html: string): JudgemeWidgetData {
 const AVG_RATING_REGEX = /data-average-rating=['"]([^'"]+)['"]/;
 const NUM_REVIEWS_REGEX = /data-number-of-reviews=['"]([^'"]+)['"]/;
 
+const JUDGEME_PRODUCT_API = "https://judge.me/api/v1/products/-1";
+const JUDGEME_WIDGET_API = "https://api.judge.me/api/v1/widgets/product_review";
+const JUDGEME_REVIEWS_API = "https://api.judge.me/api/v1/reviews";
+
+const EMPTY_REVIEWS: JudgemeReviewsData = {
+  averageRating: 0,
+  rating: 0,
+  totalReviews: 0,
+  reviewNumber: 0,
+  ratingDistribution: [],
+  currentPage: 1,
+  totalPage: 0,
+  perPage: 5,
+  reviews: [],
+};
+
+type JsonFetcher = <T>(url: string, options?: RequestInit) => Promise<T>;
+type JudgemeFetchContext = { fetchWithCache: JsonFetcher };
+type JudgemeRequestOptions = {
+  weaverseContext?: JudgemeFetchContext;
+  perPage?: number;
+};
+
+function isFetchContext(
+  value?: JudgemeFetchContext | JudgemeRequestOptions,
+): value is JudgemeFetchContext {
+  return Boolean(value && "fetchWithCache" in value);
+}
+
+function buildJudgemeUrl(
+  endpoint: string,
+  params: Record<string, string | number>,
+) {
+  const url = new URL(endpoint);
+  for (const [name, value] of Object.entries(params)) {
+    url.searchParams.set(name, String(value));
+  }
+  return url.toString();
+}
+
+async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`Judge.me request failed with status ${response.status}`);
+  }
+  return response.json() as Promise<T>;
+}
+
 export function parseBadgeHtml(html: string): JudgemeStarsRatingData {
   return {
     totalReviews: Number.parseInt(
@@ -51,40 +101,82 @@ export function parseBadgeHtml(html: string): JudgemeStarsRatingData {
 }
 
 export async function getJudgemeReviews(
-  apiToken: string,
-  shopDomain: string,
+  apiToken: string | undefined,
+  shopDomain: string | undefined,
   handle: string,
-  _weaverseContext?: any,
-): Promise<JudgemeReviewsData | null> {
-  const url = `https://judge.me/api/v1/widgets/product_review?api_token=${apiToken}&shop_domain=${shopDomain}&handle=${handle}`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      // Fallback to weaverse mock if available or return null
-      return null;
-    }
-    const data = await res.json();
-    const widgetData = parseJudgemeWidgetHTML((data as any).widget);
+  contextOrOptions?: JudgemeFetchContext | JudgemeRequestOptions,
+): Promise<JudgemeReviewsData> {
+  if (!(apiToken && shopDomain && handle)) {
+    return EMPTY_REVIEWS;
+  }
 
-    // We are mocking the paginated structure because parsing HTML for reviews is complex regex work
-    // that was lost. For now we return empty reviews to satisfy type check.
+  let fetcher = fetchJson;
+  let perPage = 5;
+  if (isFetchContext(contextOrOptions)) {
+    fetcher = contextOrOptions.fetchWithCache;
+  } else if (contextOrOptions) {
+    fetcher = contextOrOptions.weaverseContext?.fetchWithCache || fetchJson;
+    perPage = contextOrOptions.perPage || perPage;
+  }
+  try {
+    const productData = await fetcher<{ product?: JudgemeProduct }>(
+      buildJudgemeUrl(JUDGEME_PRODUCT_API, {
+        api_token: apiToken,
+        shop_domain: shopDomain,
+        handle,
+      }),
+    );
+    if (!productData.product?.id) {
+      return EMPTY_REVIEWS;
+    }
+
+    const [widgetData, reviewsData] = await Promise.all([
+      fetcher<{ widget?: string }>(
+        buildJudgemeUrl(JUDGEME_WIDGET_API, {
+          api_token: apiToken,
+          shop_domain: shopDomain,
+          handle,
+          page: 1,
+          per_page: perPage,
+        }),
+      ),
+      fetcher<{
+        reviews?: JudgeMeReviewType[];
+        current_page?: number;
+        per_page?: number;
+      }>(
+        buildJudgemeUrl(JUDGEME_REVIEWS_API, {
+          api_token: apiToken,
+          shop_domain: shopDomain,
+          product_id: productData.product.id,
+          page: 1,
+          per_page: perPage,
+        }),
+      ),
+    ]);
+    const summary = widgetData.widget
+      ? parseJudgemeWidgetHTML(widgetData.widget)
+      : EMPTY_REVIEWS;
+
     return {
-      ...widgetData,
-      rating: widgetData.averageRating,
-      reviewNumber: widgetData.totalReviews,
-      reviews: [],
-      currentPage: 1,
-      totalPage: Math.ceil(widgetData.totalReviews / 5),
-      perPage: 5,
+      averageRating: summary.averageRating,
+      rating: summary.averageRating,
+      totalReviews: summary.totalReviews,
+      reviewNumber: summary.totalReviews,
+      ratingDistribution: summary.ratingDistribution,
+      reviews: reviewsData.reviews || [],
+      currentPage: reviewsData.current_page || 1,
+      totalPage: Math.ceil(summary.totalReviews / perPage),
+      perPage: reviewsData.per_page || perPage,
     };
   } catch (error) {
-    console.error("Error fetching Judge.me reviews:", error);
-    return null;
+    console.error("Unable to load Judge.me reviews", error);
+    return EMPTY_REVIEWS;
   }
 }
 
 export async function createJudgemeReview(
-  _apiToken: string,
+  apiToken: string,
   shopDomain: string,
   formData: FormData,
 ) {
@@ -93,6 +185,7 @@ export async function createJudgemeReview(
     name: formData.get("name"),
     email: formData.get("email"),
     rating: formData.get("rating"),
+    title: formData.get("title"),
     body: formData.get("body"),
     id: formData.get("id"), // external_id (product id)
     url: formData.get("url"), // product handle or url
@@ -101,16 +194,19 @@ export async function createJudgemeReview(
   };
 
   try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization header not typically needed for public review submission if shop_domain and platform are set,
-        // but private API token might be used if this is server-side.
-        // The args passed `apiToken` suggests usage.
+    const res = await fetch(
+      buildJudgemeUrl(url, {
+        api_token: apiToken,
+        shop_domain: shopDomain,
+      }),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       },
-      body: JSON.stringify(body),
-    });
+    );
 
     if (res.ok) {
       return { status: 201, message: "Review created" };

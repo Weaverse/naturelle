@@ -106,7 +106,7 @@ export function ZoomModal({
                         id={`zoom-media--${mediaId}`}
                         className={cn(
                           "relative bg-gray-100",
-                          "p-1 border transition-colors cursor-pointer rounded border-transparent h-auto!",
+                          "h-auto! cursor-pointer rounded-sm border border-transparent p-1 transition-colors",
                           zoomMediaId === id && "border-border",
                         )}
                         onClick={() => setZoomMediaId(id)}

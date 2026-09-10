@@ -25,7 +25,7 @@ export default function AllProducts(props: AllProductsProps) {
         {({ nodes, isLoading, NextLink, PreviousLink }) => {
           const itemsMarkup = nodes.map((product, i) => (
             <ProductCard
-              quickAdd
+              enableQuickView
               key={product.id}
               product={product}
               loading={getImageLoadingPriority(i)}
