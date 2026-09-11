@@ -48,7 +48,6 @@ export function GlobalStyle() {
       buttonBorderHoverOutline,
       buttonTextActiveOutline,
       buttonBorderActiveOutline,
-      labelText,
       labelBgSave,
       labelBgNew,
       labelBgSoldOut,
@@ -98,7 +97,6 @@ export function GlobalStyle() {
               --color-border-subtle: ${borderSubtleColor};
               --color-drawer-bg: ${drawerBgColor};
 
-              --color-label-text: ${labelText};
               --color-label-bg-save: ${labelBgSave};
               --color-label-bg-new: ${labelBgNew};
               --color-label-bg-soldout: ${labelBgSoldOut};

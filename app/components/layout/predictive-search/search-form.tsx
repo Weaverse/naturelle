@@ -22,6 +22,7 @@ export function PredictiveSearchForm({
   });
   const inputRef = useRef<HTMLInputElement | null>(null);
   const didInitializeRef = useRef(false);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchAction = action ?? "/api/predictive-search";
   const localizedAction = params.locale
     ? `/${params.locale}${searchAction}`
@@ -29,10 +30,15 @@ export function PredictiveSearchForm({
 
   function fetchResults(event: React.ChangeEvent<HTMLInputElement>) {
     const newSearchTerm = event.target.value || "";
-    fetcher.submit(
-      { q: newSearchTerm, limit: "8" },
-      { method, action: localizedAction },
-    );
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      fetcher.submit(
+        { q: newSearchTerm, limit: "8" },
+        { method, action: localizedAction },
+      );
+    }, 300);
   }
 
   // ensure the passed input has a type of search, because SearchResults
@@ -49,6 +55,12 @@ export function PredictiveSearchForm({
       { q: inputRef.current?.value || "", limit: "8" },
       { method, action: localizedAction },
     );
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, []);
 
   return (

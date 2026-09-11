@@ -2,7 +2,6 @@ import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
-import { useShopMenu } from "~/hooks/use-menu-shop";
 import {
   type EnhancedMenu,
   getMaxDepth,
@@ -65,29 +64,25 @@ function DrawerMenu({
         let { title, ...rest } = item;
         let level = getMaxDepth(item);
         let isCollectionMenu = item.items.some(
-          (childItem) => childItem.resource?.products,
+          (childItem) => childItem.resource?.__typename === "Collection",
         );
         let isBrandMenu =
           item.items.length > 0 &&
           item.items.every(
             (childItem) =>
-              childItem.resource?.image && !childItem.resource.products,
+              childItem.resource?.image &&
+              childItem.resource.__typename !== "Collection",
           );
-        let isJournalMenu = item.items.some((childItem) =>
-          ["Article", "Blog"].includes(childItem.resource?.__typename ?? ""),
-        );
         let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
           isCollectionMenu
             ? CollectionMenu
             : isBrandMenu
               ? BrandMenu
-              : isJournalMenu
-                ? JournalDrawerMenu
-                : level > 2
-                  ? MultiMenu
-                  : level === 2
-                    ? SingleMenu
-                    : ItemHeader;
+              : level > 2
+                ? MultiMenu
+                : level === 2
+                  ? SingleMenu
+                  : ItemHeader;
         return (
           <Comp key={id} title={title} closeDrawer={closeDrawer} {...rest} />
         );
@@ -245,7 +240,9 @@ function CollectionMenu({
     closeMenu();
     closeDrawer();
   };
-  const collectionItems = items.filter((item) => item.resource?.products);
+  const collectionItems = items.filter(
+    (item) => item.resource?.__typename === "Collection",
+  );
   let content = (
     <Drawer
       open={isMenuOpen}
@@ -260,7 +257,7 @@ function CollectionMenu({
         {collectionItems.map((item) => (
           <Disclosure key={item.id}>
             {({ open }) => {
-              const products = item.resource?.products?.nodes ?? [];
+              const products = item.items;
               return (
                 <div>
                   {products.length > 0 ? (
@@ -287,7 +284,7 @@ function CollectionMenu({
                         {products.map((product) => (
                           <li key={product.id}>
                             <Link
-                              to={`/products/${product.handle}`}
+                              to={product.to}
                               prefetch="intent"
                               onClick={handleCloseAll}
                               className="block text-sm text-text-subtle hover:text-text-primary"
@@ -371,88 +368,6 @@ function BrandMenu({
               {item.resource?.title || item.title}
             </span>
           </Link>
-        ))}
-      </div>
-    </Drawer>
-  );
-
-  return (
-    <div>
-      <button
-        type="button"
-        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
-        onClick={openMenu}
-      >
-        <h5 className="font-medium text-xl uppercase">{title}</h5>
-        <IconCaret direction="right" className="size-4" />
-      </button>
-      {content}
-    </div>
-  );
-}
-
-function JournalDrawerMenu({
-  title,
-  closeDrawer,
-}: SingleMenuItem & { closeDrawer: () => void }) {
-  const { headerMenu } = useShopMenu();
-  const journalBlogs = headerMenu?.journalBlogs ?? [];
-  const {
-    isOpen: isMenuOpen,
-    openDrawer: openMenu,
-    closeDrawer: closeMenu,
-  } = useDrawer();
-  const handleCloseAll = () => {
-    closeMenu();
-    closeDrawer();
-  };
-  const blogs = journalBlogs.map((blog) => ({
-    id: blog.id,
-    title: blog.title,
-    to: `/blogs/${blog.handle}`,
-    articles: blog.articles.nodes,
-  }));
-
-  const content = (
-    <Drawer
-      open={isMenuOpen}
-      onClose={closeMenu}
-      openFrom="left"
-      heading={title}
-      isForm="menu"
-      isBackMenu
-    >
-      <div className="grid overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
-        {blogs.map((blog) => (
-          <Disclosure key={blog.id}>
-            {({ open }) => (
-              <div>
-                <Disclosure.Button className="flex w-full items-center justify-between py-3 text-left font-heading text-base uppercase text-text-subtle hover:text-text-primary">
-                  <span className="line-clamp-1">{blog.title}</span>
-                  <IconCaret
-                    className="size-4 shrink-0"
-                    direction={open ? "down" : "right"}
-                  />
-                </Disclosure.Button>
-                <Disclosure.Panel>
-                  <ul className="space-y-2 pb-3">
-                    {blog.articles.map((article) => (
-                      <li key={article.id}>
-                        <Link
-                          to={`${blog.to.replace(/\/$/, "")}/${article.handle}`}
-                          prefetch="intent"
-                          onClick={handleCloseAll}
-                          className="block text-sm text-text-subtle hover:text-text-primary"
-                        >
-                          {article.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </Disclosure.Panel>
-              </div>
-            )}
-          </Disclosure>
         ))}
       </div>
     </Drawer>

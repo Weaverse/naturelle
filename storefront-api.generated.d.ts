@@ -1749,687 +1749,6 @@ export type FeaturedItemsQuery = {
   };
 };
 
-export type LayoutQueryVariables = StorefrontAPI.Exact<{
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  headerMenuHandle: StorefrontAPI.Scalars['String']['input'];
-  footerMenuHandle: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type LayoutQuery = {
-  shop: Pick<StorefrontAPI.Shop, 'id' | 'name' | 'description'> & {
-    primaryDomain: Pick<StorefrontAPI.Domain, 'url'>;
-    brand?: StorefrontAPI.Maybe<{
-      logo?: StorefrontAPI.Maybe<{
-        image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
-      }>;
-    }>;
-  };
-  headerMenu?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Menu, 'id'> & {
-      items: Array<
-        Pick<
-          StorefrontAPI.MenuItem,
-          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-        > & {
-          items: Array<
-            Pick<
-              StorefrontAPI.MenuItem,
-              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-            > & {
-              items: Array<
-                Pick<
-                  StorefrontAPI.MenuItem,
-                  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-                > & {
-                  resource?: StorefrontAPI.Maybe<
-                    | {
-                        __typename:
-                          | 'Article'
-                          | 'Metaobject'
-                          | 'Page'
-                          | 'ShopPolicy';
-                      }
-                    | ({__typename: 'Blog'} & Pick<
-                        StorefrontAPI.Blog,
-                        'title' | 'handle'
-                      >)
-                    | ({__typename: 'Collection'} & Pick<
-                        StorefrontAPI.Collection,
-                        'title'
-                      > & {
-                          products: {
-                            nodes: Array<
-                              Pick<
-                                StorefrontAPI.Product,
-                                'id' | 'title' | 'handle'
-                              >
-                            >;
-                          };
-                          image?: StorefrontAPI.Maybe<
-                            Pick<
-                              StorefrontAPI.Image,
-                              'altText' | 'height' | 'url' | 'width'
-                            >
-                          >;
-                        })
-                    | ({__typename: 'Product'} & Pick<
-                        StorefrontAPI.Product,
-                        'title' | 'description'
-                      > & {
-                          image?: StorefrontAPI.Maybe<
-                            Pick<
-                              StorefrontAPI.Image,
-                              'altText' | 'height' | 'url' | 'width'
-                            >
-                          >;
-                          collections: {
-                            nodes: Array<
-                              Pick<StorefrontAPI.Collection, 'title'>
-                            >;
-                          };
-                        })
-                  >;
-                }
-              >;
-              resource?: StorefrontAPI.Maybe<
-                | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-                | ({__typename: 'Blog'} & Pick<
-                    StorefrontAPI.Blog,
-                    'title' | 'handle'
-                  >)
-                | ({__typename: 'Collection'} & Pick<
-                    StorefrontAPI.Collection,
-                    'title'
-                  > & {
-                      products: {
-                        nodes: Array<
-                          Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                        >;
-                      };
-                      image?: StorefrontAPI.Maybe<
-                        Pick<
-                          StorefrontAPI.Image,
-                          'altText' | 'height' | 'url' | 'width'
-                        >
-                      >;
-                    })
-                | ({__typename: 'Product'} & Pick<
-                    StorefrontAPI.Product,
-                    'title' | 'description'
-                  > & {
-                      image?: StorefrontAPI.Maybe<
-                        Pick<
-                          StorefrontAPI.Image,
-                          'altText' | 'height' | 'url' | 'width'
-                        >
-                      >;
-                      collections: {
-                        nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-                      };
-                    })
-              >;
-            }
-          >;
-          resource?: StorefrontAPI.Maybe<
-            | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-            | ({__typename: 'Blog'} & Pick<
-                StorefrontAPI.Blog,
-                'title' | 'handle'
-              >)
-            | ({__typename: 'Collection'} & Pick<
-                StorefrontAPI.Collection,
-                'title'
-              > & {
-                  products: {
-                    nodes: Array<
-                      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                    >;
-                  };
-                  image?: StorefrontAPI.Maybe<
-                    Pick<
-                      StorefrontAPI.Image,
-                      'altText' | 'height' | 'url' | 'width'
-                    >
-                  >;
-                })
-            | ({__typename: 'Product'} & Pick<
-                StorefrontAPI.Product,
-                'title' | 'description'
-              > & {
-                  image?: StorefrontAPI.Maybe<
-                    Pick<
-                      StorefrontAPI.Image,
-                      'altText' | 'height' | 'url' | 'width'
-                    >
-                  >;
-                  collections: {
-                    nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-                  };
-                })
-          >;
-        }
-      >;
-    }
-  >;
-  footerMenu?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Menu, 'id'> & {
-      items: Array<
-        Pick<
-          StorefrontAPI.MenuItem,
-          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-        > & {
-          items: Array<
-            Pick<
-              StorefrontAPI.MenuItem,
-              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-            > & {
-              items: Array<
-                Pick<
-                  StorefrontAPI.MenuItem,
-                  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-                >
-              >;
-            }
-          >;
-        }
-      >;
-    }
-  >;
-  journalBlogs: {
-    nodes: Array<
-      Pick<StorefrontAPI.Blog, 'id' | 'title' | 'handle'> & {
-        articles: {
-          nodes: Array<
-            Pick<StorefrontAPI.Article, 'id' | 'title' | 'handle'> & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-            }
-          >;
-        };
-      }
-    >;
-  };
-};
-
-export type ShopFragment = Pick<
-  StorefrontAPI.Shop,
-  'id' | 'name' | 'description'
-> & {
-  primaryDomain: Pick<StorefrontAPI.Domain, 'url'>;
-  brand?: StorefrontAPI.Maybe<{
-    logo?: StorefrontAPI.Maybe<{
-      image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
-    }>;
-  }>;
-};
-
-export type MenuItemFragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-> & {
-  resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
-          products: {
-            nodes: Array<
-              Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-            >;
-          };
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-        })
-    | ({__typename: 'Product'} & Pick<
-        StorefrontAPI.Product,
-        'title' | 'description'
-      > & {
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
-        })
-  >;
-};
-
-export type ChildMenuItemFragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-> & {
-  resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
-          products: {
-            nodes: Array<
-              Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-            >;
-          };
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-        })
-    | ({__typename: 'Product'} & Pick<
-        StorefrontAPI.Product,
-        'title' | 'description'
-      > & {
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
-        })
-  >;
-};
-
-export type ParentMenuItem2Fragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-> & {
-  items: Array<
-    Pick<
-      StorefrontAPI.MenuItem,
-      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-    > & {
-      resource?: StorefrontAPI.Maybe<
-        | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-        | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-        | ({__typename: 'Collection'} & Pick<
-            StorefrontAPI.Collection,
-            'title'
-          > & {
-              products: {
-                nodes: Array<
-                  Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                >;
-              };
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-            })
-        | ({__typename: 'Product'} & Pick<
-            StorefrontAPI.Product,
-            'title' | 'description'
-          > & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-              collections: {
-                nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-              };
-            })
-      >;
-    }
-  >;
-  resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
-          products: {
-            nodes: Array<
-              Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-            >;
-          };
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-        })
-    | ({__typename: 'Product'} & Pick<
-        StorefrontAPI.Product,
-        'title' | 'description'
-      > & {
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
-        })
-  >;
-};
-
-export type ParentMenuItemFragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-> & {
-  items: Array<
-    Pick<
-      StorefrontAPI.MenuItem,
-      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-    > & {
-      items: Array<
-        Pick<
-          StorefrontAPI.MenuItem,
-          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-        > & {
-          resource?: StorefrontAPI.Maybe<
-            | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-            | ({__typename: 'Blog'} & Pick<
-                StorefrontAPI.Blog,
-                'title' | 'handle'
-              >)
-            | ({__typename: 'Collection'} & Pick<
-                StorefrontAPI.Collection,
-                'title'
-              > & {
-                  products: {
-                    nodes: Array<
-                      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                    >;
-                  };
-                  image?: StorefrontAPI.Maybe<
-                    Pick<
-                      StorefrontAPI.Image,
-                      'altText' | 'height' | 'url' | 'width'
-                    >
-                  >;
-                })
-            | ({__typename: 'Product'} & Pick<
-                StorefrontAPI.Product,
-                'title' | 'description'
-              > & {
-                  image?: StorefrontAPI.Maybe<
-                    Pick<
-                      StorefrontAPI.Image,
-                      'altText' | 'height' | 'url' | 'width'
-                    >
-                  >;
-                  collections: {
-                    nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-                  };
-                })
-          >;
-        }
-      >;
-      resource?: StorefrontAPI.Maybe<
-        | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-        | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-        | ({__typename: 'Collection'} & Pick<
-            StorefrontAPI.Collection,
-            'title'
-          > & {
-              products: {
-                nodes: Array<
-                  Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                >;
-              };
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-            })
-        | ({__typename: 'Product'} & Pick<
-            StorefrontAPI.Product,
-            'title' | 'description'
-          > & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-              collections: {
-                nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-              };
-            })
-      >;
-    }
-  >;
-  resource?: StorefrontAPI.Maybe<
-    | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-    | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
-          products: {
-            nodes: Array<
-              Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-            >;
-          };
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-        })
-    | ({__typename: 'Product'} & Pick<
-        StorefrontAPI.Product,
-        'title' | 'description'
-      > & {
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
-          >;
-          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
-        })
-  >;
-};
-
-export type MenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
-  items: Array<
-    Pick<
-      StorefrontAPI.MenuItem,
-      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-    > & {
-      items: Array<
-        Pick<
-          StorefrontAPI.MenuItem,
-          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-        > & {
-          items: Array<
-            Pick<
-              StorefrontAPI.MenuItem,
-              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-            > & {
-              resource?: StorefrontAPI.Maybe<
-                | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-                | ({__typename: 'Blog'} & Pick<
-                    StorefrontAPI.Blog,
-                    'title' | 'handle'
-                  >)
-                | ({__typename: 'Collection'} & Pick<
-                    StorefrontAPI.Collection,
-                    'title'
-                  > & {
-                      products: {
-                        nodes: Array<
-                          Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                        >;
-                      };
-                      image?: StorefrontAPI.Maybe<
-                        Pick<
-                          StorefrontAPI.Image,
-                          'altText' | 'height' | 'url' | 'width'
-                        >
-                      >;
-                    })
-                | ({__typename: 'Product'} & Pick<
-                    StorefrontAPI.Product,
-                    'title' | 'description'
-                  > & {
-                      image?: StorefrontAPI.Maybe<
-                        Pick<
-                          StorefrontAPI.Image,
-                          'altText' | 'height' | 'url' | 'width'
-                        >
-                      >;
-                      collections: {
-                        nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-                      };
-                    })
-              >;
-            }
-          >;
-          resource?: StorefrontAPI.Maybe<
-            | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-            | ({__typename: 'Blog'} & Pick<
-                StorefrontAPI.Blog,
-                'title' | 'handle'
-              >)
-            | ({__typename: 'Collection'} & Pick<
-                StorefrontAPI.Collection,
-                'title'
-              > & {
-                  products: {
-                    nodes: Array<
-                      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                    >;
-                  };
-                  image?: StorefrontAPI.Maybe<
-                    Pick<
-                      StorefrontAPI.Image,
-                      'altText' | 'height' | 'url' | 'width'
-                    >
-                  >;
-                })
-            | ({__typename: 'Product'} & Pick<
-                StorefrontAPI.Product,
-                'title' | 'description'
-              > & {
-                  image?: StorefrontAPI.Maybe<
-                    Pick<
-                      StorefrontAPI.Image,
-                      'altText' | 'height' | 'url' | 'width'
-                    >
-                  >;
-                  collections: {
-                    nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-                  };
-                })
-          >;
-        }
-      >;
-      resource?: StorefrontAPI.Maybe<
-        | {__typename: 'Article' | 'Metaobject' | 'Page' | 'ShopPolicy'}
-        | ({__typename: 'Blog'} & Pick<StorefrontAPI.Blog, 'title' | 'handle'>)
-        | ({__typename: 'Collection'} & Pick<
-            StorefrontAPI.Collection,
-            'title'
-          > & {
-              products: {
-                nodes: Array<
-                  Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
-                >;
-              };
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-            })
-        | ({__typename: 'Product'} & Pick<
-            StorefrontAPI.Product,
-            'title' | 'description'
-          > & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'altText' | 'height' | 'url' | 'width'
-                >
-              >;
-              collections: {
-                nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
-              };
-            })
-      >;
-    }
-  >;
-};
-
-export type FooterMenuItemFragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
->;
-
-export type FooterChildMenuItemFragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
->;
-
-export type FooterParentMenuItem2Fragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-> & {
-  items: Array<
-    Pick<
-      StorefrontAPI.MenuItem,
-      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-    >
-  >;
-};
-
-export type FooterParentMenuItemFragment = Pick<
-  StorefrontAPI.MenuItem,
-  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-> & {
-  items: Array<
-    Pick<
-      StorefrontAPI.MenuItem,
-      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-    > & {
-      items: Array<
-        Pick<
-          StorefrontAPI.MenuItem,
-          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-        >
-      >;
-    }
-  >;
-};
-
-export type FooterMenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
-  items: Array<
-    Pick<
-      StorefrontAPI.MenuItem,
-      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-    > & {
-      items: Array<
-        Pick<
-          StorefrontAPI.MenuItem,
-          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-        > & {
-          items: Array<
-            Pick<
-              StorefrontAPI.MenuItem,
-              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
-            >
-          >;
-        }
-      >;
-    }
-  >;
-};
-
-export type SwatchesQueryVariables = StorefrontAPI.Exact<{
-  type: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type SwatchesQuery = {
-  metaobjects: {
-    nodes: Array<
-      Pick<StorefrontAPI.Metaobject, 'id'> & {
-        fields: Array<
-          Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'> & {
-            reference?: StorefrontAPI.Maybe<{
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'id' | 'altText' | 'width' | 'height'
-                > & {url: StorefrontAPI.Image['url']}
-              >;
-            }>;
-          }
-        >;
-      }
-    >;
-  };
-};
-
 export type SitemapsQueryVariables = StorefrontAPI.Exact<{
   urlLimits?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -2776,7 +2095,9 @@ export type PredictiveSearchQuery = {
 };
 
 export type PopularSearchProductsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   first: StorefrontAPI.Scalars['Int']['input'];
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
 export type PopularSearchProductsQuery = {
@@ -3239,6 +2560,653 @@ export type FeaturedProductsQuery = {
   };
 };
 
+export type LayoutQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  headerMenuHandle: StorefrontAPI.Scalars['String']['input'];
+  footerMenuHandle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type LayoutQuery = {
+  shop: Pick<StorefrontAPI.Shop, 'id' | 'name' | 'description'> & {
+    primaryDomain: Pick<StorefrontAPI.Domain, 'url'>;
+    brand?: StorefrontAPI.Maybe<{
+      logo?: StorefrontAPI.Maybe<{
+        image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+      }>;
+    }>;
+  };
+  headerMenu?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Menu, 'id'> & {
+      items: Array<
+        Pick<
+          StorefrontAPI.MenuItem,
+          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+        > & {
+          items: Array<
+            Pick<
+              StorefrontAPI.MenuItem,
+              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+            > & {
+              items: Array<
+                Pick<
+                  StorefrontAPI.MenuItem,
+                  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+                > & {
+                  resource?: StorefrontAPI.Maybe<
+                    | ({__typename: 'Article'} & {
+                        image?: StorefrontAPI.Maybe<
+                          Pick<
+                            StorefrontAPI.Image,
+                            'altText' | 'height' | 'url' | 'width'
+                          >
+                        >;
+                      })
+                    | {
+                        __typename:
+                          | 'Blog'
+                          | 'Metaobject'
+                          | 'Page'
+                          | 'ShopPolicy';
+                      }
+                    | ({__typename: 'Collection'} & Pick<
+                        StorefrontAPI.Collection,
+                        'title'
+                      > & {
+                          image?: StorefrontAPI.Maybe<
+                            Pick<
+                              StorefrontAPI.Image,
+                              'altText' | 'height' | 'url' | 'width'
+                            >
+                          >;
+                        })
+                    | ({__typename: 'Product'} & Pick<
+                        StorefrontAPI.Product,
+                        'title' | 'description'
+                      > & {
+                          image?: StorefrontAPI.Maybe<
+                            Pick<
+                              StorefrontAPI.Image,
+                              'altText' | 'height' | 'url' | 'width'
+                            >
+                          >;
+                          collections: {
+                            nodes: Array<
+                              Pick<StorefrontAPI.Collection, 'title'>
+                            >;
+                          };
+                        })
+                  >;
+                }
+              >;
+              resource?: StorefrontAPI.Maybe<
+                | ({__typename: 'Article'} & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'altText' | 'height' | 'url' | 'width'
+                      >
+                    >;
+                  })
+                | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+                | ({__typename: 'Collection'} & Pick<
+                    StorefrontAPI.Collection,
+                    'title'
+                  > & {
+                      image?: StorefrontAPI.Maybe<
+                        Pick<
+                          StorefrontAPI.Image,
+                          'altText' | 'height' | 'url' | 'width'
+                        >
+                      >;
+                    })
+                | ({__typename: 'Product'} & Pick<
+                    StorefrontAPI.Product,
+                    'title' | 'description'
+                  > & {
+                      image?: StorefrontAPI.Maybe<
+                        Pick<
+                          StorefrontAPI.Image,
+                          'altText' | 'height' | 'url' | 'width'
+                        >
+                      >;
+                      collections: {
+                        nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+                      };
+                    })
+              >;
+            }
+          >;
+          resource?: StorefrontAPI.Maybe<
+            | ({__typename: 'Article'} & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'altText' | 'height' | 'url' | 'width'
+                  >
+                >;
+              })
+            | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+            | ({__typename: 'Collection'} & Pick<
+                StorefrontAPI.Collection,
+                'title'
+              > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'altText' | 'height' | 'url' | 'width'
+                    >
+                  >;
+                })
+            | ({__typename: 'Product'} & Pick<
+                StorefrontAPI.Product,
+                'title' | 'description'
+              > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'altText' | 'height' | 'url' | 'width'
+                    >
+                  >;
+                  collections: {
+                    nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+                  };
+                })
+          >;
+        }
+      >;
+    }
+  >;
+  footerMenu?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Menu, 'id'> & {
+      items: Array<
+        Pick<
+          StorefrontAPI.MenuItem,
+          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+        > & {
+          items: Array<
+            Pick<
+              StorefrontAPI.MenuItem,
+              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+            > & {
+              items: Array<
+                Pick<
+                  StorefrontAPI.MenuItem,
+                  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+                >
+              >;
+            }
+          >;
+        }
+      >;
+    }
+  >;
+};
+
+export type ShopFragment = Pick<
+  StorefrontAPI.Shop,
+  'id' | 'name' | 'description'
+> & {
+  primaryDomain: Pick<StorefrontAPI.Domain, 'url'>;
+  brand?: StorefrontAPI.Maybe<{
+    logo?: StorefrontAPI.Maybe<{
+      image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+    }>;
+  }>;
+};
+
+export type MenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+> & {
+  resource?: StorefrontAPI.Maybe<
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+        })
+    | ({__typename: 'Product'} & Pick<
+        StorefrontAPI.Product,
+        'title' | 'description'
+      > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
+        })
+  >;
+};
+
+export type ChildMenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+> & {
+  resource?: StorefrontAPI.Maybe<
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+        })
+    | ({__typename: 'Product'} & Pick<
+        StorefrontAPI.Product,
+        'title' | 'description'
+      > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
+        })
+  >;
+};
+
+export type ParentMenuItem2Fragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+> & {
+  items: Array<
+    Pick<
+      StorefrontAPI.MenuItem,
+      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+    > & {
+      resource?: StorefrontAPI.Maybe<
+        | ({__typename: 'Article'} & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+            >;
+          })
+        | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+        | ({__typename: 'Collection'} & Pick<
+            StorefrontAPI.Collection,
+            'title'
+          > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'altText' | 'height' | 'url' | 'width'
+                >
+              >;
+            })
+        | ({__typename: 'Product'} & Pick<
+            StorefrontAPI.Product,
+            'title' | 'description'
+          > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'altText' | 'height' | 'url' | 'width'
+                >
+              >;
+              collections: {
+                nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+              };
+            })
+      >;
+    }
+  >;
+  resource?: StorefrontAPI.Maybe<
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+        })
+    | ({__typename: 'Product'} & Pick<
+        StorefrontAPI.Product,
+        'title' | 'description'
+      > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
+        })
+  >;
+};
+
+export type ParentMenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+> & {
+  items: Array<
+    Pick<
+      StorefrontAPI.MenuItem,
+      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+    > & {
+      items: Array<
+        Pick<
+          StorefrontAPI.MenuItem,
+          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+        > & {
+          resource?: StorefrontAPI.Maybe<
+            | ({__typename: 'Article'} & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'altText' | 'height' | 'url' | 'width'
+                  >
+                >;
+              })
+            | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+            | ({__typename: 'Collection'} & Pick<
+                StorefrontAPI.Collection,
+                'title'
+              > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'altText' | 'height' | 'url' | 'width'
+                    >
+                  >;
+                })
+            | ({__typename: 'Product'} & Pick<
+                StorefrontAPI.Product,
+                'title' | 'description'
+              > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'altText' | 'height' | 'url' | 'width'
+                    >
+                  >;
+                  collections: {
+                    nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+                  };
+                })
+          >;
+        }
+      >;
+      resource?: StorefrontAPI.Maybe<
+        | ({__typename: 'Article'} & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+            >;
+          })
+        | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+        | ({__typename: 'Collection'} & Pick<
+            StorefrontAPI.Collection,
+            'title'
+          > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'altText' | 'height' | 'url' | 'width'
+                >
+              >;
+            })
+        | ({__typename: 'Product'} & Pick<
+            StorefrontAPI.Product,
+            'title' | 'description'
+          > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'altText' | 'height' | 'url' | 'width'
+                >
+              >;
+              collections: {
+                nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+              };
+            })
+      >;
+    }
+  >;
+  resource?: StorefrontAPI.Maybe<
+    | ({__typename: 'Article'} & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+        >;
+      })
+    | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+    | ({__typename: 'Collection'} & Pick<StorefrontAPI.Collection, 'title'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+        })
+    | ({__typename: 'Product'} & Pick<
+        StorefrontAPI.Product,
+        'title' | 'description'
+      > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+          >;
+          collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>};
+        })
+  >;
+};
+
+export type MenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
+  items: Array<
+    Pick<
+      StorefrontAPI.MenuItem,
+      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+    > & {
+      items: Array<
+        Pick<
+          StorefrontAPI.MenuItem,
+          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+        > & {
+          items: Array<
+            Pick<
+              StorefrontAPI.MenuItem,
+              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+            > & {
+              resource?: StorefrontAPI.Maybe<
+                | ({__typename: 'Article'} & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'altText' | 'height' | 'url' | 'width'
+                      >
+                    >;
+                  })
+                | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+                | ({__typename: 'Collection'} & Pick<
+                    StorefrontAPI.Collection,
+                    'title'
+                  > & {
+                      image?: StorefrontAPI.Maybe<
+                        Pick<
+                          StorefrontAPI.Image,
+                          'altText' | 'height' | 'url' | 'width'
+                        >
+                      >;
+                    })
+                | ({__typename: 'Product'} & Pick<
+                    StorefrontAPI.Product,
+                    'title' | 'description'
+                  > & {
+                      image?: StorefrontAPI.Maybe<
+                        Pick<
+                          StorefrontAPI.Image,
+                          'altText' | 'height' | 'url' | 'width'
+                        >
+                      >;
+                      collections: {
+                        nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+                      };
+                    })
+              >;
+            }
+          >;
+          resource?: StorefrontAPI.Maybe<
+            | ({__typename: 'Article'} & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'altText' | 'height' | 'url' | 'width'
+                  >
+                >;
+              })
+            | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+            | ({__typename: 'Collection'} & Pick<
+                StorefrontAPI.Collection,
+                'title'
+              > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'altText' | 'height' | 'url' | 'width'
+                    >
+                  >;
+                })
+            | ({__typename: 'Product'} & Pick<
+                StorefrontAPI.Product,
+                'title' | 'description'
+              > & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'altText' | 'height' | 'url' | 'width'
+                    >
+                  >;
+                  collections: {
+                    nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+                  };
+                })
+          >;
+        }
+      >;
+      resource?: StorefrontAPI.Maybe<
+        | ({__typename: 'Article'} & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'altText' | 'height' | 'url' | 'width'>
+            >;
+          })
+        | {__typename: 'Blog' | 'Metaobject' | 'Page' | 'ShopPolicy'}
+        | ({__typename: 'Collection'} & Pick<
+            StorefrontAPI.Collection,
+            'title'
+          > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'altText' | 'height' | 'url' | 'width'
+                >
+              >;
+            })
+        | ({__typename: 'Product'} & Pick<
+            StorefrontAPI.Product,
+            'title' | 'description'
+          > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'altText' | 'height' | 'url' | 'width'
+                >
+              >;
+              collections: {
+                nodes: Array<Pick<StorefrontAPI.Collection, 'title'>>;
+              };
+            })
+      >;
+    }
+  >;
+};
+
+export type FooterMenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+>;
+
+export type FooterChildMenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+>;
+
+export type FooterParentMenuItem2Fragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+> & {
+  items: Array<
+    Pick<
+      StorefrontAPI.MenuItem,
+      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+    >
+  >;
+};
+
+export type FooterParentMenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+> & {
+  items: Array<
+    Pick<
+      StorefrontAPI.MenuItem,
+      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+    > & {
+      items: Array<
+        Pick<
+          StorefrontAPI.MenuItem,
+          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+        >
+      >;
+    }
+  >;
+};
+
+export type FooterMenuFragment = Pick<StorefrontAPI.Menu, 'id'> & {
+  items: Array<
+    Pick<
+      StorefrontAPI.MenuItem,
+      'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+    > & {
+      items: Array<
+        Pick<
+          StorefrontAPI.MenuItem,
+          'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+        > & {
+          items: Array<
+            Pick<
+              StorefrontAPI.MenuItem,
+              'id' | 'resourceId' | 'tags' | 'title' | 'type' | 'url'
+            >
+          >;
+        }
+      >;
+    }
+  >;
+};
+
+export type SwatchesQueryVariables = StorefrontAPI.Exact<{
+  type: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type SwatchesQuery = {
+  metaobjects: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'id'> & {
+        fields: Array<
+          Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'> & {
+            reference?: StorefrontAPI.Maybe<{
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'id' | 'altText' | 'width' | 'height'
+                > & {url: StorefrontAPI.Image['url']}
+              >;
+            }>;
+          }
+        >;
+      }
+    >;
+  };
+};
+
 interface GeneratedQueryTypes {
   '#graphql\nquery BlogSingle(\n    $language: LanguageCode\n    $blogHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      articles(first: 8) {\n        nodes {\n          ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    tags\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
     return: BlogSingleQuery;
@@ -3292,14 +3260,6 @@ interface GeneratedQueryTypes {
     return: FeaturedItemsQuery;
     variables: FeaturedItemsQueryVariables;
   };
-  '#graphql\n  query layout(\n    $language: LanguageCode\n    $headerMenuHandle: String!\n    $footerMenuHandle: String!\n  ) @inContext(language: $language) {\n    shop {\n      ...Shop\n    }\n    headerMenu: menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n    footerMenu: menu(handle: $footerMenuHandle) {\n      ...FooterMenu\n    }\n    journalBlogs: blogs(first: 5) {\n      nodes {\n        id\n        title\n        handle\n        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {\n          nodes {\n            id\n            title\n            handle\n            image {\n              altText\n              height\n              url\n              width\n            }\n          }\n        }\n      }\n    }\n  }\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    resource {\n      __typename\n      ... on Collection {\n        title\n        products(first: 5) {\n          nodes {\n            id\n            title\n            handle\n          }\n        }\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n      ... on Product {\n        title\n        description\n        image: featuredImage {\n          altText\n          height\n          url\n          width\n        }\n        collections(first: 1) {\n          nodes {\n            title\n          }\n        }\n      }\n      ... on Blog {\n        title\n        handle\n      }\n    }\n    tags\n    title\n    type\n    url\n  }\n\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem2 on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ParentMenuItem2\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n  fragment FooterMenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment FooterChildMenuItem on MenuItem {\n    ...FooterMenuItem\n  }\n  fragment FooterParentMenuItem2 on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterChildMenuItem\n    }\n  }\n  fragment FooterParentMenuItem on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterParentMenuItem2\n    }\n  }\n  fragment FooterMenu on Menu {\n    id\n    items {\n      ...FooterParentMenuItem\n    }\n  }\n': {
-    return: LayoutQuery;
-    variables: LayoutQueryVariables;
-  };
-  '#graphql\n  query swatches($type: String!) {\n    metaobjects(first: 250, type: $type) {\n      nodes {\n        id\n        fields {\n          key\n          value\n          reference {\n            ... on MediaImage {\n              image {\n                id\n                altText\n                url: url(transform: { maxWidth: 300 })\n                width\n                height\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
-    return: SwatchesQuery;
-    variables: SwatchesQueryVariables;
-  };
   '#graphql\n  query sitemaps($urlLimits: Int, $language: LanguageCode)\n  @inContext(language: $language) {\n    products(\n      first: $urlLimits\n      query: "published_status:\'online_store:visible\'"\n    ) {\n      nodes {\n        updatedAt\n        handle\n        onlineStoreUrl\n        title\n        featuredImage {\n          url\n          altText\n        }\n      }\n    }\n    collections(\n      first: $urlLimits\n      query: "published_status:\'online_store:visible\'"\n    ) {\n      nodes {\n        updatedAt\n        handle\n        onlineStoreUrl\n      }\n    }\n    pages(first: $urlLimits, query: "published_status:\'published\'") {\n      nodes {\n        updatedAt\n        handle\n        onlineStoreUrl\n      }\n    }\n  }\n': {
     return: SitemapsQuery;
     variables: SitemapsQueryVariables;
@@ -3312,7 +3272,7 @@ interface GeneratedQueryTypes {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
   };
-  '#graphql\n  query PopularSearchProducts($first: Int!) {\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    rating: metafield(namespace: "reviews", key: "rating") {\n      value\n    }\n    ratingCount: metafield(namespace: "reviews", key: "rating_count") {\n      value\n    }\n    images(first: 2) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    options {\n      ...ProductOption\n    }\n    variants(first: 10) {\n      nodes {\n        ...ProductVariantFragment\n      }\n    }\n  }\n  #graphql\n  fragment ProductOption on ProductOption {\n    name\n    optionValues {\n      name\n      firstSelectableVariant {\n        ...ProductVariantFragment\n      }\n      swatch {\n        color\n        image {\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariantFragment on ProductVariant {\n    id\n    availableForSale\n    quantityAvailable\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n\n': {
+  '#graphql\n  query PopularSearchProducts(\n    $country: CountryCode\n    $first: Int!\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: BEST_SELLING) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    rating: metafield(namespace: "reviews", key: "rating") {\n      value\n    }\n    ratingCount: metafield(namespace: "reviews", key: "rating_count") {\n      value\n    }\n    images(first: 2) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    options {\n      ...ProductOption\n    }\n    variants(first: 10) {\n      nodes {\n        ...ProductVariantFragment\n      }\n    }\n  }\n  #graphql\n  fragment ProductOption on ProductOption {\n    name\n    optionValues {\n      name\n      firstSelectableVariant {\n        ...ProductVariantFragment\n      }\n      swatch {\n        color\n        image {\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariantFragment on ProductVariant {\n    id\n    availableForSale\n    quantityAvailable\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n\n': {
     return: PopularSearchProductsQuery;
     variables: PopularSearchProductsQueryVariables;
   };
@@ -3347,6 +3307,14 @@ interface GeneratedQueryTypes {
   '#graphql\n  query featuredProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $pageBy: Int = 16\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    featuredProducts: products(first: $pageBy, sortKey: BEST_SELLING, query: $query) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    rating: metafield(namespace: "reviews", key: "rating") {\n      value\n    }\n    ratingCount: metafield(namespace: "reviews", key: "rating_count") {\n      value\n    }\n    images(first: 2) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    options {\n      ...ProductOption\n    }\n    variants(first: 10) {\n      nodes {\n        ...ProductVariantFragment\n      }\n    }\n  }\n  #graphql\n  fragment ProductOption on ProductOption {\n    name\n    optionValues {\n      name\n      firstSelectableVariant {\n        ...ProductVariantFragment\n      }\n      swatch {\n        color\n        image {\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariantFragment on ProductVariant {\n    id\n    availableForSale\n    quantityAvailable\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n\n': {
     return: FeaturedProductsQuery;
     variables: FeaturedProductsQueryVariables;
+  };
+  '#graphql\n  query layout(\n    $language: LanguageCode\n    $headerMenuHandle: String!\n    $footerMenuHandle: String!\n  ) @inContext(language: $language) {\n    shop {\n      ...Shop\n    }\n    headerMenu: menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n    footerMenu: menu(handle: $footerMenuHandle) {\n      ...FooterMenu\n    }\n  }\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    resource {\n      __typename\n      ... on Collection {\n        title\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n      ... on Product {\n        title\n        description\n        image: featuredImage {\n          altText\n          height\n          url\n          width\n        }\n        collections(first: 1) {\n          nodes {\n            title\n          }\n        }\n      }\n      ... on Article {\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n    }\n    tags\n    title\n    type\n    url\n  }\n\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem2 on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ParentMenuItem2\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n  fragment FooterMenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment FooterChildMenuItem on MenuItem {\n    ...FooterMenuItem\n  }\n  fragment FooterParentMenuItem2 on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterChildMenuItem\n    }\n  }\n  fragment FooterParentMenuItem on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterParentMenuItem2\n    }\n  }\n  fragment FooterMenu on Menu {\n    id\n    items {\n      ...FooterParentMenuItem\n    }\n  }\n': {
+    return: LayoutQuery;
+    variables: LayoutQueryVariables;
+  };
+  '#graphql\n  query swatches($type: String!) {\n    metaobjects(first: 250, type: $type) {\n      nodes {\n        id\n        fields {\n          key\n          value\n          reference {\n            ... on MediaImage {\n              image {\n                id\n                altText\n                url: url(transform: { maxWidth: 300 })\n                width\n                height\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: SwatchesQuery;
+    variables: SwatchesQueryVariables;
   };
 }
 

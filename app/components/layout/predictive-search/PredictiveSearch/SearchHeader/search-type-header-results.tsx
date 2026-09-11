@@ -5,6 +5,7 @@ import { usePredictiveSearch } from "~/hooks/use-predictive-search";
 import type { NormalizedPredictiveSearchResultItem } from "~/types/search-types";
 import { cn } from "~/utils/cn";
 import { PopularKeywords } from "../../popular-keywords";
+import { setNativeInputValue } from "../../set-native-input-value";
 
 export function SearchTypeHeaderResults({
   inline = false,
@@ -64,15 +65,8 @@ export function SearchTypeHeaderResults({
             <PopularKeywords
               onKeywordClick={(keyword) => {
                 const input = searchInputRef.current;
-                const setValue = Object.getOwnPropertyDescriptor(
-                  HTMLInputElement.prototype,
-                  "value",
-                )?.set;
-                if (input && setValue) {
-                  setValue.call(input, keyword);
-                  input.dispatchEvent(new Event("input", { bubbles: true }));
-                  input.focus();
-                }
+                setNativeInputValue(input, keyword);
+                input?.focus();
               }}
             />
           </div>

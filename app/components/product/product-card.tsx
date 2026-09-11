@@ -92,21 +92,20 @@ export function ProductCard({
     price as MoneyV2,
     compareAtPrice as MoneyV2,
   );
-  let badge: { text: string; type: ProductBadgeType } | null = customBadge
-    ? { text: customBadge, type: "new" }
-    : null;
+  let badge: { text: string; type: ProductBadgeType } | null = null;
 
-  if (!customBadge) {
-    if (!variant.availableForSale) {
-      badge = { text: soldOutBadgeText, type: "sold-out" };
-    } else if (savingsPercentage) {
-      badge = {
-        text: saveBadgeText.replace("[percentage]", savingsPercentage),
-        type: "save",
-      };
-    } else if (isNewArrival(cardProduct.publishedAt, newBadgeDaysOld)) {
-      badge = { text: newBadgeText, type: "new" };
-    }
+  if (!variant.availableForSale) {
+    badge = { text: customBadge || soldOutBadgeText, type: "sold-out" };
+  } else if (savingsPercentage) {
+    badge = {
+      text:
+        customBadge || saveBadgeText.replace("[percentage]", savingsPercentage),
+      type: "save",
+    };
+  } else if (isNewArrival(cardProduct.publishedAt, newBadgeDaysOld)) {
+    badge = { text: customBadge || newBadgeText, type: "new" };
+  } else if (customBadge) {
+    badge = { text: customBadge, type: "new" };
   }
 
   return (

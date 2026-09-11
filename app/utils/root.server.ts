@@ -10,37 +10,37 @@ import { parseMenu } from "~/utils/menu";
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 export async function loadCriticalData({
-  request,
-  context,
+	request,
+	context,
 }: LoaderFunctionArgs) {
-  const [layout, swatchesConfigs, weaverseTheme] = await Promise.all([
-    getLayoutData(context),
-    getSwatchesConfigs(context),
-    context.weaverse.loadThemeSettings(),
-  ]);
+	const [layout, swatchesConfigs, weaverseTheme] = await Promise.all([
+		getLayoutData(context),
+		getSwatchesConfigs(context),
+		context.weaverse.loadThemeSettings(),
+	]);
 
-  const seo = seoPayload.root({ shop: layout.shop, url: request.url });
-  const { storefront, env } = context;
+	const seo = seoPayload.root({ shop: layout.shop, url: request.url });
+	const { storefront, env } = context;
 
-  return {
-    layout,
-    seo,
-    shop: getShopAnalytics({
-      storefront,
-      publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
-    }),
-    consent: {
-      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
-      storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-      withPrivacyBanner: false,
-      country: storefront.i18n.country,
-      language: storefront.i18n.language,
-    },
-    selectedLocale: storefront.i18n,
-    weaverseTheme,
-    googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
-    swatchesConfigs,
-  };
+	return {
+		layout,
+		seo,
+		shop: getShopAnalytics({
+			storefront,
+			publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
+		}),
+		consent: {
+			checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+			storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+			withPrivacyBanner: false,
+			country: storefront.i18n.country,
+			language: storefront.i18n.language,
+		},
+		selectedLocale: storefront.i18n,
+		weaverseTheme,
+		googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
+		swatchesConfigs,
+	};
 }
 
 /**
@@ -49,100 +49,93 @@ export async function loadCriticalData({
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
 export function loadDeferredData({ context }: LoaderFunctionArgs) {
-  const { cart, customerAccount } = context;
+	const { cart, customerAccount } = context;
 
-  return {
-    isLoggedIn: customerAccount.isLoggedIn(),
-    cart: cart.get(),
-  };
+	return {
+		isLoggedIn: customerAccount.isLoggedIn(),
+		cart: cart.get(),
+	};
 }
 
 async function getLayoutData({ storefront, env }: AppLoadContext) {
-  const [layoutData, policiesData] = await Promise.all([
-    storefront.query(LAYOUT_QUERY, {
-      variables: {
-        headerMenuHandle: "main-menu",
-        footerMenuHandle: "footer",
-        language: storefront.i18n.language,
-      },
-      cache: storefront.CacheLong(),
-    }),
-    storefront.query(POLICIES_QUERY, {
-      variables: {
-        language: storefront.i18n.language,
-      },
-    }),
-  ]);
+	const [layoutData, policiesData] = await Promise.all([
+		storefront.query(LAYOUT_QUERY, {
+			variables: {
+				headerMenuHandle: "main-menu",
+				footerMenuHandle: "footer",
+				language: storefront.i18n.language,
+			},
+			cache: storefront.CacheLong(),
+		}),
+		storefront.query(POLICIES_QUERY, {
+			variables: {
+				language: storefront.i18n.language,
+			},
+		}),
+	]);
 
-  invariant(layoutData && policiesData, "No data returned from Shopify API");
+	invariant(layoutData && policiesData, "No data returned from Shopify API");
 
-  const customPrefixes = { CATALOG: "products" };
+	const customPrefixes = { CATALOG: "products" };
 
-  const parsedHeaderMenu = layoutData?.headerMenu
-    ? parseMenu(
-        layoutData.headerMenu,
-        layoutData.shop.primaryDomain.url,
-        env,
-        customPrefixes,
-      )
-    : undefined;
-  const headerMenu = parsedHeaderMenu
-    ? {
-        ...parsedHeaderMenu,
-        journalBlogs: layoutData.journalBlogs.nodes,
-      }
-    : undefined;
+	const parsedHeaderMenu = layoutData?.headerMenu
+		? parseMenu(
+				layoutData.headerMenu,
+				layoutData.shop.primaryDomain.url,
+				env,
+				customPrefixes,
+			)
+		: undefined;
+	const footerMenu = layoutData?.footerMenu
+		? parseMenu(
+				layoutData.footerMenu,
+				layoutData.shop.primaryDomain.url,
+				env,
+				customPrefixes,
+			)
+		: undefined;
 
-  const footerMenu = layoutData?.footerMenu
-    ? parseMenu(
-        layoutData.footerMenu,
-        layoutData.shop.primaryDomain.url,
-        env,
-        customPrefixes,
-      )
-    : undefined;
-
-  return {
-    shop: {
-      ...layoutData.shop,
-      ...policiesData.shop,
-    },
-    headerMenu,
-    footerMenu,
-  };
+	return {
+		shop: {
+			...layoutData.shop,
+			...policiesData.shop,
+		},
+		headerMenu: parsedHeaderMenu,
+		footerMenu,
+	};
 }
 
 type Swatch = {
-  id: string;
-  name: string;
-  value: string;
+	id: string;
+	name: string;
+	value: string;
 };
 
 async function getSwatchesConfigs(context: AppLoadContext) {
-  const { METAOBJECT_COLORS_TYPE: type } = context.env;
-  if (!type) {
-    return { colors: [], images: [] };
-  }
-  const { metaobjects } = await context.storefront.query(SWATCHES_QUERY, {
-    variables: { type },
-  });
-  const colors: Swatch[] = [];
-  const images: Swatch[] = [];
-  for (const { id, fields } of metaobjects.nodes) {
-    const { value: color } = fields.find(({ key }) => key === "color") || {};
-    const { reference: imageRef } =
-      fields.find(({ key }) => key === "image") || {};
-    const { value: name } = fields.find(({ key }) => key === "label") || {};
-    if (imageRef) {
-      const url = imageRef?.image?.url;
-      if (url) {
-        images.push({ id, name, value: url });
-      }
-    } else if (color) {
-      colors.push({ id, name, value: color });
-    }
-  }
-  return { colors, images };
+	const { METAOBJECT_COLORS_TYPE: type } = context.env;
+	if (!type) {
+		return { colors: [], images: [] };
+	}
+	const { metaobjects } = await context.storefront.query(SWATCHES_QUERY, {
+		variables: { type },
+	});
+	const colors: Swatch[] = [];
+	const images: Swatch[] = [];
+	for (const { id, fields } of metaobjects.nodes) {
+		const { value: color } = fields.find(({ key }) => key === "color") || {};
+		const { reference: imageRef } =
+			fields.find(({ key }) => key === "image") || {};
+		const { value: name } = fields.find(({ key }) => key === "label") || {};
+		if (imageRef) {
+			const url = imageRef?.image?.url;
+			if (url) {
+				images.push({ id, name, value: url });
+			}
+		} else if (color) {
+			colors.push({ id, name, value: color });
+		}
+	}
+	return { colors, images };
 }
 
 const LAYOUT_QUERY = `#graphql
@@ -159,26 +152,6 @@ const LAYOUT_QUERY = `#graphql
     }
     footerMenu: menu(handle: $footerMenuHandle) {
       ...FooterMenu
-    }
-    journalBlogs: blogs(first: 5) {
-      nodes {
-        id
-        title
-        handle
-        articles(first: 6, sortKey: PUBLISHED_AT, reverse: true) {
-          nodes {
-            id
-            title
-            handle
-            image {
-              altText
-              height
-              url
-              width
-            }
-          }
-        }
-      }
     }
   }
   fragment Shop on Shop {
@@ -203,13 +176,6 @@ const LAYOUT_QUERY = `#graphql
       __typename
       ... on Collection {
         title
-        products(first: 5) {
-          nodes {
-            id
-            title
-            handle
-          }
-        }
         image {
           altText
           height
@@ -232,9 +198,13 @@ const LAYOUT_QUERY = `#graphql
           }
         }
       }
-      ... on Blog {
-        title
-        handle
+      ... on Article {
+        image {
+          altText
+          height
+          url
+          width
+        }
       }
     }
     tags
@@ -295,7 +265,6 @@ const LAYOUT_QUERY = `#graphql
     }
   }
 ` as const;
-
 const SWATCHES_QUERY = `#graphql
   query swatches($type: String!) {
     metaobjects(first: 250, type: $type) {
