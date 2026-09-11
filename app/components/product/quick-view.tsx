@@ -99,11 +99,12 @@ export function QuickView({
           <ProductMedia
             media={product.media.nodes}
             selectedVariant={selectedVariant}
-            showThumbnails={theme.showThumbnails}
+            showThumbnails
+            thumbnailLayout="strip"
+            showPagination={false}
             imageAspectRatio={theme.imageAspectRatio}
-            spacing={theme.spacing}
             showSlideCounter={theme.showSlideCounter}
-            direction={theme.mediaDirection}
+            direction="horizontal"
           />
           {badge && (
             <ProductBadge
@@ -126,7 +127,7 @@ export function QuickView({
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
-                <h2 className="pr-8 font-heading text-3xl font-normal leading-tight md:text-4xl">
+                <h2 className="md:pr-8 font-heading text-3xl font-normal leading-tight md:text-4xl">
                   {product.title}
                 </h2>
                 <p className="text-sm text-text-subtle">
@@ -209,7 +210,7 @@ export function QuickView({
               />
             )}
 
-            <div className="grid grid-cols-[auto_1fr] gap-2 [&_legend]:hidden [&_.space-y-3]:space-y-0 [&_input]:h-12 [&_input]:w-14 [&_button]:h-12 [&_button]:px-3">
+            <div className="grid grid-cols-[auto_1fr] gap-2">
               <QuickViewQuantity
                 disabled={isLoading}
                 value={quantity}

@@ -62,6 +62,7 @@ export function Header() {
 
   let enableTransparent = enableTransparentHeader && isHome && !routeError;
   let isTransparent = enableTransparent && !scrolled;
+  let showTransparentHeader = isTransparent && !isUtilitySearchOpen;
   const hasAnnouncement =
     enableTrialShipping &&
     [
@@ -93,7 +94,7 @@ export function Header() {
           "hover:border-(--color-header-text)",
           enableTransparent ? "fixed w-full group/header" : "sticky",
           scrolled ? "shadow-header" : "shadow-none",
-          isTransparent
+          showTransparentHeader
             ? [
                 "border-transparent bg-transparent text-(--color-transparent-header)",
                 "[&_.main-logo]:opacity-0 [&:hover_.main-logo]:opacity-100",
@@ -106,7 +107,7 @@ export function Header() {
         <div
           className={cn(
             "hidden w-full items-center justify-center px-6 py-3 md:flex lg:py-4",
-            isTransparent
+            showTransparentHeader
               ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",
           )}
@@ -147,7 +148,9 @@ export function Header() {
         <div
           className={cn(
             "z-40 flex h-14.5 items-center justify-center gap-2.5 md:h-16.5",
-            isTransparent ? "bg-transparent" : "bg-header-bg md:bg-transparent",
+            showTransparentHeader
+              ? "bg-transparent"
+              : "bg-header-bg md:bg-transparent",
             variants({ width: headerWidth, padding: headerWidth }),
           )}
         >

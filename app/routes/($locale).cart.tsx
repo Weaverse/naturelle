@@ -45,6 +45,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
     case CartForm.ACTIONS.LinesRemove:
       result = await cart.removeLines(inputs.lineIds);
       break;
+    case CartForm.ACTIONS.NoteUpdate: {
+      result = await cart.updateNote((inputs.cartNote as string) || "");
+      break;
+    }
     case CartForm.ACTIONS.DiscountCodesUpdate: {
       const formDiscountCode = inputs.discountCode;
 
@@ -54,9 +58,22 @@ export async function action({ request, context }: ActionFunctionArgs) {
       ) as string[];
 
       // Combine discount codes already applied on cart
-      discountCodes.push(...inputs.discountCodes);
+      discountCodes.push(...(inputs.discountCodes as string[]));
 
       result = await cart.updateDiscountCodes(discountCodes);
+      break;
+    }
+    case CartForm.ACTIONS.GiftCardCodesUpdate: {
+      const formGiftCardCode = inputs.giftCardCode;
+      const giftCardCodes = (
+        formGiftCardCode ? [formGiftCardCode] : []
+      ) as string[];
+      giftCardCodes.push(...((inputs.giftCardCodes as string[]) || []));
+      result = await cart.updateGiftCardCodes(giftCardCodes);
+      break;
+    }
+    case CartForm.ACTIONS.GiftCardCodesRemove: {
+      result = await cart.removeGiftCardCodes(inputs.giftCardCodes as string[]);
       break;
     }
     case CartForm.ACTIONS.BuyerIdentityUpdate: {

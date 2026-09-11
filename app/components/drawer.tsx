@@ -42,7 +42,9 @@ export function Drawer({
         ? "max-w-none md:w-1/2"
         : isForm === "search"
           ? "max-w-none"
-          : "max-w-96";
+          : isForm === "filter"
+            ? "max-w-none md:max-w-96"
+            : "max-w-96";
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -78,6 +80,7 @@ export function Drawer({
                 <Dialog.Panel
                   className={cn(
                     "transform text-left align-middle shadow-xl transition-all bg-(--color-drawer-bg) flex flex-col",
+                    isForm === "cart" && "overflow-hidden",
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
@@ -87,7 +90,8 @@ export function Drawer({
                 >
                   <header
                     className={cn(
-                      "sticky top-0 flex h-nav items-center px-6 py-5 shrink-0",
+                      "sticky top-0 flex items-center px-6 py-5 shrink-0",
+                      isForm === "cart" ? "h-auto px-5 pb-3 pt-5" : "h-nav",
                       heading ? "justify-between" : "justify-items-end",
                       openFrom === "left" ||
                         isForm === "cart" ||
@@ -108,8 +112,13 @@ export function Drawer({
                       <Dialog.Title as="span">
                         <span
                           className={cn(
-                            "font-semibold font-heading text-xl text-text-primary",
-                            isForm !== "search" && "uppercase",
+                            "font-semibold text-text-primary",
+                            isForm === "cart"
+                              ? "text-sm tracking-[0.18em] uppercase"
+                              : "font-heading text-xl",
+                            isForm !== "search" &&
+                              isForm !== "cart" &&
+                              "uppercase",
                           )}
                           id="cart-contents"
                         >
@@ -135,7 +144,13 @@ export function Drawer({
                       isForm !== "filter" &&
                       !isBackMenu && <div className="p-0" />}
                   </header>
-                  {children}
+                  {isForm === "cart" ? (
+                    <div className="flex min-h-0 flex-1 flex-col">
+                      {children}
+                    </div>
+                  ) : (
+                    children
+                  )}
                 </Dialog.Panel>
               </Transition.Child>
             </div>

@@ -1,39 +1,20 @@
 import {
   getPaginationVariables,
   getSeoMeta,
-  Pagination,
   type SeoConfig,
 } from "@shopify/hydrogen";
-import type { ProductFilter } from "@shopify/hydrogen/storefront-api-types";
-import { Suspense } from "react";
-import type { LoaderFunctionArgs } from "react-router";
-import {
-  Await,
-  Form,
-  type MetaFunction,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "react-router";
+import type {
+  ProductFilter,
+  SearchSortKeys,
+} from "@shopify/hydrogen/storefront-api-types";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/.server/seo";
-import { Button } from "~/components/button";
-import { DrawerFilter } from "~/components/drawer-filter";
-import { Grid } from "~/components/grid";
-import { IconSearch } from "~/components/icon";
-import { Input } from "~/components/input";
-import { ProductCard } from "~/components/product/product-card";
-import { ProductSwimlane } from "~/components/product/product-swimlane";
-import { PageHeader, Text } from "~/components/text";
-import { FILTER_QUERY, SEARCH_QUERY } from "~/graphql/queries";
+import { SEARCH_QUERY } from "~/graphql/queries";
 import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
-import { getImageLoadingPriority } from "~/utils/image";
 import { parseAsCurrency } from "~/utils/locale";
-import { getSortValuesFromParam } from "./($locale).collections.$handle";
-import {
-  type FeaturedData,
-  getFeaturedData,
-} from "./($locale).featured-products";
+import { validateWeaverseData, WeaverseContent } from "~/weaverse";
+import { getFeaturedData } from "./($locale).featured-products";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;
@@ -42,7 +23,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const variables = getPaginationVariables(request, {
     pageBy: PAGINATION_SIZE,
   });
-  const { sortKey, reverse } = getSortValuesFromParam(
+  const { sortKey, reverse } = getSearchSortValuesFromParam(
     searchParams.get("sort") as SortParam,
   );
 
@@ -55,17 +36,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     }
     return acc;
   }, [] as ProductFilter[]);
+  const priceRangeFilters = filters.filter((filter) => !filter.price);
 
-  const [filterData, productSearchData] = await Promise.all([
-    storefront.query(FILTER_QUERY, {
-      variables: {
-        query: "",
-      },
-    }),
+  const [productSearchData, weaverseData] = await Promise.all([
     storefront.query(SEARCH_QUERY, {
       variables: {
         searchTerm,
         productFilters: filters,
+        priceRangeFilters,
         sortKey,
         reverse,
         ...variables,
@@ -73,15 +51,18 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         language: storefront.i18n.language,
       },
     }),
+    context.weaverse.loadPage({
+      type: "CUSTOM",
+    }),
   ]);
 
-  const { search } = filterData;
+  validateWeaverseData(weaverseData);
+
   const { search: productSearch } = productSearchData;
   const products = productSearch;
-  console.log("🚀 ~ productSearch:", productSearch);
 
   const locale = context.storefront.i18n;
-  const allFilterValues = search.productFilters.flatMap(
+  const allFilterValues = products.productFilters.flatMap(
     (filter: any) => filter.values,
   );
   // todo merge into 1 function
@@ -102,6 +83,12 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         );
       });
       if (!foundValue) {
+        if (filter.variantOption) {
+          return {
+            filter,
+            label: filter.variantOption.value,
+          };
+        }
         // eslint-disable-next-line no-console
         console.error("Could not find filter value for filter", filter);
         return null;
@@ -149,11 +136,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   });
 
   return {
-    productfilters: search?.productFilters,
+    productfilters: products.productFilters,
     appliedFilters,
     seo,
     searchTerm,
     products,
+    lowestPriceProduct: productSearchData.lowestPriceProduct,
+    highestPriceProduct: productSearchData.highestPriceProduct,
+    weaverseData,
     noResultRecommendations: shouldGetRecommendations
       ? await getNoResultRecommendations(storefront)
       : null,
@@ -164,149 +154,25 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Search() {
-  const {
-    searchTerm,
-    products,
-    noResultRecommendations,
-    productfilters,
-    appliedFilters,
-  } = useLoaderData<typeof loader>();
-  const noResults = searchTerm && products?.nodes?.length === 0;
-  let location = useLocation();
-  let navigate = useNavigate();
-
-  return (
-    <>
-      <PageHeader variant="search" className="bg-[#e0e5d6]">
-        <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
-          {searchTerm
-            ? `Search results for “${searchTerm}”`
-            : "Search our site"}
-        </h1>
-        <Form
-          method="get"
-          className="relative flex w-full items-center justify-center"
-        >
-          <Input
-            defaultValue={searchTerm}
-            onClear={() => navigate(location.pathname)}
-            name="q"
-            placeholder="What are you looking for?"
-            className="w-full rounded border-2 md:w-96 lg:w-[400px]"
-            type="search"
-            prefixElement={
-              <button type="submit" className="cursor-pointer">
-                <IconSearch
-                  className="h-6 w-6 opacity-55"
-                  viewBox="0 0 24 24"
-                />
-              </button>
-            }
-            variant="search"
-          />
-        </Form>
-      </PageHeader>
-      <DrawerFilter
-        showSearchSort
-        appliedFilters={appliedFilters}
-        productNumber={products.totalCount}
-        filters={productfilters}
-      />
-      <div className="px-4 container md:px-6">
-        {noResults ? (
-          <NoResults
-            noResults={noResults}
-            recommendations={noResultRecommendations}
-          />
-        ) : (
-          <Pagination connection={products}>
-            {({ nodes, isLoading, NextLink, PreviousLink }) => {
-              const itemsMarkup = nodes.map((product: any, i: number) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  loading={getImageLoadingPriority(i)}
-                  enableQuickView
-                />
-              ));
-
-              return (
-                <>
-                  <div className="my-11 flex w-full items-center justify-center">
-                    <Button as={PreviousLink} variant="outline">
-                      {isLoading ? "Loading..." : "Previous"}
-                    </Button>
-                  </div>
-                  <Grid
-                    data-test="product-grid"
-                    layout="products"
-                    className="gap-y-10!"
-                  >
-                    {itemsMarkup}
-                  </Grid>
-                  <div className="my-11 flex w-full items-center justify-center">
-                    <Button as={NextLink} variant="outline">
-                      {isLoading ? "Loading..." : "Show more +"}
-                    </Button>
-                  </div>
-                </>
-              );
-            }}
-          </Pagination>
-        )}
-      </div>
-    </>
-  );
-}
-
-function NoResults({
-  noResults,
-  recommendations,
-}: {
-  noResults: boolean;
-  recommendations: Promise<null | FeaturedData>;
-}) {
-  return (
-    <>
-      {noResults && (
-        <div className="py-4">
-          <Text className="opacity-50">
-            No results, try a different search.
-          </Text>
-        </div>
-      )}
-      <Suspense>
-        <Await
-          errorElement="There was a problem loading related products"
-          resolve={recommendations}
-        >
-          {(result) => {
-            if (!result) {
-              return null;
-            }
-            const { featuredCollections, featuredProducts } = result;
-
-            return (
-              <>
-                {/* <FeaturedCollections
-                  title="Trending Collections"
-                  collections={featuredCollections}
-                /> */}
-                <ProductSwimlane
-                  title="Trending Products"
-                  featuredProducts={featuredProducts}
-                />
-              </>
-            );
-          }}
-        </Await>
-      </Suspense>
-    </>
-  );
+  return <WeaverseContent />;
 }
 
 export function getNoResultRecommendations(
   storefront: LoaderFunctionArgs["context"]["storefront"],
 ) {
   return getFeaturedData(storefront, { pageBy: PAGINATION_SIZE });
+}
+
+function getSearchSortValuesFromParam(sortParam: SortParam | null): {
+  sortKey: SearchSortKeys;
+  reverse: boolean;
+} {
+  switch (sortParam) {
+    case "price-high-low":
+      return { sortKey: "PRICE", reverse: true };
+    case "price-low-high":
+      return { sortKey: "PRICE", reverse: false };
+    default:
+      return { sortKey: "RELEVANCE", reverse: false };
+  }
 }

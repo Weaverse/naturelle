@@ -4,20 +4,24 @@ import type * as React from "react";
 
 import { cn } from "~/utils/cn";
 
+export type CheckboxShape = "square" | "circle";
+
 interface CheckboxProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
-  label?: string;
+  label?: React.ReactNode;
+  shape?: CheckboxShape;
   ref?: React.Ref<React.ElementRef<typeof CheckboxPrimitive.Root>>;
 }
 
 const Checkbox = (props: CheckboxProps) => {
-  const { ref, className, label, ...rest } = props;
+  const { ref, className, label, shape = "square", ...rest } = props;
   return (
     <div className={cn(`flex items-center space-x-2.5`, className)}>
       <CheckboxPrimitive.Root
         ref={ref}
         className={cn(
-          "peer size-5 shrink-0 rounded-sm border-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-button-primary-background data-[state=checked]:text-button-primary-text",
+          "peer size-5 shrink-0 border-2 border-border ring-offset-background transition-colors hover:border-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-button-primary-background data-[state=checked]:bg-button-primary-background data-[state=checked]:text-button-primary-text",
+          shape === "circle" ? "rounded-full" : "rounded-sm",
         )}
         {...rest}
       >

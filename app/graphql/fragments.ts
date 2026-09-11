@@ -327,6 +327,13 @@ export const CART_QUERY_FRAGMENT = `#graphql
       code
       applicable
     }
+    appliedGiftCards {
+      id
+      amountUsed {
+        ...Money
+      }
+      lastCharacters
+    }
   }
 ` as const;
 

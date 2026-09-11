@@ -49,6 +49,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     },
     [] as ProductFilter[],
   );
+  const priceRangeFilters = filters.filter((filter) => !filter.price);
 
   const [shopAndCollections, weaverseData] = await Promise.all([
     context.storefront.query(COLLECTION_QUERY, {
@@ -56,6 +57,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
         ...paginationVariables,
         handle: handle,
         filters,
+        priceRangeFilters,
         sortKey,
         reverse,
         country: context.storefront.i18n.country,
@@ -100,6 +102,12 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
         );
       });
       if (!foundValue) {
+        if (filter.variantOption) {
+          return {
+            filter,
+            label: filter.variantOption.value,
+          };
+        }
         // eslint-disable-next-line no-console
         console.error("Could not find filter value for filter", filter);
         return null;
@@ -147,11 +155,24 @@ export default function Collection() {
   return <WeaverseContent />;
 }
 
-export function getSortValuesFromParam(sortParam: SortParam | null): {
+export function getSortValuesFromParam(
+  sortParam: SortParam | null,
+  defaultSort: "alphabetical" | "relevance" = "alphabetical",
+): {
   sortKey: ProductCollectionSortKeys;
   reverse: boolean;
 } {
   switch (sortParam) {
+    case "alphabetical-a-z":
+      return {
+        sortKey: "TITLE",
+        reverse: false,
+      };
+    case "alphabetical-z-a":
+      return {
+        sortKey: "TITLE",
+        reverse: true,
+      };
     case "price-high-low":
       return {
         sortKey: "PRICE",
@@ -172,15 +193,19 @@ export function getSortValuesFromParam(sortParam: SortParam | null): {
         sortKey: "CREATED",
         reverse: true,
       };
+    case "oldest":
+      return {
+        sortKey: "CREATED",
+        reverse: false,
+      };
     case "featured":
       return {
         sortKey: "MANUAL",
         reverse: false,
       };
     default:
-      return {
-        sortKey: "RELEVANCE",
-        reverse: false,
-      };
+      return defaultSort === "relevance"
+        ? { sortKey: "RELEVANCE", reverse: false }
+        : { sortKey: "TITLE", reverse: false };
   }
 }

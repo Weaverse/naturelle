@@ -12,10 +12,12 @@ interface ProductMediaProps {
   media: MediaFragment[];
   showThumbnails: boolean;
   imageAspectRatio: string;
-  spacing: number;
+  spacing?: number;
   showSlideCounter: boolean;
   direction?: "horizontal" | "vertical";
   enableZoom?: boolean;
+  showPagination?: boolean;
+  thumbnailLayout?: "swiper" | "strip";
 }
 
 export function ProductMedia(props: ProductMediaProps) {
@@ -24,16 +26,20 @@ export function ProductMedia(props: ProductMediaProps) {
     showThumbnails,
     media: _media,
     imageAspectRatio,
-    spacing,
+    spacing = 10,
     showSlideCounter,
     direction = "horizontal",
     enableZoom,
+    showPagination = true,
+    thumbnailLayout = "swiper",
   } = props;
 
   const media = useMemo(
     () => _media.filter((med) => med.__typename === "MediaImage"),
     [_media],
   );
+  const useStripThumbnails = showThumbnails && thumbnailLayout === "strip";
+  const useSwiperThumbnails = showThumbnails && thumbnailLayout === "swiper";
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [zoomMediaId, setZoomMediaId] = useState<string | null>(null);
@@ -51,12 +57,12 @@ export function ProductMedia(props: ProductMediaProps) {
   }, [media, selectedVariant, swiper]);
 
   return (
-    <div className="overflow-hidden product-media-slider">
+    <div className="min-w-0 overflow-hidden product-media-slider">
       <div
         className={clsx(
-          "flex gap-4 overflow-hidden [--thumbs-width:0px]",
+          "flex min-w-0 gap-4 overflow-hidden [--thumbs-width:0px]",
           direction === "horizontal" ? "flex-col" : "flex-row-reverse",
-          showThumbnails && "md:[--thumbs-width:8rem]",
+          useSwiperThumbnails && "md:[--thumbs-width:8rem]",
         )}
       >
         <div
@@ -69,22 +75,33 @@ export function ProductMedia(props: ProductMediaProps) {
         >
           <Swiper
             loop={true}
-            modules={[FreeMode, Thumbs, Pagination]}
-            pagination={{ type: "bullets" }}
+            modules={[
+              ...(showPagination ? [Pagination] : []),
+              ...(useSwiperThumbnails ? [Thumbs] : []),
+            ]}
+            pagination={showPagination ? { type: "bullets" } : false}
             spaceBetween={10}
-            thumbs={{ swiper: thumbsSwiper }}
+            thumbs={
+              useSwiperThumbnails ? { swiper: thumbsSwiper } : undefined
+            }
             onSwiper={setSwiper}
             onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
-            className="vt-product-image max-w-full pb-5! md:pb-0! md:[&_.swiper-pagination-bullets]:hidden mySwiper2"
+            className={clsx(
+              "vt-product-image max-w-full",
+              showPagination &&
+                "pb-5! md:pb-0! md:[&_.swiper-pagination-bullets]:hidden",
+            )}
             style={
-              {
-                "--swiper-pagination-bottom": "-6px",
-                "--swiper-pagination-color": "var(--color-text-primary)",
-              } as React.CSSProperties
+              showPagination
+                ? ({
+                    "--swiper-pagination-bottom": "-6px",
+                    "--swiper-pagination-color": "var(--color-text-primary)",
+                  } as React.CSSProperties)
+                : undefined
             }
           >
             {media.map((med, i) => {
-              let image = { ...med.image, altText: med.alt || "Product image" };
+              let image = getMediaImage(med);
               return (
                 <SwiperSlide key={med.id}>
                   <Image
@@ -116,15 +133,52 @@ export function ProductMedia(props: ProductMediaProps) {
             })}
           </Swiper>
           {showSlideCounter && (
-            <span className="absolute bottom-7 sm:bottom-5 right-2 text-text-primary text-sm sm:text-base z-10 font-heading">
+            <span
+              className={clsx(
+                "absolute right-2 z-10 font-heading text-sm text-text-primary sm:text-base",
+                showPagination ? "bottom-7 sm:bottom-5" : "bottom-2",
+              )}
+            >
               {currentIndex + 1}/{media.length}
             </span>
           )}
         </div>
-        {showThumbnails && (
+        {useStripThumbnails && (
+          <div className="min-w-0 w-full">
+            <div className="flex gap-2 overflow-x-auto overscroll-x-contain touch-pan-x pb-0.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
+              {media.map((med, i) => {
+                const isActive = currentIndex === i;
+                return (
+                  <button
+                    key={med.id}
+                    type="button"
+                    aria-label={`View image ${i + 1}`}
+                    aria-pressed={isActive}
+                    className={clsx(
+                      "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors md:size-[88px]",
+                      isActive
+                        ? "border-border/60"
+                        : "border-transparent hover:border-border-subtle",
+                    )}
+                    onClick={() => slideToMedia(swiper, i)}
+                  >
+                    <Image
+                      data={getMediaImage(med)}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      className="h-full w-full rounded-sm object-cover"
+                      aspectRatio={imageAspectRatio}
+                      sizes="88px"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {useSwiperThumbnails && (
           <div
             className={clsx(
-              "hidden sm:block",
+              "hidden min-w-0 sm:block",
               direction === "vertical" &&
                 "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]",
             )}
@@ -140,31 +194,25 @@ export function ProductMedia(props: ProductMediaProps) {
               modules={[FreeMode, Thumbs]}
               watchSlidesProgress={true}
               data-motion="fade-up"
-              className="w-full h-full overflow-visible mySwiper"
+              className="w-full h-full overflow-hidden"
             >
-              {media.map((med, i) => {
-                let image = {
-                  ...med.image,
-                  altText: med.alt || "Product image",
-                };
-                return (
-                  <SwiperSlide
-                    key={med.id}
-                    className={clsx(
-                      "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
-                      "[&.swiper-slide-thumb-active]:border-border/60",
-                    )}
-                  >
-                    <Image
-                      data={image}
-                      loading={i === 0 ? "eager" : "lazy"}
-                      className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
-                      aspectRatio={imageAspectRatio}
-                      sizes="auto"
-                    />
-                  </SwiperSlide>
-                );
-              })}
+              {media.map((med, i) => (
+                <SwiperSlide
+                  key={med.id}
+                  className={clsx(
+                    "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
+                    "[&.swiper-slide-thumb-active]:border-border/60",
+                  )}
+                >
+                  <Image
+                    data={getMediaImage(med)}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
+                    aspectRatio={imageAspectRatio}
+                    sizes="auto"
+                  />
+                </SwiperSlide>
+              ))}
             </Swiper>
           </div>
         )}
@@ -180,6 +228,19 @@ export function ProductMedia(props: ProductMediaProps) {
       )}
     </div>
   );
+}
+
+function getMediaImage(med: MediaFragment) {
+  return { ...med.image, altText: med.alt || "Product image" };
+}
+
+function slideToMedia(swiper: SwiperClass | null, index: number) {
+  if (!swiper) return;
+  if (swiper.params.loop) {
+    swiper.slideToLoop(index);
+  } else {
+    swiper.slideTo(index);
+  }
 }
 
 function getSelectedVariantMediaIndex(

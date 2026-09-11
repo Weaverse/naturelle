@@ -30,7 +30,12 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
   };
   return (
     <div className={cn("relative", !inline && "border-t border-border-subtle")}>
-      <PredictiveSearchForm>
+      <PredictiveSearchForm
+        className={cn(
+          "predictive-search-form",
+          inline && "predictive-search-form--inline",
+        )}
+      >
         {({ fetchResults, inputRef }) => (
           <div
             className={cn("flex items-center justify-center", !inline && "p-6")}
@@ -38,7 +43,6 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
             <Input
               name="q"
               onChange={fetchResults}
-              onFocus={fetchResults}
               onBlur={(event) => {
                 const nextTarget = event.relatedTarget;
                 const staysInForm =

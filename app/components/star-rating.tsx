@@ -9,7 +9,7 @@ export function StarRating({ rating }: { rating: number }) {
   let halfFilledStar = <IconHalfFilledStar className="w-4 h-4" />;
   let star = <IconStarReview className="w-4 h-4" />;
   return (
-    <div className="inline-flex gap-0.5">
+    <div className="inline-flex h-4 gap-0">
       {rating >= 1 ? filledStar : rating >= 0.5 ? halfFilledStar : star}
       {rating >= 2 ? filledStar : rating >= 1.5 ? halfFilledStar : star}
       {rating >= 3 ? filledStar : rating >= 2.5 ? halfFilledStar : star}

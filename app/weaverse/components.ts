@@ -49,6 +49,7 @@ import * as ProductPlacementItem from "~/sections/product-placement/product-item
 import * as PromotionGrid from "~/sections/promotion-grid";
 import * as RelatedArticles from "~/sections/related-articles/related-articles";
 import * as ScrollingText from "~/sections/scrolling-text/index";
+import * as SearchResults from "~/sections/search-results/index";
 import * as SingleProduct from "~/sections/single-product/index";
 import * as SlideHeading from "~/sections/slides/heading";
 import * as Slides from "~/sections/slides/index";
@@ -75,6 +76,7 @@ export const components: HydrogenComponent[] = [
   ImageWithTextImage,
   ImageWithTextContent,
   ScrollingText,
+  SearchResults,
   Testimonials,
   Slides,
   Slide,
