@@ -6,6 +6,7 @@ import { useFetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { cn } from "~/utils/cn";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 type CartLayout = "page" | "aside";
 
@@ -49,6 +50,7 @@ export function NoteDialog({
   const [note, setNote] = useState(currentNote);
   const [submitted, setSubmitted] = useState(false);
   const fetcher = useFetcher();
+  const cartRoute = usePrefixPathWithLocale("/cart");
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data) {
@@ -68,7 +70,7 @@ export function NoteDialog({
             inputs: { cartNote: formCartNote },
           }),
         },
-        { method: "POST", action: "/cart" },
+        { method: "POST", action: cartRoute },
       );
       setNote(formCartNote);
     }
@@ -117,8 +119,7 @@ export function NoteDialog({
             type="submit"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
-            shape="round"
-            className="w-full"
+            className="w-full rounded-lg"
           >
             Add note
           </Button>
@@ -137,6 +138,7 @@ export function DiscountDialog({
 }) {
   const [code, setCode] = useState("");
   const fetcher = useFetcher();
+  const cartRoute = usePrefixPathWithLocale("/cart");
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
   const success = Boolean(
     submitted && discountCodes?.find((d) => d.code === code && d.applicable),
@@ -157,7 +159,7 @@ export function DiscountDialog({
             inputs: { discountCodes: updatedCodes },
           }),
         },
-        { method: "POST", action: "/cart" },
+        { method: "POST", action: cartRoute },
       );
     }
   }
@@ -205,8 +207,7 @@ export function DiscountDialog({
           {error && <Banner variant="error">Invalid discount code.</Banner>}
           <Button
             type="submit"
-            shape="round"
-            className="w-full"
+            className="w-full rounded-lg"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
           >
@@ -228,6 +229,7 @@ export function GiftCardDialog({
   const appliedGiftCardCodes = useRef<string[]>([]);
   const [code, setCode] = useState("");
   const fetcher = useFetcher();
+  const cartRoute = usePrefixPathWithLocale("/cart");
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
   const success = Boolean(
     submitted &&
@@ -259,7 +261,7 @@ export function GiftCardDialog({
             },
           }),
         },
-        { method: "POST", action: "/cart" },
+        { method: "POST", action: cartRoute },
       );
       saveAppliedCode(giftCardCode);
     }
@@ -308,8 +310,7 @@ export function GiftCardDialog({
           {error && <Banner variant="error">Invalid gift card code.</Banner>}
           <Button
             type="submit"
-            shape="round"
-            className="w-full"
+            className="w-full rounded-lg"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
           >

@@ -1,26 +1,26 @@
 import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CartForm, Image, Money, type OptimisticCart } from "@shopify/hydrogen";
+import { CartForm, Image, Money } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useState } from "react";
 import { useFetcher } from "react-router";
-import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Skeleton } from "~/components/skeleton";
 import { cn } from "~/utils/cn";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 import {
   DiscountDialog,
   GiftCardDialog,
   NoteDialog,
 } from "./cart-summary-actions";
-
-type CartLayout = "page" | "aside";
+import type { CartLayout, CartWithOptimistic } from "./cart-types";
+import { useCartStore } from "./store";
 
 export function CartSummary({
   cart,
   layout,
 }: {
-  cart: OptimisticCart<CartApiQueryFragment>;
+  cart: CartWithOptimistic;
   layout: CartLayout;
 }) {
   const {
@@ -37,7 +37,14 @@ export function CartSummary({
   const [removingGiftCard, setRemovingGiftCard] = useState<string | null>(null);
   const dcRemoveFetcher = useFetcher({ key: "discount-code-remove" });
   const gcRemoveFetcher = useFetcher({ key: "gift-card-remove" });
-  const lineRemoveFetcher = useFetcher({ key: "cart-line-remove" });
+  const cartRoute = usePrefixPathWithLocale("/cart");
+  const pendingLineUpdates = useCartStore((state) => state.pendingLineUpdates);
+  const lineUpdatesInFlight = useCartStore(
+    (state) => state.lineUpdatesInFlight,
+  );
+  const pendingLineRemovals = useCartStore(
+    (state) => state.pendingLineRemovals,
+  );
   const {
     cost,
     discountCodes,
@@ -50,7 +57,9 @@ export function CartSummary({
     isOptimistic ||
     dcRemoveFetcher.state !== "idle" ||
     gcRemoveFetcher.state !== "idle" ||
-    lineRemoveFetcher.state !== "idle";
+    pendingLineUpdates.size > 0 ||
+    lineUpdatesInFlight.size > 0 ||
+    pendingLineRemovals.size > 0;
   const subtotal = Number(cost?.subtotalAmount?.amount || 0);
   const total = Number(cost?.totalAmount?.amount || 0);
   const hasDiscount = subtotal > total && total > 0;
@@ -83,7 +92,7 @@ export function CartSummary({
               >
                 <span>***{giftCard.lastCharacters}</span>
                 <CartForm
-                  route="/cart"
+                  route={cartRoute}
                   action={CartForm.ACTIONS.GiftCardCodesRemove}
                   inputs={{ giftCardCodes: [giftCard.id] }}
                   fetcherKey="gift-card-remove"
@@ -118,7 +127,7 @@ export function CartSummary({
               >
                 <span>{discount.code}</span>
                 <CartForm
-                  route="/cart"
+                  route={cartRoute}
                   action={CartForm.ACTIONS.DiscountCodesUpdate}
                   inputs={{ discountCodes: updatedCodes }}
                   fetcherKey="discount-code-remove"
@@ -173,7 +182,10 @@ export function CartSummary({
           {enableCartNote && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <button type="button" className="underline underline-offset-2">
+                <button
+                  type="button"
+                  className="cursor-pointer underline underline-offset-2"
+                >
                   {cartNoteButtonText || "Add a note"}
                 </button>
               </Dialog.Trigger>
@@ -186,7 +198,10 @@ export function CartSummary({
           {enableDiscountCode && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <button type="button" className="underline underline-offset-2">
+                <button
+                  type="button"
+                  className="cursor-pointer underline underline-offset-2"
+                >
                   {discountCodeButtonText || "Discount code"}
                 </button>
               </Dialog.Trigger>
@@ -199,7 +214,10 @@ export function CartSummary({
           {enableGiftCard && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <button type="button" className="underline underline-offset-2">
+                <button
+                  type="button"
+                  className="cursor-pointer underline underline-offset-2"
+                >
                   {giftCardButtonText || "Giftcard"}
                 </button>
               </Dialog.Trigger>
@@ -220,7 +238,7 @@ export function CartSummary({
           aria-disabled={isCartUpdating || undefined}
         >
           <Button
-            className="w-full"
+            className="w-full rounded-lg"
             shape="round"
             disabled={isCartUpdating}
             aria-busy={isCartUpdating || undefined}

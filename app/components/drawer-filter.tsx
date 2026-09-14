@@ -58,39 +58,33 @@ export function DrawerFilter({
 }: DrawerFilterProps) {
   const { openDrawer, isOpen, closeDrawer } = useDrawer();
   return (
-    <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 pt-6 lg:px-0">
+    <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 lg:px-0">
       <div className="w-full border-t border-border-subtle" />
       <div className="flex w-full items-center justify-between">
-        <div className="flex flex-[1_0_0] items-center gap-10 justify-between md:justify-start">
+        <div className="flex items-center gap-3">
           <Button
             onClick={openDrawer}
             shape="default"
             variant="outline"
-            className="rounded-lg px-5 py-3.5 md:hidden"
+            className="rounded-lg px-5 py-3.5"
             classNameContainer="flex items-center justify-center gap-2"
           >
             <IconFilters className="size-5" viewBox="0 0 16 16" />
             <span className="font-heading text-xl font-normal">Filters</span>
           </Button>
-          <div className="hidden items-center gap-2 rounded-lg border border-border px-5 py-3.5 md:flex">
-            <IconFilters className="size-5" viewBox="0 0 16 16" />
-            <span className="font-heading text-xl font-normal">Filters</span>
-          </div>
-          <span className="font-heading text-xl font-medium tracking-tight">
+          <span className="font-heading hidden text-xl font-medium tracking-tight lg:inline">
             {productNumber} Products
           </span>
         </div>
 
         <div className="block min-w-0">
-            <div className="hidden md:block">
-              <SortMenu showSearchSort={showSearchSort} />
-            </div>
-            <Drawer
-              open={isOpen}
-              onClose={closeDrawer}
-              openFrom="left"
-              heading="FILTER"
-              isForm="filter"
+          <SortMenu showSearchSort={showSearchSort} />
+          <Drawer
+            open={isOpen}
+            onClose={closeDrawer}
+            openFrom="left"
+            heading="FILTER"
+            isForm="filter"
           >
             <div className="w-full px-6 md:w-96">
               <FiltersDrawer
@@ -716,8 +710,8 @@ export default function SortMenu({
         aria-label={`Sort products: ${activeItem.label}`}
         className="flex h-12 items-center justify-between gap-2 rounded-sm border border-border px-3 py-2.5 text-left md:h-15 md:min-w-48 md:gap-3 md:px-4 md:py-3.5"
       >
-        <span className="font-heading text-base font-normal md:hidden">
-          Sort
+        <span className="font-heading max-w-[7.5rem] text-ellipsis overflow-hidden whitespace-nowrap text-sm font-normal md:hidden">
+          {activeItem.label}
         </span>
         <span className="hidden font-heading text-base font-normal md:inline">
           {activeItem.label}

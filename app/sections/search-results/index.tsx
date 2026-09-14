@@ -1,4 +1,3 @@
-import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import { Suspense, useCallback, useEffect, useState } from "react";
@@ -11,16 +10,14 @@ import {
 } from "react-router";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
-import {
-  AppliedFilters,
-  DrawerFilter,
-  FiltersDrawer,
-} from "~/components/drawer-filter";
+import { DrawerFilter } from "~/components/drawer-filter";
 import { Grid } from "~/components/grid";
 import { IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
 import { ProductCard } from "~/components/product/product-card";
 import { ProductSwimlane } from "~/components/product/product-swimlane";
+import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
+import { ProductListingPagination } from "~/components/product-listing/pagination";
 import { PageHeader, Text } from "~/components/text";
 import type { FeaturedData } from "~/routes/($locale).featured-products";
 import type { loader as searchLoader } from "~/routes/($locale).search";
@@ -114,94 +111,82 @@ export default function SearchResults({
           </Form>
         </div>
       </PageHeader>
-      <DrawerFilter
-        showSearchSort
-        appliedFilters={appliedFilters}
-        productNumber={displayedProductCount}
-        filters={storefrontFilters}
-        priceRange={priceRange}
-        expandFilters={expandFilters}
-        showFiltersCount={showFiltersCount}
-        enableSwatches={enableSwatches}
-        displayAsButtonFor={displayAsButtonFor}
-        filterItemsLimit={filterItemsLimit}
-        checkboxShape={checkboxShape}
-      />
-      <div className="container flex items-start gap-5 px-5 py-8 md:px-6 lg:px-0">
-        {noResults ? (
-          <NoResults recommendations={noResultRecommendations} />
-        ) : (
-          <>
-            <div className="hidden w-[320px] shrink-0 md:block">
-              <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col overflow-x-hidden overflow-y-auto pr-5">
-                <FiltersDrawer
-                  desktop
-                  filters={storefrontFilters}
-                  appliedFilters={appliedFilters}
-                  priceRange={priceRange}
-                  expandFilters={expandFilters}
-                  showFiltersCount={showFiltersCount}
-                  enableSwatches={enableSwatches}
-                  displayAsButtonFor={displayAsButtonFor}
-                  filterItemsLimit={filterItemsLimit}
-                  checkboxShape={checkboxShape}
-                />
+      {noResults ? (
+        <>
+          <DrawerFilter
+            showSearchSort
+            appliedFilters={appliedFilters}
+            productNumber={displayedProductCount}
+            filters={storefrontFilters}
+            priceRange={priceRange}
+            expandFilters={expandFilters}
+            showFiltersCount={showFiltersCount}
+            enableSwatches={enableSwatches}
+            displayAsButtonFor={displayAsButtonFor}
+            filterItemsLimit={filterItemsLimit}
+            checkboxShape={checkboxShape}
+          />
+          <div className="mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0">
+            <NoResults recommendations={noResultRecommendations} />
+          </div>
+        </>
+      ) : (
+        <ProductListingFilterToolbar
+          showSearchSort
+          appliedFilters={appliedFilters}
+          productNumber={displayedProductCount}
+          filters={storefrontFilters}
+          priceRange={priceRange}
+          expandFilters={expandFilters}
+          showFiltersCount={showFiltersCount}
+          enableSwatches={enableSwatches}
+          displayAsButtonFor={displayAsButtonFor}
+          filterItemsLimit={filterItemsLimit}
+          checkboxShape={checkboxShape}
+          clearFiltersTo={clearFiltersTo}
+          contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
+        >
+          <ProductListingPagination
+            connection={products}
+            renderPrevious={({ PreviousLink, isLoading }) => (
+              <div className="mb-11 flex w-full items-center justify-center">
+                <Button as={PreviousLink} variant="outline">
+                  {isLoading ? "Loading..." : "Previous"}
+                </Button>
               </div>
-            </div>
-            <div className="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20">
-              <AppliedFilters
-                filters={appliedFilters}
-                clearTo={clearFiltersTo}
-              />
-              <Pagination connection={products}>
-                {({
-                  nodes,
-                  isLoading,
-                  NextLink,
-                  PreviousLink,
-                  hasNextPage,
-                  hasPreviousPage,
-                }) => (
-                  <>
-                    <DisplayedCountSync
-                      count={nodes.length}
-                      onChange={updateDisplayedProductCount}
+            )}
+            renderNext={({ NextLink, isLoading }) => (
+              <div className="my-11 flex w-full items-center justify-center">
+                <Button as={NextLink} variant="outline">
+                  {isLoading ? "Loading..." : "Show more +"}
+                </Button>
+              </div>
+            )}
+            renderPageContent={({ nodes }) => (
+              <>
+                <DisplayedCountSync
+                  count={nodes.length}
+                  onChange={updateDisplayedProductCount}
+                />
+                <Grid
+                  data-test="product-grid"
+                  layout="products"
+                  className="w-full! gap-y-10!"
+                >
+                  {nodes.map((product: ProductCardFragment, index) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      loading={getImageLoadingPriority(index)}
+                      enableQuickView
                     />
-                    {hasPreviousPage && (
-                      <div className="mb-11 flex w-full items-center justify-center">
-                        <Button as={PreviousLink} variant="outline">
-                          {isLoading ? "Loading..." : "Previous"}
-                        </Button>
-                      </div>
-                    )}
-                    <Grid
-                      data-test="product-grid"
-                      layout="products"
-                      className="w-full! gap-y-10!"
-                    >
-                      {nodes.map((product: ProductCardFragment, index) => (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          loading={getImageLoadingPriority(index)}
-                          enableQuickView
-                        />
-                      ))}
-                    </Grid>
-                    {hasNextPage && (
-                      <div className="my-11 flex w-full items-center justify-center">
-                        <Button as={NextLink} variant="outline">
-                          {isLoading ? "Loading..." : "Show more +"}
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </Pagination>
-            </div>
-          </>
-        )}
-      </div>
+                  ))}
+                </Grid>
+              </>
+            )}
+          />
+        </ProductListingFilterToolbar>
+      )}
     </section>
   );
 }

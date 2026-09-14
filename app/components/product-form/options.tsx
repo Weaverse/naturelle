@@ -3,7 +3,7 @@ import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
 export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
-const OPTIONS_AS_IMAGE = ["Image", "Images"];
+const OPTIONS_AS_IMAGE = ["Image", "Images", "Type", "Types"];
 const OPTIONS_AS_DROPDOWN = ["Dropdown", "Dropdowns"];
 const OPTION_AS_MORPHOLOGY = ["Size", "Shape", "Sizes"];
 
@@ -22,7 +22,6 @@ interface VariantOptionProps {
     imageSwatches: any[];
     colorSwatches: any[];
   };
-  onSelectVariant?: (variant: unknown) => void;
   values: {
     isActive: boolean;
     isAvailable: boolean;
@@ -30,19 +29,12 @@ interface VariantOptionProps {
     to: string;
     value: string;
     image?: any;
-    variant?: unknown;
   }[];
 }
 
 export function VariantOption(props: VariantOptionProps) {
-  let {
-    name,
-    values,
-    selectedOptionValue,
-    onSelectOptionValue,
-    onSelectVariant,
-    swatches,
-  } = props;
+  let { name, values, selectedOptionValue, onSelectOptionValue, swatches } =
+    props;
   const normalizedName = name.trim().toLowerCase();
 
   let disabledClassName = "diagonal opacity-50 cursor-not-allowed";
@@ -123,13 +115,7 @@ export function VariantOption(props: VariantOptionProps) {
                     ? "border-transparent hover:border-border-subtle"
                     : `${disabledClassName} border-border-subtle bg-background-subtle-1 text-text-subtle`,
               )}
-              onClick={() => {
-                if (value.variant && onSelectVariant) {
-                  onSelectVariant(value.variant);
-                } else {
-                  onSelectOptionValue(value.value);
-                }
-              }}
+              onClick={() => onSelectOptionValue(value.value)}
             >
               {value.image ? (
                 <Image

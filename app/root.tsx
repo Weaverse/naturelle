@@ -1,5 +1,6 @@
 import {
   Analytics,
+  type CartReturn,
   getSeoMeta,
   Image,
   type SeoConfig,
@@ -15,19 +16,21 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  type ShouldRevalidateFunction,
   useLocation,
   useMatches,
   useRouteError,
   useRouteLoaderData,
 } from "react-router";
 import { Button } from "~/components/button";
+import { CartStoreSync } from "~/components/cart/cart-sync";
+import { useCartStore } from "~/components/cart/store";
 import { Footer } from "~/components/layout/footer";
 import { Header } from "~/components/layout/header";
 import { CustomAnalytics } from "~/components/root/analytics";
 import { GlobalLoading } from "~/components/root/global-loading";
 import { Preloader } from "~/components/root/preloader";
 import { getErrorMessage } from "~/utils/define-message-error";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/montserrat";
@@ -37,23 +40,7 @@ import { loadCriticalData, loadDeferredData } from "./utils/root.server";
 
 export type RootLoader = typeof loader;
 
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-  formMethod,
-  currentUrl,
-  nextUrl,
-}) => {
-  // revalidate when a mutation is performed e.g add to cart, login...
-  if (formMethod && formMethod !== "GET") {
-    return true;
-  }
-
-  // revalidate when manually revalidating via useRevalidator
-  if (currentUrl.toString() === nextUrl.toString()) {
-    return true;
-  }
-
-  return false;
-};
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export function links() {
   return [
@@ -103,6 +90,7 @@ export const Layout = withWeaverse(function RootLayout({
   const nonce = useNonce();
   const data = useRouteLoaderData<RootLoader>("root");
   const locale = data?.selectedLocale ?? DEFAULT_LOCALE;
+  const serverCart = useCartStore((state) => state.serverCart);
 
   // Bypass Weaverse theme layout for Hydrogen dev tools
   if (
@@ -128,10 +116,11 @@ export const Layout = withWeaverse(function RootLayout({
       >
         {data ? (
           <Analytics.Provider
-            cart={data.cart}
+            cart={serverCart as unknown as CartReturn}
             shop={data.shop}
             consent={data.consent}
           >
+            <CartStoreSync />
             <Header />
             <main className="grow">{children}</main>
             <Footer />

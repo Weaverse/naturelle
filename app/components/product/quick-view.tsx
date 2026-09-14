@@ -1,20 +1,19 @@
 import { Portal } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
-import {
-  IconQuickViewFacebook,
-  IconQuickViewInstagram,
-  IconQuickViewX,
-} from "~/components/icon";
-import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { isImageOption } from "~/components/product-form/options";
+import {
+  ProductQuantityInput,
+  ProductShareLinks,
+  ProductVariantImageSelector,
+  useProductFormState,
+} from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
 import {
@@ -35,11 +34,22 @@ export function QuickView({
   const theme = useThemeSettings();
   const { product, variants: variantData, storeDomain, shop } = data;
   const variants = variantData?.product?.variants;
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState<any>(
-    product?.selectedVariant ?? variants?.nodes?.[0],
-  );
-  const [quantity, setQuantity] = useState(1);
+  const {
+    isLoading,
+    setIsLoading,
+    selectedVariant,
+    quantity,
+    setQuantity,
+    atcText,
+    handleSelectedVariantChange,
+  } = useProductFormState({
+    product,
+    variants,
+    addToCartText: theme.addToCartText || "Add to cart",
+    soldOutText: theme.soldOutText || "Sold out",
+    unavailableText: theme.unavailableText || "Unavailable",
+    syncVariantWithUrl: false,
+  });
   const swatches = theme?.swatches || {
     configs: [],
     swatches: { imageSwatches: [], colorSwatches: [] },
@@ -49,11 +59,6 @@ export function QuickView({
     return null;
   }
 
-  const atcText = selectedVariant.availableForSale
-    ? theme.addToCartText
-    : selectedVariant.quantityAvailable === -1
-      ? theme.unavailableText
-      : theme.soldOutText;
   const stock = selectedVariant.quantityAvailable;
   const configuredLowStockThreshold = Number(theme.quickViewLowStockThreshold);
   const lowStockThreshold = Number.isFinite(configuredLowStockThreshold)
@@ -90,7 +95,7 @@ export function QuickView({
   ) {
     badge = { text: theme.newBadgeText || "New arrival", type: "new" };
   }
-  const productUrl = `${window.location.origin}/products/${product.handle}`;
+  const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
 
   return (
     <div className="max-h-[90vh] w-[min(94vw,1100px)] overflow-y-auto rounded-xl bg-background p-5 md:p-6">
@@ -192,7 +197,7 @@ export function QuickView({
                 isDisabled={isLoading}
                 product={product}
                 selectedVariant={selectedVariant}
-                onSelectedVariantChange={setSelectedVariant}
+                onSelectedVariantChange={handleSelectedVariantChange}
                 swatch={swatches}
                 variants={variants}
                 options={product.options}
@@ -202,23 +207,29 @@ export function QuickView({
             </div>
 
             {!product.options.some((option) => isImageOption(option.name)) && (
-              <VariantImageSelector
+              <ProductVariantImageSelector
                 variants={variants.nodes}
                 selectedVariantId={selectedVariant.id}
                 disabled={isLoading}
-                onSelect={setSelectedVariant}
+                onSelect={handleSelectedVariantChange}
               />
             )}
 
             <div className="grid grid-cols-[auto_1fr] gap-2">
-              <QuickViewQuantity
+              <ProductQuantityInput
                 disabled={isLoading}
                 value={quantity}
                 onChange={setQuantity}
               />
               <AddToCartButton
                 disabled={!selectedVariant.availableForSale}
-                lines={[{ merchandiseId: selectedVariant.id, quantity }]}
+                lines={[
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity,
+                    selectedVariant,
+                  },
+                ]}
                 onFetchingStateChange={(state) =>
                   setIsLoading(state !== "idle")
                 }
@@ -290,149 +301,11 @@ export function QuickView({
               View product details
             </Link>
 
-            <div className="flex items-center gap-3 pt-2 text-sm">
-              <span className="font-semibold">Share:</span>
-              <ShareLink
-                label="Share on Facebook"
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`}
-              >
-                <IconQuickViewFacebook className="size-8" />
-              </ShareLink>
-              <ShareLink
-                label="Share on Instagram"
-                href={`https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`}
-              >
-                <IconQuickViewInstagram className="size-8" />
-              </ShareLink>
-              <ShareLink
-                label="Share on X"
-                href={`https://x.com/intent/post?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(product.title)}`}
-              >
-                <IconQuickViewX className="size-8" />
-              </ShareLink>
-            </div>
+            <ProductShareLinks productUrl={productUrl} title={product.title} />
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function VariantImageSelector({
-  variants,
-  selectedVariantId,
-  disabled,
-  onSelect,
-}: {
-  variants: any[];
-  selectedVariantId: string;
-  disabled: boolean;
-  onSelect: (variant: any) => void;
-}) {
-  const imageVariants = variants.filter((variant) => variant.image);
-  if (imageVariants.length < 2) {
-    return null;
-  }
-
-  const selectedIndex = Math.max(
-    0,
-    imageVariants.findIndex((variant) => variant.id === selectedVariantId),
-  );
-  const selectedType = `Set ${String.fromCharCode(65 + selectedIndex)}`;
-
-  return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm">
-        <span className="font-semibold">Type:</span> <span>{selectedType}</span>
-      </p>
-      <div className="flex flex-wrap gap-2.5">
-        {imageVariants.map((variant, index) => {
-          const isSelected = variant.id === selectedVariantId;
-          return (
-            <button
-              key={variant.id}
-              type="button"
-              disabled={disabled || !variant.availableForSale}
-              aria-label={`Select Set ${String.fromCharCode(65 + index)}`}
-              aria-pressed={isSelected}
-              className={clsx(
-                "size-12 overflow-hidden rounded-lg border p-0.5 transition-colors",
-                isSelected
-                  ? "border-border"
-                  : "border-transparent hover:border-border-subtle",
-                !variant.availableForSale &&
-                  "diagonal cursor-not-allowed border-border-subtle opacity-50",
-              )}
-              onClick={() => onSelect(variant)}
-            >
-              <Image
-                data={variant.image}
-                sizes="48px"
-                className="h-full w-full rounded-md object-cover"
-              />
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function QuickViewQuantity({
-  value,
-  disabled,
-  onChange,
-}: {
-  value: number;
-  disabled: boolean;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <div className="flex h-12 items-center overflow-hidden rounded-lg border border-border">
-      <button
-        type="button"
-        className="h-full px-3 text-lg disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Decrease quantity"
-        disabled={disabled || value <= 1}
-        onClick={() => onChange(Math.max(1, value - 1))}
-      >
-        −
-      </button>
-      <span className="min-w-8 text-center text-sm" aria-live="polite">
-        {value}
-      </span>
-      <button
-        type="button"
-        className="h-full px-3 text-lg disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Increase quantity"
-        disabled={disabled}
-        onClick={() => onChange(value + 1)}
-      >
-        +
-      </button>
-    </div>
-  );
-}
-
-function ShareLink({
-  href,
-  label,
-  children,
-}: {
-  href: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={label}
-      className="flex size-8 items-center justify-center rounded-full transition-opacity hover:opacity-70"
-    >
-      {children}
-    </a>
   );
 }
 

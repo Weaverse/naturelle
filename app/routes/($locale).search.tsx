@@ -3,16 +3,17 @@ import {
   getSeoMeta,
   type SeoConfig,
 } from "@shopify/hydrogen";
-import type {
-  ProductFilter,
-  SearchSortKeys,
-} from "@shopify/hydrogen/storefront-api-types";
+import type { SearchSortKeys } from "@shopify/hydrogen/storefront-api-types";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/.server/seo";
 import { SEARCH_QUERY } from "~/graphql/queries";
-import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
+import { PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
-import { parseAsCurrency } from "~/utils/locale";
+import {
+  getAppliedFilters,
+  getFiltersFromSearchParams,
+  getPriceRangeFilters,
+} from "~/utils/product-filters";
 import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 import { getFeaturedData } from "./($locale).featured-products";
 
@@ -27,16 +28,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     searchParams.get("sort") as SortParam,
   );
 
-  const filters = [...searchParams.entries()].reduce((acc, [key, value]) => {
-    if (key.startsWith(FILTER_URL_PREFIX)) {
-      const filterKey = key.substring(FILTER_URL_PREFIX.length);
-      acc.push({
-        [filterKey]: JSON.parse(value),
-      });
-    }
-    return acc;
-  }, [] as ProductFilter[]);
-  const priceRangeFilters = filters.filter((filter) => !filter.price);
+  const filters = getFiltersFromSearchParams(searchParams);
+  const priceRangeFilters = getPriceRangeFilters(filters);
 
   const [productSearchData, weaverseData] = await Promise.all([
     storefront.query(SEARCH_QUERY, {
@@ -65,55 +58,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const allFilterValues = products.productFilters.flatMap(
     (filter: any) => filter.values,
   );
-  // todo merge into 1 function
-  const appliedFilters = filters
-    .map((filter) => {
-      const foundValue = allFilterValues.find((value: any) => {
-        const valueInput = JSON.parse(value.input as string) as ProductFilter;
-        // special case for price, the user can enter something freeform (still a number, though)
-        // that may not make sense for the locale/currency.
-        // Basically just check if the price filter is applied at all.
-        if (valueInput.price && filter.price) {
-          return true;
-        }
-        return (
-          // This comparison should be okay as long as we're not manipulating the input we
-          // get from the API before using it as a URL param.
-          JSON.stringify(valueInput) === JSON.stringify(filter)
-        );
-      });
-      if (!foundValue) {
-        if (filter.variantOption) {
-          return {
-            filter,
-            label: filter.variantOption.value,
-          };
-        }
-        // eslint-disable-next-line no-console
-        console.error("Could not find filter value for filter", filter);
-        return null;
-      }
-
-      if (foundValue.id === "filter.v.price") {
-        // Special case for price, we want to show the min and max values as the label.
-        const input = JSON.parse(foundValue.input as string) as ProductFilter;
-        const min = parseAsCurrency(input.price?.min ?? 0, locale);
-        const max = input.price?.max
-          ? parseAsCurrency(input.price.max, locale)
-          : "";
-        const label = min && max ? `${min} - ${max}` : "Price";
-
-        return {
-          filter,
-          label,
-        };
-      }
-      return {
-        filter,
-        label: foundValue.label,
-      };
-    })
-    .filter((filter): filter is NonNullable<typeof filter> => filter !== null);
+  const appliedFilters = getAppliedFilters({
+    filters,
+    availableFilterValues: allFilterValues,
+    locale,
+  });
 
   const shouldGetRecommendations = !searchTerm || products?.nodes?.length === 0;
 

@@ -3,16 +3,9 @@ import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { createSchema, useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
-import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
-import {
-  IconAnnouncementChevron,
-  IconQuickViewFacebook,
-  IconQuickViewInstagram,
-  IconQuickViewX,
-} from "~/components/icon";
-import { Image } from "~/components/image";
+import { IconAnnouncementChevron } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { isImageOption } from "~/components/product-form/options";
@@ -21,6 +14,12 @@ import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { getExcerpt } from "~/utils/misc";
+import {
+  ProductQuantityInput,
+  ProductShareLinks,
+  ProductVariantImageSelector,
+  useProductFormState,
+} from "../../components/product-form/pdp-form";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductMedia } from "../../components/product-form/product-media";
 import { ProductVariants } from "../../components/product-form/variants";
@@ -60,11 +59,7 @@ let ProductInformation = ({
       storeDomain: string;
     }
   >();
-  const [isLoading, setIsLoading] = useState(false);
   let variants = _variants?.product?.variants;
-  let [selectedVariant, setSelectedVariant] = useState<any>(
-    product?.selectedVariant,
-  );
   let {
     addToCartText,
     soldOutText,
@@ -86,21 +81,22 @@ let ProductInformation = ({
     containerClassName,
     ...rest
   } = props;
-  let [quantity, setQuantity] = useState<number>(1);
   const { judgemeReviews } = useLoaderData<ProductLoaderType>();
-  let atcText = selectedVariant?.availableForSale
-    ? addToCartText
-    : selectedVariant?.quantityAvailable === -1
-      ? unavailableText
-      : soldOutText;
-  useEffect(() => {
-    if (!selectedVariant) {
-      setSelectedVariant(variants?.nodes?.[0]);
-    } else if (selectedVariant?.id !== product?.selectedVariant?.id) {
-      setSelectedVariant(product?.selectedVariant);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product?.selectedVariant, selectedVariant, variants?.nodes?.[0]]);
+  let {
+    isLoading,
+    setIsLoading,
+    selectedVariant,
+    quantity,
+    setQuantity,
+    atcText,
+    handleSelectedVariantChange,
+  } = useProductFormState({
+    product,
+    variants,
+    addToCartText,
+    soldOutText,
+    unavailableText,
+  });
   let themeSettings = useThemeSettings();
   let swatches = themeSettings?.swatches || {
     configs: [],
@@ -108,17 +104,6 @@ let ProductInformation = ({
       imageSwatches: [],
       colorSwatches: [],
     },
-  };
-
-  let handleSelectedVariantChange = (variant: any) => {
-    setSelectedVariant(variant);
-    // update the url
-    let searchParams = new URLSearchParams(window.location.search);
-    for (const option of variant.selectedOptions) {
-      searchParams.set(option.name, option.value);
-    }
-    let url = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.replaceState({}, "", url);
   };
 
   if (!product || !selectedVariant) {
@@ -142,9 +127,9 @@ let ProductInformation = ({
       >
         <div
           className={clsx(
-            "grid grid-cols-1 items-start gap-8 lg:grid-cols-2",
-            "lg:gap-12",
-            "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
+            "grid grid-cols-1 items-start gap-8 md:grid-cols-2",
+            "md:gap-12",
+            "md:grid-cols-[1fr_clamp(360px,45%,480px)]",
           )}
         >
           <div className="min-w-0">
@@ -281,7 +266,7 @@ let ProductInformation = ({
               {!product.options.some((option) =>
                 isImageOption(option.name),
               ) && (
-                <VariantImageSelector
+                <ProductVariantImageSelector
                   variants={variants.nodes}
                   selectedVariantId={selectedVariant.id}
                   disabled={isLoading}
@@ -289,7 +274,7 @@ let ProductInformation = ({
                 />
               )}
               <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-(--width-button)">
-                <ProductQuantity
+                <ProductQuantityInput
                   value={quantity}
                   disabled={isLoading}
                   onChange={setQuantity}
@@ -301,6 +286,7 @@ let ProductInformation = ({
                       {
                         merchandiseId: selectedVariant?.id,
                         quantity,
+                        selectedVariant,
                       },
                     ]}
                     onFetchingStateChange={(state) =>
@@ -352,7 +338,7 @@ let ProductInformation = ({
               >
                 View product details
               </Link>
-              <ProductShare productUrl={productUrl} title={title} />
+              <ProductShareLinks productUrl={productUrl} title={title} />
             </div>
             {product?.metafield && <MetaFieldTable data={product?.metafield} />}
           </div>
@@ -411,156 +397,6 @@ function ProductDescription({
         </>
       )}
     </Disclosure>
-  );
-}
-
-function ProductQuantity({
-  value,
-  disabled,
-  onChange,
-}: {
-  value: number;
-  disabled: boolean;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <div className="flex h-12 items-center overflow-hidden rounded-lg border border-border">
-      <button
-        type="button"
-        className="h-full px-3 text-lg disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Decrease quantity"
-        disabled={disabled || value <= 1}
-        onClick={() => onChange(Math.max(1, value - 1))}
-      >
-        −
-      </button>
-      <span className="min-w-8 text-center text-sm" aria-live="polite">
-        {value}
-      </span>
-      <button
-        type="button"
-        className="h-full px-3 text-lg disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Increase quantity"
-        disabled={disabled}
-        onClick={() => onChange(value + 1)}
-      >
-        +
-      </button>
-    </div>
-  );
-}
-
-function VariantImageSelector({
-  variants,
-  selectedVariantId,
-  disabled,
-  onSelect,
-}: {
-  variants: any[];
-  selectedVariantId: string;
-  disabled: boolean;
-  onSelect: (variant: any) => void;
-}) {
-  const imageVariants = variants.filter((variant) => variant.image);
-  if (imageVariants.length < 2) {
-    return null;
-  }
-
-  const selectedIndex = Math.max(
-    0,
-    imageVariants.findIndex((variant) => variant.id === selectedVariantId),
-  );
-  const selectedType = `Set ${String.fromCharCode(65 + selectedIndex)}`;
-
-  return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm">
-        <span className="font-semibold">Type:</span> {selectedType}
-      </p>
-      <div className="flex flex-wrap gap-2.5">
-        {imageVariants.map((variant, index) => {
-          const isSelected = variant.id === selectedVariantId;
-          return (
-            <button
-              key={variant.id}
-              type="button"
-              disabled={disabled || !variant.availableForSale}
-              aria-label={`Select Set ${String.fromCharCode(65 + index)}`}
-              aria-pressed={isSelected}
-              className={clsx(
-                "size-12 overflow-hidden rounded-lg border p-0.5 transition-colors",
-                isSelected
-                  ? "border-border"
-                  : "border-transparent hover:border-border-subtle",
-                !variant.availableForSale &&
-                  "diagonal cursor-not-allowed border-border-subtle opacity-50",
-              )}
-              onClick={() => onSelect(variant)}
-            >
-              <Image
-                data={variant.image}
-                sizes="48px"
-                className="h-full w-full rounded-md object-cover"
-              />
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function ProductShare({
-  productUrl,
-  title,
-}: {
-  productUrl: string;
-  title: string;
-}) {
-  return (
-    <div className="flex items-center gap-3 pt-2 text-sm">
-      <span className="font-semibold">Share:</span>
-      <ShareLink
-        label="Share on Facebook"
-        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`}
-      >
-        <IconQuickViewFacebook className="size-8" />
-      </ShareLink>
-      <ShareLink
-        label="Share on Instagram"
-        href={`https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`}
-      >
-        <IconQuickViewInstagram className="size-8" />
-      </ShareLink>
-      <ShareLink
-        label="Share on X"
-        href={`https://x.com/intent/post?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(title)}`}
-      >
-        <IconQuickViewX className="size-8" />
-      </ShareLink>
-    </div>
-  );
-}
-
-function ShareLink({
-  href,
-  label,
-  children,
-}: {
-  href: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={label}
-      className="flex size-8 items-center justify-center rounded-full transition-opacity hover:opacity-70"
-    >
-      {children}
-    </a>
   );
 }
 

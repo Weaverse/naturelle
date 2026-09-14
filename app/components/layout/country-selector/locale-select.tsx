@@ -4,6 +4,7 @@ import type { CartBuyerIdentityInput } from "@shopify/hydrogen/storefront-api-ty
 import { type ReactNode, useState } from "react";
 import { IconCaret } from "~/components/icon";
 import type { Locale } from "~/types/type-locale";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 export type LocaleOption = { key: string; label: string; locale: Locale };
 
@@ -78,9 +79,10 @@ function ChangeLocaleForm({
   buyerIdentity: CartBuyerIdentityInput;
   redirectTo: string;
 }) {
+  const cartRoute = usePrefixPathWithLocale("/cart");
   return (
     <CartForm
-      route="/cart"
+      route={cartRoute}
       action={CartForm.ACTIONS.BuyerIdentityUpdate}
       inputs={{ buyerIdentity }}
     >

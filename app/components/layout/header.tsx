@@ -9,7 +9,7 @@ import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn } from "~/utils/cn";
 import { useIsHomePath } from "~/utils/locale";
 import { AccountLink } from "../account/account-link";
-import { CartDrawer } from "../cart/cart-drawer";
+import { CartDrawer, CartDrawerTrigger } from "../cart/cart-drawer";
 import { HeaderCountrySelector } from "./country-selector/header-country-selector";
 import { HeaderMenuDrawer } from "./menu/drawer-menu";
 import { MegaMenu } from "./menu/mega-menu";
@@ -140,7 +140,7 @@ export function Header() {
                   compact
                   onInlineOpenChange={setIsUtilitySearchOpen}
                 />
-                <CartDrawer compact />
+                <CartDrawerTrigger compact />
               </div>
             </div>
           </div>
@@ -166,10 +166,11 @@ export function Header() {
           <div className="z-30 flex min-w-0 flex-1 items-center justify-end gap-2 md:hidden">
             <SearchToggle inline />
             <AccountLink />
-            <CartDrawer />
+            <CartDrawerTrigger />
           </div>
         </div>
       </header>
+      <CartDrawer />
     </>
   );
 }

@@ -55,6 +55,7 @@ export function FreeShippingProgressBar({
               <Money
                 data={{ amount: String(remaining), currencyCode }}
                 withoutTrailingZeros
+                as="span"
               />
             </span>
             {message.split("{{amount}}")[1]}

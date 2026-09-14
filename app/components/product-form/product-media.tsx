@@ -49,9 +49,8 @@ export function ProductMedia(props: ProductMediaProps) {
   useEffect(() => {
     if (selectedVariant && swiper) {
       const index = getSelectedVariantMediaIndex(media, selectedVariant);
-
-      if (index >= 0 && index !== swiper.activeIndex) {
-        swiper.slideTo(index);
+      if (index >= 0 && index !== swiper.realIndex) {
+        slideToMedia(swiper, index);
       }
     }
   }, [media, selectedVariant, swiper]);
@@ -81,9 +80,7 @@ export function ProductMedia(props: ProductMediaProps) {
             ]}
             pagination={showPagination ? { type: "bullets" } : false}
             spaceBetween={10}
-            thumbs={
-              useSwiperThumbnails ? { swiper: thumbsSwiper } : undefined
-            }
+            thumbs={useSwiperThumbnails ? { swiper: thumbsSwiper } : undefined}
             onSwiper={setSwiper}
             onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
             className={clsx(
@@ -231,11 +228,20 @@ export function ProductMedia(props: ProductMediaProps) {
 }
 
 function getMediaImage(med: MediaFragment) {
-  return { ...med.image, altText: med.alt || "Product image" };
+  return {
+    ...getMediaImageData(med),
+    altText: med.alt || "Product image",
+  };
+}
+
+function getMediaImageData(med: MediaFragment) {
+  return "image" in med ? med.image : undefined;
 }
 
 function slideToMedia(swiper: SwiperClass | null, index: number) {
-  if (!swiper) return;
+  if (!swiper) {
+    return;
+  }
   if (swiper.params.loop) {
     swiper.slideToLoop(index);
   } else {
@@ -250,6 +256,28 @@ function getSelectedVariantMediaIndex(
   if (!selectedVariant) {
     return 0;
   }
-  let mediaUrl = selectedVariant.image?.url;
-  return media.findIndex((med) => med.previewImage?.url === mediaUrl);
+  const variantImageId = selectedVariant.image?.id;
+  const variantImageUrl = selectedVariant.image?.url;
+  const byId = media.findIndex((med) => {
+    const image = getMediaImageData(med);
+    return image?.id && image.id === variantImageId;
+  });
+  if (byId >= 0) {
+    return byId;
+  }
+  return media.findIndex(
+    (med) =>
+      imageUrlsMatch(getMediaImageData(med)?.url, variantImageUrl) ||
+      imageUrlsMatch(med.previewImage?.url, variantImageUrl),
+  );
+}
+
+function imageUrlsMatch(left?: string | null, right?: string | null) {
+  if (!left || !right) {
+    return false;
+  }
+  if (left === right) {
+    return true;
+  }
+  return left.split("?")[0] === right.split("?")[0];
 }

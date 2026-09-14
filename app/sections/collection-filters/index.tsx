@@ -1,4 +1,3 @@
-import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -7,11 +6,8 @@ import { useInView } from "react-intersection-observer";
 import { useLoaderData } from "react-router";
 import type { CollectionDetailsQuery } from "storefront-api.generated";
 import { Button } from "~/components/button";
-import {
-  AppliedFilters,
-  DrawerFilter,
-  FiltersDrawer,
-} from "~/components/drawer-filter";
+import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
+import { ProductListingPagination } from "~/components/product-listing/pagination";
 import { cn } from "~/utils/cn";
 import type { AppliedFilter } from "~/utils/filter";
 import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
@@ -102,10 +98,10 @@ let CollectionFilters = ({
   if (collection?.products && collections) {
     return (
       <section ref={sectionRef} {...rest} className="bg-background-basic">
-        <DrawerFilter
-          productNumber={productNumber}
+        <ProductListingFilterToolbar
           filters={storefrontFilters}
           appliedFilters={appliedFilters}
+          productNumber={productNumber}
           collections={collections}
           priceRange={priceRange}
           expandFilters={expandFilters}
@@ -114,79 +110,45 @@ let CollectionFilters = ({
           displayAsButtonFor={displayAsButtonFor}
           filterItemsLimit={filterItemsLimit}
           checkboxShape={checkboxShape}
-        />
-        <div
-          className={cn(
-            "mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 md:flex-row md:px-6 lg:px-0",
+          sectionClassName={cn(
+            "mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0",
             width === "full" && "max-w-none",
             width === "stretch" && "max-w-none lg:px-16",
           )}
+          contentClassName={cn(variants({ gap }), "min-w-0 flex-1")}
         >
-          <div className="hidden w-[320px] shrink-0 md:block">
-            <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col overflow-x-hidden overflow-y-auto pr-5">
-              <FiltersDrawer
-                desktop
-                filters={storefrontFilters}
-                appliedFilters={appliedFilters}
-                priceRange={priceRange}
-                expandFilters={expandFilters}
-                showFiltersCount={showFiltersCount}
-                enableSwatches={enableSwatches}
-                displayAsButtonFor={displayAsButtonFor}
-                filterItemsLimit={filterItemsLimit}
-                checkboxShape={checkboxShape}
+          <ProductListingPagination
+            connection={collection.products}
+            renderPrevious={({ PreviousLink, isLoading }) => (
+              <Button as={PreviousLink} variant="outline" className="mb-14!">
+                <span className="font-heading font-light">
+                  {isLoading ? "Loading..." : "Load previous"}
+                </span>
+              </Button>
+            )}
+            renderNext={({ NextLink, isLoading }) => (
+              <Button as={NextLink} variant="outline" className="mt-14!">
+                <span className="font-heading font-light my-0.5">
+                  {isLoading ? "Loading..." : "Show more +"}
+                </span>
+              </Button>
+            )}
+            renderPageContent={({ nodes, hasNextPage, nextPageUrl, state }) => (
+              <ProductsLoadedOnScroll
+                nodes={nodes as any}
+                onDisplayedCountChange={updateProductNumber}
+                collection={{
+                  title: collection.title,
+                  handle: collection.handle,
+                }}
+                inView={inView}
+                nextPageUrl={nextPageUrl}
+                hasNextPage={hasNextPage}
+                state={state}
               />
-            </div>
-          </div>
-          <div className={cn(variants({ gap }), "min-w-0 flex-1")}>
-            <AppliedFilters filters={appliedFilters} />
-            <Pagination connection={collection.products}>
-              {({
-                nodes,
-                isLoading,
-                PreviousLink,
-                NextLink,
-                nextPageUrl,
-                hasNextPage,
-                hasPreviousPage,
-                state,
-              }) => (
-                <div className="flex w-full flex-col items-center justify-center">
-                  {hasPreviousPage && (
-                    <Button
-                      as={PreviousLink}
-                      variant="outline"
-                      className="mb-14!"
-                    >
-                      <span className="font-heading font-light">
-                        {isLoading ? "Loading..." : "Load previous"}
-                      </span>
-                    </Button>
-                  )}
-                  <ProductsLoadedOnScroll
-                    nodes={nodes}
-                    onDisplayedCountChange={updateProductNumber}
-                    collection={{
-                      title: collection.title,
-                      handle: collection.handle,
-                    }}
-                    inView={inView}
-                    nextPageUrl={nextPageUrl}
-                    hasNextPage={hasNextPage}
-                    state={state}
-                  />
-                  {hasNextPage && (
-                    <Button as={NextLink} variant="outline" className="mt-14!">
-                      <span className="font-heading font-light my-0.5">
-                        {isLoading ? "Loading..." : "Show more +"}
-                      </span>
-                    </Button>
-                  )}
-                </div>
-              )}
-            </Pagination>
-          </div>
-        </div>
+            )}
+          />
+        </ProductListingFilterToolbar>
       </section>
     );
   }

@@ -86,8 +86,6 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 
   const recommended = getRecommendedProducts(context.storefront, product.id);
 
-  // TODO: firstVariant is never used because we will always have a selectedVariant due to redirect
-  // Investigate if we can avoid the redirect for product pages with no search params for first variant
   const firstVariant = product.variants.nodes[0];
   const selectedVariant = product.selectedVariant ?? firstVariant;
 
@@ -155,24 +153,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   return getSeoMeta(loaderData?.seo as SeoConfig);
 };
-// function redirectToFirstVariant({
-//   product,
-//   request,
-// }: {
-//   product: ProductQuery['product'];
-//   request: Request;
-// }) {
-//   const searchParams = new URLSearchParams(new URL(request.url).search);
-//   const firstVariant = product!.variants.nodes[0];
-//   for (const option of firstVariant.selectedOptions) {
-//     searchParams.set(option.name, option.value);
-//   }
-//
-//   return redirect(
-//     `/products/${product!.handle}?${searchParams.toString()}`,
-//     302,
-//   );
-// }
 
 /**
  * We need to handle the route change from client to keep the view transition persistent
@@ -226,7 +206,9 @@ async function getRecommendedProducts(
     (item) => item.id === productId,
   );
 
-  mergedProducts.splice(originalProduct, 1);
+  if (originalProduct >= 0) {
+    mergedProducts.splice(originalProduct, 1);
+  }
 
   return { nodes: mergedProducts };
 }

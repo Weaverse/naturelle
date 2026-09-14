@@ -5,10 +5,7 @@ import {
   getSeoMeta,
   type SeoConfig,
 } from "@shopify/hydrogen";
-import type {
-  ProductCollectionSortKeys,
-  ProductFilter,
-} from "@shopify/hydrogen/storefront-api-types";
+import type { ProductCollectionSortKeys } from "@shopify/hydrogen/storefront-api-types";
 import type { MetaFunction } from "react-router";
 import { data, type LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
@@ -16,9 +13,13 @@ import { redirectIfHandleIsLocalized } from "~/.server/redirect";
 import { seoPayload } from "~/.server/seo";
 import { COLLECTION_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
-import { FILTER_URL_PREFIX, PAGINATION_SIZE } from "~/utils/const";
+import { PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
-import { parseAsCurrency } from "~/utils/locale";
+import {
+  getAppliedFilters,
+  getFiltersFromSearchParams,
+  getPriceRangeFilters,
+} from "~/utils/product-filters";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -37,19 +38,8 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { sortKey, reverse } = getSortValuesFromParam(
     searchParams.get("sort") as SortParam,
   );
-  const filters = [...searchParams.entries()].reduce(
-    (filterList, [key, value]) => {
-      if (key.startsWith(FILTER_URL_PREFIX)) {
-        const filterKey = key.substring(FILTER_URL_PREFIX.length);
-        filterList.push({
-          [filterKey]: JSON.parse(value),
-        });
-      }
-      return filterList;
-    },
-    [] as ProductFilter[],
-  );
-  const priceRangeFilters = filters.filter((filter) => !filter.price);
+  const filters = getFiltersFromSearchParams(searchParams);
+  const priceRangeFilters = getPriceRangeFilters(filters);
 
   const [shopAndCollections, weaverseData] = await Promise.all([
     context.storefront.query(COLLECTION_QUERY, {
@@ -85,54 +75,11 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     (filter: any) => filter.values,
   );
 
-  const appliedFilters = filters
-    .map((filter) => {
-      const foundValue = allFilterValues.find((value: any) => {
-        const valueInput = JSON.parse(value.input as string) as ProductFilter;
-        // special case for price, the user can enter something freeform (still a number, though)
-        // that may not make sense for the locale/currency.
-        // Basically just check if the price filter is applied at all.
-        if (valueInput.price && filter.price) {
-          return true;
-        }
-        return (
-          // This comparison should be okay as long as we're not manipulating the input we
-          // get from the API before using it as a URL param.
-          JSON.stringify(valueInput) === JSON.stringify(filter)
-        );
-      });
-      if (!foundValue) {
-        if (filter.variantOption) {
-          return {
-            filter,
-            label: filter.variantOption.value,
-          };
-        }
-        // eslint-disable-next-line no-console
-        console.error("Could not find filter value for filter", filter);
-        return null;
-      }
-
-      if (foundValue.id === "filter.v.price") {
-        // Special case for price, we want to show the min and max values as the label.
-        const input = JSON.parse(foundValue.input as string) as ProductFilter;
-        const min = parseAsCurrency(input.price?.min ?? 0, locale);
-        const max = input.price?.max
-          ? parseAsCurrency(input.price.max, locale)
-          : "";
-        const label = min && max ? `${min} - ${max}` : "Price";
-
-        return {
-          filter,
-          label,
-        };
-      }
-      return {
-        filter,
-        label: foundValue.label,
-      };
-    })
-    .filter((filter): filter is NonNullable<typeof filter> => filter !== null);
+  const appliedFilters = getAppliedFilters({
+    filters,
+    availableFilterValues: allFilterValues,
+    locale,
+  });
 
   return data({
     collection,
