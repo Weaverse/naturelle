@@ -7,8 +7,6 @@ import {
 import { getSelectedProductOptions } from "@weaverse/hydrogen";
 import { useEffect } from "react";
 import {
-  type ActionFunctionArgs,
-  data,
   type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
@@ -28,7 +26,7 @@ import {
 } from "~/graphql/queries";
 import type { Storefront } from "~/types/type-locale";
 import { routeHeaders } from "~/utils/cache";
-import { createJudgemeReview, getJudgemeReviews } from "~/utils/judgeme";
+import { getJudgemeReviews } from "~/utils/judgeme";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -132,23 +130,6 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 }
 
 export type ProductLoaderType = typeof loader;
-
-export async function action({ request, context }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  let judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
-  invariant(judgeme_API_TOKEN, "Missing JUDGEME_PRIVATE_API_TOKEN");
-  let response: any = {
-    status: 201,
-  };
-  let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
-  response = await createJudgemeReview(
-    judgeme_API_TOKEN,
-    shop_domain,
-    formData,
-  );
-  const { status, ...rest } = response;
-  return data(rest, { status });
-}
 
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   return getSeoMeta(loaderData?.seo as SeoConfig);

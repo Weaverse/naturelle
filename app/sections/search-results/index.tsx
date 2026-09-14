@@ -1,13 +1,7 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
-import { Suspense, useCallback, useEffect, useState } from "react";
-import {
-  Await,
-  Form,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from "react-router";
+import { useCallback, useEffect, useState } from "react";
+import { Form, useLoaderData, useLocation, useNavigate } from "react-router";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { DrawerFilter } from "~/components/drawer-filter";
@@ -15,11 +9,9 @@ import { Grid } from "~/components/grid";
 import { IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
 import { ProductCard } from "~/components/product/product-card";
-import { ProductSwimlane } from "~/components/product/product-swimlane";
 import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
 import { ProductListingPagination } from "~/components/product-listing/pagination";
 import { PageHeader, Text } from "~/components/text";
-import type { FeaturedData } from "~/routes/($locale).featured-products";
 import type { loader as searchLoader } from "~/routes/($locale).search";
 import { getImageLoadingPriority } from "~/utils/image";
 
@@ -46,7 +38,6 @@ export default function SearchResults({
   const {
     searchTerm,
     products,
-    noResultRecommendations,
     productfilters,
     appliedFilters,
     lowestPriceProduct,
@@ -127,7 +118,7 @@ export default function SearchResults({
             checkboxShape={checkboxShape}
           />
           <div className="mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0">
-            <NoResults recommendations={noResultRecommendations} />
+            <NoResults />
           </div>
         </>
       ) : (
@@ -204,34 +195,10 @@ function DisplayedCountSync({
   return null;
 }
 
-function NoResults({
-  recommendations,
-}: {
-  recommendations: Promise<FeaturedData | null> | null;
-}) {
+function NoResults() {
   return (
-    <div className="w-full space-y-10 py-4">
-      <div>
-        <Text className="opacity-50">No results, try a different search.</Text>
-      </div>
-      <Suspense>
-        <Await
-          errorElement="There was a problem loading related products"
-          resolve={recommendations}
-        >
-          {(result) => {
-            if (!result) {
-              return null;
-            }
-            return (
-              <ProductSwimlane
-                title="Trending Products"
-                featuredProducts={result.featuredProducts}
-              />
-            );
-          }}
-        </Await>
-      </Suspense>
+    <div className="w-full py-4">
+      <Text className="opacity-50">No results, try a different search.</Text>
     </div>
   );
 }

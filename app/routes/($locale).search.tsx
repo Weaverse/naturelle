@@ -15,7 +15,6 @@ import {
   getPriceRangeFilters,
 } from "~/utils/product-filters";
 import { validateWeaverseData, WeaverseContent } from "~/weaverse";
-import { getFeaturedData } from "./($locale).featured-products";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;
@@ -64,8 +63,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     locale,
   });
 
-  const shouldGetRecommendations = !searchTerm || products?.nodes?.length === 0;
-
   const seo = seoPayload.collection({
     url: request.url,
     collection: {
@@ -93,9 +90,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     lowestPriceProduct: productSearchData.lowestPriceProduct,
     highestPriceProduct: productSearchData.highestPriceProduct,
     weaverseData,
-    noResultRecommendations: shouldGetRecommendations
-      ? await getNoResultRecommendations(storefront)
-      : null,
   };
 }
 
@@ -104,12 +98,6 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
 };
 export default function Search() {
   return <WeaverseContent />;
-}
-
-export function getNoResultRecommendations(
-  storefront: LoaderFunctionArgs["context"]["storefront"],
-) {
-  return getFeaturedData(storefront, { pageBy: PAGINATION_SIZE });
 }
 
 function getSearchSortValuesFromParam(sortParam: SortParam | null): {

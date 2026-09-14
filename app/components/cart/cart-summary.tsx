@@ -4,7 +4,7 @@ import { CartForm, Image, Money } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useState } from "react";
 import { useFetcher } from "react-router";
-import { Button } from "~/components/button";
+import { buttonVariants } from "~/components/button";
 import { Skeleton } from "~/components/skeleton";
 import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
@@ -234,17 +234,17 @@ export function CartSummary({
         <a
           href={isCartUpdating ? undefined : checkoutUrl}
           target="_self"
-          className="mt-4 block"
+          className={buttonVariants({
+            shape: "default",
+            className: cn(
+              "mt-4 w-full rounded-lg",
+              isCartUpdating && "pointer-events-none opacity-50",
+            ),
+          })}
           aria-disabled={isCartUpdating || undefined}
+          aria-busy={isCartUpdating || undefined}
         >
-          <Button
-            className="w-full rounded-lg"
-            shape="round"
-            disabled={isCartUpdating}
-            aria-busy={isCartUpdating || undefined}
-          >
-            Continue to Checkout
-          </Button>
+          Continue to Checkout
         </a>
       )}
 

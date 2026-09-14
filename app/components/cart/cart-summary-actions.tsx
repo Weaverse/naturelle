@@ -1,10 +1,11 @@
 import { XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CartForm } from "@shopify/hydrogen";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
+import { getCartMutationError } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 
@@ -49,20 +50,47 @@ export function NoteDialog({
 }) {
   const [note, setNote] = useState(currentNote);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const fetcher = useFetcher();
+  const lastProcessedData = useRef(fetcher.data);
+  const noteId = useId();
   const cartRoute = usePrefixPathWithLocale("/cart");
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
-      setSubmitted(true);
+    if (
+      fetcher.state !== "idle" ||
+      !fetcher.data ||
+      fetcher.data === lastProcessedData.current
+    ) {
+      return;
     }
-  }, [fetcher]);
+    lastProcessedData.current = fetcher.data;
+    const error = getCartMutationError(fetcher.data);
+    const responseNote = (
+      fetcher.data as { cart?: { id?: unknown; note?: unknown } }
+    ).cart;
+    const responseNoteValue = responseNote?.note;
+    if (
+      error ||
+      typeof responseNote?.id !== "string" ||
+      (responseNoteValue !== null && typeof responseNoteValue !== "string")
+    ) {
+      setSubmitted(false);
+      setSubmitError(error || "Unable to save cart note.");
+      return;
+    }
+    setNote(typeof responseNoteValue === "string" ? responseNoteValue : "");
+    setSubmitted(true);
+    setSubmitError(null);
+  }, [fetcher.data, fetcher.state]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formCartNote = formData.get("cartNote") as string;
     if (formCartNote) {
+      setSubmitted(false);
+      setSubmitError(null);
       fetcher.submit(
         {
           [CartForm.INPUT_NAME]: JSON.stringify({
@@ -84,6 +112,7 @@ export function NoteDialog({
           e.preventDefault();
           setNote(currentNote);
           setSubmitted(false);
+          setSubmitError(null);
         }}
         className={dialogContentClass(layout)}
         aria-describedby={undefined}
@@ -101,7 +130,11 @@ export function NoteDialog({
           <p className="mb-4 font-body text-sm font-medium">Order Note</p>
         </Dialog.Title>
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <label htmlFor={noteId} className="sr-only">
+            Order note
+          </label>
           <textarea
+            id={noteId}
             className="min-h-[92px] w-full resize-none rounded-lg border border-border-subtle p-3"
             placeholder="Order special instructions"
             rows={3}
@@ -110,11 +143,13 @@ export function NoteDialog({
             onChange={(e) => {
               setNote(e.target.value);
               setSubmitted(false);
+              setSubmitError(null);
             }}
           />
           {submitted && (
             <Banner variant="success">Cart note saved successfully</Banner>
           )}
+          {submitError && <Banner variant="error">{submitError}</Banner>}
           <Button
             type="submit"
             loading={fetcher.state !== "idle"}
@@ -138,6 +173,7 @@ export function DiscountDialog({
 }) {
   const [code, setCode] = useState("");
   const fetcher = useFetcher();
+  const discountCodeId = useId();
   const cartRoute = usePrefixPathWithLocale("/cart");
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
   const success = Boolean(
@@ -189,7 +225,11 @@ export function DiscountDialog({
           <p className="mb-4 font-body text-sm font-medium">Discount Code</p>
         </Dialog.Title>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <label htmlFor={discountCodeId} className="sr-only">
+            Discount code
+          </label>
           <input
+            id={discountCodeId}
             value={code}
             onChange={(e) => {
               setCode(e.target.value);
@@ -229,6 +269,7 @@ export function GiftCardDialog({
   const appliedGiftCardCodes = useRef<string[]>([]);
   const [code, setCode] = useState("");
   const fetcher = useFetcher();
+  const giftCardCodeId = useId();
   const cartRoute = usePrefixPathWithLocale("/cart");
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
   const success = Boolean(
@@ -292,7 +333,11 @@ export function GiftCardDialog({
           <p className="mb-4 font-body text-sm font-medium">Giftcard</p>
         </Dialog.Title>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <label htmlFor={giftCardCodeId} className="sr-only">
+            Gift card code
+          </label>
           <input
+            id={giftCardCodeId}
             className="w-full rounded-lg border border-border-subtle p-3"
             type="text"
             name="giftCardCode"

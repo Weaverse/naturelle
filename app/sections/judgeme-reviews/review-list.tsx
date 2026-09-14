@@ -1,80 +1,130 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useFetcher, useLoaderData } from "react-router";
+import { Button } from "~/components/button";
 import { StarRating } from "~/components/star-rating";
-import type { JudgemeReviewsData } from "~/utils/judgeme";
+import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import type { JudgeMeReviewType, JudgemeReviewsData } from "~/utils/judgeme";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
-const reviewPerPage = 5;
+const REVIEWS_PER_PAGE = 5;
+
+function formatReviewDate(dateString: string) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) {
+    return dateString;
+  }
+  return date.toLocaleDateString("en-GB");
+}
 
 export function ReviewList({
   judgemeReviews,
+  emptyReviewsText,
 }: {
   judgemeReviews: JudgemeReviewsData;
+  emptyReviewsText: string;
 }) {
-  const pageNumber = Math.ceil(judgemeReviews.reviews.length / reviewPerPage);
-  const [page, setPage] = useState(0);
-  const reviews = judgemeReviews.reviews.slice(
-    page * reviewPerPage,
-    (page + 1) * reviewPerPage,
-  );
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB");
+  const { product } = useLoaderData<ProductLoaderType>();
+  const fetcher = useFetcher<JudgemeReviewsData>();
+  const [reviews, setReviews] = useState(judgemeReviews.reviews);
+  const [currentPage, setCurrentPage] = useState(judgemeReviews.currentPage);
+  const [totalPage, setTotalPage] = useState(judgemeReviews.totalPage);
+  const processedData = useRef<JudgemeReviewsData | undefined>(undefined);
+  const reviewsApi = usePrefixPathWithLocale(`/api/review/${product.handle}`);
+
+  useEffect(() => {
+    setReviews(judgemeReviews.reviews);
+    setCurrentPage(judgemeReviews.currentPage);
+    setTotalPage(judgemeReviews.totalPage);
+    processedData.current = undefined;
+  }, [judgemeReviews]);
+
+  useEffect(() => {
+    const nextData = fetcher.data;
+    if (
+      fetcher.state !== "idle" ||
+      !nextData ||
+      processedData.current === nextData
+    ) {
+      return;
+    }
+    processedData.current = nextData;
+    setReviews((current) => {
+      const byId = new Map<string, JudgeMeReviewType>();
+      for (const review of [...current, ...nextData.reviews]) {
+        byId.set(review.id, review);
+      }
+      return [...byId.values()];
+    });
+    setCurrentPage(nextData.currentPage);
+    setTotalPage(nextData.totalPage);
+  }, [fetcher.data, fetcher.state]);
+
+  const loadMore = () => {
+    if (fetcher.state !== "idle" || currentPage >= totalPage) {
+      return;
+    }
+    fetcher.load(
+      `${reviewsApi}?page=${currentPage + 1}&per_page=${REVIEWS_PER_PAGE}`,
+    );
   };
+
   return (
-    <div className="lg:w-2/3 md:w-3/5 w-full py-6 flex flex-col gap-6">
-      {/* User Reviews */}
-      <div className="flex flex-col gap-6">
-        <span className="text-xl font-semibold font-heading uppercase">
-          Reviews ({judgemeReviews.reviewNumber})
-        </span>
-        {reviews.map((review, index) => (
-          <div key={index} data-motion="fade-up" className="space-y-6">
-            <div className="flex gap-4 flex-col md:flex-row">
-              <div className="flex flex-col gap-4 md:w-1/4 w-full">
-                <div className="flex items-center gap-0.5">
-                  <StarRating rating={review?.rating} />
-                </div>
-                <div className="flex flex-col">
-                  <p className="font-semibold font-heading text-xl">
-                    {review.reviewer.name}
-                  </p>
-                  <p className=" font-normal text-sm text-foreground-subtle">
-                    {review.reviewer.email}
-                  </p>
+    <section className="min-w-0 rounded-lg bg-background-basic p-6 text-text md:p-8">
+      <p className="text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text uppercase">
+        Reviews ({judgemeReviews.reviewNumber.toLocaleString()})
+      </p>
+      <div className="mx-auto mt-3 h-px w-10 bg-border-subtle" />
+
+      {reviews.length === 0 ? (
+        <p className="py-12 text-center text-text-subtle">{emptyReviewsText}</p>
+      ) : (
+        <div className="mt-6" aria-live="polite">
+          {reviews.map((review) => (
+            <article
+              key={review.id}
+              data-motion="fade-up"
+              className="grid gap-4 border-border-subtle border-b py-6 first:pt-0 md:grid-cols-[minmax(8rem,0.8fr)_minmax(0,2fr)] md:gap-8"
+            >
+              <div className="space-y-2">
+                <StarRating rating={review.rating} />
+                <div>
+                  <p className="font-semibold">{review.reviewer.name}</p>
+                  {review.verified && (
+                    <p className="text-text-subtle text-xs">
+                      Verified purchase
+                    </p>
+                  )}
                 </div>
               </div>
-              <div className="md:w-3/4 w-full flex flex-col gap-4">
-                <div className="flex justify-between items-center">
-                  <p className="font-semibold font-heading text-xl">
+              <div className="min-w-0 space-y-2">
+                {review.title && (
+                  <p className="font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text">
                     {review.title}
                   </p>
-                  <p className="font-normal text-sm text-foreground-subtle">
-                    {formatDate(review.created_at)}
-                  </p>
-                </div>
-                <p className="font-normal text-base line-clamp-4">
-                  {review.body}
-                </p>
+                )}
+                <time className="block text-text-subtle text-xs">
+                  {formatReviewDate(review.created_at)}
+                </time>
+                <p className="text-sm leading-6">{review.body}</p>
               </div>
-            </div>
-            <hr className="border-t border-border-subtle" />
-          </div>
-        ))}
-      </div>
-      {pageNumber > 1 && (
-        <div data-motion="fade-up" className="flex justify-center gap-2">
-          {Array.from({ length: pageNumber }, (_, i) => (
-            <button
-              type="button"
-              key={i}
-              onClick={() => setPage(i)}
-              className="bg-[#3d490b]/5 px-4 py-2 rounded-full hover:bg-[#3d490b]/20 transition-colors duration-200 disabled:bg-[#3d490b] disabled:text-white"
-              disabled={i === page}
-            >
-              {i + 1}
-            </button>
+            </article>
           ))}
         </div>
       )}
-    </div>
+
+      {currentPage < totalPage && (
+        <div className="flex justify-center pt-6">
+          <Button
+            variant="outline"
+            className="rounded-lg"
+            loading={fetcher.state !== "idle"}
+            disabled={fetcher.state !== "idle"}
+            onClick={loadMore}
+          >
+            Load more
+          </Button>
+        </div>
+      )}
+    </section>
   );
 }
