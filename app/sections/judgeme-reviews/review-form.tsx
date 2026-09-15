@@ -66,10 +66,15 @@ export function ReviewForm({
         method: "POST",
         body: new FormData(event.currentTarget),
       });
+
+      if (!response.ok) {
+        throw new Error("Review submission failed");
+      }
+
       const result = (await response.json()) as ReviewActionData;
 
-      if (!(response.ok && result.success)) {
-        throw new Error(result.message || "Failed to create review");
+      if (!result.success) {
+        throw new Error("Review submission failed");
       }
 
       setIsFormVisible(false);
@@ -78,9 +83,9 @@ export function ReviewForm({
       setHover(0);
       setReviewBody("");
       formRef.current?.reset();
-    } catch (error) {
+    } catch {
       setMessage(
-        error instanceof Error ? error.message : "Failed to create review",
+        "There was an error submitting your review. Please try again.",
       );
     } finally {
       setIsSubmitting(false);

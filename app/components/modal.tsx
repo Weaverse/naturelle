@@ -5,9 +5,11 @@ import { IconClose } from "./icon";
 export function Modal({
   children,
   onClose,
+  ariaLabel = "Product quick view",
 }: {
   children: React.ReactNode;
   onClose?: () => void;
+  ariaLabel?: string;
 }) {
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
@@ -19,7 +21,7 @@ export function Modal({
   return (
     <div
       className="relative z-50 block"
-      aria-labelledby="modal-title"
+      aria-label={ariaLabel}
       role="dialog"
       aria-modal="true"
     >

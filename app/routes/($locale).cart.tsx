@@ -21,7 +21,10 @@ export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { cart } = context;
-  const formData = await request.formData();
+  const [formData, customerAccessToken] = await Promise.all([
+    request.formData(),
+    context.customerAccount.getAccessToken(),
+  ]);
 
   const { action: formAction, inputs } = CartForm.getFormInput(formData);
 
@@ -163,6 +166,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     case CartForm.ACTIONS.BuyerIdentityUpdate: {
       result = await cart.updateBuyerIdentity({
         ...inputs.buyerIdentity,
+        customerAccessToken,
       });
       break;
     }
@@ -250,11 +254,13 @@ async function getCartOrNull(cart: AppLoadContext["cart"]) {
 
 export default function Cart() {
   return (
-    <div className="cart mb-16 h-full">
-      <div className="bg-slate-300 h-48 flex items-center justify-center">
-        <h1 className="font-bold p-4 text-center">Cart</h1>
+    <main className="cart bg-background-subtle px-4 py-8 md:px-10 md:py-12 lg:px-16">
+      <div className="mx-auto w-full max-w-page">
+        <h1 className="mb-8 text-2xl font-normal leading-normal md:text-3xl">
+          Cart
+        </h1>
+        <CartMain layout="page" />
       </div>
-      <CartMain layout="page" />
-    </div>
+    </main>
   );
 }

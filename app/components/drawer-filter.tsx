@@ -459,6 +459,22 @@ export function AppliedFilters({
 
 const MINIMUM_PRICE_GAP = 1;
 
+function getCurrencySymbol(currencyCode: string, locale: string) {
+  try {
+    return (
+      new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: currencyCode,
+        currencyDisplay: "narrowSymbol",
+      })
+        .formatToParts(0)
+        .find((part) => part.type === "currency")?.value || currencyCode
+    );
+  } catch {
+    return currencyCode;
+  }
+}
+
 function PriceRangeFilter({
   lowestPrice = 0,
   highestPrice,
@@ -473,6 +489,15 @@ function PriceRangeFilter({
   const location = useLocation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const rootData = useRouteLoaderData<typeof rootLoader>("root");
+  const selectedLocale = rootData?.selectedLocale;
+  const currencyCode = selectedLocale?.currency ?? "USD";
+  const currencySymbol = getCurrencySymbol(
+    currencyCode,
+    selectedLocale
+      ? `${selectedLocale.language}-${selectedLocale.country}`
+      : "en-US",
+  );
 
   const [minPrice, setMinPrice] = useState(min);
   const [maxPrice, setMaxPrice] = useState(max);
@@ -568,20 +593,19 @@ function PriceRangeFilter({
     <div className="space-y-5">
       {highestPrice !== undefined && (
         <p className="font-heading text-base text-foreground-subtle">
-          The highest price is: ${highestPrice}
+          The highest price is: {currencySymbol}
+          {highestPrice}
         </p>
       )}
       <div className="flex w-full min-w-0 items-center gap-3 overflow-hidden">
-        <label
-          htmlFor="minPrice"
-          className="flex min-w-0 flex-1 items-center gap-2"
-        >
-          <span>$</span>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <span aria-hidden="true">{currencySymbol}</span>
           <div className="flex h-10 min-w-0 flex-1 items-center rounded-lg border border-border-subtle bg-background-basic px-3">
             <input
-              id="minPrice"
+              aria-label="Minimum price"
               name="minPrice"
               type="number"
+              inputMode="decimal"
               min={lowestPrice}
               max={
                 maxPrice !== undefined
@@ -601,17 +625,15 @@ function PriceRangeFilter({
               label="min"
             />
           </div>
-        </label>
-        <label
-          htmlFor="maxPrice"
-          className="flex min-w-0 flex-1 items-center gap-2"
-        >
-          <span>$</span>
+        </div>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <span aria-hidden="true">{currencySymbol}</span>
           <div className="flex h-10 min-w-0 flex-1 items-center rounded-lg border border-border-subtle bg-background-basic px-3">
             <input
-              id="maxPrice"
+              aria-label="Maximum price"
               name="maxPrice"
               type="number"
+              inputMode="decimal"
               min={
                 minPrice !== undefined
                   ? minPrice + MINIMUM_PRICE_GAP
@@ -631,7 +653,7 @@ function PriceRangeFilter({
               label="max"
             />
           </div>
-        </label>
+        </div>
       </div>
     </div>
   );

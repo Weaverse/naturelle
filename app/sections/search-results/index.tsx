@@ -90,8 +90,13 @@ export default function SearchResults({
               className="w-full rounded border-2 md:w-96 lg:w-[400px]"
               type="search"
               prefixElement={
-                <button type="submit" className="cursor-pointer">
+                <button
+                  type="submit"
+                  aria-label="Search"
+                  className="cursor-pointer"
+                >
                   <IconSearch
+                    aria-hidden="true"
                     className="h-6 w-6 opacity-55"
                     viewBox="0 0 24 24"
                   />

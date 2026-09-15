@@ -79,7 +79,7 @@ function CartLines({
 
   return (
     <section
-      aria-labelledby="cart-lines"
+      aria-label="Cart items"
       className={cn(
         layout === "page" && "lg:col-span-2",
         layout === "aside" && "min-h-0 flex-1 overflow-y-auto",
@@ -255,40 +255,36 @@ function CartLineQuantity({ line }: { line: CartLine }) {
   }
 
   return (
-    <>
-      <label htmlFor={`quantity-${lineId}`} className="sr-only">
-        Quantity, {optimisticQuantity}
-      </label>
-      <div className="flex h-8 w-fit items-center rounded-full border border-border">
-        <button
-          type="button"
-          className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Decrease quantity"
-          disabled={
-            optimisticQuantity <= 1 || isOptimistic || isQuantityUpdating
-          }
-          name="decrease-quantity"
-          value={prevQuantity}
-          onClick={() => updateQuantity(prevQuantity)}
-        >
-          <span>&#8722;</span>
-        </button>
-        <div className="min-w-6 text-center text-sm" data-test="item-quantity">
-          {optimisticQuantity}
-        </div>
-        <button
-          type="button"
-          className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Increase quantity"
-          disabled={isOptimistic || isQuantityUpdating}
-          name="increase-quantity"
-          value={nextQuantity}
-          onClick={() => updateQuantity(nextQuantity)}
-        >
-          <span>&#43;</span>
-        </button>
+    <fieldset
+      aria-label={`Quantity, ${optimisticQuantity}`}
+      className="flex h-8 w-fit items-center rounded-full border border-border"
+    >
+      <button
+        type="button"
+        className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+        aria-label="Decrease quantity"
+        disabled={optimisticQuantity <= 1 || isOptimistic || isQuantityUpdating}
+        name="decrease-quantity"
+        value={prevQuantity}
+        onClick={() => updateQuantity(prevQuantity)}
+      >
+        <span>&#8722;</span>
+      </button>
+      <div className="min-w-6 text-center text-sm" data-test="item-quantity">
+        {optimisticQuantity}
       </div>
-    </>
+      <button
+        type="button"
+        className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+        aria-label="Increase quantity"
+        disabled={isOptimistic || isQuantityUpdating}
+        name="increase-quantity"
+        value={nextQuantity}
+        onClick={() => updateQuantity(nextQuantity)}
+      >
+        <span>&#43;</span>
+      </button>
+    </fieldset>
   );
 }
 

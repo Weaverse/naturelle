@@ -22,13 +22,18 @@ export function CartDrawerTrigger({ compact = false }: { compact?: boolean }) {
   return (
     <button
       type="button"
+      aria-label="Open cart"
       onClick={openCart}
       className={cn(
         "focus:ring-border relative flex items-center justify-center",
         compact ? "size-5" : "size-8",
       )}
     >
-      <IconBag className={compact ? "size-5" : "size-6"} viewBox="0 0 24 24" />
+      <IconBag
+        aria-hidden="true"
+        className={compact ? "size-5" : "size-6"}
+        viewBox="0 0 24 24"
+      />
       <div
         className={cn(
           "absolute flex items-center justify-center rounded-full bg-(--color-header-text) text-center text-[0.625rem] font-medium leading-none text-(--color-transparent-header) subpixel-antialiased",

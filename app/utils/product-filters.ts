@@ -17,12 +17,23 @@ export function getFiltersFromSearchParams(searchParams: URLSearchParams) {
     }
 
     const filterKey = key.substring(FILTER_URL_PREFIX.length);
-    filterList.push({
-      [filterKey]: JSON.parse(value),
-    });
+    const parsedValue = parseFilterParam(value);
+    if (parsedValue !== undefined) {
+      filterList.push({
+        [filterKey]: parsedValue,
+      });
+    }
 
     return filterList;
   }, [] as ProductFilter[]);
+}
+
+function parseFilterParam(value: string) {
+  try {
+    return JSON.parse(value) as unknown;
+  } catch {
+    return undefined;
+  }
 }
 
 export function getPriceRangeFilters(filters: ProductFilter[]) {

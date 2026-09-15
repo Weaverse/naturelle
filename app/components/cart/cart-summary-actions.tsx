@@ -88,20 +88,18 @@ export function NoteDialog({
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formCartNote = formData.get("cartNote") as string;
-    if (formCartNote) {
-      setSubmitted(false);
-      setSubmitError(null);
-      fetcher.submit(
-        {
-          [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.NoteUpdate,
-            inputs: { cartNote: formCartNote },
-          }),
-        },
-        { method: "POST", action: cartRoute },
-      );
-      setNote(formCartNote);
-    }
+    setSubmitted(false);
+    setSubmitError(null);
+    fetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.NoteUpdate,
+          inputs: { cartNote: formCartNote },
+        }),
+      },
+      { method: "POST", action: cartRoute },
+    );
+    setNote(formCartNote);
   }
 
   return (

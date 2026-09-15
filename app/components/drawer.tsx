@@ -112,10 +112,10 @@ export function Drawer({
                       <Dialog.Title as="span">
                         <span
                           className={cn(
-                            "font-semibold text-text-primary",
+                            "font-heading text-xl",
                             isForm === "cart"
-                              ? "text-sm tracking-[0.18em] uppercase"
-                              : "font-heading text-xl",
+                              ? "font-normal leading-normal tracking-[-0.01em] text-text"
+                              : "font-semibold text-text-primary",
                             isForm !== "search" &&
                               isForm !== "cart" &&
                               "uppercase",

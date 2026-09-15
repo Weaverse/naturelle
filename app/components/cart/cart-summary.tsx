@@ -1,6 +1,6 @@
 import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CartForm, Image, Money } from "@shopify/hydrogen";
+import { CartForm, Money } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useState } from "react";
 import { useFetcher } from "react-router";
@@ -246,54 +246,6 @@ export function CartSummary({
         >
           Continue to Checkout
         </a>
-      )}
-
-      {layout === "page" && (
-        <div className="space-y-4 px-6 py-4 text-center">
-          <p>We accept</p>
-          <div className="flex items-center justify-center gap-5">
-            <Image
-              data={{
-                url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_visa.svg?v=1708336750",
-                altText: "Visa",
-              }}
-              width={32}
-              sizes="auto"
-            />
-            <Image
-              data={{
-                url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_mastercard.svg?v=1708336923",
-                altText: "Mastercard",
-              }}
-              width={32}
-              sizes="auto"
-            />
-            <Image
-              data={{
-                url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/simple-icons_applepay.svg?v=1708336923",
-                altText: "Apple Pay",
-              }}
-              width={32}
-              sizes="auto"
-            />
-            <Image
-              data={{
-                url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_amex.svg?v=1708336923",
-                altText: "Amex",
-              }}
-              width={32}
-              sizes="auto"
-            />
-            <Image
-              data={{
-                url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/logos_paypal.svg?v=1708336923",
-                altText: "Paypal",
-              }}
-              width={32}
-              sizes="auto"
-            />
-          </div>
-        </div>
       )}
     </section>
   );
