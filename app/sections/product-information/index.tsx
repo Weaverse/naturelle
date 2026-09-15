@@ -351,8 +351,14 @@ let ProductInformation = ({
 
 function removeEmptyDescriptionLines(content: string) {
   return content.replace(
-    /<(p|div)\b[^>]*>(?:\s|&nbsp;|<br\s*\/?\s*>)*<\/\1>/gi,
-    "",
+    /<(p|div)\b[^>]*>((?:[^<]|<br\s*\/?\s*>)*?)<\/\1>/gi,
+    (block, _tag, innerContent: string) => {
+      const textContent = innerContent
+        .replace(/<br\s*\/?\s*>/gi, "")
+        .replace(/&nbsp;/gi, "")
+        .trim();
+      return textContent ? block : "";
+    },
   );
 }
 
