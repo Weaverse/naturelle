@@ -18,6 +18,7 @@ interface CollectionsData {
   columns?: "3" | "4";
   cardGap?: number;
   imageAspectRatio?: "1/1" | "4/3" | "3/4";
+  backgroundColor?: string;
   showArrow?: boolean;
   showCount?: boolean;
 }
@@ -107,6 +108,7 @@ export default function Collections({
     columns,
     cardGap,
     imageAspectRatio,
+    backgroundColor,
     showArrow,
     showCount,
     children,
@@ -121,6 +123,8 @@ export default function Collections({
       }));
   const sectionStyle = {
     "--collections-gap": `${cardGap ?? 24}px`,
+    "--collections-background": backgroundColor,
+    backgroundColor: backgroundColor,
   } as CSSProperties;
 
   return (
@@ -128,8 +132,10 @@ export default function Collections({
       ref={ref}
       {...rest}
       style={sectionStyle}
+      backgroundColor={backgroundColor}
+      backgroundFor="section"
       containerClassName={cn(
-        "w-full px-5 lg:px-10 lg:py-20 bg-(--color-background-basic)",
+        "w-full bg-(--collections-background) px-5 lg:px-10 lg:py-20",
         containerClassName,
       )}
     >
@@ -292,6 +298,17 @@ export const schema = createSchema({
       ],
     },
     {
+      group: "Colors",
+      inputs: [
+        {
+          type: "color",
+          name: "backgroundColor",
+          label: "Background color",
+          defaultValue: "#FFFFFF",
+        },
+      ],
+    },
+    {
       group: "Layout",
       inputs: layoutInputs,
     },
@@ -301,6 +318,7 @@ export const schema = createSchema({
     columns: "4",
     cardGap: 24,
     imageAspectRatio: "1/1",
+    backgroundColor: "#FFFFFF",
     showArrow: true,
     showCount: true,
     width: "full",

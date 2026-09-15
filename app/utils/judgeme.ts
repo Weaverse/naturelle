@@ -3,7 +3,6 @@ import type {
   JudgemeProduct,
   JudgemeRatingDistribution,
   JudgemeReviewsData,
-  JudgemeStarsRatingData,
   JudgemeWidgetData,
 } from "~/types/judgeme";
 
@@ -38,9 +37,6 @@ export function parseJudgemeWidgetHTML(html: string): JudgemeWidgetData {
   };
 }
 
-const AVG_RATING_REGEX = /data-average-rating=['"]([^'"]+)['"]/;
-const NUM_REVIEWS_REGEX = /data-number-of-reviews=['"]([^'"]+)['"]/;
-
 const JUDGEME_PRODUCT_API = "https://judge.me/api/v1/products/-1";
 const JUDGEME_WIDGET_API = "https://api.judge.me/api/v1/widgets/product_review";
 const JUDGEME_REVIEWS_API = "https://api.judge.me/api/v1/reviews";
@@ -62,6 +58,7 @@ type JudgemeFetchContext = { fetchWithCache: JsonFetcher };
 type JudgemeRequestOptions = {
   weaverseContext?: JudgemeFetchContext;
   perPage?: number;
+  page?: number;
 };
 
 function isFetchContext(
@@ -89,17 +86,6 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export function parseBadgeHtml(html: string): JudgemeStarsRatingData {
-  return {
-    totalReviews: Number.parseInt(
-      html.match(NUM_REVIEWS_REGEX)?.[1] || "0",
-      10,
-    ),
-    averageRating: Number.parseFloat(html.match(AVG_RATING_REGEX)?.[1] || "0"),
-    badge: html,
-  };
-}
-
 export async function getJudgemeReviews(
   apiToken: string | undefined,
   shopDomain: string | undefined,
@@ -112,11 +98,13 @@ export async function getJudgemeReviews(
 
   let fetcher = fetchJson;
   let perPage = 5;
+  let page = 1;
   if (isFetchContext(contextOrOptions)) {
     fetcher = contextOrOptions.fetchWithCache;
   } else if (contextOrOptions) {
     fetcher = contextOrOptions.weaverseContext?.fetchWithCache || fetchJson;
     perPage = contextOrOptions.perPage || perPage;
+    page = contextOrOptions.page || page;
   }
   try {
     const productData = await fetcher<{ product?: JudgemeProduct }>(
@@ -136,7 +124,7 @@ export async function getJudgemeReviews(
           api_token: apiToken,
           shop_domain: shopDomain,
           handle,
-          page: 1,
+          page,
           per_page: perPage,
         }),
       ),
@@ -149,7 +137,7 @@ export async function getJudgemeReviews(
           api_token: apiToken,
           shop_domain: shopDomain,
           product_id: productData.product.id,
-          page: 1,
+          page,
           per_page: perPage,
         }),
       ),
@@ -165,7 +153,7 @@ export async function getJudgemeReviews(
       reviewNumber: summary.totalReviews,
       ratingDistribution: summary.ratingDistribution,
       reviews: reviewsData.reviews || [],
-      currentPage: reviewsData.current_page || 1,
+      currentPage: reviewsData.current_page || page,
       totalPage: Math.ceil(summary.totalReviews / perPage),
       perPage: reviewsData.per_page || perPage,
     };
@@ -209,7 +197,7 @@ export async function createJudgemeReview(
     );
 
     if (res.ok) {
-      return { status: 201, message: "Review created" };
+      return { status: res.status, message: "Review created" };
     }
     return { status: res.status, message: "Failed to create review" };
   } catch (error) {

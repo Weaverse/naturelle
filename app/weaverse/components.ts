@@ -40,6 +40,13 @@ import * as Newsletter from "~/sections/newsletter/index";
 import * as NewsletterInput from "~/sections/newsletter/input-email";
 import * as NewsletterIcon from "~/sections/newsletter/newsletter-icon";
 import * as Page from "~/sections/page/page";
+import * as ProductDetailBadges from "~/sections/product-details/badges";
+import * as ProductDetailBenefits from "~/sections/product-details/benefits";
+import * as ProductDetailHowToUse from "~/sections/product-details/how-to-use";
+import * as ProductDetails from "~/sections/product-details/index";
+import * as ProductDetailIngredients from "~/sections/product-details/ingredients";
+import * as ProductDetailResults from "~/sections/product-details/results";
+import * as ProductDetailStory from "~/sections/product-details/story";
 import * as ProductGrid from "~/sections/product-grid/index";
 import * as ProductGridList from "~/sections/product-grid/list-products";
 import * as ProductInformation from "~/sections/product-information/index";
@@ -49,6 +56,7 @@ import * as ProductPlacementItem from "~/sections/product-placement/product-item
 import * as PromotionGrid from "~/sections/promotion-grid";
 import * as RelatedArticles from "~/sections/related-articles/related-articles";
 import * as ScrollingText from "~/sections/scrolling-text/index";
+import * as SearchResults from "~/sections/search-results/index";
 import * as SingleProduct from "~/sections/single-product/index";
 import * as SlideHeading from "~/sections/slides/heading";
 import * as Slides from "~/sections/slides/index";
@@ -75,6 +83,7 @@ export const components: HydrogenComponent[] = [
   ImageWithTextImage,
   ImageWithTextContent,
   ScrollingText,
+  SearchResults,
   Testimonials,
   Slides,
   Slide,
@@ -96,6 +105,13 @@ export const components: HydrogenComponent[] = [
   Collections,
   AllProducts,
   ProductInformation,
+  ProductDetails,
+  ProductDetailBenefits,
+  ProductDetailStory,
+  ProductDetailIngredients,
+  ProductDetailHowToUse,
+  ProductDetailResults,
+  ProductDetailBadges,
   SingleProduct,
   HeaderImage,
   CollectionFilters,

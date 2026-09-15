@@ -202,6 +202,7 @@ export const COLLECTION_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $filters: [ProductFilter!]
+    $priceRangeFilters: [ProductFilter!]
     $sortKey: ProductCollectionSortKeys!
     $reverse: Boolean
     $first: Int
@@ -243,6 +244,30 @@ export const COLLECTION_QUERY = `#graphql
           hasNextPage
           endCursor
           startCursor
+        }
+      }
+      lowestPriceProduct: products(
+        first: 1
+        filters: $priceRangeFilters
+        sortKey: PRICE
+        reverse: false
+      ) {
+        nodes {
+          priceRange {
+            minVariantPrice { amount currencyCode }
+          }
+        }
+      }
+      highestPriceProduct: products(
+        first: 1
+        filters: $priceRangeFilters
+        sortKey: PRICE
+        reverse: true
+      ) {
+        nodes {
+          priceRange {
+            maxVariantPrice { amount currencyCode }
+          }
         }
       }
     }
@@ -337,26 +362,40 @@ export const ARTICLE_QUERY = `#graphql
 
 export const SEARCH_QUERY = `#graphql
   query PaginatedSearch(
+    $country: CountryCode
     $endCursor: String
     $first: Int
+    $language: LanguageCode
     $last: Int
     $searchTerm: String!
     $sortKey: SearchSortKeys!
     $reverse: Boolean
     $productFilters: [ProductFilter!]
+    $priceRangeFilters: [ProductFilter!]
     $startCursor: String
-  ) {
+  ) @inContext(country: $country, language: $language) {
     search(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor,
-      sortKey: $sortKey,
-      reverse: $reverse,
+      first: $first
+      last: $last
+      before: $startCursor
+      after: $endCursor
+      sortKey: $sortKey
+      reverse: $reverse
       query: $searchTerm
       types: [PRODUCT]
       productFilters: $productFilters
     ) {
+      productFilters {
+        id
+        label
+        type
+        values {
+          id
+          label
+          count
+          input
+        }
+      }
       nodes {
         ...ProductCard
       }
@@ -367,6 +406,44 @@ export const SEARCH_QUERY = `#graphql
         hasPreviousPage
       }
       totalCount
+    }
+    lowestPriceProduct: search(
+      first: 1
+      query: $searchTerm
+      productFilters: $priceRangeFilters
+      sortKey: PRICE
+      reverse: false
+      types: [PRODUCT]
+    ) {
+      nodes {
+        ... on Product {
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+    highestPriceProduct: search(
+      first: 1
+      query: $searchTerm
+      productFilters: $priceRangeFilters
+      sortKey: PRICE
+      reverse: true
+      types: [PRODUCT]
+    ) {
+      nodes {
+        ... on Product {
+          priceRange {
+            maxVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
     }
   }
 
