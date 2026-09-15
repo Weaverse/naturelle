@@ -245,7 +245,7 @@ let ProductInformation = ({
                       data-motion="fade-up"
                       className="prose line-clamp-5 max-w-none text-sm text-text-subtle"
                       dangerouslySetInnerHTML={{
-                        __html: removeEmptyDescriptionLines(descriptionHtml),
+                        __html: descriptionHtml,
                       }}
                     />
                   )}
@@ -348,19 +348,6 @@ let ProductInformation = ({
   }
   return <div ref={ref} {...rest} />;
 };
-
-function removeEmptyDescriptionLines(content: string) {
-  return content.replace(
-    /<(p|div)\b[^>]*>((?:[^<]|<br\s*\/?\s*>)*?)<\/\1>/gi,
-    (block, _tag, innerContent: string) => {
-      const textContent = innerContent
-        .replace(/<br\s*\/?\s*>/gi, "")
-        .replace(/&nbsp;/gi, "")
-        .trim();
-      return textContent ? block : "";
-    },
-  );
-}
 
 function ProductDescription({
   title,
