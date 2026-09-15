@@ -6,6 +6,7 @@
   /* Fonts - Naturelle uses Montserrat (body/UI) and Belleza (headings) */
   --font-body: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Belleza", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-display: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
   /* Breakpoints */
   --breakpoint-*: initial;

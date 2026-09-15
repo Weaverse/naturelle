@@ -7,6 +7,7 @@ import {
 } from "@phosphor-icons/react";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
+import { cn } from "~/utils/cn";
 
 interface BenefitsProps extends HydrogenComponentProps {
   heading: string;
@@ -33,6 +34,7 @@ export default function ProductBenefits({
   benefit3Description,
   benefit4Title,
   benefit4Description,
+  className,
   ...rest
 }: BenefitsProps & { ref?: Ref<HTMLElement> }) {
   const benefits: [PhosphorIcon, string, string][] = [
@@ -43,9 +45,13 @@ export default function ProductBenefits({
   ];
 
   return (
-    <section ref={ref} {...rest} className="flex flex-col gap-6">
+    <section
+      ref={ref}
+      {...rest}
+      className={cn("flex flex-col gap-6", className)}
+    >
       <header className="flex flex-col items-start gap-3 self-stretch">
-        <h2 className="font-['Playfair_Display'] text-[40px] leading-[normal] font-normal tracking-normal text-text">
+        <h2 className="font-display text-[40px] leading-[normal] font-normal tracking-normal text-text">
           {heading}
         </h2>
         <p className="font-body text-[18px] leading-[160%] font-normal text-(--product-detail-text-color)">

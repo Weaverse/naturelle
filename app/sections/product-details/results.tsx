@@ -34,13 +34,13 @@ export default function ClinicalResults({
 
   return (
     <section ref={ref} {...rest}>
-      <div className="grid overflow-hidden rounded-xl bg-text-primary md:grid-cols-3">
+      <div className="grid overflow-hidden rounded-xl bg-text md:grid-cols-3">
         {results.map((result) => (
           <article
             key={String(result.label)}
-            className="px-6 py-8 text-center md:border-l md:border-white/15 md:first:border-l-0"
+            className="px-6 py-8 text-center md:border-l md:border-background-basic/15 md:first:border-l-0"
           >
-            <p className="text-center font-['Playfair_Display'] text-[48px] leading-[normal] font-normal text-background-basic">
+            <p className="text-center font-display text-[48px] leading-[normal] font-normal text-background-basic">
               {result.value}
             </p>
             <p className="mt-2 text-xs font-semibold text-background-basic uppercase">

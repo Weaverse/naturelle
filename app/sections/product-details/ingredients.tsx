@@ -6,6 +6,7 @@ import {
 } from "@phosphor-icons/react";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
+import { cn } from "~/utils/cn";
 
 interface IngredientsProps extends HydrogenComponentProps {
   heading: string;
@@ -28,6 +29,7 @@ export default function KeyIngredients({
   ingredient2Description,
   ingredient3Title,
   ingredient3Description,
+  className,
   ...rest
 }: IngredientsProps & { ref?: Ref<HTMLElement> }) {
   const ingredients: [PhosphorIcon, string, string][] = [
@@ -37,9 +39,13 @@ export default function KeyIngredients({
   ];
 
   return (
-    <section ref={ref} {...rest} className="flex flex-col gap-10">
+    <section
+      ref={ref}
+      {...rest}
+      className={cn("flex flex-col gap-10", className)}
+    >
       <header className="max-w-3xl flex flex-col gap-3">
-        <h2 className="font-['Playfair_Display'] text-[32px] leading-[normal] font-normal tracking-normal text-text">
+        <h2 className="font-display text-[32px] leading-[normal] font-normal tracking-normal text-text">
           {heading}
         </h2>
         <p className="font-body text-[16px] leading-[160%] font-normal text-(--product-detail-text-color)">

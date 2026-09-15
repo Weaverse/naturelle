@@ -49,7 +49,7 @@ export default function ProductStory({
             <p className="mb-4 font-body text-xs leading-[normal] font-bold uppercase text-(--product-detail-text-color)">
               {eyebrow}
             </p>
-            <h2 className="font-['Playfair_Display'] text-[32px] leading-[normal] font-normal tracking-normal text-text">
+            <h2 className="font-display text-[32px] leading-[normal] font-normal tracking-normal text-text">
               {heading}
             </h2>
           </div>
