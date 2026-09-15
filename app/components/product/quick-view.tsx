@@ -7,6 +7,9 @@ import { Button } from "~/components/button";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
+import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { SellingPlanPrice } from "~/components/product/selling-plan-price";
+import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { isImageOption } from "~/components/product-form/options";
 import {
   ProductQuantityInput,
@@ -21,6 +24,7 @@ import {
   isNewArrival,
   type ProductData,
 } from "~/utils/product";
+import { getSellingPlan } from "~/utils/selling-plan";
 import { ProductBadge, type ProductBadgeType } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 
@@ -33,6 +37,9 @@ export function QuickView({
 }) {
   const theme = useThemeSettings();
   const { product, variants: variantData, storeDomain, shop } = data;
+  const [selectedSellingPlanId, setSelectedSellingPlanId] = useState<
+    string | null
+  >(null);
   const variants = variantData?.product?.variants;
   const {
     isLoading,
@@ -58,6 +65,11 @@ export function QuickView({
   if (!product || !selectedVariant || !variants) {
     return null;
   }
+
+  const selectedSellingPlan = getSellingPlan(
+    product.sellingPlanGroups,
+    selectedSellingPlanId,
+  );
 
   const stock = selectedVariant.quantityAvailable;
   const configuredLowStockThreshold = Number(theme.quickViewLowStockThreshold);
@@ -162,10 +174,9 @@ export function QuickView({
                       as="span"
                     />
                   )}
-                  <Money
-                    withoutTrailingZeros
-                    data={selectedVariant.price}
-                    as="span"
+                  <SellingPlanPrice
+                    price={selectedVariant.price}
+                    sellingPlan={selectedSellingPlan}
                   />
                 </div>
                 {showLowStock && (
@@ -215,6 +226,13 @@ export function QuickView({
               />
             )}
 
+            <SellingPlanSelector
+              sellingPlanGroups={product.sellingPlanGroups}
+              selectedSellingPlanId={selectedSellingPlanId}
+              onChange={setSelectedSellingPlanId}
+              disabled={isLoading}
+            />
+
             <div className="grid grid-cols-[auto_1fr] gap-2">
               <ProductQuantityInput
                 disabled={isLoading}
@@ -228,6 +246,7 @@ export function QuickView({
                     merchandiseId: selectedVariant.id,
                     quantity,
                     selectedVariant,
+                    sellingPlanId: selectedSellingPlanId || undefined,
                   },
                 ]}
                 onFetchingStateChange={(state) =>
@@ -241,7 +260,7 @@ export function QuickView({
               </AddToCartButton>
             </div>
 
-            {selectedVariant.availableForSale && (
+            {selectedVariant.availableForSale && !selectedSellingPlanId && (
               <div
                 className="group/shop-pay relative h-12 w-full overflow-hidden rounded-lg border border-(--shop-pay-border) bg-(--shop-pay-bg) transition-colors hover:border-(--shop-pay-hover-border) hover:bg-(--shop-pay-hover) active:border-(--shop-pay-active-border) active:bg-(--shop-pay-active)"
                 style={
@@ -272,6 +291,11 @@ export function QuickView({
                 />
               </div>
             )}
+
+            <BackInStockForm
+              variantId={selectedVariant.id}
+              availableForSale={selectedVariant.availableForSale}
+            />
 
             {(theme.showShippingPolicy || theme.showRefundPolicy) && (
               <div className="flex flex-col gap-3 py-2 text-sm text-text-subtle">

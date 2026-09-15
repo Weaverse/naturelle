@@ -16,12 +16,16 @@ import type {
 } from "storefront-api.generated";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
+import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { SellingPlanPrice } from "~/components/product/selling-plan-price";
+import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { ProductDetail } from "~/components/product-form/product-detail";
 import { Quantity } from "~/components/product-form/quantity";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/queries";
+import { useSellingPlanSelection } from "~/hooks/use-selling-plan";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { getExcerpt } from "~/utils/misc";
 import { useProductFormState } from "../../components/product-form/pdp-form";
@@ -39,6 +43,7 @@ interface SingleProductData extends SectionProps {
   showDetails: boolean;
   showShippingPolicy: boolean;
   showRefundPolicy: boolean;
+  showBackInStockForm: boolean;
   hideUnavailableOptions: boolean;
   showThumbnails: boolean;
   imageAspectRatio: string;
@@ -66,6 +71,7 @@ let SingleProduct = ({
     showDetails,
     showShippingPolicy,
     showRefundPolicy,
+    showBackInStockForm = true,
     hideUnavailableOptions,
     showThumbnails,
     imageAspectRatio,
@@ -97,6 +103,11 @@ let SingleProduct = ({
     unavailableText,
     syncVariantWithUrl: true,
   });
+  const {
+    selectedSellingPlan,
+    selectedSellingPlanId,
+    setSelectedSellingPlanId,
+  } = useSellingPlanSelection(product?.sellingPlanGroups);
 
   let themeSettings = useThemeSettings();
   let swatches = themeSettings?.swatches || {
@@ -188,10 +199,9 @@ let SingleProduct = ({
                     )}
 
                     {selectedVariant ? (
-                      <Money
-                        withoutTrailingZeros
-                        data={selectedVariant.price}
-                        as="span"
+                      <SellingPlanPrice
+                        price={selectedVariant.price}
+                        sellingPlan={selectedSellingPlan}
                       />
                     ) : null}
                   </p>
@@ -209,7 +219,13 @@ let SingleProduct = ({
                   data-motion="fade-up"
                 />
               </div>
-              <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-[360px] p-4 sm:p-0 md:items-end">
+              <SellingPlanSelector
+                sellingPlanGroups={product.sellingPlanGroups}
+                selectedSellingPlanId={selectedSellingPlanId}
+                onChange={setSelectedSellingPlanId}
+                disabled={isLoading}
+              />
+              <div className="grid grid-cols-[auto_1fr] gap-2 p-4 sm:w-[360px] sm:p-0 md:items-end">
                 <div data-motion="fade-up">
                   <Quantity
                     value={quantity}
@@ -225,6 +241,7 @@ let SingleProduct = ({
                         merchandiseId: selectedVariant?.id,
                         quantity,
                         selectedVariant,
+                        sellingPlanId: selectedSellingPlanId || undefined,
                       },
                     ]}
                     variant="primary"
@@ -237,22 +254,28 @@ let SingleProduct = ({
                     <span> {atcText}</span>
                   </AddToCartButton>
                 </div>
-                {selectedVariant?.availableForSale && (
-                  <div data-motion="fade-up" className="md:col-span-2">
-                    <ShopPayButton
-                      width="100%"
-                      variantIdsAndQuantities={[
-                        {
-                          id: selectedVariant?.id,
-                          quantity,
-                        },
-                      ]}
-                      storeDomain={storeDomain}
-                      data-motion="fade-up"
-                    />
-                  </div>
-                )}
+                {selectedVariant?.availableForSale &&
+                  !selectedSellingPlanId && (
+                    <div data-motion="fade-up" className="col-span-2">
+                      <ShopPayButton
+                        width="100%"
+                        variantIdsAndQuantities={[
+                          {
+                            id: selectedVariant?.id,
+                            quantity,
+                          },
+                        ]}
+                        storeDomain={storeDomain}
+                        data-motion="fade-up"
+                      />
+                    </div>
+                  )}
               </div>
+              <BackInStockForm
+                variantId={selectedVariant?.id}
+                availableForSale={selectedVariant?.availableForSale}
+                enabled={showBackInStockForm}
+              />
               {showShippingPolicy && shippingPolicy?.body && (
                 <ProductDetail
                   title="Shipping"
@@ -396,6 +419,14 @@ export const schema = createSchema({
           label: "Show refund policy",
           name: "showRefundPolicy",
           defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show back-in-stock form",
+          name: "showBackInStockForm",
+          defaultValue: true,
+          helpText:
+            "Appears for sold-out variants when KLAVIYO_PRIVATE_API_TOKEN is configured.",
         },
         {
           label: "Hide unavailable options",

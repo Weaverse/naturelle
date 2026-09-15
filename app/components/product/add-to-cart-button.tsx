@@ -212,8 +212,19 @@ function AddToCartAnalytics({
           cartId: fetcherData.cart.id,
         };
 
+        const cartInputs = formData
+          ? CartForm.getFormInput(formData)
+          : undefined;
+        const lines = cartInputs?.inputs.lines as
+          | Array<{ sellingPlanId?: string }>
+          | undefined;
+        const hasSubscription =
+          Array.isArray(lines) && lines.some((line) => line.sellingPlanId);
+
         sendShopifyAnalytics({
-          eventName: AnalyticsEventName.ADD_TO_CART,
+          eventName: hasSubscription
+            ? ("subscription_added_to_cart" as typeof AnalyticsEventName.ADD_TO_CART)
+            : AnalyticsEventName.ADD_TO_CART,
           payload: addToCartPayload,
         });
       }

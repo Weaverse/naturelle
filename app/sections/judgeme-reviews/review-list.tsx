@@ -3,7 +3,7 @@ import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
 import { StarRating } from "~/components/star-rating";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
-import type { JudgeMeReviewType, JudgemeReviewsData } from "~/utils/judgeme";
+import type { JudgeMeReviewType, JudgemeReviewsData } from "~/types/judgeme";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 
 const REVIEWS_PER_PAGE = 5;

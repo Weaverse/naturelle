@@ -44,7 +44,7 @@ export default function AccountLayout() {
     <div className="account container p-6 space-y-3">
       <h1>{heading}</h1>
       <Logout />
-      {/* <AccountMenu /> */}
+      <AccountMenu />
       <Outlet context={{ customer }} />
     </div>
   );
@@ -76,6 +76,10 @@ function AccountMenu() {
       &nbsp;|&nbsp;
       <NavLink to="/account/addresses" style={isActiveStyle}>
         &nbsp; Addresses &nbsp;
+      </NavLink>
+      &nbsp;|&nbsp;
+      <NavLink to="/account/subscriptions" style={isActiveStyle}>
+        &nbsp; Subscriptions &nbsp;
       </NavLink>
     </nav>
   );

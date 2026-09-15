@@ -6,6 +6,7 @@ import {
   PRODUCT_CARD_FRAGMENT,
   PRODUCT_OPTION_FRAGMENT,
   PRODUCT_VARIANT_FRAGMENT,
+  SELLING_PLAN_GROUP_FRAGMENT,
 } from "~/graphql/fragments";
 
 export const BLOG_QUERY = `#graphql
@@ -136,6 +137,11 @@ export const PRODUCT_QUERY = `#graphql
           ...ProductVariantFragment
         }
       }
+      sellingPlanGroups(first: 5) {
+        nodes {
+          ...SellingPlanGroup
+        }
+      }
       seo {
         description
         title
@@ -158,6 +164,7 @@ export const PRODUCT_QUERY = `#graphql
   }
   ${MEDIA_FRAGMENT}
   ${PRODUCT_OPTION_FRAGMENT}
+  ${SELLING_PLAN_GROUP_FRAGMENT}
 ` as const;
 
 export const RECOMMENDED_PRODUCTS_QUERY = `#graphql

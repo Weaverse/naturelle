@@ -508,6 +508,18 @@ export const themeSchema: HydrogenThemeSchema = {
           label: "Newsletter",
         },
         {
+          type: "select",
+          name: "newsletterProvider",
+          label: "Newsletter provider",
+          defaultValue: "shopify",
+          configs: {
+            options: [
+              { label: "Shopify", value: "shopify" },
+              { label: "Klaviyo", value: "klaviyo" },
+            ],
+          },
+        },
+        {
           type: "text",
           name: "newsletterTitle",
           label: "Newsletter title",

@@ -1,6 +1,7 @@
 import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import ReviewForm from "./review-form";
 import { ReviewList } from "./review-list";
@@ -29,6 +30,23 @@ const ReviewIndex = ({
     ...rest
   } = props;
   const { judgemeReviews } = useLoaderData<ProductLoaderType>();
+  const isDesignMode = useWeaverseStudioCheck();
+
+  if (isDesignMode && judgemeReviews.reviewNumber === 0) {
+    return (
+      <div
+        ref={ref}
+        {...rest}
+        className="rounded-lg border border-border-subtle border-dashed bg-background-basic px-6 py-12 text-center text-text"
+      >
+        <p className="font-heading text-xl uppercase">Judge.me reviews</p>
+        <p className="mt-2 text-text-subtle text-sm">
+          Reviews will appear here when this product has published reviews.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}

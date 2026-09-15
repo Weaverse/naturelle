@@ -8,10 +8,14 @@ import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
 import { IconAnnouncementChevron } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
+import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { SellingPlanPrice } from "~/components/product/selling-plan-price";
+import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { isImageOption } from "~/components/product-form/options";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
+import { useSellingPlanSelection } from "~/hooks/use-selling-plan";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { getExcerpt } from "~/utils/misc";
 import {
@@ -35,6 +39,7 @@ interface ProductInformationProps extends SectionProps {
   showDetails: boolean;
   showShippingPolicy: boolean;
   showRefundPolicy: boolean;
+  showBackInStockForm: boolean;
   hideUnavailableOptions: boolean;
   // product media props
   showThumbnails: boolean;
@@ -70,6 +75,7 @@ let ProductInformation = ({
     showDetails,
     showShippingPolicy,
     showRefundPolicy,
+    showBackInStockForm = true,
     hideUnavailableOptions,
     showThumbnails,
     imageAspectRatio,
@@ -97,6 +103,11 @@ let ProductInformation = ({
     soldOutText,
     unavailableText,
   });
+  const {
+    selectedSellingPlan,
+    selectedSellingPlanId,
+    setSelectedSellingPlanId,
+  } = useSellingPlanSelection(product?.sellingPlanGroups);
   let themeSettings = useThemeSettings();
   let swatches = themeSettings?.swatches || {
     configs: [],
@@ -206,7 +217,7 @@ let ProductInformation = ({
                       )}
                     </Text>
                   )}
-                  {judgemeReviews && (
+                  {judgemeReviews?.reviewNumber > 0 ? (
                     <div
                       data-motion="fade-up"
                       className="flex items-center gap-0.5"
@@ -217,6 +228,13 @@ let ProductInformation = ({
                         {judgemeReviews.reviewNumber} reviews)
                       </span>
                     </div>
+                  ) : (
+                    <p
+                      data-motion="fade-up"
+                      className="text-text-subtle text-sm"
+                    >
+                      No reviews yet
+                    </p>
                   )}
                   {children}
                   <p
@@ -233,10 +251,9 @@ let ProductInformation = ({
                     )}
 
                     {selectedVariant ? (
-                      <Money
-                        withoutTrailingZeros
-                        data={selectedVariant.price}
-                        as="span"
+                      <SellingPlanPrice
+                        price={selectedVariant.price}
+                        sellingPlan={selectedSellingPlan}
                       />
                     ) : null}
                   </p>
@@ -263,6 +280,12 @@ let ProductInformation = ({
                   data-motion="fade-up"
                 />
               </div>
+              <SellingPlanSelector
+                sellingPlanGroups={product.sellingPlanGroups}
+                selectedSellingPlanId={selectedSellingPlanId}
+                onChange={setSelectedSellingPlanId}
+                disabled={isLoading}
+              />
               {!product.options.some((option) =>
                 isImageOption(option.name),
               ) && (
@@ -287,6 +310,7 @@ let ProductInformation = ({
                         merchandiseId: selectedVariant?.id,
                         quantity,
                         selectedVariant,
+                        sellingPlanId: selectedSellingPlanId || undefined,
                       },
                     ]}
                     onFetchingStateChange={(state) =>
@@ -300,7 +324,7 @@ let ProductInformation = ({
                   </AddToCartButton>
                 </div>
               </div>
-              {selectedVariant?.availableForSale && (
+              {selectedVariant?.availableForSale && !selectedSellingPlanId && (
                 <div data-motion="fade-up" className="sm:w-(--width-button)">
                   <ShopPayButton
                     width="100%"
@@ -312,6 +336,11 @@ let ProductInformation = ({
                   />
                 </div>
               )}
+              <BackInStockForm
+                variantId={selectedVariant?.id}
+                availableForSale={selectedVariant?.availableForSale}
+                enabled={showBackInStockForm}
+              />
               {(showShippingPolicy || showRefundPolicy) && (
                 <div className="flex flex-col gap-3 py-2 text-sm text-text-subtle">
                   {showShippingPolicy && shippingPolicy?.handle && (
@@ -475,6 +504,14 @@ export const schema = createSchema({
           label: "Show refund policy",
           name: "showRefundPolicy",
           defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show back-in-stock form",
+          name: "showBackInStockForm",
+          defaultValue: true,
+          helpText:
+            "Appears for sold-out variants when KLAVIYO_PRIVATE_API_TOKEN is configured.",
         },
         {
           label: "Hide unavailable options",

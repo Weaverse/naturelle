@@ -40,29 +40,36 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const metafield =
     context.env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
 
-  const [shopAndProduct, variants, weaverseData] = await Promise.all([
-    context.storefront.query(PRODUCT_QUERY, {
-      variables: {
+  const [shopAndProduct, variants, weaverseData, judgemeReviews] =
+    await Promise.all([
+      context.storefront.query(PRODUCT_QUERY, {
+        variables: {
+          handle: handle,
+          selectedOptions,
+          namespace: metafield.split(".")[0],
+          key: metafield.split(".")[1],
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
+        },
+      }),
+      context.storefront.query(VARIANTS_QUERY, {
+        variables: {
+          handle: handle,
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
+        },
+      }),
+      context.weaverse.loadPage({
+        type: "PRODUCT",
         handle: handle,
-        selectedOptions,
-        namespace: metafield.split(".")[0],
-        key: metafield.split(".")[1],
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-    }),
-    context.storefront.query(VARIANTS_QUERY, {
-      variables: {
-        handle: handle,
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-    }),
-    context.weaverse.loadPage({
-      type: "PRODUCT",
-      handle: handle,
-    }),
-  ]);
+      }),
+      getJudgemeReviews(
+        context.env.JUDGEME_PRIVATE_API_TOKEN,
+        context.env.PUBLIC_STORE_DOMAIN,
+        handle,
+        context.weaverse,
+      ),
+    ]);
 
   const { shop, product } = shopAndProduct;
 
@@ -101,15 +108,6 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
     selectedVariant,
     url: request.url,
   });
-
-  const judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
-  const shop_domain = context.env.PUBLIC_STORE_DOMAIN;
-  const judgemeReviews = await getJudgemeReviews(
-    judgeme_API_TOKEN,
-    shop_domain,
-    handle,
-    context.weaverse,
-  );
 
   return {
     variants,

@@ -40,6 +40,10 @@ export async function loadCriticalData({
     weaverseTheme,
     googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
     swatchesConfigs,
+    integrations: {
+      judgeMe: Boolean(env.JUDGEME_PRIVATE_API_TOKEN),
+      klaviyo: Boolean(env.KLAVIYO_PRIVATE_API_TOKEN),
+    },
   };
 }
 

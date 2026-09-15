@@ -1,14 +1,18 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { createJudgemeReview, getJudgemeReviews } from "~/utils/judgeme";
+import {
+  createJudgemeReview,
+  emptyJudgemeReviews,
+  getJudgemeReviews,
+} from "~/utils/judgeme";
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const apiToken = context.env.JUDGEME_PRIVATE_API_TOKEN;
   const shopDomain = context.env.PUBLIC_STORE_DOMAIN;
   if (!(apiToken && shopDomain)) {
     return data(
-      { message: "Judge.me is not configured", success: false },
-      { status: 500 },
+      { message: "Review service is unavailable", success: false },
+      { status: 503 },
     );
   }
 
@@ -40,6 +44,12 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const perPage = Number.isFinite(requestedPerPage)
     ? Math.min(20, Math.max(1, requestedPerPage))
     : 5;
+
+  if (
+    !(context.env.JUDGEME_PRIVATE_API_TOKEN && context.env.PUBLIC_STORE_DOMAIN)
+  ) {
+    return data(emptyJudgemeReviews(perPage));
+  }
 
   return data(
     await getJudgemeReviews(

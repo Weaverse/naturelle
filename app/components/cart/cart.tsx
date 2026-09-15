@@ -156,6 +156,11 @@ function CartLineItem({
             {variantSummary && (
               <p className="text-sm text-text-subtle">{variantSummary}</p>
             )}
+            {line.sellingPlanAllocation?.sellingPlan?.name && (
+              <p className="mt-2 w-fit rounded-full bg-background-subtle-2 px-2.5 py-1 text-text-subtle text-xs">
+                {line.sellingPlanAllocation.sellingPlan.name}
+              </p>
+            )}
           </div>
           <CartLineRemoveButton lineId={id} />
         </div>
