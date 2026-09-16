@@ -11,15 +11,16 @@ import { useRouteLoaderData } from "react-router";
 import type { RootLoader } from "~/root";
 
 const GTM_ADAPTER_NAME = "Google Tag Manager";
-const GTM_SCRIPT_ID = "google-tag-manager";
 const GTM_FALLBACK_DELAY_MS = 8000;
+const GTM_ID_PATTERN = /^GTM-[A-Z0-9]+$/i;
+const GTM_SCRIPT_ID = "google-tag-manager";
 const INTENT_EVENTS = ["pointerdown", "keydown", "touchstart", "scroll"];
 
 export function CustomAnalytics() {
   const rootData = useRouteLoaderData<RootLoader>("root");
-  const id = rootData?.googleGtmID;
+  const id = rootData?.googleGtmID?.trim();
 
-  if (!id) {
+  if (!(id && GTM_ID_PATTERN.test(id))) {
     return null;
   }
 
@@ -39,14 +40,20 @@ function GoogleTagManagerAdapter({ id }: { id: string }) {
     didSubscribe.current = true;
     window.dataLayer = window.dataLayer || [];
 
+    function pushEvent(event: Record<string, unknown>) {
+      if (canTrack()) {
+        window.dataLayer.push(event);
+      }
+    }
+
     subscribe(AnalyticsEvent.PAGE_VIEWED, (data: PageViewPayload) => {
-      window.dataLayer.push({
+      pushEvent({
         event: "page_viewed",
         page_path: getSafePath(data.url),
       });
     });
     subscribe(AnalyticsEvent.PRODUCT_VIEWED, (data: ProductViewPayload) => {
-      window.dataLayer.push({
+      pushEvent({
         event: "product_viewed",
         product_id: data.products?.[0]?.id,
         product_name: data.products?.[0]?.title,
@@ -55,42 +62,42 @@ function GoogleTagManagerAdapter({ id }: { id: string }) {
       });
     });
     subscribe(AnalyticsEvent.COLLECTION_VIEWED, (data) => {
-      window.dataLayer.push({
+      pushEvent({
         event: "collection_viewed",
         collection_handle: data.collection?.handle,
       });
     });
     subscribe(AnalyticsEvent.CART_VIEWED, (data) => {
-      window.dataLayer.push({
+      pushEvent({
         event: "cart_viewed",
         cart_total: data.cart?.cost?.totalAmount?.amount,
         cart_total_quantity: data.cart?.totalQuantity,
       });
     });
     subscribe(AnalyticsEvent.CART_UPDATED, (data: CartUpdatePayload) => {
-      window.dataLayer.push({
+      pushEvent({
         event: "cart_updated",
         cart_total: data.cart?.cost?.totalAmount?.amount,
         cart_total_quantity: data.cart?.totalQuantity,
       });
     });
     subscribe(AnalyticsEvent.PRODUCT_ADD_TO_CART, () => {
-      window.dataLayer.push({ event: "add_to_cart" });
+      pushEvent({ event: "add_to_cart" });
     });
     subscribe(AnalyticsEvent.PRODUCT_REMOVED_FROM_CART, () => {
-      window.dataLayer.push({ event: "remove_from_cart" });
+      pushEvent({ event: "remove_from_cart" });
     });
     subscribe(AnalyticsEvent.SEARCH_VIEWED, () => {
-      window.dataLayer.push({ event: "search_viewed" });
+      pushEvent({ event: "search_viewed" });
     });
     subscribe(AnalyticsEvent.CUSTOM_EVENT, (data) => {
       if (data.eventName === "checkout_started") {
-        window.dataLayer.push({ event: "checkout_started" });
+        pushEvent({ event: "checkout_started" });
       }
     });
 
     ready();
-  }, [ready, subscribe]);
+  }, [canTrack, ready, subscribe]);
 
   useEffect(() => {
     let didLoad = Boolean(document.getElementById(GTM_SCRIPT_ID));
