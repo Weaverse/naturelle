@@ -70,7 +70,7 @@ export function Footer() {
   return (
     <footer
       className={cn(
-        "footer w-full bg-(--color-footer-bg) text-(--color-footer-text) border-t border-(--color-footer-text)",
+        "footer w-full border-border-subtle border-t bg-(--color-footer-bg) text-(--color-footer-text)",
       )}
       style={
         {
@@ -150,7 +150,7 @@ export function Footer() {
             )}
           </div>
 
-          <hr className="w-full border-0 border-t border-border opacity-50" />
+          <hr className="w-full border-0 border-border-subtle border-t md:border-border" />
 
           <div className="mx-auto w-full max-w-page self-stretch">
             {footerMenu && <FooterMenu menu={footerMenu} />}
@@ -159,7 +159,7 @@ export function Footer() {
 
         {/* Trust badges and payment methods */}
         <div className="w-full flex flex-col md:gap-5 justify-between items-center self-stretch lg:px-20 lg:h-43 lg:py-12">
-          <div className="w-full border-t border-border-subtle opacity-50" />
+          <div className="w-full border-border-subtle border-t" />
           <div className="mx-auto flex w-full max-w-page flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
             <TrustBadges
               veganLabel={trustBadgeVeganLabel}
@@ -177,7 +177,7 @@ export function Footer() {
         </div>
 
         <div className="w-full gap-8 flex flex-col lg:justify-between items-center md:py-6 lg:pt-8 lg:px-20 lg:pb-12 lg:h-40">
-          <div className="hidden w-full border-t border-border-subtle opacity-50 md:flex" />
+          <div className="hidden w-full border-border-subtle border-t md:flex" />
           <div className="mx-auto flex w-full max-w-page flex-col items-start justify-center gap-4 lg:flex-row lg:justify-between lg:items-center">
             <p>{footerTextCopyright}</p>
             {showPolicyLinks !== false && (
@@ -251,7 +251,7 @@ function MenuLink(props: SingleMenuItem) {
           ))}
         </ul>
       </div>
-      <div className="block w-full border-b border-foreground/50 pt-2 pb-4 md:hidden">
+      <div className="block w-full border-border-subtle border-b pt-2 pb-4 md:hidden">
         <Disclosure>
           {({ open }) => (
             <div className="contents">

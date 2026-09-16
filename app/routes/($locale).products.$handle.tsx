@@ -7,8 +7,6 @@ import {
 import { getSelectedProductOptions } from "@weaverse/hydrogen";
 import { useEffect } from "react";
 import {
-  type ActionFunctionArgs,
-  data,
   type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
@@ -28,7 +26,7 @@ import {
 } from "~/graphql/queries";
 import type { Storefront } from "~/types/type-locale";
 import { routeHeaders } from "~/utils/cache";
-import { createJudgemeReview, getJudgemeReviews } from "~/utils/judgeme";
+import { getJudgemeReviews } from "~/utils/judgeme";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -86,8 +84,6 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 
   const recommended = getRecommendedProducts(context.storefront, product.id);
 
-  // TODO: firstVariant is never used because we will always have a selectedVariant due to redirect
-  // Investigate if we can avoid the redirect for product pages with no search params for first variant
   const firstVariant = product.variants.nodes[0];
   const selectedVariant = product.selectedVariant ?? firstVariant;
 
@@ -135,44 +131,9 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 
 export type ProductLoaderType = typeof loader;
 
-export async function action({ request, context }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  let judgeme_API_TOKEN = context.env.JUDGEME_PRIVATE_API_TOKEN;
-  invariant(judgeme_API_TOKEN, "Missing JUDGEME_PRIVATE_API_TOKEN");
-  let response: any = {
-    status: 201,
-  };
-  let shop_domain = context.env.PUBLIC_STORE_DOMAIN;
-  response = await createJudgemeReview(
-    judgeme_API_TOKEN,
-    shop_domain,
-    formData,
-  );
-  const { status, ...rest } = response;
-  return data(rest, { status });
-}
-
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   return getSeoMeta(loaderData?.seo as SeoConfig);
 };
-// function redirectToFirstVariant({
-//   product,
-//   request,
-// }: {
-//   product: ProductQuery['product'];
-//   request: Request;
-// }) {
-//   const searchParams = new URLSearchParams(new URL(request.url).search);
-//   const firstVariant = product!.variants.nodes[0];
-//   for (const option of firstVariant.selectedOptions) {
-//     searchParams.set(option.name, option.value);
-//   }
-//
-//   return redirect(
-//     `/products/${product!.handle}?${searchParams.toString()}`,
-//     302,
-//   );
-// }
 
 /**
  * We need to handle the route change from client to keep the view transition persistent
@@ -226,7 +187,9 @@ async function getRecommendedProducts(
     (item) => item.id === productId,
   );
 
-  mergedProducts.splice(originalProduct, 1);
+  if (originalProduct >= 0) {
+    mergedProducts.splice(originalProduct, 1);
+  }
 
   return { nodes: mergedProducts };
 }

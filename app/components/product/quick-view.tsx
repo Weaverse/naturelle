@@ -5,16 +5,17 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
-import {
-  IconQuickViewFacebook,
-  IconQuickViewInstagram,
-  IconQuickViewX,
-} from "~/components/icon";
-import { Image } from "~/components/image";
+import { IconBag } from "~/components/icon";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { isImageOption } from "~/components/product-form/options";
+import {
+  ProductQuantityInput,
+  ProductShareLinks,
+  ProductVariantImageSelector,
+  useProductFormState,
+} from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
 import {
@@ -35,11 +36,22 @@ export function QuickView({
   const theme = useThemeSettings();
   const { product, variants: variantData, storeDomain, shop } = data;
   const variants = variantData?.product?.variants;
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState<any>(
-    product?.selectedVariant ?? variants?.nodes?.[0],
-  );
-  const [quantity, setQuantity] = useState(1);
+  const {
+    isLoading,
+    setIsLoading,
+    selectedVariant,
+    quantity,
+    setQuantity,
+    atcText,
+    handleSelectedVariantChange,
+  } = useProductFormState({
+    product,
+    variants,
+    addToCartText: theme.addToCartText || "Add to cart",
+    soldOutText: theme.soldOutText || "Sold out",
+    unavailableText: theme.unavailableText || "Unavailable",
+    syncVariantWithUrl: false,
+  });
   const swatches = theme?.swatches || {
     configs: [],
     swatches: { imageSwatches: [], colorSwatches: [] },
@@ -49,11 +61,6 @@ export function QuickView({
     return null;
   }
 
-  const atcText = selectedVariant.availableForSale
-    ? theme.addToCartText
-    : selectedVariant.quantityAvailable === -1
-      ? theme.unavailableText
-      : theme.soldOutText;
   const stock = selectedVariant.quantityAvailable;
   const configuredLowStockThreshold = Number(theme.quickViewLowStockThreshold);
   const lowStockThreshold = Number.isFinite(configuredLowStockThreshold)
@@ -90,7 +97,7 @@ export function QuickView({
   ) {
     badge = { text: theme.newBadgeText || "New arrival", type: "new" };
   }
-  const productUrl = `${window.location.origin}/products/${product.handle}`;
+  const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
 
   return (
     <div className="max-h-[90vh] w-[min(94vw,1100px)] overflow-y-auto rounded-xl bg-background p-5 md:p-6">
@@ -99,11 +106,12 @@ export function QuickView({
           <ProductMedia
             media={product.media.nodes}
             selectedVariant={selectedVariant}
-            showThumbnails={theme.showThumbnails}
+            showThumbnails
+            thumbnailLayout="strip"
+            showPagination={false}
             imageAspectRatio={theme.imageAspectRatio}
-            spacing={theme.spacing}
             showSlideCounter={theme.showSlideCounter}
-            direction={theme.mediaDirection}
+            direction="horizontal"
           />
           {badge && (
             <ProductBadge
@@ -126,7 +134,7 @@ export function QuickView({
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
-                <h2 className="pr-8 font-heading text-3xl font-normal leading-tight md:text-4xl">
+                <h2 className="md:pr-8 font-heading text-3xl font-normal leading-tight md:text-4xl">
                   {product.title}
                 </h2>
                 <p className="text-sm text-text-subtle">
@@ -191,7 +199,7 @@ export function QuickView({
                 isDisabled={isLoading}
                 product={product}
                 selectedVariant={selectedVariant}
-                onSelectedVariantChange={setSelectedVariant}
+                onSelectedVariantChange={handleSelectedVariantChange}
                 swatch={swatches}
                 variants={variants}
                 options={product.options}
@@ -201,23 +209,29 @@ export function QuickView({
             </div>
 
             {!product.options.some((option) => isImageOption(option.name)) && (
-              <VariantImageSelector
+              <ProductVariantImageSelector
                 variants={variants.nodes}
                 selectedVariantId={selectedVariant.id}
                 disabled={isLoading}
-                onSelect={setSelectedVariant}
+                onSelect={handleSelectedVariantChange}
               />
             )}
 
-            <div className="grid grid-cols-[auto_1fr] gap-2 [&_legend]:hidden [&_.space-y-3]:space-y-0 [&_input]:h-12 [&_input]:w-14 [&_button]:h-12 [&_button]:px-3">
-              <QuickViewQuantity
+            <div className="grid grid-cols-[auto_1fr] gap-2">
+              <ProductQuantityInput
                 disabled={isLoading}
                 value={quantity}
                 onChange={setQuantity}
               />
               <AddToCartButton
                 disabled={!selectedVariant.availableForSale}
-                lines={[{ merchandiseId: selectedVariant.id, quantity }]}
+                lines={[
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity,
+                    selectedVariant,
+                  },
+                ]}
                 onFetchingStateChange={(state) =>
                   setIsLoading(state !== "idle")
                 }
@@ -289,27 +303,7 @@ export function QuickView({
               View product details
             </Link>
 
-            <div className="flex items-center gap-3 pt-2 text-sm">
-              <span className="font-semibold">Share:</span>
-              <ShareLink
-                label="Share on Facebook"
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`}
-              >
-                <IconQuickViewFacebook className="size-8" />
-              </ShareLink>
-              <ShareLink
-                label="Share on Instagram"
-                href={`https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`}
-              >
-                <IconQuickViewInstagram className="size-8" />
-              </ShareLink>
-              <ShareLink
-                label="Share on X"
-                href={`https://x.com/intent/post?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(product.title)}`}
-              >
-                <IconQuickViewX className="size-8" />
-              </ShareLink>
-            </div>
+            <ProductShareLinks productUrl={productUrl} title={product.title} />
           </div>
         </div>
       </div>
@@ -317,130 +311,14 @@ export function QuickView({
   );
 }
 
-function VariantImageSelector({
-  variants,
-  selectedVariantId,
-  disabled,
-  onSelect,
-}: {
-  variants: any[];
-  selectedVariantId: string;
-  disabled: boolean;
-  onSelect: (variant: any) => void;
-}) {
-  const imageVariants = variants.filter((variant) => variant.image);
-  if (imageVariants.length < 2) {
-    return null;
-  }
-
-  const selectedIndex = Math.max(
-    0,
-    imageVariants.findIndex((variant) => variant.id === selectedVariantId),
-  );
-  const selectedType = `Set ${String.fromCharCode(65 + selectedIndex)}`;
-
-  return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm">
-        <span className="font-semibold">Type:</span> <span>{selectedType}</span>
-      </p>
-      <div className="flex flex-wrap gap-2.5">
-        {imageVariants.map((variant, index) => {
-          const isSelected = variant.id === selectedVariantId;
-          return (
-            <button
-              key={variant.id}
-              type="button"
-              disabled={disabled || !variant.availableForSale}
-              aria-label={`Select Set ${String.fromCharCode(65 + index)}`}
-              aria-pressed={isSelected}
-              className={clsx(
-                "size-12 overflow-hidden rounded-lg border p-0.5 transition-colors",
-                isSelected
-                  ? "border-border"
-                  : "border-transparent hover:border-border-subtle",
-                !variant.availableForSale &&
-                  "diagonal cursor-not-allowed border-border-subtle opacity-50",
-              )}
-              onClick={() => onSelect(variant)}
-            >
-              <Image
-                data={variant.image}
-                sizes="48px"
-                className="h-full w-full rounded-md object-cover"
-              />
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function QuickViewQuantity({
-  value,
-  disabled,
-  onChange,
-}: {
-  value: number;
-  disabled: boolean;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <div className="flex h-12 items-center overflow-hidden rounded-lg border border-border">
-      <button
-        type="button"
-        className="h-full px-3 text-lg disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Decrease quantity"
-        disabled={disabled || value <= 1}
-        onClick={() => onChange(Math.max(1, value - 1))}
-      >
-        −
-      </button>
-      <span className="min-w-8 text-center text-sm" aria-live="polite">
-        {value}
-      </span>
-      <button
-        type="button"
-        className="h-full px-3 text-lg disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Increase quantity"
-        disabled={disabled}
-        onClick={() => onChange(value + 1)}
-      >
-        +
-      </button>
-    </div>
-  );
-}
-
-function ShareLink({
-  href,
-  label,
-  children,
-}: {
-  href: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      aria-label={label}
-      className="flex size-8 items-center justify-center rounded-full transition-opacity hover:opacity-70"
-    >
-      {children}
-    </a>
-  );
-}
-
 export function QuickViewTrigger({
   productHandle,
   buttonText = "Select options",
+  alwaysShowButton = false,
 }: {
   productHandle: string;
   buttonText?: string;
+  alwaysShowButton?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const { load, data, state } = useFetcher<ProductData>();
@@ -452,7 +330,33 @@ export function QuickViewTrigger({
 
   return (
     <>
-      <div className="absolute right-3 bottom-3 z-10 transition-opacity duration-300 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100">
+      <div
+        className={clsx(
+          "absolute z-10 transition-opacity duration-300 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100",
+          alwaysShowButton ? "inset-x-3 bottom-4" : "right-3 bottom-3",
+        )}
+      >
+        {!alwaysShowButton && (
+          <Button
+            type="button"
+            variant="custom"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setOpen(true);
+            }}
+            loading={state === "loading"}
+            className="h-auto rounded-full border border-border-subtle bg-background-basic p-3 text-text shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border md:hidden"
+            classNameContainer="flex items-center justify-center"
+            aria-label={buttonText}
+          >
+            <IconBag
+              aria-hidden="true"
+              className="size-3.5 aspect-square"
+              viewBox="0 0 24 24"
+            />
+          </Button>
+        )}
         <Button
           type="button"
           variant="primary"
@@ -462,25 +366,13 @@ export function QuickViewTrigger({
             setOpen(true);
           }}
           loading={state === "loading"}
-          className="size-11 rounded-full p-0 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background md:h-12 md:w-full md:rounded-xl md:px-6 md:text-sm md:font-medium"
+          className={clsx(
+            "h-12 w-full rounded-xl px-6 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background",
+            alwaysShowButton ? "inline-flex" : "hidden md:inline-flex",
+          )}
           classNameContainer="flex items-center justify-center"
-          aria-label={buttonText}
         >
-          <svg
-            className="size-5 md:hidden"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"
-            />
-          </svg>
-          <span className="hidden md:inline">{buttonText}</span>
+          {buttonText}
         </Button>
       </div>
       {open && data && (

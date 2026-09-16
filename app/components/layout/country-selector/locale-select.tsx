@@ -4,6 +4,7 @@ import type { CartBuyerIdentityInput } from "@shopify/hydrogen/storefront-api-ty
 import { type ReactNode, useState } from "react";
 import { IconCaret } from "~/components/icon";
 import type { Locale } from "~/types/type-locale";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 export type LocaleOption = { key: string; label: string; locale: Locale };
 
@@ -29,10 +30,14 @@ export function LocaleSelect({
         className={
           placement === "header"
             ? "group flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold outline-none"
-            : "group flex items-center gap-2 rounded-xl border border-(--color-border-subtle) bg-(--color-background-basic) px-3.5 py-2 font-body text-xs leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) outline-none"
+            : "group flex max-w-full min-w-0 items-center gap-2 rounded-xl border border-(--color-border-subtle) bg-(--color-background-basic) px-3.5 py-2 font-body text-[12px] leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) outline-none"
         }
       >
-        <span className="whitespace-nowrap">{label}</span>
+        <span
+          className={placement === "footer" ? "truncate" : "whitespace-nowrap"}
+        >
+          {label}
+        </span>
         <IconCaret
           direction="down"
           className="size-3 shrink-0 transition-transform group-data-[state=open]:rotate-180"
@@ -46,7 +51,7 @@ export function LocaleSelect({
           collisionPadding={12}
           onPointerDownOutside={() => setOpen(false)}
           onEscapeKeyDown={() => setOpen(false)}
-          className="z-50 max-h-64 min-w-max overflow-y-auto rounded-xl border border-(--color-border-subtle) bg-(--color-background-basic) py-1 shadow-lg"
+          className="z-50 max-h-64 w-max min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-content-available-width)] overflow-y-auto rounded-xl border border-(--color-border-subtle) bg-(--color-background-basic) py-1 shadow-lg"
         >
           {options.map(({ key, label: optionLabel, locale }) => (
             <Popover.Close asChild key={key}>
@@ -56,7 +61,7 @@ export function LocaleSelect({
               >
                 <button
                   type="submit"
-                  className="block w-full cursor-pointer whitespace-nowrap px-3.5 py-2 text-left font-body text-xs leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) hover:bg-black/5"
+                  className="block w-full cursor-pointer whitespace-normal px-3.5 py-2 text-left font-body text-[12px] leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) hover:bg-black/5"
                 >
                   {optionLabel}
                 </button>
@@ -78,9 +83,10 @@ function ChangeLocaleForm({
   buyerIdentity: CartBuyerIdentityInput;
   redirectTo: string;
 }) {
+  const cartRoute = usePrefixPathWithLocale("/cart");
   return (
     <CartForm
-      route="/cart"
+      route={cartRoute}
       action={CartForm.ACTIONS.BuyerIdentityUpdate}
       inputs={{ buyerIdentity }}
     >

@@ -5,7 +5,9 @@ import {
   IMAGES_PLACEHOLDERS,
   type WeaverseCollection,
 } from "@weaverse/hydrogen";
-import type { CSSProperties, RefObject } from "react";
+import { type CSSProperties, type RefObject, useState } from "react";
+import { Grid } from "swiper/modules";
+import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import { IconCaret } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
@@ -18,6 +20,7 @@ interface CollectionsData {
   columns?: "3" | "4";
   cardGap?: number;
   imageAspectRatio?: "1/1" | "4/3" | "3/4";
+  backgroundColor?: string;
   showArrow?: boolean;
   showCount?: boolean;
 }
@@ -107,6 +110,7 @@ export default function Collections({
     columns,
     cardGap,
     imageAspectRatio,
+    backgroundColor,
     showArrow,
     showCount,
     children,
@@ -119,8 +123,19 @@ export default function Collections({
         ...PLACEHOLDER_COLLECTION,
         id: `${PLACEHOLDER_COLLECTION.id}-${index}`,
       }));
+  const desktopCollectionsPerView = Number(columns) || 4;
+  const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
+    null,
+  );
+  const [canSlidePrev, setCanSlidePrev] = useState(false);
+  const [canSlideNext, setCanSlideNext] = useState(false);
+  const updateNavigation = (swiper: SwiperClass) => {
+    setCanSlidePrev(!swiper.isBeginning);
+    setCanSlideNext(!swiper.isEnd);
+  };
   const sectionStyle = {
-    "--collections-gap": `${cardGap ?? 24}px`,
+    "--collections-background": backgroundColor,
+    backgroundColor: backgroundColor,
   } as CSSProperties;
 
   return (
@@ -128,80 +143,162 @@ export default function Collections({
       ref={ref}
       {...rest}
       style={sectionStyle}
+      backgroundColor={backgroundColor}
+      backgroundFor="section"
       containerClassName={cn(
-        "w-full px-5 lg:px-10 lg:py-20 bg-(--color-background-basic)",
+        "w-full bg-(--collections-background) px-5 lg:px-10 lg:py-20",
         containerClassName,
       )}
     >
-      <div className="mx-auto flex w-full max-w-page flex-col items-start gap-16 self-stretch">
-        <div className="flex w-full flex-col items-center justify-center">
+      <div className="mx-auto flex w-full max-w-page flex-col items-center gap-10 self-stretch lg:gap-6">
+        <div className="flex w-full items-center justify-between">
           {heading && (
-            <h3
-              className="text-center font-normal text-text-primary"
-              data-motion="fade-up"
-            >
+            <h3 className="font-normal text-text-primary" data-motion="fade-up">
               {heading}
             </h3>
           )}
+          <div className="hidden items-center gap-3 md:flex">
+            <button
+              type="button"
+              aria-label="Previous collection"
+              disabled={!canSlidePrev}
+              onClick={() => swiperInstance?.slidePrev()}
+              className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
+            >
+              <IconCaret
+                direction="left"
+                aria-hidden="true"
+                style={{ width: 20, height: 20 }}
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Next collection"
+              disabled={!canSlideNext}
+              onClick={() => swiperInstance?.slideNext()}
+              className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
+            >
+              <IconCaret
+                direction="right"
+                aria-hidden="true"
+                style={{ width: 20, height: 20 }}
+              />
+            </button>
+          </div>
         </div>
 
-        <div
-          className={cn(
-            "grid w-full grid-cols-2",
-            columns === "3" ? "lg:grid-cols-3" : "lg:grid-cols-4",
-          )}
-          style={{ gap: "var(--collections-gap)" }}
+        <Swiper
+          speed={650}
+          preventInteractionOnTransition
+          style={
+            {
+              "--swiper-wrapper-transition-timing-function":
+                "cubic-bezier(0.22, 1, 0.36, 1)",
+            } as CSSProperties
+          }
+          onSwiper={(swiper) => {
+            setSwiperInstance(swiper);
+            updateNavigation(swiper);
+          }}
+          onSlideChange={updateNavigation}
+          onResize={updateNavigation}
+          onBreakpoint={updateNavigation}
+          onSlidesUpdated={updateNavigation}
+          modules={[Grid]}
+          watchOverflow={true}
+          slidesPerView={2}
+          slidesPerGroup={4}
+          spaceBetween={cardGap ?? 24}
+          grid={{ rows: 2, fill: "row" }}
+          breakpoints={{
+            1024: {
+              slidesPerView: desktopCollectionsPerView,
+              slidesPerGroup: desktopCollectionsPerView,
+              grid: { rows: 1, fill: "row" },
+            },
+          }}
+          className="min-w-0 w-full"
         >
           {collections.map((collection, index) => (
-            <Link
-              key={`${collection.id}-${index}`}
-              to={`/collections/${collection.handle}`}
-              aria-label={`View ${collection.title} collection`}
-              className={cn(
-                "group block min-w-0 w-full overflow-hidden",
-                "rounded-(--border-radius-xl,16px)",
-                "bg-background-subtle-1 text-text-primary",
-              )}
-              data-motion="fade-up"
-            >
-              <div
+            <SwiperSlide key={`${collection.id}-${index}`} className="min-w-0">
+              <Link
+                to={`/collections/${collection.handle}`}
+                aria-label={`View ${collection.title} collection`}
                 className={cn(
-                  "flex flex-1 flex-col items-center justify-center overflow-hidden",
-                  "bg-background-subtle-1",
+                  "group block min-w-0 w-full overflow-hidden",
+                  "rounded-(--border-radius-xl,16px)",
+                  "bg-background-subtle-1 text-text-primary",
                 )}
-                style={{ aspectRatio: imageAspectRatio ?? "1/1" }}
+                data-motion="fade-up"
               >
-                {collection.image && (
-                  <Image
-                    data={collection.image}
-                    sizes={
-                      columns === "3"
-                        ? "(min-width: 90em) 33vw, 50vw"
-                        : "(min-width: 90em) 25vw, 50vw"
-                    }
-                    className="object-cover"
-                  />
-                )}
-              </div>
+                <div
+                  className={cn(
+                    "flex flex-1 flex-col items-center justify-center overflow-hidden",
+                    "bg-background-subtle-1",
+                  )}
+                  style={{ aspectRatio: imageAspectRatio ?? "1/1" }}
+                >
+                  {collection.image && (
+                    <Image
+                      data={collection.image}
+                      sizes={
+                        columns === "3"
+                          ? "(min-width: 90em) 33vw, 50vw"
+                          : "(min-width: 90em) 25vw, 50vw"
+                      }
+                      className="object-cover"
+                    />
+                  )}
+                </div>
 
-              <div className="flex min-h-20 items-center justify-between gap-2 px-4 py-4 lg:gap-4 lg:px-6">
-                <p className="min-w-0 truncate text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text-primary">
-                  {collection.title}
-                </p>
-                {showArrow && (
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-none transition-[background-color,border-radius] duration-700 ease-out group-hover:rounded-full group-hover:bg-background-subtle-2">
-                    <IconCaret direction="right" aria-hidden="true" />
-                  </span>
-                )}
-              </div>
-            </Link>
+                <div className="flex min-h-20 items-center justify-between gap-2 px-4 py-4 lg:gap-4 lg:px-6">
+                  <p className="min-w-0 truncate text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text-primary">
+                    {collection.title}
+                  </p>
+                  {showArrow && (
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-none transition-[background-color,border-radius] duration-700 ease-out group-hover:rounded-full group-hover:bg-background-subtle-2">
+                      <IconCaret direction="right" aria-hidden="true" />
+                    </span>
+                  )}
+                </div>
+              </Link>
+            </SwiperSlide>
           ))}
+        </Swiper>
+
+        <div className="flex items-center gap-3 md:hidden">
+          <button
+            type="button"
+            aria-label="Previous collection"
+            disabled={!canSlidePrev}
+            onClick={() => swiperInstance?.slidePrev()}
+            className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
+          >
+            <IconCaret
+              direction="left"
+              aria-hidden="true"
+              style={{ width: 20, height: 20 }}
+            />
+          </button>
+          <button
+            type="button"
+            aria-label="Next collection"
+            disabled={!canSlideNext}
+            onClick={() => swiperInstance?.slideNext()}
+            className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
+          >
+            <IconCaret
+              direction="right"
+              aria-hidden="true"
+              style={{ width: 20, height: 20 }}
+            />
+          </button>
         </div>
       </div>
 
       {showCount && collections.length > 0 && (
         <p className="text-center text-sm font-medium text-text-subtle">
-          <span className="lg:hidden">{Math.min(2, collections.length)}</span>
+          <span className="lg:hidden">{Math.min(4, collections.length)}</span>
           <span className="hidden lg:inline">
             {Math.min(Number(columns) || 4, collections.length)}
           </span>
@@ -292,6 +389,17 @@ export const schema = createSchema({
       ],
     },
     {
+      group: "Colors",
+      inputs: [
+        {
+          type: "color",
+          name: "backgroundColor",
+          label: "Background color",
+          defaultValue: "#FFFFFF",
+        },
+      ],
+    },
+    {
       group: "Layout",
       inputs: layoutInputs,
     },
@@ -301,6 +409,7 @@ export const schema = createSchema({
     columns: "4",
     cardGap: 24,
     imageAspectRatio: "1/1",
+    backgroundColor: "#FFFFFF",
     showArrow: true,
     showCount: true,
     width: "full",

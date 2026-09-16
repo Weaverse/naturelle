@@ -45,29 +45,19 @@ export function ProductVariants(props: ProductVariantsProps) {
       }
       return opt;
     });
-    let newSelectedVariant = nodes?.find((variant) => {
-      let variantOptions = variant.selectedOptions;
-      let isMatch = true;
-      for (let i = 0; i < variantOptions.length; i += 1) {
-        if (variantOptions[i].value !== newSelectedOptions?.[i].value) {
-          isMatch = false;
-          break;
-        }
-      }
-      return isMatch;
-    });
-    if (!newSelectedVariant) {
-      newSelectedVariant = {
+    let newSelectedVariant =
+      findVariantByOptions(nodes, newSelectedOptions) ??
+      findVariantByOptionValue(nodes, optionName, value) ??
+      ({
         ...selectedVariant,
         selectedOptions: newSelectedOptions,
         availableForSale: false,
         quantityAvailable: -1,
-      };
-    }
+      } as ProductVariantFragmentFragment);
     onSelectedVariantChange(newSelectedVariant);
   };
 
-  let selectedOptionMap = new Map();
+  let selectedOptionMap = new Map<string, string>();
   for (const opt of selectedOptions ?? []) {
     selectedOptionMap.set(opt.name, opt.value);
   }
@@ -85,37 +75,27 @@ export function ProductVariants(props: ProductVariantsProps) {
         let values = option.optionValues
           .map((optionValue) => {
             clonedSelectedOptionMap.set(optionName, optionValue.name);
-            let matchingVariant = nodes?.find((candidateVariant) => {
-              return candidateVariant.selectedOptions.every((opt) => {
-                return opt.value === clonedSelectedOptionMap.get(opt.name);
-              });
-            });
-            const imageVariant = shouldRenderAsImage
-              ? (optionValue.firstSelectableVariant ??
-                nodes?.find((candidateVariant) =>
-                  candidateVariant.selectedOptions.some(
-                    (candidateOption) =>
-                      candidateOption.name === optionName &&
-                      candidateOption.value === optionValue.name,
-                  ),
-                ))
-              : matchingVariant;
-            if (shouldRenderAsImage) {
-              matchingVariant = imageVariant;
-            }
-            if (hideUnavailableOptions && !matchingVariant) {
+            let matchingVariant = findVariantByOptions(
+              nodes,
+              clonedSelectedOptionMap,
+            );
+            const selectableVariant =
+              matchingVariant ??
+              findVariantByOptionValue(nodes, optionName, optionValue.name);
+            const imageVariant =
+              matchingVariant ??
+              optionValue.firstSelectableVariant ??
+              selectableVariant;
+            if (hideUnavailableOptions && !selectableVariant) {
               return null;
             }
             return {
               isActive: selectedOptionMap.get(optionName) === optionValue.name,
-              isAvailable: matchingVariant
-                ? matchingVariant.availableForSale
-                : false,
+              isAvailable: Boolean(selectableVariant?.availableForSale),
               search: "",
               to: "",
               value: optionValue.name,
-              image: imageVariant?.image,
-              variant: imageVariant,
+              image: shouldRenderAsImage ? imageVariant?.image : undefined,
             };
           })
           .filter(Boolean);
@@ -152,16 +132,56 @@ export function ProductVariants(props: ProductVariantsProps) {
               values={values}
               selectedOptionValue={selectedValue}
               onSelectOptionValue={handleSelectOptionValue}
-              onSelectVariant={(variant) =>
-                onSelectedVariantChange(
-                  variant as ProductVariantFragmentFragment,
-                )
-              }
               swatches={swatch?.swatches}
             />
           </div>
         );
       })}
     </div>
+  );
+}
+
+function findVariantByOptions(
+  nodes: ProductVariantFragmentFragment[] | undefined,
+  selectedOptions:
+    | ProductVariantFragmentFragment["selectedOptions"]
+    | Map<string, string>
+    | undefined,
+) {
+  if (!nodes?.length || !selectedOptions) {
+    return undefined;
+  }
+  const selectedByName =
+    selectedOptions instanceof Map
+      ? selectedOptions
+      : new Map(selectedOptions.map((opt) => [opt.name, opt.value]));
+  return nodes.find((variant) =>
+    variant.selectedOptions.every(
+      (opt) => opt.value === selectedByName.get(opt.name),
+    ),
+  );
+}
+
+function findVariantByOptionValue(
+  nodes: ProductVariantFragmentFragment[] | undefined,
+  optionName: string,
+  value: string,
+) {
+  if (!nodes?.length) {
+    return undefined;
+  }
+  return (
+    nodes.find(
+      (variant) =>
+        variant.availableForSale &&
+        variant.selectedOptions.some(
+          (opt) => opt.name === optionName && opt.value === value,
+        ),
+    ) ??
+    nodes.find((variant) =>
+      variant.selectedOptions.some(
+        (opt) => opt.name === optionName && opt.value === value,
+      ),
+    )
   );
 }

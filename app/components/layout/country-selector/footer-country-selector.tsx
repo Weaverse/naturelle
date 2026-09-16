@@ -11,7 +11,10 @@ export function FooterCountrySelector() {
   } = useCountrySelector();
 
   return (
-    <div ref={observerRef} className="flex items-center gap-4">
+    <div
+      ref={observerRef}
+      className="flex max-w-full flex-wrap items-center gap-4"
+    >
       <LocaleSelect
         ariaLabel="Select language"
         label={
