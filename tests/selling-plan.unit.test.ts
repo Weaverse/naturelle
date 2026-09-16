@@ -3,6 +3,7 @@ import test from "node:test";
 import type { SellingPlan } from "../app/utils/selling-plan.ts";
 import {
   calculateSellingPlanPrice,
+  getSelectedSellingPlan,
   getSellingPlanDiscount,
 } from "../app/utils/selling-plan.ts";
 
@@ -54,4 +55,24 @@ test("uses the fixed selling plan price", () => {
 
 test("keeps the product price for a one-time purchase", () => {
   assert.equal(calculateSellingPlanPrice(price, null), price);
+});
+
+test("defaults a subscription-only product to its first selling plan", () => {
+  const firstPlan = plan({ adjustmentPercentage: 10 });
+  const sellingPlanGroups = {
+    nodes: [{ sellingPlans: { nodes: [firstPlan] } }],
+  } as Parameters<typeof getSelectedSellingPlan>[0];
+
+  assert.equal(
+    getSelectedSellingPlan(sellingPlanGroups, null, true)?.id,
+    firstPlan.id,
+  );
+});
+
+test("does not force a selling plan for an optional subscription product", () => {
+  const sellingPlanGroups = {
+    nodes: [{ sellingPlans: { nodes: [plan({ adjustmentPercentage: 10 })] } }],
+  } as Parameters<typeof getSelectedSellingPlan>[0];
+
+  assert.equal(getSelectedSellingPlan(sellingPlanGroups, null, false), null);
 });

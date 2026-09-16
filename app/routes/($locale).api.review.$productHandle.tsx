@@ -5,8 +5,22 @@ import {
   emptyJudgemeReviews,
   getJudgemeReviews,
 } from "~/utils/judgeme";
+import { isSameOriginPost } from "~/utils/request-security.server";
 
 export async function action({ request, context }: ActionFunctionArgs) {
+  if (request.method.toUpperCase() !== "POST") {
+    return data(
+      { message: "Review submission is unavailable", success: false },
+      { status: 405, headers: { Allow: "POST" } },
+    );
+  }
+  if (!isSameOriginPost(request)) {
+    return data(
+      { message: "Review submission is unavailable", success: false },
+      { status: 403 },
+    );
+  }
+
   const apiToken = context.env.JUDGEME_PRIVATE_API_TOKEN;
   const shopDomain = context.env.PUBLIC_STORE_DOMAIN;
   if (!(apiToken && shopDomain)) {

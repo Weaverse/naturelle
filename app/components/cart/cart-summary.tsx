@@ -1,6 +1,11 @@
 import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CartForm, Money } from "@shopify/hydrogen";
+import {
+  AnalyticsEvent,
+  CartForm,
+  Money,
+  useAnalytics,
+} from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { useState } from "react";
 import { useFetcher } from "react-router";
@@ -23,6 +28,7 @@ export function CartSummary({
   cart: CartWithOptimistic;
   layout: CartLayout;
 }) {
+  const { publish } = useAnalytics();
   const {
     enableCartNote,
     cartNoteButtonText,
@@ -233,6 +239,13 @@ export function CartSummary({
       {checkoutUrl && (
         <a
           href={isCartUpdating ? undefined : checkoutUrl}
+          onClick={() => {
+            if (!isCartUpdating) {
+              publish(AnalyticsEvent.CUSTOM_EVENT, {
+                eventName: "checkout_started",
+              });
+            }
+          }}
           target="_self"
           className={buttonVariants({
             shape: "default",

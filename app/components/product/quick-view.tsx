@@ -24,7 +24,7 @@ import {
   isNewArrival,
   type ProductData,
 } from "~/utils/product";
-import { getSellingPlan } from "~/utils/selling-plan";
+import { getSelectedSellingPlan } from "~/utils/selling-plan";
 import { ProductBadge, type ProductBadgeType } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 
@@ -37,7 +37,7 @@ export function QuickView({
 }) {
   const theme = useThemeSettings();
   const { product, variants: variantData, storeDomain, shop } = data;
-  const [selectedSellingPlanId, setSelectedSellingPlanId] = useState<
+  const [requestedSellingPlanId, setRequestedSellingPlanId] = useState<
     string | null
   >(null);
   const variants = variantData?.product?.variants;
@@ -66,10 +66,12 @@ export function QuickView({
     return null;
   }
 
-  const selectedSellingPlan = getSellingPlan(
+  const selectedSellingPlan = getSelectedSellingPlan(
     product.sellingPlanGroups,
-    selectedSellingPlanId,
+    requestedSellingPlanId,
+    product.requiresSellingPlan,
   );
+  const selectedSellingPlanId = selectedSellingPlan?.id ?? null;
 
   const stock = selectedVariant.quantityAvailable;
   const configuredLowStockThreshold = Number(theme.quickViewLowStockThreshold);
@@ -229,7 +231,8 @@ export function QuickView({
             <SellingPlanSelector
               sellingPlanGroups={product.sellingPlanGroups}
               selectedSellingPlanId={selectedSellingPlanId}
-              onChange={setSelectedSellingPlanId}
+              onChange={setRequestedSellingPlanId}
+              requiresSellingPlan={product.requiresSellingPlan}
               disabled={isLoading}
             />
 
@@ -240,7 +243,10 @@ export function QuickView({
                 onChange={setQuantity}
               />
               <AddToCartButton
-                disabled={!selectedVariant.availableForSale}
+                disabled={
+                  !selectedVariant.availableForSale ||
+                  (product.requiresSellingPlan && !selectedSellingPlanId)
+                }
                 lines={[
                   {
                     merchandiseId: selectedVariant.id,

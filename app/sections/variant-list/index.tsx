@@ -10,25 +10,29 @@ import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { ProductQuantityInput } from "~/components/product-form/pdp-form";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
-import { getSellingPlan } from "~/utils/selling-plan";
+import { getSelectedSellingPlan } from "~/utils/selling-plan";
 
 function VariantRow({
   variant,
   sellingPlanGroups,
+  requiresSellingPlan,
 }: {
   variant: ProductVariantFragmentFragment;
   sellingPlanGroups: NonNullable<
     ReturnType<typeof useLoaderData<ProductLoaderType>>["product"]
   >["sellingPlanGroups"];
+  requiresSellingPlan: boolean;
 }) {
   const [quantity, setQuantity] = useState(1);
-  const [selectedSellingPlanId, setSelectedSellingPlanId] = useState<
+  const [requestedSellingPlanId, setRequestedSellingPlanId] = useState<
     string | null
   >(null);
-  const selectedSellingPlan = getSellingPlan(
+  const selectedSellingPlan = getSelectedSellingPlan(
     sellingPlanGroups,
-    selectedSellingPlanId,
+    requestedSellingPlanId,
+    requiresSellingPlan,
   );
+  const selectedSellingPlanId = selectedSellingPlan?.id ?? null;
 
   return (
     <li className="grid items-center gap-4 border-border-subtle border-b py-5 md:grid-cols-[minmax(0,1fr)_minmax(12rem,0.7fr)_auto_auto]">
@@ -54,7 +58,8 @@ function VariantRow({
       <PurchaseMethodDropdown
         sellingPlanGroups={sellingPlanGroups}
         selectedSellingPlanId={selectedSellingPlanId}
-        onChange={setSelectedSellingPlanId}
+        onChange={setRequestedSellingPlanId}
+        requiresSellingPlan={requiresSellingPlan}
         disabled={!variant.availableForSale}
       />
 
@@ -72,7 +77,10 @@ function VariantRow({
           className="font-medium"
         />
         <AddToCartButton
-          disabled={!variant.availableForSale}
+          disabled={
+            !variant.availableForSale ||
+            (requiresSellingPlan && !selectedSellingPlanId)
+          }
           lines={[
             {
               merchandiseId: variant.id,
@@ -115,6 +123,7 @@ export default function VariantList({
             key={variant.id}
             variant={variant}
             sellingPlanGroups={product.sellingPlanGroups}
+            requiresSellingPlan={product.requiresSellingPlan}
           />
         ))}
       </ul>

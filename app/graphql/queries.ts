@@ -137,6 +137,7 @@ export const PRODUCT_QUERY = `#graphql
           ...ProductVariantFragment
         }
       }
+      requiresSellingPlan
       sellingPlanGroups(first: 5) {
         nodes {
           ...SellingPlanGroup

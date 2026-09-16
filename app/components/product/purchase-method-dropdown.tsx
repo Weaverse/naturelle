@@ -8,11 +8,13 @@ export function PurchaseMethodDropdown({
   sellingPlanGroups,
   selectedSellingPlanId,
   onChange,
+  requiresSellingPlan = false,
   disabled = false,
 }: {
   sellingPlanGroups?: { nodes: SellingPlanGroupFragment[] };
   selectedSellingPlanId: string | null;
   onChange: (sellingPlanId: string | null) => void;
+  requiresSellingPlan?: boolean;
   disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -66,20 +68,22 @@ export function PurchaseMethodDropdown({
           role="listbox"
           className="absolute z-30 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-border-subtle bg-background-basic p-1 shadow-lg"
         >
-          <div>
-            <button
-              type="button"
-              role="option"
-              aria-selected={!selectedSellingPlanId}
-              onClick={() => select(null)}
-              className={cn(
-                "w-full rounded-md px-3 py-2.5 text-left text-sm",
-                !selectedSellingPlanId && "bg-background-subtle-1",
-              )}
-            >
-              One-time purchase
-            </button>
-          </div>
+          {!requiresSellingPlan && (
+            <div>
+              <button
+                type="button"
+                role="option"
+                aria-selected={!selectedSellingPlanId}
+                onClick={() => select(null)}
+                className={cn(
+                  "w-full rounded-md px-3 py-2.5 text-left text-sm",
+                  !selectedSellingPlanId && "bg-background-subtle-1",
+                )}
+              >
+                One-time purchase
+              </button>
+            </div>
+          )}
           {sellingPlans.map((sellingPlan) => (
             <div key={sellingPlan.id}>
               <button

@@ -1,15 +1,17 @@
 import { useSearchParams } from "react-router";
 import type { SellingPlanGroupFragment } from "storefront-api.generated";
-import { getSellingPlan } from "~/utils/selling-plan";
+import { getSelectedSellingPlan } from "~/utils/selling-plan";
 
-export function useSellingPlanSelection(sellingPlanGroups?: {
-  nodes: SellingPlanGroupFragment[];
-}) {
+export function useSellingPlanSelection(
+  sellingPlanGroups?: { nodes: SellingPlanGroupFragment[] },
+  requiresSellingPlan = false,
+) {
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedSellingPlanId = searchParams.get("selling_plan");
-  const selectedSellingPlan = getSellingPlan(
+  const selectedSellingPlan = getSelectedSellingPlan(
     sellingPlanGroups,
     requestedSellingPlanId,
+    requiresSellingPlan,
   );
   const selectedSellingPlanId = selectedSellingPlan?.id ?? null;
 

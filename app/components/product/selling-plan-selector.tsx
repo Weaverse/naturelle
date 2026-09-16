@@ -7,11 +7,13 @@ export function SellingPlanSelector({
   sellingPlanGroups,
   selectedSellingPlanId,
   onChange,
+  requiresSellingPlan = false,
   disabled = false,
 }: {
   sellingPlanGroups?: { nodes: SellingPlanGroupFragment[] };
   selectedSellingPlanId: string | null;
   onChange: (sellingPlanId: string | null) => void;
+  requiresSellingPlan?: boolean;
   disabled?: boolean;
 }) {
   const groups =
@@ -26,22 +28,24 @@ export function SellingPlanSelector({
   return (
     <fieldset className="space-y-3" disabled={disabled}>
       <legend className="mb-3 font-semibold text-sm">Purchase option</legend>
-      <label
-        className={clsx(
-          "flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors",
-          selectedSellingPlanId
-            ? "border-border-subtle"
-            : "border-border bg-background-subtle-1",
-        )}
-      >
-        <input
-          type="radio"
-          name="selling_plan"
-          checked={!selectedSellingPlanId}
-          onChange={() => onChange(null)}
-        />
-        <span className="font-medium text-sm">One-time purchase</span>
-      </label>
+      {!requiresSellingPlan && (
+        <label
+          className={clsx(
+            "flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors",
+            selectedSellingPlanId
+              ? "border-border-subtle"
+              : "border-border bg-background-subtle-1",
+          )}
+        >
+          <input
+            type="radio"
+            name="selling_plan"
+            checked={!selectedSellingPlanId}
+            onChange={() => onChange(null)}
+          />
+          <span className="font-medium text-sm">One-time purchase</span>
+        </label>
+      )}
 
       {groups.map((group) => (
         <div key={group.name} className="space-y-2">

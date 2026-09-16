@@ -107,7 +107,10 @@ let ProductInformation = ({
     selectedSellingPlan,
     selectedSellingPlanId,
     setSelectedSellingPlanId,
-  } = useSellingPlanSelection(product?.sellingPlanGroups);
+  } = useSellingPlanSelection(
+    product?.sellingPlanGroups,
+    product?.requiresSellingPlan,
+  );
   let themeSettings = useThemeSettings();
   let swatches = themeSettings?.swatches || {
     configs: [],
@@ -284,6 +287,7 @@ let ProductInformation = ({
                 sellingPlanGroups={product.sellingPlanGroups}
                 selectedSellingPlanId={selectedSellingPlanId}
                 onChange={setSelectedSellingPlanId}
+                requiresSellingPlan={product.requiresSellingPlan}
                 disabled={isLoading}
               />
               {!product.options.some((option) =>
@@ -304,7 +308,10 @@ let ProductInformation = ({
                 />
                 <div data-motion="fade-up">
                   <AddToCartButton
-                    disabled={!selectedVariant?.availableForSale}
+                    disabled={
+                      !selectedVariant?.availableForSale ||
+                      (product.requiresSellingPlan && !selectedSellingPlanId)
+                    }
                     lines={[
                       {
                         merchandiseId: selectedVariant?.id,

@@ -26,6 +26,18 @@ export function getSellingPlan(
   );
 }
 
+export function getSelectedSellingPlan(
+  sellingPlanGroups: { nodes: SellingPlanGroupFragment[] } | undefined,
+  requestedSellingPlanId: string | null,
+  requiresSellingPlan = false,
+) {
+  return (
+    getSellingPlan(sellingPlanGroups, requestedSellingPlanId) ??
+    (requiresSellingPlan ? getSellingPlans(sellingPlanGroups)[0] : null) ??
+    null
+  );
+}
+
 export function getSellingPlanDiscount(sellingPlan: SellingPlan) {
   const adjustment = sellingPlan.priceAdjustments[0]?.adjustmentValue;
   if (!adjustment) {

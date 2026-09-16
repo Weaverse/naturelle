@@ -42,12 +42,8 @@ export function Footer() {
   let fetcher = useFetcher<{
     ok?: boolean;
     error?: string;
-    errors?: Array<{ message?: string }>;
-    customer?: unknown;
   }>();
-  let isError =
-    fetcher.state === "idle" &&
-    Boolean(fetcher.data?.error || fetcher.data?.errors?.length);
+  let isError = fetcher.state === "idle" && Boolean(fetcher.data?.error);
   const rootData = useRootLoaderData();
   const { layout } = rootData;
   const policyItems = [
@@ -66,7 +62,6 @@ export function Footer() {
     newsletterDescription,
     newsletterPlaceholder,
     newsletterButtonText,
-    newsletterProvider = "shopify",
     trustBadgeVeganLabel,
     trustBadgeCrueltyFreeLabel,
     trustBadgeDermatologistTestedLabel,
@@ -79,13 +74,8 @@ export function Footer() {
     tagNameTitle: Tag = "h6",
   } = settings;
   const isStudio = useWeaverseStudioCheck();
-  const selectedKlaviyo = newsletterProvider === "klaviyo";
   const klaviyoConfigured = Boolean(rootData?.integrations?.klaviyo);
-  const effectiveProvider =
-    selectedKlaviyo && klaviyoConfigured ? "klaviyo" : "shopify";
-  const newsletterAction = usePrefixPathWithLocale(
-    effectiveProvider === "klaviyo" ? "/api/klaviyo" : "/api/customer",
-  );
+  const newsletterAction = usePrefixPathWithLocale("/api/klaviyo");
   return (
     <footer
       className={cn(
@@ -113,13 +103,12 @@ export function Footer() {
             )}
           </div>
           <div className="flex flex-1 items-center justify-end self-stretch">
-            {newsletterButtonText &&
-            isStudio &&
-            selectedKlaviyo &&
-            !klaviyoConfigured ? (
-              <div className="w-full max-w-[497px] rounded-md border border-dashed border-(--color-footer-bg) p-4 text-sm text-(--color-footer-bg)">
-                Configure Klaviyo private token
-              </div>
+            {newsletterButtonText && !klaviyoConfigured ? (
+              isStudio ? (
+                <div className="w-full max-w-[497px] rounded-md border border-dashed border-(--color-footer-bg) p-4 text-sm text-(--color-footer-bg)">
+                  Configure Klaviyo private token
+                </div>
+              ) : null
             ) : newsletterButtonText ? (
               <fetcher.Form
                 method="POST"
@@ -149,7 +138,6 @@ export function Footer() {
             {isError && (
               <p className="!mt-1 text-xs text-red-700">
                 {fetcher.data?.error ||
-                  fetcher.data?.errors?.[0]?.message ||
                   "Something went wrong. Please try again."}
               </p>
             )}

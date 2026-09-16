@@ -22,53 +22,31 @@ interface InputEmailProps extends HydrogenComponentProps {
   placeholder: string;
   buttonLabel: string;
   buttonStyle: VariantStyle;
-  provider: "shopify" | "klaviyo";
 }
 
 type NewsletterResponse = {
   ok?: boolean;
   error?: string;
-  errors?: Array<{ code?: string; message?: string }>;
-  customer?: unknown;
 };
 
 const NewsletterInput = ({
   ref,
   ...props
 }: InputEmailProps & { ref?: RefObject<HTMLDivElement | null> }) => {
-  let {
-    placeholder,
-    buttonLabel,
-    buttonStyle,
-    provider = "shopify",
-    ...rest
-  } = props;
+  let { placeholder, buttonLabel, buttonStyle, ...rest } = props;
   let fetcher = useFetcher<NewsletterResponse>();
   const rootData = useRootLoaderData();
   const isStudio = useWeaverseStudioCheck();
   const klaviyoConfigured = Boolean(rootData?.integrations?.klaviyo);
-  const selectedKlaviyo = provider === "klaviyo";
-  const effectiveProvider =
-    selectedKlaviyo && klaviyoConfigured ? "klaviyo" : "shopify";
-  const action = usePrefixPathWithLocale(
-    effectiveProvider === "klaviyo" ? "/api/klaviyo" : "/api/customer",
-  );
+  const action = usePrefixPathWithLocale("/api/klaviyo");
   const emailInputRef = useRef<HTMLInputElement>(null);
-  let isError =
-    fetcher.state === "idle" &&
-    Boolean(fetcher.data?.error || fetcher.data?.errors?.length);
-  let isSuccess =
-    fetcher.state === "idle" &&
-    Boolean(fetcher.data?.ok || fetcher.data?.customer);
+  let isError = fetcher.state === "idle" && Boolean(fetcher.data?.error);
+  let isSuccess = fetcher.state === "idle" && Boolean(fetcher.data?.ok);
   let alertMessage = "";
   let alertMessageClass = "";
   if (isError) {
-    const firstError = fetcher.data?.errors?.[0];
     alertMessage =
-      fetcher.data?.error ||
-      (firstError?.code === "TAKEN" && firstError.message
-        ? firstError.message
-        : "Something went wrong. Please try again.");
+      fetcher.data?.error || "Something went wrong. Please try again.";
     alertMessageClass = "text-red-700";
   } else if (isSuccess && emailInputRef.current) {
     alertMessage = "Subscribe successfully!";
@@ -79,16 +57,19 @@ const NewsletterInput = ({
     "--max-width-content": "600px",
   } as CSSProperties;
 
-  if (isStudio && selectedKlaviyo && !klaviyoConfigured) {
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className="rounded-md border border-dashed border-border p-4 text-sm text-text-subtle"
-      >
-        Configure Klaviyo private token
-      </div>
-    );
+  if (!klaviyoConfigured) {
+    if (isStudio) {
+      return (
+        <div
+          ref={ref}
+          {...rest}
+          className="rounded-md border border-dashed border-border p-4 text-sm text-text-subtle"
+        >
+          Configure Klaviyo private token
+        </div>
+      );
+    }
+    return null;
   }
 
   return (
@@ -139,18 +120,6 @@ export const schema = createSchema({
     {
       group: "Newsletter",
       inputs: [
-        {
-          type: "select",
-          name: "provider",
-          label: "Provider",
-          defaultValue: "shopify",
-          configs: {
-            options: [
-              { label: "Shopify", value: "shopify" },
-              { label: "Klaviyo", value: "klaviyo" },
-            ],
-          },
-        },
         {
           type: "text",
           name: "placeholder",

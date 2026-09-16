@@ -107,7 +107,10 @@ let SingleProduct = ({
     selectedSellingPlan,
     selectedSellingPlanId,
     setSelectedSellingPlanId,
-  } = useSellingPlanSelection(product?.sellingPlanGroups);
+  } = useSellingPlanSelection(
+    product?.sellingPlanGroups,
+    product?.requiresSellingPlan,
+  );
 
   let themeSettings = useThemeSettings();
   let swatches = themeSettings?.swatches || {
@@ -223,6 +226,7 @@ let SingleProduct = ({
                 sellingPlanGroups={product.sellingPlanGroups}
                 selectedSellingPlanId={selectedSellingPlanId}
                 onChange={setSelectedSellingPlanId}
+                requiresSellingPlan={product.requiresSellingPlan}
                 disabled={isLoading}
               />
               <div className="grid grid-cols-[auto_1fr] gap-2 p-4 sm:w-[360px] sm:p-0 md:items-end">
@@ -235,7 +239,10 @@ let SingleProduct = ({
                 </div>
                 <div data-motion="fade-up">
                   <AddToCartButton
-                    disabled={!selectedVariant?.availableForSale}
+                    disabled={
+                      !selectedVariant?.availableForSale ||
+                      (product.requiresSellingPlan && !selectedSellingPlanId)
+                    }
                     lines={[
                       {
                         merchandiseId: selectedVariant?.id,

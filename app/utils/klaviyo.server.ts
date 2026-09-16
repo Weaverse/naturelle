@@ -1,4 +1,5 @@
 const KLAVIYO_REVISION = "2024-10-15";
+const KLAVIYO_REQUEST_TIMEOUT_MS = 5000;
 const KLAVIYO_BACK_IN_STOCK_API =
   "https://a.klaviyo.com/api/back-in-stock-subscriptions";
 const KLAVIYO_PROFILES_API = "https://a.klaviyo.com/api/profiles";
@@ -39,6 +40,7 @@ export async function createKlaviyoBackInStockSubscription({
 }) {
   return fetch(KLAVIYO_BACK_IN_STOCK_API, {
     method: "POST",
+    signal: AbortSignal.timeout(KLAVIYO_REQUEST_TIMEOUT_MS),
     headers: {
       accept: "application/vnd.api+json",
       revision: KLAVIYO_REVISION,
@@ -74,6 +76,7 @@ export async function createKlaviyoProfile({
 }) {
   return fetch(KLAVIYO_PROFILES_API, {
     method: "POST",
+    signal: AbortSignal.timeout(KLAVIYO_REQUEST_TIMEOUT_MS),
     headers: {
       accept: "application/vnd.api+json",
       revision: KLAVIYO_REVISION,
