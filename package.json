@@ -32,6 +32,7 @@
     "preview": "shopify hydrogen preview --build",
     "start": "shopify hydrogen preview",
     "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.unit.test.ts",
     "routes-check": "shopify hydrogen check routes",
     "codegen": "shopify hydrogen codegen",
     "hydrogen": "shopify hydrogen",

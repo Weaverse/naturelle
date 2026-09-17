@@ -1,10 +1,11 @@
 import { type ActionFunctionArgs, data } from "react-router";
 import {
-  createKlaviyoProfile,
-  hasKlaviyoErrorCode,
+  getKlaviyoErrorLogContext,
+  getKlaviyoUserError,
   KLAVIYO_GENERIC_ERROR,
   KLAVIYO_INVALID_EMAIL_ERROR,
   readKlaviyoErrorPayload,
+  subscribeKlaviyoProfile,
 } from "~/utils/klaviyo.server";
 import { isSameOriginPost } from "~/utils/request-security.server";
 
@@ -20,9 +21,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   const apiToken = context.env.KLAVIYO_PRIVATE_API_TOKEN;
-  if (!apiToken) {
+  const listId = context.env.KLAVIYO_NEWSLETTER_LIST_ID;
+  if (!(apiToken && listId)) {
     console.error(
-      "Klaviyo signup unavailable: KLAVIYO_PRIVATE_API_TOKEN is not set",
+      "Klaviyo signup unavailable: KLAVIYO_PRIVATE_API_TOKEN and KLAVIYO_NEWSLETTER_LIST_ID must be set",
     );
     return data({ ok: false, error: KLAVIYO_GENERIC_ERROR }, { status: 503 });
   }
@@ -41,35 +43,26 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   try {
-    const response = await createKlaviyoProfile({ apiToken, email });
+    const response = await subscribeKlaviyoProfile({
+      apiToken,
+      email,
+      listId,
+    });
     if (response.ok) {
-      return data({ ok: true }, { status: 201 });
+      return data({ ok: true }, { status: response.status });
     }
 
     const payload = await readKlaviyoErrorPayload(response);
-    if (
-      response.status === 409 &&
-      hasKlaviyoErrorCode(payload, "duplicate_profile")
-    ) {
-      return data({ ok: true });
-    }
-
     console.error(
-      `Klaviyo signup failed with status ${response.status}:`,
-      JSON.stringify(payload),
+      "Klaviyo signup failed",
+      getKlaviyoErrorLogContext(response, payload),
     );
-    if (response.status === 400) {
-      return data(
-        { ok: false, error: KLAVIYO_INVALID_EMAIL_ERROR },
-        { status: 400 },
-      );
-    }
     return data(
-      { ok: false, error: KLAVIYO_GENERIC_ERROR },
+      { ok: false, error: getKlaviyoUserError(payload, "newsletter") },
       { status: response.status },
     );
-  } catch (error) {
-    console.error("Klaviyo signup request failed:", error);
+  } catch {
+    console.error("Klaviyo signup request failed");
     return data({ ok: false, error: KLAVIYO_GENERIC_ERROR }, { status: 500 });
   }
 }

@@ -45,6 +45,9 @@ export async function loadCriticalData({
         env.JUDGEME_PRIVATE_API_TOKEN && env.PUBLIC_STORE_DOMAIN,
       ),
       klaviyo: Boolean(env.KLAVIYO_PRIVATE_API_TOKEN),
+      klaviyoNewsletter: Boolean(
+        env.KLAVIYO_PRIVATE_API_TOKEN && env.KLAVIYO_NEWSLETTER_LIST_ID,
+      ),
     },
   };
 }

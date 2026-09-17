@@ -55,6 +55,7 @@ Before submitting changes, run the same core checks used by the project:
 npm run biome
 npm run codegen
 npm run typecheck
+npm test
 npm run routes-check
 npm run build
 ```
@@ -62,6 +63,7 @@ npm run build
 ## Documentation and Resources
 
 For more detailed guidance:
+- [Third-party integrations](docs/integrations.md)
 - [Weaverse Documentation](https://weaverse.io/docs)
 - [Hydrogen Documentation](https://shopify.dev/custom-storefronts/hydrogen)
 - [React Router documentation](https://reactrouter.com/)

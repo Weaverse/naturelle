@@ -1,9 +1,12 @@
 import { type ActionFunctionArgs, data } from "react-router";
 import {
   createKlaviyoBackInStockSubscription,
+  getKlaviyoErrorLogContext,
+  getKlaviyoUserError,
   hasKlaviyoErrorCode,
   KLAVIYO_GENERIC_ERROR,
   KLAVIYO_INVALID_EMAIL_ERROR,
+  KLAVIYO_VARIANT_NOT_FOUND_ERROR,
   readKlaviyoErrorPayload,
 } from "~/utils/klaviyo.server";
 import { isSameOriginPost } from "~/utils/request-security.server";
@@ -73,31 +76,16 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     console.error(
-      `Klaviyo back-in-stock failed with status ${response.status}:`,
-      JSON.stringify(payload),
+      "Klaviyo back-in-stock failed",
+      getKlaviyoErrorLogContext(response, payload),
     );
-    if (response.status === 400) {
-      return data(
-        { ok: false, error: KLAVIYO_INVALID_EMAIL_ERROR },
-        { status: 400 },
-      );
+    const userError = getKlaviyoUserError(payload, "back-in-stock");
+    if (userError === KLAVIYO_VARIANT_NOT_FOUND_ERROR) {
+      return data({ ok: false, error: userError }, { status: 422 });
     }
-    if (response.status === 404) {
-      return data(
-        {
-          ok: false,
-          error:
-            "This product isn't available for restock alerts yet. Please try again later.",
-        },
-        { status: 422 },
-      );
-    }
-    return data(
-      { ok: false, error: KLAVIYO_GENERIC_ERROR },
-      { status: response.status },
-    );
-  } catch (error) {
-    console.error("Klaviyo back-in-stock request failed:", error);
+    return data({ ok: false, error: userError }, { status: response.status });
+  } catch {
+    console.error("Klaviyo back-in-stock request failed");
     return data({ ok: false, error: KLAVIYO_GENERIC_ERROR }, { status: 500 });
   }
 }

@@ -128,8 +128,6 @@ function GoogleTagManagerAdapter({ id }: { id: string }) {
       didLoad = true;
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-      window.dataLayer.push(["js", new Date()]);
-      window.dataLayer.push(["config", id]);
 
       const script = document.createElement("script");
       script.async = true;

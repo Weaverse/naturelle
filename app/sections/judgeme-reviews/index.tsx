@@ -9,7 +9,7 @@ const JudgemeReviewSection = ({
   ref,
   ...props
 }: JudgemeReviewProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, loaderData, ...rest } = props;
+  let { children, ...rest } = props;
   const isDesignMode = useWeaverseStudioCheck();
   const judgeMeConfigured = Boolean(useRootLoaderData()?.integrations?.judgeMe);
 

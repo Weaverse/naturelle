@@ -474,80 +474,6 @@ export type CustomerOrdersQuery = {
   };
 };
 
-export type CustomerSubscriptionCancelMutationVariables =
-  CustomerAccountAPI.Exact<{
-    subscriptionContractId: CustomerAccountAPI.Scalars['ID']['input'];
-  }>;
-
-export type CustomerSubscriptionCancelMutation = {
-  subscriptionContractCancel?: CustomerAccountAPI.Maybe<{
-    contract?: CustomerAccountAPI.Maybe<
-      Pick<CustomerAccountAPI.SubscriptionContract, 'id' | 'status'>
-    >;
-    userErrors: Array<
-      Pick<
-        CustomerAccountAPI.SubscriptionContractStatusUpdateUserError,
-        'field' | 'message'
-      >
-    >;
-  }>;
-};
-
-export type CustomerSubscriptionsQueryVariables = CustomerAccountAPI.Exact<{
-  [key: string]: never;
-}>;
-
-export type CustomerSubscriptionsQuery = {
-  customer: {
-    subscriptionContracts: {
-      nodes: Array<
-        Pick<
-          CustomerAccountAPI.SubscriptionContract,
-          'id' | 'status' | 'createdAt' | 'nextBillingDate'
-        > & {
-          billingPolicy: Pick<
-            CustomerAccountAPI.SubscriptionBillingPolicy,
-            'interval'
-          > & {
-            intervalCount?: CustomerAccountAPI.Maybe<
-              Pick<CustomerAccountAPI.Count, 'count' | 'precision'>
-            >;
-          };
-          discounts?: CustomerAccountAPI.Maybe<{
-            nodes: Array<
-              Pick<CustomerAccountAPI.SubscriptionDiscount, 'id' | 'title'> & {
-                value:
-                  | ({__typename: 'SubscriptionDiscountFixedAmountValue'} & {
-                      amount: Pick<
-                        CustomerAccountAPI.MoneyV2,
-                        'amount' | 'currencyCode'
-                      >;
-                    })
-                  | ({__typename: 'SubscriptionDiscountPercentageValue'} & Pick<
-                      CustomerAccountAPI.SubscriptionDiscountPercentageValue,
-                      'percentage'
-                    >);
-              }
-            >;
-          }>;
-          lines: {
-            nodes: Array<
-              Pick<CustomerAccountAPI.SubscriptionLine, 'id' | 'name'> & {
-                image?: CustomerAccountAPI.Maybe<
-                  Pick<
-                    CustomerAccountAPI.Image,
-                    'url' | 'altText' | 'width' | 'height'
-                  >
-                >;
-              }
-            >;
-          };
-        }
-      >;
-    };
-  };
-};
-
 export type CustomerUpdateMutationVariables = CustomerAccountAPI.Exact<{
   customer: CustomerAccountAPI.CustomerUpdateInput;
 }>;
@@ -586,10 +512,6 @@ interface GeneratedQueryTypes {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };
-  '#graphql\n  query CustomerSubscriptions {\n    customer {\n      subscriptionContracts(first: 100) {\n        nodes {\n          id\n          status\n          createdAt\n          nextBillingDate\n          billingPolicy {\n            interval\n            intervalCount {\n              count\n              precision\n            }\n          }\n          discounts(first: 20) {\n            nodes {\n              id\n              title\n              value {\n                __typename\n                ... on SubscriptionDiscountFixedAmountValue {\n                  amount {\n                    amount\n                    currencyCode\n                  }\n                }\n                ... on SubscriptionDiscountPercentageValue {\n                  percentage\n                }\n              }\n            }\n          }\n          lines(first: 100) {\n            nodes {\n              id\n              name\n              image {\n                url\n                altText\n                width\n                height\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
-    return: CustomerSubscriptionsQuery;
-    variables: CustomerSubscriptionsQueryVariables;
-  };
 }
 
 interface GeneratedMutationTypes {
@@ -604,10 +526,6 @@ interface GeneratedMutationTypes {
   '#graphql\n  mutation customerAddressCreate(\n    $address: CustomerAddressInput!\n    $defaultAddress: Boolean\n  ) {\n    customerAddressCreate(\n      address: $address\n      defaultAddress: $defaultAddress\n    ) {\n      customerAddress {\n        id\n      }\n      userErrors {\n        code\n        field\n        message\n      }\n    }\n  }\n': {
     return: CustomerAddressCreateMutation;
     variables: CustomerAddressCreateMutationVariables;
-  };
-  '#graphql\n  mutation CustomerSubscriptionCancel($subscriptionContractId: ID!) {\n    subscriptionContractCancel(subscriptionContractId: $subscriptionContractId) {\n      contract {\n        id\n        status\n      }\n      userErrors {\n        field\n        message\n      }\n    }\n  }\n': {
-    return: CustomerSubscriptionCancelMutation;
-    variables: CustomerSubscriptionCancelMutationVariables;
   };
   '#graphql\n  # https://shopify.dev/docs/api/customer/latest/mutations/customerUpdate\n  mutation customerUpdate(\n    $customer: CustomerUpdateInput!\n  ){\n    customerUpdate(input: $customer) {\n      customer {\n        firstName\n        lastName\n        emailAddress {\n          emailAddress\n        }\n        phoneNumber {\n          phoneNumber\n        }\n      }\n      userErrors {\n        code\n        field\n        message\n      }\n    }\n  }\n': {
     return: CustomerUpdateMutation;

@@ -13,6 +13,7 @@ import { Link } from "~/components/link";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { PRODUCT_QUERY } from "~/graphql/queries";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { getJudgemeReviews } from "~/utils/judgeme";
 import Review from "./review";
 
@@ -104,6 +105,8 @@ const Testimonials = ({
     loaderData?.judgemeReviews.reviews.slice(0, reviewsToShow) || [];
   const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
   const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
+  const isDesignMode = useWeaverseStudioCheck();
+  const hasReviews = reviews.length > 0 && displayedRatingCount > 0;
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
@@ -111,6 +114,24 @@ const Testimonials = ({
     "--rating-overlay-background": `color-mix(in srgb, ${ratingOverlayColor} 40%, transparent)`,
     "--desktop-content-padding": `${desktopContentPadding}px`,
   } as CSSProperties;
+
+  if (!hasReviews) {
+    if (!isDesignMode) {
+      return null;
+    }
+
+    return (
+      <Section ref={ref} {...rest} style={sectionStyle}>
+        <div className="rounded-lg border border-border-subtle border-dashed bg-background-basic px-6 py-12 text-center text-text">
+          <p className="font-heading text-xl uppercase">Testimonials</p>
+          <p className="mt-2 text-text-subtle text-sm">
+            Choose a product with Judge.me reviews
+          </p>
+        </div>
+      </Section>
+    );
+  }
+
   return (
     <Section
       ref={ref}

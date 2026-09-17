@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher, useRouteLoaderData } from "react-router";
 import { Button } from "~/components/button";
 import type { RootLoader } from "~/root";
@@ -20,6 +20,8 @@ export function BackInStockForm({
   const fetcher = useFetcher<BackInStockResponse>();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const submittedVariantIdRef = useRef<string | null>(null);
+  const currentVariantId = variantId ?? null;
   const showForm =
     enabled &&
     Boolean(rootData?.integrations?.klaviyo) &&
@@ -27,7 +29,7 @@ export function BackInStockForm({
     availableForSale === false;
 
   useEffect(() => {
-    if (!fetcher.data) {
+    if (!fetcher.data || submittedVariantIdRef.current !== currentVariantId) {
       return;
     }
     if (fetcher.data.ok) {
@@ -37,7 +39,15 @@ export function BackInStockForm({
       setMessage("");
       setError(fetcher.data.error || "Something went wrong. Please try again.");
     }
-  }, [fetcher.data]);
+  }, [currentVariantId, fetcher.data]);
+
+  useEffect(() => {
+    if (submittedVariantIdRef.current !== currentVariantId) {
+      submittedVariantIdRef.current = null;
+      setMessage("");
+      setError("");
+    }
+  }, [currentVariantId]);
 
   if (!showForm) {
     return null;
@@ -57,6 +67,7 @@ export function BackInStockForm({
         encType="multipart/form-data"
         className="flex flex-col gap-2 sm:flex-row"
         onSubmit={() => {
+          submittedVariantIdRef.current = currentVariantId;
           setMessage("");
           setError("");
         }}

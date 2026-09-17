@@ -77,10 +77,6 @@ function AccountMenu() {
       <NavLink to="/account/addresses" style={isActiveStyle}>
         &nbsp; Addresses &nbsp;
       </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/subscriptions" style={isActiveStyle}>
-        &nbsp; Subscriptions &nbsp;
-      </NavLink>
     </nav>
   );
 }
