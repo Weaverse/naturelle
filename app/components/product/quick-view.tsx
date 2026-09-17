@@ -1,9 +1,11 @@
 import { Portal } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
+import { IconBag } from "~/components/icon";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
@@ -342,9 +344,11 @@ export function QuickView({
 export function QuickViewTrigger({
   productHandle,
   buttonText = "Select options",
+  alwaysShowButton = false,
 }: {
   productHandle: string;
   buttonText?: string;
+  alwaysShowButton?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const { load, data, state } = useFetcher<ProductData>();
@@ -356,7 +360,33 @@ export function QuickViewTrigger({
 
   return (
     <>
-      <div className="absolute right-3 bottom-3 z-10 transition-opacity duration-300 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100">
+      <div
+        className={clsx(
+          "absolute z-10 transition-opacity duration-300 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100",
+          alwaysShowButton ? "inset-x-3 bottom-4" : "right-3 bottom-3",
+        )}
+      >
+        {!alwaysShowButton && (
+          <Button
+            type="button"
+            variant="custom"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setOpen(true);
+            }}
+            loading={state === "loading"}
+            className="h-auto rounded-full border border-border-subtle bg-background-basic p-3 text-text shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border md:hidden"
+            classNameContainer="flex items-center justify-center"
+            aria-label={buttonText}
+          >
+            <IconBag
+              aria-hidden="true"
+              className="size-3.5 aspect-square"
+              viewBox="0 0 24 24"
+            />
+          </Button>
+        )}
         <Button
           type="button"
           variant="primary"
@@ -366,25 +396,13 @@ export function QuickViewTrigger({
             setOpen(true);
           }}
           loading={state === "loading"}
-          className="size-11 rounded-full p-0 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background md:h-12 md:w-full md:rounded-xl md:px-6 md:text-sm md:font-medium"
+          className={clsx(
+            "h-12 w-full rounded-xl px-6 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background",
+            alwaysShowButton ? "inline-flex" : "hidden md:inline-flex",
+          )}
           classNameContainer="flex items-center justify-center"
-          aria-label={buttonText}
         >
-          <svg
-            className="size-5 md:hidden"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"
-            />
-          </svg>
-          <span className="hidden md:inline">{buttonText}</span>
+          {buttonText}
         </Button>
       </div>
       {open && data && (

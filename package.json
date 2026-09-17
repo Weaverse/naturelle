@@ -47,6 +47,7 @@
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.3.0",
     "@fontsource/belleza": "^5.3.0",
+    "@fontsource/playfair-display": "^5.3.0",
     "@graphql-codegen/cli": "7.2.0",
     "@headlessui/react": "2.2.0",
     "@phosphor-icons/react": "2.1.10",
