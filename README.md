@@ -28,8 +28,13 @@ Efficient deployment options:
 
 ## Getting Started
 
+For complete local setup, Shopify and Weaverse connection, environment
+variables, theme customization, Oxygen deployment, and troubleshooting, see
+the [Naturélle setup and usage guide](docs/setup.md).
+
 **Prerequisites:**
 - Ensure you have Node.js version 22.12.0 or higher installed.
+- Use the npm package manager included with Node.js.
 
 **Setup Instructions:**
 1. Download [Weaverse Hydrogen](https://apps.shopify.com/weaverse) from the Shopify App Store.
@@ -43,9 +48,14 @@ Efficient deployment options:
 Install dependencies and start the development server:
 
 ```bash
-npm install
+cp .env.example .env
+npm ci
 npm run dev
 ```
+
+Before starting the server, replace the required placeholders in `.env` as
+described in the [setup guide](docs/setup.md). The local storefront runs at
+<http://localhost:3456>.
 
 ## Verification
 
