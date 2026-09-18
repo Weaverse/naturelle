@@ -19,6 +19,8 @@ from providers that still require an adapter.
 | SMS | Attentive and other SMS providers | **Adapter required** | Dedicated consent UI and server action |
 | Purchase subscriptions | Recharge, Skio, Appstle, and other Shopify subscription apps | **Shopify selling-plan compatible** | Product information, Single product, quick view, and cart |
 | Provider portals and advanced subscription features | Recharge, Skio, Appstle | **Adapter required** | Customer portal, payment-method changes, bundles, migrations, and provider-only data |
+| Wishlist | Swym, Growave, Wishlist Plus, and other apps | **Not included by design** | None today; see Wishlist and loyalty apps |
+| Loyalty/referrals | Yotpo Loyalty, Smile, ReferralCandy, and other apps | **Not included by design** | None today; see Wishlist and loyalty apps |
 | Search/filter | Shopify Storefront API + Search & Discovery | **Built in** | Search, predictive search, and collection filters |
 | Search/merchandising | External providers | **Adapter required** | Search and collection route loaders and result components |
 | Analytics | Hydrogen Analytics + GTM bridge | **Built-in foundation** | Root analytics provider and standard storefront events |
@@ -142,10 +144,28 @@ the browser. Implement a provider adapter that:
 4. keeps moderation and review-write credentials server-only; and
 5. adds only verified provider hosts to `app/weaverse/csp.ts`.
 
+**Yotpo** — the App Key/Store ID may be used as public widget configuration
+only when Yotpo documents that usage; the Secret Key is server-only. Both are
+listed under **Account Settings > General Settings**; generating a secret
+requires an authorized account.
+
+**Okendo** — Okendo documents a Widget Plus installation for Hydrogen/headless
+storefronts. For a custom server integration, get the Merchant API User ID and
+API Key from Okendo integration settings and keep the API key server-only; do
+not call the Merchant REST API directly from the browser. Choose Widget Plus or
+a Naturelle server loader — do not load both.
+
+**Loox** — the Storefront API uses a public Store ID for public review data;
+the Merchant API key is private and must stay in a Naturelle server
+loader/action. Obtain both from Loox **Settings > API Keys**.
+
 References:
 
+- [Find the Yotpo App Key and Secret Key](https://support.yotpo.com/docs/finding-your-yotpo-app-key-and-secret-key-4)
 - [Yotpo custom storefront integration](https://support.yotpo.com/v1/docs/generic-other-platforms-installing-yotpo-reviews-v3)
 - [Okendo headless Widget Plus](https://docs.okendo.io/on-site/advanced-widget-installs/installing-widget-plus-on-headless-instances)
+- [Okendo merchant API credentials](https://docs.okendo.io/merchant-rest-api/quick-start)
+- [Loox APIs and key boundaries](https://help.loox.io/support/solutions/articles/501000356871-loox-reviews-api-and-webhooks)
 - [Loox with Shopify headless commerce](https://help.loox.io/support/solutions/articles/501000162379-integrating-loox-with-shopify-headless-commerce)
 
 For every review adapter, test reviews present/absent, invalid product mapping,
@@ -277,6 +297,22 @@ missing Storefront scope, and a provider-created plan with prepaid pricing.
 With no plan assigned, an optional-subscription product must retain the normal
 one-time purchase flow.
 
+## Wishlist and loyalty apps
+
+Naturélle deliberately ships without wishlist and loyalty/referral surfaces;
+they are not part of the theme design today (this differs from Aspen, which
+has a native wishlist and LoyaltyLion support). Do not add provider scripts,
+app embeds, or sections ad hoc. If product design later approves one:
+
+- implement it as a single shared adapter that follows the credential and
+  environment rules above; provider private keys stay server-only and only
+  provider-documented public keys may run in the browser;
+- surface it through Weaverse sections/components rather than global script
+  injection;
+- add only verified provider hosts to `app/weaverse/csp.ts`; and
+- pass the Integration QA checklist below — including unconfigured-state
+  behavior — before publishing.
+
 ## Search, filters, and merchandising
 
 Naturelle's default search, predictive search, and collection filters use
@@ -407,11 +443,19 @@ workaround.
 - Ensure private tokens are sent only by the Oxygen server.
 - Rotate a token immediately if it appeared in browser tools or Git history.
 
+### Configured integration shows empty data
+
+- Confirm Shopify IDs, handles, GIDs, catalog sync, customer mapping, locale,
+  and publication status.
+- Test the provider endpoint with a known reviewed/subscribed/customer record.
+- Check caching before assuming the upstream write failed.
+
 ### Studio preview differs from production
 
 Studio can use preview data for account-dependent surfaces. Verify the real
 page on a deployed preview with actual Customer Account authentication and the
-Preview environment's credentials.
+Preview environment's credentials. See the project
+[setup guide](./setup.md) for Studio and Oxygen connection details.
 
 ## Global references
 
