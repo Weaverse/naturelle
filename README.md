@@ -73,6 +73,7 @@ npm run build
 ## Documentation and Resources
 
 For more detailed guidance:
+- [Section usage and page composition guide](docs/sections.md)
 - [Third-party integrations](docs/integrations.md)
 - [Weaverse Documentation](https://weaverse.io/docs)
 - [Hydrogen Documentation](https://shopify.dev/custom-storefronts/hydrogen)

@@ -108,8 +108,8 @@ need the additional variables described below.
 | `PUBLIC_STOREFRONT_API_TOKEN` | Yes | Public token | `<public-storefront-token>` | Public Storefront API token created by Shopify. This is not an Admin API token. |
 | `PRIVATE_STOREFRONT_API_TOKEN` | Recommended in production | **Private** | `<private-storefront-token>` | Server-side Storefront API token. Oxygen normally provisions it. Never expose it in browser code. |
 | `WEAVERSE_PROJECT_ID` | Yes | Public identifier | `<weaverse-project-id>` | Weaverse Studio project settings, project URL, or setup prompt. |
-| `WEAVERSE_API_KEY` | No for normal rendering | **Private** | `<weaverse-api-key>` | Authenticated Weaverse API or automation operations. Not required for Studio editing. |
-| `WEAVERSE_HOST` | No | Configuration | `https://studio.weaverse.io` | Set only for an approved custom/staging Weaverse host; otherwise omit it. |
+| `WEAVERSE_API_KEY` | For the Contact us form | **Private** | `<weaverse-api-key>` | Authenticates the server-side Weaverse mail request. Not required for Studio editing or ordinary page rendering. |
+| `WEAVERSE_HOST` | For the Contact us form or a custom host | Configuration | `https://studio.weaverse.io` | Base host used by the contact action. Use the approved Studio/custom host for the project. |
 | `WEAVERSE_API_BASE` | No | Configuration | `https://api.weaverse.io` | Optional custom Weaverse API base; omit for normal Studio use. |
 
 ### Shopify checkout, accounts, and analytics
@@ -418,12 +418,13 @@ Confirm the cart has a valid Shopify checkout URL and that
 `PUBLIC_CHECKOUT_DOMAIN` belongs to the connected storefront. Checkout remains
 hosted by Shopify and does not stay on localhost.
 
-### Newsletter, back-in-stock, or reviews are unavailable
+### Newsletter, back-in-stock, contact, or reviews are unavailable
 
 These integrations fail closed when their server-only variables are missing.
-Configure the relevant provider token, restart locally or redeploy on Oxygen,
-and inspect server logs. Never expose provider error payloads or tokens to the
-browser.
+Configure the relevant provider values: Klaviyo for newsletter/back-in-stock,
+`WEAVERSE_HOST` and `WEAVERSE_API_KEY` for Contact us, or Judge.me for reviews.
+Restart locally or redeploy on Oxygen and inspect server logs. Never expose
+provider error payloads or tokens to the browser.
 
 ### `env pull` removed Weaverse or integration values
 
