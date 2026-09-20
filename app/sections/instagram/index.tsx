@@ -75,7 +75,11 @@ const Instagram = ({
   );
   const mobileImagesPerRow = Math.min(2, desktopImagesPerRow);
   const tabletImagesPerRow = Math.min(4, desktopImagesPerRow);
-  const handleLabel = <span>{handle}</span>;
+  const handleLabel = (
+    <span className="font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text-subtle">
+      {handle}
+    </span>
+  );
 
   return (
     <section

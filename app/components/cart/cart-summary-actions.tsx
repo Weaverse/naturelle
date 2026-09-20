@@ -11,7 +11,7 @@ import { usePrefixPathWithLocale } from "~/utils/locale";
 
 type CartLayout = "page" | "aside";
 
-function Banner({
+export function CartActionBanner({
   variant,
   children,
 }: {
@@ -145,9 +145,13 @@ export function NoteDialog({
             }}
           />
           {submitted && (
-            <Banner variant="success">Cart note saved successfully</Banner>
+            <CartActionBanner variant="success">
+              Cart note saved successfully
+            </CartActionBanner>
           )}
-          {submitError && <Banner variant="error">{submitError}</Banner>}
+          {submitError && (
+            <CartActionBanner variant="error">{submitError}</CartActionBanner>
+          )}
           <Button
             type="submit"
             loading={fetcher.state !== "idle"}
@@ -240,9 +244,15 @@ export function DiscountDialog({
             required
           />
           {success && (
-            <Banner variant="success">Discount applied successfully</Banner>
+            <CartActionBanner variant="success">
+              Discount applied successfully
+            </CartActionBanner>
           )}
-          {error && <Banner variant="error">Invalid discount code.</Banner>}
+          {error && (
+            <CartActionBanner variant="error">
+              Invalid discount code.
+            </CartActionBanner>
+          )}
           <Button
             type="submit"
             className="w-full rounded-lg"
@@ -348,9 +358,15 @@ export function GiftCardDialog({
             required
           />
           {success && (
-            <Banner variant="success">Gift card applied successfully</Banner>
+            <CartActionBanner variant="success">
+              Gift card applied successfully
+            </CartActionBanner>
           )}
-          {error && <Banner variant="error">Invalid gift card code.</Banner>}
+          {error && (
+            <CartActionBanner variant="error">
+              Invalid gift card code.
+            </CartActionBanner>
+          )}
           <Button
             type="submit"
             className="w-full rounded-lg"

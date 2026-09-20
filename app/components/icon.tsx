@@ -57,6 +57,19 @@ function Icon({
   );
 }
 
+export function IconLock(props: IconProps) {
+  return (
+    <Icon {...props} viewBox="0 0 14 14" fill="none">
+      <path
+        d="M4.08333 6.41644V4.08292C4.08333 3.30931 4.39062 2.56738 4.93761 2.02036C5.48459 1.47333 6.22645 1.16602 7 1.16602C7.77355 1.16602 8.51541 1.47333 9.06239 2.02036C9.60938 2.56738 9.91667 3.30931 9.91667 4.08292V6.41644M2.91667 6.41644H11.0833C11.7277 6.41644 12.25 6.93881 12.25 7.5832V11.6669C12.25 12.3112 11.7277 12.8336 11.0833 12.8336H2.91667C2.27233 12.8336 1.75 12.3112 1.75 11.6669V7.5832C1.75 6.93881 2.27233 6.41644 2.91667 6.41644Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </Icon>
+  );
+}
+
 export function IconAccount(props: IconProps) {
   return (
     <Icon {...props}>

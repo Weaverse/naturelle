@@ -132,7 +132,11 @@ export const useCartStore = create<CartStore>()((set) => ({
         return {};
       }
       const lineUpdateErrors = new Map(state.lineUpdateErrors);
-      if (response?.errors?.length || response?.userErrors?.length) {
+      if (
+        response?.errors?.length ||
+        response?.userErrors?.length ||
+        response?.warnings?.length
+      ) {
         lineUpdateErrors.set(lineId, response);
       } else {
         lineUpdateErrors.delete(lineId);
@@ -159,7 +163,11 @@ export const useCartStore = create<CartStore>()((set) => ({
       const pendingLineRemovals = new Set(state.pendingLineRemovals);
       pendingLineRemovals.delete(lineId);
       const lineRemovalErrors = new Map(state.lineRemovalErrors);
-      if (response?.errors?.length || response?.userErrors?.length) {
+      if (
+        response?.errors?.length ||
+        response?.userErrors?.length ||
+        response?.warnings?.length
+      ) {
         lineRemovalErrors.set(lineId, response);
       } else {
         lineRemovalErrors.delete(lineId);
