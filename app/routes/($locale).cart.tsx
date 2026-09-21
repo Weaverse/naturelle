@@ -1,14 +1,19 @@
 import type { CartQueryDataReturn } from "@shopify/hydrogen";
-import { CartForm } from "@shopify/hydrogen";
+import { CartForm, Image } from "@shopify/hydrogen";
 import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
+import { useThemeSettings } from "@weaverse/hydrogen";
 import {
   type ActionFunctionArgs,
   type AppLoadContext,
   data,
   type HeadersFunction,
   type MetaFunction,
+  useFetcher,
 } from "react-router";
+import { Button } from "~/components/button";
 import { CartMain } from "~/components/cart/cart";
+import { IconNewsletter } from "~/components/icon";
+import { Input } from "~/components/input";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
 export const meta: MetaFunction = () => {
@@ -177,7 +182,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const responseHeaders = result.cart
     ? cart.setCartId(result.cart.id)
     : new Headers();
-  const { cart: cartResult, errors, userErrors } = result;
+  const { cart: cartResult, errors, userErrors, warnings } = result;
 
   const redirectTo = formData.get("redirectTo") ?? null;
   if (typeof redirectTo === "string") {
@@ -190,6 +195,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       cart: cartResult,
       errors,
       userErrors,
+      warnings,
       analytics: {
         cartId: result.cart?.id,
       },
@@ -253,14 +259,82 @@ async function getCartOrNull(cart: AppLoadContext["cart"]) {
 }
 
 export default function Cart() {
+  const { cartBannerImage } = useThemeSettings();
+
   return (
-    <main className="cart bg-background-subtle px-4 py-8 md:px-10 md:py-12 lg:px-16">
-      <div className="mx-auto w-full max-w-page">
-        <h1 className="mb-8 text-2xl font-normal leading-normal md:text-3xl">
-          Cart
-        </h1>
-        <CartMain layout="page" />
+    <main className="cart flex flex-col">
+      <div className="flex flex-col gap-10">
+        {cartBannerImage ? (
+          <div className="relative flex min-h-48 items-center justify-center overflow-hidden md:min-h-80">
+            <Image
+              data={cartBannerImage}
+              className="absolute inset-0 size-full object-cover"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/10" />
+            <h1 className="relative z-10 text-center font-heading text-[44px] leading-[110%] font-normal text-text-inverse">
+              Cart
+            </h1>
+          </div>
+        ) : (
+          <h1 className="sr-only">Cart</h1>
+        )}
+        <div className="mx-auto w-full max-w-page">
+          <CartMain layout="page" />
+        </div>
       </div>
+      <CartNewsletter />
     </main>
+  );
+}
+
+function CartNewsletter() {
+  const fetcher = useFetcher<{ errors?: Array<{ message: string }> }>({
+    key: "cart-newsletter",
+  });
+  const isSubmitting = fetcher.state === "submitting";
+  const error = fetcher.state === "idle" && fetcher.data?.errors?.[0]?.message;
+
+  return (
+    <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
+      <div className="flex w-full max-w-xl flex-col items-center gap-4">
+        <IconNewsletter
+          viewBox="0 0 65 64"
+          className="size-16 text-text"
+          aria-hidden="true"
+        />
+        <div className="flex flex-col items-center gap-2">
+          <h2 className="max-w-72 text-center font-heading text-[44px] leading-[110%] font-normal text-text md:max-w-none">
+            Sign up for the updates
+          </h2>
+          <p className="text-center font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text">
+            Get 15% off your first order
+          </p>
+        </div>
+        <fetcher.Form
+          method="POST"
+          action="/api/customer"
+          className="flex w-full items-stretch gap-3"
+        >
+          <Input
+            variant="custom"
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+            className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
+          />
+          <Button
+            type="submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
+          >
+            Send
+          </Button>
+        </fetcher.Form>
+        {error && <p className="text-sm text-red-700">{error}</p>}
+      </div>
+    </section>
   );
 }

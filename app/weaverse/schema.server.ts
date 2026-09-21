@@ -338,6 +338,11 @@ export const themeSchema: HydrogenThemeSchema = {
       group: "Cart",
       inputs: [
         {
+          type: "image",
+          label: "Cart banner image",
+          name: "cartBannerImage",
+        },
+        {
           type: "switch",
           label: "Enable free shipping progress bar",
           name: "enableFreeShippingProgressBar",
