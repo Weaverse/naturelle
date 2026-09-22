@@ -41,16 +41,16 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
     ? Math.min(20, Math.max(1, requestedPerPage))
     : 5;
 
-  return data(
-    await getJudgemeReviews(
-      context.env.JUDGEME_PRIVATE_API_TOKEN,
-      context.env.PUBLIC_STORE_DOMAIN,
-      productHandle,
-      {
-        weaverseContext: context.weaverse,
-        page,
-        perPage,
-      },
-    ),
+  const reviews = await getJudgemeReviews(
+    context.env.JUDGEME_PRIVATE_API_TOKEN,
+    context.env.PUBLIC_STORE_DOMAIN,
+    productHandle,
+    {
+      weaverseContext: context.weaverse,
+      page,
+      perPage,
+    },
   );
+
+  return data({ ...reviews, productHandle });
 }

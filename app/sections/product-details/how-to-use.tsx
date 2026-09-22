@@ -1,33 +1,80 @@
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
+import { ProductMetafieldEmptyState } from "./metafield-empty-state";
+import {
+  createMetafieldInput,
+  getProductDetailField,
+  loadProductDetailMetafield,
+  PRODUCT_DETAIL_METAFIELDS,
+} from "./product-metafield";
+import { useProductMetafieldData } from "./use-product-metafield-data";
 
-interface HowToUseProps extends HydrogenComponentProps {
+interface HowToUseData {
   heading: string;
-  step1: string;
-  step2: string;
-  step3: string;
+  metafield?: string;
 }
+
+type HowToUseLoaderData = Awaited<
+  ReturnType<typeof loadProductDetailMetafield>
+>;
+type HowToUseProps = HydrogenComponentProps<HowToUseLoaderData> & HowToUseData;
 
 export default function HowToUse({
   ref,
   heading,
-  step1,
-  step2,
-  step3,
+  metafield,
+  loaderData,
   ...rest
 }: HowToUseProps & { ref?: Ref<HTMLElement> }) {
+  loaderData = useProductMetafieldData(metafield, loaderData);
+
+  if (!loaderData?.entries.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        loaderData={loaderData}
+        metafield={metafield}
+      />
+    );
+  }
+
+  const steps = loaderData.entries
+    .slice(0, 3)
+    .map((entry) => ({
+      id: entry.id,
+      content:
+        getProductDetailField(entry, "content") ||
+        getProductDetailField(entry, "title"),
+    }))
+    .filter((step) => step.content);
+
+  if (!steps.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        loaderData={loaderData}
+        metafield={metafield}
+        message="This metafield must contain text entries."
+      />
+    );
+  }
+
   return (
     <section ref={ref} {...rest}>
       <div className="rounded-xl bg-(--product-detail-background-color) p-12 gap-10 flex flex-col">
         <h2 className="text-3xl leading-tight md:text-4xl">{heading}</h2>
         <ol className="flex flex-col gap-8">
-          {[step1, step2, step3].map((step, index) => (
+          {steps.map((step, index) => (
             <li
-              key={step}
+              key={step.id}
               className="grid grid-cols-[1.5rem_1fr] gap-6 text-sm leading-6"
             >
               <span className="font-semibold">{index + 1}</span>
-              <span className="text-(--product-detail-text-color)">{step}</span>
+              <span className="text-(--product-detail-text-color)">
+                {step.content}
+              </span>
             </li>
           ))}
         </ol>
@@ -35,6 +82,8 @@ export default function HowToUse({
     </section>
   );
 }
+
+export const loader = loadProductDetailMetafield;
 
 export const schema = createSchema({
   type: "product-details--how-to-use",
@@ -50,26 +99,7 @@ export const schema = createSchema({
           label: "Heading",
           defaultValue: "How to Use",
         },
-        {
-          type: "text",
-          name: "step1",
-          label: "Step 1",
-          defaultValue: "Apply 2–3 drops to clean, dry skin morning and night.",
-        },
-        {
-          type: "text",
-          name: "step2",
-          label: "Step 2",
-          defaultValue:
-            "Gently massage until absorbed, focusing on areas of concern.",
-        },
-        {
-          type: "text",
-          name: "step3",
-          label: "Step 3",
-          defaultValue:
-            "Follow with your preferred moisturizer to seal in benefits.",
-        },
+        createMetafieldInput(PRODUCT_DETAIL_METAFIELDS.howToUse),
       ],
     },
   ],

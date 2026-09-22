@@ -2,7 +2,7 @@ import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
-import ReviewForm from "./review-form";
+import { ReviewForm } from "./review-form";
 import { ReviewList } from "./review-list";
 
 type ReviewIndexProps = {

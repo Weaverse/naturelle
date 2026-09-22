@@ -3,7 +3,10 @@ import { Image, Money } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { PaymentMethods } from "~/components/layout/footer/payment-methods";
 import { Link } from "~/components/link";
-import { getCartMutationError } from "~/utils/cart-error";
+import {
+  getCartMutationError,
+  getCartMutationWarning,
+} from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
 import { useVariantUrl } from "~/utils/variants";
 import { IconLock, IconRemove } from "../icon";
@@ -14,12 +17,14 @@ import { getCartLineRenderKeys } from "./optimistic-cart";
 import { useCart, useCartStore } from "./store";
 
 type CartMainProps = {
+  initialCart?: CartWithOptimistic | null;
   layout: CartLayout;
   onClose?: () => void;
 };
 
-export function CartMain({ layout, onClose }: CartMainProps) {
-  const cart = useCart();
+export function CartMain({ initialCart, layout, onClose }: CartMainProps) {
+  const liveCart = useCart();
+  const cart = liveCart ?? initialCart ?? null;
   const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const cartHasItems = Boolean(cart) && (cart?.totalQuantity ?? 0) > 0;
 
@@ -31,7 +36,7 @@ export function CartMain({ layout, onClose }: CartMainProps) {
       )}
     >
       <CartEmpty
-        hidden={cartHasItems || linesCount}
+        visible={!(cartHasItems || linesCount)}
         layout={layout}
         onClose={onClose}
       />
@@ -222,6 +227,12 @@ function CartLineItem({
   const isLineRemoving = useCartStore((state) =>
     state.pendingLineRemovals.has(id),
   );
+  const removalError = useCartStore((state) => state.lineRemovalErrors.get(id));
+  const removalWarning = useCartStore((state) =>
+    state.lineRemovalWarnings.get(id),
+  );
+  const removalErrorMessage = getCartMutationError(removalError);
+  const removalWarningMessage = getCartMutationWarning(removalWarning);
 
   if (layout === "page") {
     return (
@@ -275,6 +286,11 @@ function CartLineItem({
         <div className="col-start-3 row-start-1 font-semibold md:col-start-4 md:row-start-1">
           <CartLinePrice line={line} />
         </div>
+        <CartLineFeedback
+          error={removalErrorMessage}
+          warning={removalWarningMessage}
+          className="col-span-3 md:col-span-5"
+        />
       </li>
     );
   }
@@ -319,6 +335,10 @@ function CartLineItem({
           <CartLineQuantity line={line} layout={layout} />
           <CartLinePrice line={line} />
         </div>
+        <CartLineFeedback
+          error={removalErrorMessage}
+          warning={removalWarningMessage}
+        />
       </div>
     </li>
   );
@@ -417,7 +437,11 @@ function CartLineQuantity({
   const updateError = useCartStore((state) =>
     state.lineUpdateErrors.get(lineId),
   );
+  const updateWarning = useCartStore((state) =>
+    state.lineUpdateWarnings.get(lineId),
+  );
   const errorMessage = getCartMutationError(updateError);
+  const warningMessage = getCartMutationWarning(updateWarning);
 
   if (typeof quantity === "undefined") {
     return null;
@@ -483,6 +507,50 @@ function CartLineQuantity({
           <span>{errorMessage}</span>
         </p>
       )}
+      {warningMessage && (
+        <p
+          role="status"
+          className="font-body text-sm leading-[160%] font-normal text-text-subtle"
+        >
+          {warningMessage}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function CartLineFeedback({
+  error,
+  warning,
+  className,
+}: {
+  error: string | null;
+  warning: string | null;
+  className?: string;
+}) {
+  if (!(error || warning)) {
+    return null;
+  }
+
+  return (
+    <div className={cn("space-y-1", className)}>
+      {error && (
+        <p
+          role="alert"
+          className="flex items-center gap-2 font-body text-sm leading-[160%] font-normal text-red-600"
+        >
+          <WarningCircleIcon className="size-5 shrink-0" aria-hidden="true" />
+          <span>{error}</span>
+        </p>
+      )}
+      {warning && (
+        <p
+          role="status"
+          className="font-body text-sm leading-[160%] font-normal text-text-subtle"
+        >
+          {warning}
+        </p>
+      )}
     </div>
   );
 }
@@ -507,16 +575,19 @@ function CartLinePrice({ line }: { line: CartLine }) {
 }
 
 export function CartEmpty({
-  hidden = false,
+  visible = true,
   layout = "aside",
   onClose,
 }: {
-  hidden: boolean;
+  visible?: boolean;
   layout?: CartLayout;
   onClose?: () => void;
 }) {
   return (
-    <div hidden={hidden} className={cn(layout === "aside" && "px-0 py-2")}>
+    <div
+      style={{ display: visible ? undefined : "none" }}
+      className={cn(layout === "aside" && "px-0 py-2")}
+    >
       <p className="mb-4">
         Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
         started!

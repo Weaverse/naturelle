@@ -88,6 +88,8 @@ export const PRODUCT_QUERY = `#graphql
       handle
       descriptionHtml
       description
+      encodedVariantExistence
+      encodedVariantAvailability
       collections(first: 1) {
         nodes {
           id
@@ -449,25 +451,6 @@ export const SEARCH_QUERY = `#graphql
 
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
-
-export const FILTER_QUERY = `#graphql
-query SearchFilter($query: String!)
-{
-  search(first: 0, query: $query) {
-    productFilters {
-      id
-      label
-      type
-      values {
-        id
-        label
-        count
-        input
-      }
-    }
-  }
-}
-`;
 
 export const FEATURED_ITEMS_QUERY = `#graphql
   query FeaturedItems(

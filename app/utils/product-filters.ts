@@ -17,7 +17,10 @@ export function getFiltersFromSearchParams(searchParams: URLSearchParams) {
     }
 
     const filterKey = key.substring(FILTER_URL_PREFIX.length);
-    const parsedValue = parseFilterParam(value);
+    const parsedValue =
+      filterKey === "price"
+        ? parsePriceFilterParam(value)
+        : parseFilterParam(value);
     if (parsedValue !== undefined) {
       filterList.push({
         [filterKey]: parsedValue,
@@ -34,6 +37,38 @@ function parseFilterParam(value: string) {
   } catch {
     return undefined;
   }
+}
+
+export function parsePriceFilterParam(
+  value: string | null,
+): NonNullable<ProductFilter["price"]> | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = parseFilterParam(value);
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return undefined;
+  }
+
+  const { min, max } = parsed as Record<string, unknown>;
+  if (min !== undefined && (typeof min !== "number" || !Number.isFinite(min))) {
+    return undefined;
+  }
+  if (max !== undefined && (typeof max !== "number" || !Number.isFinite(max))) {
+    return undefined;
+  }
+  if (min === undefined && max === undefined) {
+    return undefined;
+  }
+
+  const normalizedMin = typeof min === "number" ? min : undefined;
+  const normalizedMax = typeof max === "number" ? max : undefined;
+
+  return {
+    ...(normalizedMin === undefined ? {} : { min: normalizedMin }),
+    ...(normalizedMax === undefined ? {} : { max: normalizedMax }),
+  };
 }
 
 export function getPriceRangeFilters(filters: ProductFilter[]) {

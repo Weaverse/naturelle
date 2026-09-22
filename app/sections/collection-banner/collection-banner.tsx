@@ -13,7 +13,7 @@ interface CollectionBannerProps extends HydrogenComponentProps {
   imagePosition: "left" | "right";
   heading?: string;
   description?: string;
-  desktopHeight: number;
+  desktopHeight?: number;
   sectionHeightDesktop?: number;
   sectionHeightMobile: number;
   enableBackground: boolean;
@@ -31,8 +31,8 @@ const CollectionBanner = (props: CollectionBannerProps) => {
     imagePosition = "right",
     heading,
     description,
-    desktopHeight = 300,
-    sectionHeightDesktop: _legacySectionHeightDesktop,
+    desktopHeight,
+    sectionHeightDesktop,
     sectionHeightMobile = 450,
     enableBackground = true,
     overlayOpacity = 0.5,
@@ -51,6 +51,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
   const bannerImage = image || collection?.image;
   const bannerHeading = heading || collection?.title;
   const bannerDescription = description || collection?.description;
+  const resolvedDesktopHeight = desktopHeight ?? sectionHeightDesktop ?? 300;
 
   const contentPositionClass: Record<string, string> = {
     "top left": "items-start justify-start text-left",
@@ -72,7 +73,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
       {...rest}
       style={
         {
-          "--banner-height-desktop": `${desktopHeight}px`,
+          "--banner-height-desktop": `${resolvedDesktopHeight}px`,
           "--banner-height-mobile": `${sectionHeightMobile}px`,
         } as React.CSSProperties
       }

@@ -92,6 +92,14 @@ const Testimonials = ({
   let productImage = selectedProduct?.media.nodes.find(
     (media) => media.__typename === "MediaImage",
   )?.image;
+  const isDesignMode = useWeaverseStudioCheck();
+
+  const canRenderTestimonials = Boolean(selectedProduct && productImage);
+
+  if (!canRenderTestimonials && !isDesignMode) {
+    return null;
+  }
+
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
     : ratingLink || "#";
@@ -99,7 +107,6 @@ const Testimonials = ({
     loaderData?.judgemeReviews.reviews.slice(0, reviewsToShow) || [];
   const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
   const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
-  const isDesignMode = useWeaverseStudioCheck();
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
@@ -158,7 +165,14 @@ const Testimonials = ({
         </div>
       )}
       {reviewsPosition === "right" && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 grid grid-cols-1 md:grid-cols-2">
+        <div
+          className={clsx(
+            "pointer-events-none z-20 grid grid-cols-1 md:grid-cols-2",
+            productImage || isDesignMode
+              ? "absolute inset-x-0 top-0"
+              : "relative",
+          )}
+        >
           <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-16">
             <div className="flex w-full max-w-[247px] flex-col gap-3 rounded-xl border border-(--border-color) bg-(--rating-overlay-background) p-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
               <p className="text-xs font-semibold leading-none uppercase tracking-wide opacity-90">

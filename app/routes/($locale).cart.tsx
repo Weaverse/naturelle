@@ -2,18 +2,23 @@ import type { CartQueryDataReturn } from "@shopify/hydrogen";
 import { CartForm, Image } from "@shopify/hydrogen";
 import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
+import { useEffect, useRef, useState } from "react";
 import {
   type ActionFunctionArgs,
   type AppLoadContext,
   data,
   type HeadersFunction,
+  type LoaderFunctionArgs,
   type MetaFunction,
   useFetcher,
+  useLoaderData,
 } from "react-router";
 import { Button } from "~/components/button";
 import { CartMain } from "~/components/cart/cart";
 import { IconNewsletter } from "~/components/icon";
 import { Input } from "~/components/input";
+import { getLocaleFromRequest } from "~/utils/locale";
+import { safeRedirectPath } from "~/utils/misc";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
 export const meta: MetaFunction = () => {
@@ -23,6 +28,10 @@ export const meta: MetaFunction = () => {
 export const headers: HeadersFunction = ({ actionHeaders }) => actionHeaders;
 
 export const shouldRevalidate = skipRevalidationForCartActions;
+
+export async function loader({ context }: LoaderFunctionArgs) {
+  return { cart: await context.cart.get() };
+}
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { cart } = context;
@@ -155,13 +164,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
       result = await cart.updateDiscountCodes(discountCodes);
       break;
     }
-    case CartForm.ACTIONS.GiftCardCodesUpdate: {
-      const formGiftCardCode = inputs.giftCardCode;
-      const giftCardCodes = (
-        formGiftCardCode ? [formGiftCardCode] : []
-      ) as string[];
-      giftCardCodes.push(...((inputs.giftCardCodes as string[]) || []));
-      result = await cart.updateGiftCardCodes(giftCardCodes);
+    case CartForm.ACTIONS.GiftCardCodesAdd: {
+      const giftCardCodes = (inputs.giftCardCodes as string[]) || [];
+      result = await cart.addGiftCardCodes(giftCardCodes);
       break;
     }
     case CartForm.ACTIONS.GiftCardCodesRemove: {
@@ -187,7 +192,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const redirectTo = formData.get("redirectTo") ?? null;
   if (typeof redirectTo === "string") {
     status = 303;
-    responseHeaders.set("Location", redirectTo);
+    const locale = getLocaleFromRequest(request);
+    responseHeaders.set(
+      "Location",
+      safeRedirectPath(redirectTo, `${locale.pathPrefix}/cart`),
+    );
   }
 
   return data(
@@ -260,6 +269,7 @@ async function getCartOrNull(cart: AppLoadContext["cart"]) {
 
 export default function Cart() {
   const { cartBannerImage } = useThemeSettings();
+  const { cart } = useLoaderData<typeof loader>();
 
   return (
     <main className="cart flex flex-col">
@@ -280,7 +290,7 @@ export default function Cart() {
           <h1 className="sr-only">Cart</h1>
         )}
         <div className="mx-auto w-full max-w-page">
-          <CartMain layout="page" />
+          <CartMain initialCart={cart} layout="page" />
         </div>
       </div>
       <CartNewsletter />
@@ -289,11 +299,37 @@ export default function Cart() {
 }
 
 function CartNewsletter() {
-  const fetcher = useFetcher<{ errors?: Array<{ message: string }> }>({
-    key: "cart-newsletter",
-  });
-  const isSubmitting = fetcher.state === "submitting";
-  const error = fetcher.state === "idle" && fetcher.data?.errors?.[0]?.message;
+  const {
+    cartNewsletterHeading,
+    cartNewsletterDescription,
+    cartNewsletterPlaceholder,
+    cartNewsletterButtonText,
+    cartNewsletterSuccessMessage,
+  } = useThemeSettings();
+  const fetcher = useFetcher<{
+    customer?: unknown;
+    errors?: Array<{ message?: string }>;
+  }>({ key: "cart-newsletter" });
+  const [email, setEmail] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const dataAtSubmission = useRef(fetcher.data);
+  const isSubmitting = fetcher.state !== "idle";
+  const submissionComplete = Boolean(
+    submittedEmail &&
+      fetcher.state === "idle" &&
+      fetcher.data &&
+      fetcher.data !== dataAtSubmission.current,
+  );
+  const isSuccess = Boolean(submissionComplete && fetcher.data?.customer);
+  const error = submissionComplete
+    ? fetcher.data?.errors?.find(({ message }) => message)?.message
+    : null;
+
+  useEffect(() => {
+    if (isSuccess) {
+      setEmail("");
+    }
+  }, [isSuccess]);
 
   return (
     <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
@@ -304,24 +340,37 @@ function CartNewsletter() {
           aria-hidden="true"
         />
         <div className="flex flex-col items-center gap-2">
-          <h2 className="max-w-72 text-center font-heading text-[44px] leading-[110%] font-normal text-text md:max-w-none">
-            Sign up for the updates
-          </h2>
-          <p className="text-center font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text">
-            Get 15% off your first order
-          </p>
+          {cartNewsletterHeading && (
+            <h2 className="max-w-72 text-center font-heading text-[44px] leading-[110%] font-normal text-text md:max-w-none">
+              {cartNewsletterHeading}
+            </h2>
+          )}
+          {cartNewsletterDescription && (
+            <p className="text-center font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text">
+              {cartNewsletterDescription}
+            </p>
+          )}
         </div>
         <fetcher.Form
           method="POST"
           action="/api/customer"
           className="flex w-full items-stretch gap-3"
+          onSubmit={() => {
+            dataAtSubmission.current = fetcher.data;
+            setSubmittedEmail(email);
+          }}
         >
           <Input
             variant="custom"
             type="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder={cartNewsletterPlaceholder}
             required
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setSubmittedEmail(null);
+            }}
             className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
           />
           <Button
@@ -330,10 +379,15 @@ function CartNewsletter() {
             disabled={isSubmitting}
             className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
           >
-            Send
+            {cartNewsletterButtonText}
           </Button>
         </fetcher.Form>
-        {error && <p className="text-sm text-red-700">{error}</p>}
+        <div aria-live="polite" className="min-h-5 text-center text-sm">
+          {isSuccess && (
+            <p className="text-green-700">{cartNewsletterSuccessMessage}</p>
+          )}
+          {error && <p className="text-red-700">{error}</p>}
+        </div>
       </div>
     </section>
   );

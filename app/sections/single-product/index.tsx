@@ -95,7 +95,7 @@ let SingleProduct = ({
     addToCartText,
     soldOutText,
     unavailableText,
-    syncVariantWithUrl: true,
+    syncVariantWithUrl: false,
   });
 
   let themeSettings = useThemeSettings();
@@ -203,8 +203,6 @@ let SingleProduct = ({
                   onSelectedVariantChange={handleSelectedVariantChange}
                   swatch={swatches}
                   variants={variants}
-                  options={product?.options}
-                  handle={product?.handle}
                   hideUnavailableOptions={hideUnavailableOptions}
                   data-motion="fade-up"
                 />

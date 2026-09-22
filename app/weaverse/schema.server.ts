@@ -420,6 +420,40 @@ export const themeSchema: HydrogenThemeSchema = {
           placeholder: "Giftcard",
           condition: "enableGiftCard.eq.true",
         },
+        {
+          type: "heading",
+          label: "Cart newsletter",
+        },
+        {
+          type: "text",
+          name: "cartNewsletterHeading",
+          label: "Heading",
+          defaultValue: "Sign up for the updates",
+        },
+        {
+          type: "text",
+          name: "cartNewsletterDescription",
+          label: "Description",
+          defaultValue: "Get 15% off your first order",
+        },
+        {
+          type: "text",
+          name: "cartNewsletterPlaceholder",
+          label: "Input placeholder",
+          defaultValue: "Enter your email",
+        },
+        {
+          type: "text",
+          name: "cartNewsletterButtonText",
+          label: "Button text",
+          defaultValue: "Send",
+        },
+        {
+          type: "text",
+          name: "cartNewsletterSuccessMessage",
+          label: "Success message",
+          defaultValue: "Subscribe successfully!",
+        },
       ],
     },
     {

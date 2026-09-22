@@ -1,6 +1,7 @@
 import { CartForm, type OptimisticCartLineInput } from "@shopify/hydrogen";
 import type { Fetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
+import { getCartFormInput, getTimestampMs } from "./cart-baseline";
 import type {
   CartLine,
   CartMutationResponse,
@@ -11,16 +12,6 @@ export type PendingAdd = {
   lines: OptimisticCartLineInput[];
   stagedFromUpdatedAt: string;
 };
-
-function hasCartResponseErrors(value: unknown) {
-  const response = value as
-    | {
-        errors?: unknown[];
-        userErrors?: unknown[];
-      }
-    | undefined;
-  return Boolean(response?.errors?.length || response?.userErrors?.length);
-}
 
 function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
   const handled = new Set<string>();
@@ -63,10 +54,6 @@ function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
   }
 
   return { handled, mutated };
-}
-
-function getTimestampMs(dateString: string | undefined) {
-  return dateString ? new Date(dateString).getTime() : 0;
 }
 
 function cartLineQuantity(cart: CartApiQueryFragment, merchandiseId: string) {
@@ -173,17 +160,6 @@ export function filterRemovedCartLines(
   };
 }
 
-function getFormInput(fetcher: Fetcher<unknown>) {
-  if (!fetcher.formData) {
-    return null;
-  }
-  try {
-    return CartForm.getFormInput(fetcher.formData);
-  } catch {
-    return null;
-  }
-}
-
 /** Apply only mutations that have not yet been adopted by the baseline. */
 export function applyOptimisticMutations(
   baseline: CartApiQueryFragment,
@@ -215,7 +191,7 @@ export function applyOptimisticMutations(
   mutated = staged.mutated;
 
   for (const fetcher of pendingFetchers) {
-    const formInput = getFormInput(fetcher);
+    const formInput = getCartFormInput(fetcher);
     if (!formInput) {
       continue;
     }
@@ -292,8 +268,4 @@ export function getCartLineRenderKeys(lines: CartLine[]) {
       ? `merchandise-${merchandiseId}`
       : line.id;
   });
-}
-
-export function resetOptimisticCartForTests() {
-  // No module-level optimistic state remains.
 }
