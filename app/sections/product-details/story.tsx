@@ -10,7 +10,6 @@ import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { cn } from "~/utils/cn";
 import { ProductMetafieldEmptyState } from "./metafield-empty-state";
 import {
-  createMetafieldInput,
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
 } from "./product-metafield";
@@ -136,7 +135,15 @@ export const schema = createSchema({
           label: "Eyebrow",
           defaultValue: "About this product",
         },
-        createMetafieldInput(PRODUCT_DETAIL_METAFIELDS.story),
+        {
+          type: "text",
+          name: "metafield",
+          label: "Product metafield",
+          defaultValue: PRODUCT_DETAIL_METAFIELDS.story,
+          placeholder: PRODUCT_DETAIL_METAFIELDS.story,
+          helpText:
+            "Use a metaobject with <strong>title</strong> and <strong>content</strong> fields.",
+        },
         {
           type: "image",
           name: "image",

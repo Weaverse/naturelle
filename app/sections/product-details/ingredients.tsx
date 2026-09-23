@@ -9,7 +9,6 @@ import type { Ref } from "react";
 import { cn } from "~/utils/cn";
 import { ProductMetafieldEmptyState } from "./metafield-empty-state";
 import {
-  createMetafieldInput,
   getProductDetailField,
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
@@ -134,7 +133,15 @@ export const schema = createSchema({
           defaultValue:
             "A potent blend of clinical actives and botanical extracts designed to restore youthful vitality.",
         },
-        createMetafieldInput(PRODUCT_DETAIL_METAFIELDS.ingredients),
+        {
+          type: "text",
+          name: "metafield",
+          label: "Product metafield",
+          defaultValue: PRODUCT_DETAIL_METAFIELDS.ingredients,
+          placeholder: PRODUCT_DETAIL_METAFIELDS.ingredients,
+          helpText:
+            "Use a list of metaobjects with <strong>title</strong> and <strong>content</strong> fields.",
+        },
       ],
     },
   ],

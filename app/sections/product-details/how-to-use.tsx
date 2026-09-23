@@ -2,7 +2,6 @@ import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
 import { ProductMetafieldEmptyState } from "./metafield-empty-state";
 import {
-  createMetafieldInput,
   getProductDetailField,
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
@@ -99,7 +98,15 @@ export const schema = createSchema({
           label: "Heading",
           defaultValue: "How to Use",
         },
-        createMetafieldInput(PRODUCT_DETAIL_METAFIELDS.howToUse),
+        {
+          type: "text",
+          name: "metafield",
+          label: "Product metafield",
+          defaultValue: PRODUCT_DETAIL_METAFIELDS.howToUse,
+          placeholder: PRODUCT_DETAIL_METAFIELDS.howToUse,
+          helpText:
+            "Use text, rich text, or a list of metaobjects with a <strong>content</strong> field.",
+        },
       ],
     },
   ],

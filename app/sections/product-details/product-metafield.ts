@@ -296,15 +296,3 @@ export const PRODUCT_DETAIL_METAFIELDS = {
   howToUse: "howtouse",
   results: "product_result",
 } as const;
-
-export function createMetafieldInput(defaultValue: string) {
-  return {
-    type: "text" as const,
-    name: "metafield",
-    label: "Product metafield",
-    defaultValue,
-    placeholder: defaultValue,
-    helpText:
-      "Enter a metafield name or key. The custom namespace is used by default; use namespace.key for another namespace.",
-  };
-}
