@@ -13,8 +13,7 @@ interface CollectionBannerProps extends HydrogenComponentProps {
   imagePosition: "left" | "right";
   heading?: string;
   description?: string;
-  desktopHeight?: number;
-  sectionHeightDesktop?: number;
+  sectionHeightDesktop: number;
   sectionHeightMobile: number;
   enableBackground: boolean;
   overlayOpacity: number;
@@ -31,8 +30,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
     imagePosition = "right",
     heading,
     description,
-    desktopHeight,
-    sectionHeightDesktop,
+    sectionHeightDesktop = 300,
     sectionHeightMobile = 450,
     enableBackground = true,
     overlayOpacity = 0.5,
@@ -51,7 +49,6 @@ const CollectionBanner = (props: CollectionBannerProps) => {
   const bannerImage = image || collection?.image;
   const bannerHeading = heading || collection?.title;
   const bannerDescription = description || collection?.description;
-  const resolvedDesktopHeight = desktopHeight ?? sectionHeightDesktop ?? 300;
 
   const contentPositionClass: Record<string, string> = {
     "top left": "items-start justify-start text-left",
@@ -73,7 +70,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
       {...rest}
       style={
         {
-          "--banner-height-desktop": `${resolvedDesktopHeight}px`,
+          "--banner-height-desktop": `${sectionHeightDesktop}px`,
           "--banner-height-mobile": `${sectionHeightMobile}px`,
         } as React.CSSProperties
       }
@@ -192,7 +189,7 @@ export const schema = createSchema({
       inputs: [
         {
           type: "range",
-          name: "desktopHeight",
+          name: "sectionHeightDesktop",
           label: "Section height desktop",
           defaultValue: 300,
           configs: {

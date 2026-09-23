@@ -1,5 +1,9 @@
 import { Image } from "@shopify/hydrogen";
-import type { ComponentLoaderArgs, WeaverseProduct } from "@weaverse/hydrogen";
+import type {
+  ComponentLoaderArgs,
+  WeaverseImage,
+  WeaverseProduct,
+} from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
@@ -14,6 +18,7 @@ import { getJudgemeReviews } from "~/utils/judgeme";
 import Review from "./review";
 
 interface TestimonialsData {
+  backgroundImage?: WeaverseImage;
   product?: WeaverseProduct;
   reviewsPosition: string;
   textColor?: string;
@@ -76,6 +81,7 @@ const Testimonials = ({
   ...props
 }: TestimonialsProps & { ref?: RefObject<HTMLElement | null> }) => {
   let {
+    backgroundImage,
     reviewsPosition,
     textColor,
     borderColor,
@@ -92,9 +98,10 @@ const Testimonials = ({
   let productImage = selectedProduct?.media.nodes.find(
     (media) => media.__typename === "MediaImage",
   )?.image;
+  const displayImage = productImage || backgroundImage;
   const isDesignMode = useWeaverseStudioCheck();
 
-  const canRenderTestimonials = Boolean(selectedProduct && productImage);
+  const canRenderTestimonials = Boolean(selectedProduct || backgroundImage);
 
   if (!canRenderTestimonials && !isDesignMode) {
     return null;
@@ -124,15 +131,15 @@ const Testimonials = ({
       style={sectionStyle}
     >
       <div className="absolute inset-0 hidden md:block">
-        {productImage ? (
+        {displayImage ? (
           <div className="grid h-full grid-cols-2">
             <Image
-              data={productImage}
+              data={displayImage}
               className="h-full w-full object-cover"
               sizes="50vw"
             />
             <Image
-              data={productImage}
+              data={displayImage}
               className="h-full w-full object-cover"
               sizes="50vw"
             />
@@ -146,11 +153,11 @@ const Testimonials = ({
           </div>
         ) : null}
       </div>
-      {(productImage || isDesignMode) && (
+      {(displayImage || isDesignMode) && (
         <div className="relative h-[420px] w-full md:hidden">
-          {productImage ? (
+          {displayImage ? (
             <Image
-              data={productImage}
+              data={displayImage}
               className="h-full w-full object-cover"
               sizes="100vw"
             />
@@ -168,7 +175,7 @@ const Testimonials = ({
         <div
           className={clsx(
             "pointer-events-none z-20 grid grid-cols-1 md:grid-cols-2",
-            productImage || isDesignMode
+            displayImage || isDesignMode
               ? "absolute inset-x-0 top-0"
               : "relative",
           )}
@@ -223,9 +230,9 @@ const Testimonials = ({
           )}
         >
           <div className="absolute inset-0 md:hidden">
-            {productImage ? (
+            {displayImage ? (
               <Image
-                data={productImage}
+                data={displayImage}
                 className="h-full w-full object-cover"
                 sizes="100vw"
               />
@@ -286,6 +293,11 @@ export const schema = createSchema({
           type: "product",
           name: "product",
           shouldRevalidate: true,
+        },
+        {
+          type: "image",
+          name: "backgroundImage",
+          label: "Background image",
         },
         {
           type: "toggle-group",
