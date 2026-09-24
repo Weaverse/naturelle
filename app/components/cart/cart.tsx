@@ -238,7 +238,7 @@ function CartLineItem({
     return (
       <li
         className="grid grid-cols-[5rem_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-3 border-border-subtle border-b py-4 last:border-b-0 md:grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] md:items-center md:gap-3 lg:gap-5"
-        style={{ display: isLineRemoving ? "none" : undefined }}
+        hidden={isLineRemoving}
       >
         <div className="contents md:flex md:min-w-0 md:items-center md:gap-4">
           {merchandise.image && (
@@ -298,7 +298,7 @@ function CartLineItem({
   return (
     <li
       className="flex gap-4 border-border-subtle border-b py-6"
-      style={{ display: isLineRemoving ? "none" : "flex" }}
+      hidden={isLineRemoving}
     >
       {merchandise.image && (
         <Link
@@ -584,10 +584,7 @@ export function CartEmpty({
   onClose?: () => void;
 }) {
   return (
-    <div
-      style={{ display: visible ? undefined : "none" }}
-      className={cn(layout === "aside" && "px-0 py-2")}
-    >
+    <div hidden={!visible} className={cn(layout === "aside" && "px-0 py-2")}>
       <p className="mb-4">
         Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
         started!

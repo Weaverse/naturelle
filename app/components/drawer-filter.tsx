@@ -44,7 +44,7 @@ type DrawerFilterProps = {
   checkboxShape?: CheckboxShape;
 };
 
-export const DrawerFilter = ({
+export function DrawerFilter({
   filters,
   appliedFilters = [],
   productNumber = 0,
@@ -56,7 +56,7 @@ export const DrawerFilter = ({
   displayAsButtonFor = "Size, More filters",
   filterItemsLimit = 10,
   checkboxShape = "square",
-}: DrawerFilterProps) => {
+}: DrawerFilterProps) {
   const { openDrawer, isOpen, closeDrawer } = useDrawer();
   return (
     <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 lg:px-0">
@@ -105,9 +105,9 @@ export const DrawerFilter = ({
       </div>
     </div>
   );
-};
+}
 
-const ListItemFilter = ({
+function ListItemFilter({
   option,
   appliedFilters,
   displayAsButton = false,
@@ -121,7 +121,7 @@ const ListItemFilter = ({
   displayAsSwatch?: boolean;
   showFiltersCount?: boolean;
   checkboxShape?: CheckboxShape;
-}) => {
+}) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const location = useLocation();
@@ -223,9 +223,9 @@ const ListItemFilter = ({
       />
     </div>
   );
-};
+}
 
-export const FiltersDrawer = ({
+export function FiltersDrawer({
   filters = [],
   appliedFilters = [],
   desktop = false,
@@ -236,7 +236,7 @@ export const FiltersDrawer = ({
   displayAsButtonFor = "Size, More filters",
   filterItemsLimit = 10,
   checkboxShape = "square",
-}: Omit<DrawerFilterProps, "children"> & { desktop?: boolean }) => {
+}: Omit<DrawerFilterProps, "children"> & { desktop?: boolean }) {
   const [params] = useSearchParams();
   const filterMarkup = (filter: Filter, option: Filter["values"][0]) => {
     switch (filter.type) {
@@ -332,9 +332,9 @@ export const FiltersDrawer = ({
       </div>
     </nav>
   );
-};
+}
 
-const FilterValues = ({
+function FilterValues({
   options,
   appliedFilters,
   displayAsButton,
@@ -350,7 +350,7 @@ const FilterValues = ({
   showFiltersCount: boolean;
   limit: number;
   checkboxShape: CheckboxShape;
-}) => {
+}) {
   const [expanded, setExpanded] = useState(false);
   const safeLimit = Math.max(1, limit || 10);
   const hasMore = options.length > safeLimit;
@@ -393,15 +393,15 @@ const FilterValues = ({
       )}
     </>
   );
-};
+}
 
-export const AppliedFilters = ({
+export function AppliedFilters({
   filters = [],
   clearTo,
 }: {
   filters: AppliedFilter[];
   clearTo?: string;
-}) => {
+}) {
   const [params] = useSearchParams();
   const location = useLocation();
 
@@ -435,9 +435,9 @@ export const AppliedFilters = ({
       </Link>
     </div>
   );
-};
+}
 
-const getCurrencySymbol = (currencyCode: string, locale: string) => {
+function getCurrencySymbol(currencyCode: string, locale: string) {
   try {
     return (
       new Intl.NumberFormat(locale, {
@@ -451,9 +451,9 @@ const getCurrencySymbol = (currencyCode: string, locale: string) => {
   } catch {
     return currencyCode;
   }
-};
+}
 
-const getCurrencyFractionDigits = (currencyCode: string, locale: string) => {
+function getCurrencyFractionDigits(currencyCode: string, locale: string) {
   try {
     return new Intl.NumberFormat(locale, {
       style: "currency",
@@ -462,17 +462,17 @@ const getCurrencyFractionDigits = (currencyCode: string, locale: string) => {
   } catch {
     return 2;
   }
-};
+}
 
-const parsePriceInput = (value: string) => {
+function parsePriceInput(value: string) {
   if (!value) {
     return undefined;
   }
   const parsedValue = Number(value);
   return Number.isFinite(parsedValue) ? parsedValue : undefined;
-};
+}
 
-const PriceRangeFilter = ({
+function PriceRangeFilter({
   lowestPrice = 0,
   highestPrice,
   max,
@@ -482,7 +482,7 @@ const PriceRangeFilter = ({
   highestPrice?: number;
   max?: number;
   min?: number;
-}) => {
+}) {
   const location = useLocation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -655,9 +655,9 @@ const PriceRangeFilter = ({
       </div>
     </div>
   );
-};
+}
 
-const PriceStepper = ({
+function PriceStepper({
   onIncrement,
   onDecrement,
   label,
@@ -665,7 +665,7 @@ const PriceStepper = ({
   onIncrement: () => void;
   onDecrement: () => void;
   label: "min" | "max";
-}) => {
+}) {
   return (
     <span className="flex shrink-0 flex-col gap-1">
       <button
@@ -684,13 +684,13 @@ const PriceStepper = ({
       </button>
     </span>
   );
-};
+}
 
-export const SortMenu = ({
+export function SortMenu({
   showSearchSort = false,
 }: {
   showSearchSort?: boolean;
-}) => {
+}) {
   const productSortItems: { label: string; key: SortParam }[] = [
     { label: "Relevance", key: "relevance" },
     { label: "Featured", key: "featured" },
@@ -766,4 +766,4 @@ export const SortMenu = ({
       </Menu.Items>
     </Menu>
   );
-};
+}

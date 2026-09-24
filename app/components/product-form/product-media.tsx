@@ -5,6 +5,7 @@ import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import { Image } from "~/components/image";
+import { cn } from "~/utils/cn";
 import { ZoomModal } from "./media-zoom";
 
 interface ProductMediaProps {
@@ -80,7 +81,7 @@ export function ProductMedia(props: ProductMediaProps) {
             thumbs={useSwiperThumbnails ? { swiper: thumbsSwiper } : undefined}
             onSwiper={setSwiper}
             onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
-            className={clsx(
+            className={cn(
               "vt-product-image max-w-full",
               showPagination &&
                 "pb-5! md:pb-0! md:[&_.swiper-pagination-bullets]:hidden",
@@ -128,7 +129,7 @@ export function ProductMedia(props: ProductMediaProps) {
           </Swiper>
           {showSlideCounter && (
             <span
-              className={clsx(
+              className={cn(
                 "absolute right-2 z-10 font-heading text-sm text-text-primary sm:text-base",
                 showPagination ? "bottom-7 sm:bottom-5" : "bottom-2",
               )}
@@ -148,7 +149,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     type="button"
                     aria-label={`View image ${i + 1}`}
                     aria-pressed={isActive}
-                    className={clsx(
+                    className={cn(
                       "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors md:size-[88px]",
                       isActive
                         ? "border-border/60"
@@ -193,7 +194,7 @@ export function ProductMedia(props: ProductMediaProps) {
               {media.map((med, i) => (
                 <SwiperSlide
                   key={med.id}
-                  className={clsx(
+                  className={cn(
                     "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
                     "[&.swiper-slide-thumb-active]:border-border/60",
                   )}

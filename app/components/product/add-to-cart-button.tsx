@@ -124,6 +124,15 @@ function AddToCartContent({
     pendingToken.current = null;
   }, [fetcher.state]);
 
+  useEffect(
+    () => () => {
+      if (pendingToken.current) {
+        useCartStore.getState().clearPendingAdd(pendingToken.current);
+      }
+    },
+    [],
+  );
+
   return (
     <AddToCartAnalytics fetcher={fetcher} onAdded={onAdded}>
       <input type="hidden" name="analytics" value={JSON.stringify(analytics)} />

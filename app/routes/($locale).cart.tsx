@@ -2,7 +2,7 @@ import type { CartQueryDataReturn } from "@shopify/hydrogen";
 import { CartForm, Image } from "@shopify/hydrogen";
 import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   type ActionFunctionArgs,
   type AppLoadContext,
@@ -310,24 +310,17 @@ function CartNewsletter() {
     customer?: unknown;
     errors?: Array<{ message?: string }>;
   }>({ key: "cart-newsletter" });
-  const [email, setEmail] = useState("");
-  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
-  const dataAtSubmission = useRef(fetcher.data);
+  const formRef = useRef<HTMLFormElement>(null);
   const isSubmitting = fetcher.state !== "idle";
-  const submissionComplete = Boolean(
-    submittedEmail &&
-      fetcher.state === "idle" &&
-      fetcher.data &&
-      fetcher.data !== dataAtSubmission.current,
-  );
-  const isSuccess = Boolean(submissionComplete && fetcher.data?.customer);
-  const error = submissionComplete
-    ? fetcher.data?.errors?.find(({ message }) => message)?.message
-    : null;
+  const isSuccess = Boolean(fetcher.state === "idle" && fetcher.data?.customer);
+  const error =
+    fetcher.state === "idle"
+      ? fetcher.data?.errors?.find(({ message }) => message)?.message
+      : null;
 
   useEffect(() => {
     if (isSuccess) {
-      setEmail("");
+      formRef.current?.reset();
     }
   }, [isSuccess]);
 
@@ -352,13 +345,10 @@ function CartNewsletter() {
           )}
         </div>
         <fetcher.Form
+          ref={formRef}
           method="POST"
           action="/api/customer"
           className="flex w-full items-stretch gap-3"
-          onSubmit={() => {
-            dataAtSubmission.current = fetcher.data;
-            setSubmittedEmail(email);
-          }}
         >
           <Input
             variant="custom"
@@ -366,11 +356,6 @@ function CartNewsletter() {
             name="email"
             placeholder={cartNewsletterPlaceholder}
             required
-            value={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setSubmittedEmail(null);
-            }}
             className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
           />
           <Button

@@ -12,6 +12,7 @@ import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
+import { cn } from "~/utils/cn";
 import { getExcerpt } from "~/utils/misc";
 import {
   ProductQuantityInput,
@@ -120,8 +121,8 @@ let ProductInformation = ({
         ref={ref}
         {...rest}
         verticalPadding="none"
-        className={clsx(className, "px-5 pt-10 pb-16 md:px-6 lg:px-0")}
-        containerClassName={clsx(containerClassName, "py-0")}
+        className={cn(className, "px-5 pt-10 pb-16 md:px-6 lg:px-0")}
+        containerClassName={cn(containerClassName, "py-0")}
       >
         <div
           className={clsx(
@@ -344,7 +345,7 @@ function ProductDescription({
               {title}
             </Text>
             <IconAnnouncementChevron
-              className={clsx(
+              className={cn(
                 "h-3 w-2 transition-transform duration-300",
                 open ? "rotate-90" : "rotate-0",
               )}
