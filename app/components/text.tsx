@@ -175,7 +175,7 @@ export function PageHeader({
       "grid md:text-center w-full gap-4 p-6 py-8 md:p-8 lg:p-12 md:justify-items-center",
     allCollections:
       "flex justify-between items-baseline gap-8 p-6 md:p-8 lg:p-12",
-    search: "grid w-full gap-6 px-4 py-12 sm:px-6 lg:py-20 justify-items-start",
+    search: "w-full py-12 lg:py-16 justify-items-start",
   };
 
   const styles = clsx(variants[variant], className);

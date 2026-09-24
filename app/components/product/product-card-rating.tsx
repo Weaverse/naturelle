@@ -41,10 +41,13 @@ export function ProductCardRating({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <StarRating rating={rating} />
-      <span className={detailed ? "text-sm text-text" : "text-xs text-text"}>
-        {detailed
-          ? `${rating.toFixed(1)}/5.0 (${ratingCount} reviews)`
-          : `${rating.toFixed(1)} (${ratingCount} reviews)`}
+      <span className="inline-flex items-center gap-1">
+        <span className="font-body text-[13px] font-semibold leading-normal text-text">
+          {detailed ? `${rating.toFixed(1)}/5.0` : rating.toFixed(1)}
+        </span>
+        <span className="font-body text-[13px] font-normal leading-normal text-text">
+          ({ratingCount} reviews)
+        </span>
       </span>
     </div>
   );

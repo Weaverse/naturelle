@@ -40,6 +40,13 @@ import * as Newsletter from "~/sections/newsletter/index";
 import * as NewsletterInput from "~/sections/newsletter/input-email";
 import * as NewsletterIcon from "~/sections/newsletter/newsletter-icon";
 import * as Page from "~/sections/page/page";
+import * as ProductDetailBadges from "~/sections/product-details/badges";
+import * as ProductDetailBenefits from "~/sections/product-details/benefits";
+import * as ProductDetailHowToUse from "~/sections/product-details/how-to-use";
+import * as ProductDetails from "~/sections/product-details/index";
+import * as ProductDetailIngredients from "~/sections/product-details/ingredients";
+import * as ProductDetailResults from "~/sections/product-details/results";
+import * as ProductDetailStory from "~/sections/product-details/story";
 import * as ProductGrid from "~/sections/product-grid/index";
 import * as ProductGridList from "~/sections/product-grid/list-products";
 import * as ProductInformation from "~/sections/product-information/index";
@@ -96,6 +103,13 @@ export const components: HydrogenComponent[] = [
   Collections,
   AllProducts,
   ProductInformation,
+  ProductDetails,
+  ProductDetailBenefits,
+  ProductDetailStory,
+  ProductDetailIngredients,
+  ProductDetailHowToUse,
+  ProductDetailResults,
+  ProductDetailBadges,
   SingleProduct,
   HeaderImage,
   CollectionFilters,

@@ -1,18 +1,25 @@
-import { Pagination } from "@shopify/hydrogen";
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { RefObject } from "react";
+import { type RefObject, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLoaderData } from "react-router";
 import type { CollectionDetailsQuery } from "storefront-api.generated";
 import { Button } from "~/components/button";
-import { DrawerFilter } from "~/components/drawer-filter";
+import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
+import { ProductListingPagination } from "~/components/product-listing/pagination";
 import { cn } from "~/utils/cn";
 import type { AppliedFilter } from "~/utils/filter";
 import { ProductsLoadedOnScroll } from "./products-loaded-on-scroll";
 
-interface CollectionFiltersProps extends VariantProps<typeof variants> {}
+interface CollectionFiltersProps extends VariantProps<typeof variants> {
+  expandFilters?: boolean;
+  showFiltersCount?: boolean;
+  enableSwatches?: boolean;
+  displayAsButtonFor?: string;
+  filterItemsLimit?: number;
+  checkboxShape?: "square" | "circle";
+}
 let variants = cva("relative lg:pb-20 pb-12", {
   variants: {
     width: {
@@ -50,7 +57,17 @@ let CollectionFilters = ({
   ref: sectionRef,
   ...props
 }: CollectionFiltersProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { width, gap, ...rest } = props;
+  let {
+    width,
+    gap,
+    expandFilters = true,
+    showFiltersCount = true,
+    enableSwatches = true,
+    displayAsButtonFor = "Size, More filters",
+    filterItemsLimit = 10,
+    checkboxShape = "square",
+    ...rest
+  } = props;
   let { ref, inView } = useInView();
   let { collection, collections, appliedFilters } = useLoaderData<
     CollectionDetailsQuery & {
@@ -59,50 +76,77 @@ let CollectionFilters = ({
     }
   >();
 
-  let productNumber = collection?.products.nodes.length;
+  const [productNumber, setProductNumber] = useState(
+    collection?.products.nodes.length ?? 0,
+  );
+  const lowestPrice = Number(
+    collection.lowestPriceProduct.nodes[0]?.priceRange.minVariantPrice.amount,
+  );
+  const highestPrice = Number(
+    collection.highestPriceProduct.nodes[0]?.priceRange.maxVariantPrice.amount,
+  );
+  const priceRange = {
+    min: Number.isFinite(lowestPrice) ? lowestPrice : undefined,
+    max: Number.isFinite(highestPrice) ? highestPrice : undefined,
+  };
+  const storefrontFilters =
+    (collection?.products.filters as Filter[] | undefined) ?? [];
 
   if (collection?.products && collections) {
     return (
-      <section ref={sectionRef} {...rest}>
-        <DrawerFilter
-          productNumber={productNumber}
-          filters={collection.products.filters as Filter[]}
+      <section ref={sectionRef} {...rest} className="bg-background-basic">
+        <ProductListingFilterToolbar
+          filters={storefrontFilters}
           appliedFilters={appliedFilters}
+          productNumber={productNumber}
           collections={collections}
-        />
-        <div className={cn(variants({ gap, width, padding: width }))}>
-          <Pagination connection={collection.products}>
-            {({
-              nodes,
-              isLoading,
-              PreviousLink,
-              NextLink,
-              nextPageUrl,
-              hasNextPage,
-              state,
-            }) => (
-              <div className="flex flex-col w-full items-center justify-center lg:!mt-16 mt-9">
-                <Button as={PreviousLink} variant="outline" className="!mb-14">
-                  <span className="font-heading font-light">
-                    {isLoading ? "Loading..." : "Load previous"}
-                  </span>
-                </Button>
-                <ProductsLoadedOnScroll
-                  nodes={nodes}
-                  inView={inView}
-                  nextPageUrl={nextPageUrl}
-                  hasNextPage={hasNextPage}
-                  state={state}
-                />
-                <Button as={NextLink} variant="outline" className="!mt-14">
-                  <span className="font-heading font-light my-0.5">
-                    {isLoading ? "Loading..." : "Show more +"}
-                  </span>
-                </Button>
-              </div>
+          priceRange={priceRange}
+          expandFilters={expandFilters}
+          showFiltersCount={showFiltersCount}
+          enableSwatches={enableSwatches}
+          displayAsButtonFor={displayAsButtonFor}
+          filterItemsLimit={filterItemsLimit}
+          checkboxShape={checkboxShape}
+          sectionClassName={cn(
+            "mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0",
+            width === "full" && "max-w-none",
+            width === "stretch" && "max-w-none lg:px-16",
+          )}
+          contentClassName={cn(variants({ gap }), "min-w-0 flex-1")}
+        >
+          <ProductListingPagination
+            connection={collection.products}
+            renderPrevious={({ PreviousLink, isLoading }) => (
+              <Button as={PreviousLink} variant="outline" className="mb-14!">
+                <span className="font-heading font-light">
+                  {isLoading ? "Loading..." : "Load previous"}
+                </span>
+              </Button>
             )}
-          </Pagination>
-        </div>
+            renderNext={({ NextLink, isLoading }) => (
+              <Button as={NextLink} variant="outline" className="mt-14!">
+                <span className="font-heading font-light my-0.5">
+                  {isLoading ? "Loading..." : "Show more +"}
+                </span>
+              </Button>
+            )}
+            renderPageContent={({ nodes, hasNextPage, nextPageUrl, state }) => (
+              <ProductsLoadedOnScroll
+                nodes={nodes as any}
+                onDisplayedCountChange={setProductNumber}
+                collection={{
+                  title: collection.title,
+                  handle: collection.handle,
+                }}
+                inView={inView}
+                nextPageUrl={nextPageUrl}
+                hasNextPage={hasNextPage}
+                state={state}
+              />
+            )}
+          />
+          <div ref={ref} aria-hidden="true" className="h-px w-full" />
+        </ProductListingFilterToolbar>
       </section>
     );
   }
@@ -122,6 +166,54 @@ export const schema = createSchema({
     {
       group: "Collection filters",
       inputs: [
+        {
+          type: "switch",
+          name: "expandFilters",
+          label: "Expand filter groups",
+          defaultValue: true,
+        },
+        {
+          type: "switch",
+          name: "showFiltersCount",
+          label: "Show option counts",
+          defaultValue: true,
+        },
+        {
+          type: "switch",
+          name: "enableSwatches",
+          label: "Enable color swatches",
+          defaultValue: true,
+        },
+        {
+          type: "text",
+          name: "displayAsButtonFor",
+          label: "Display as buttons",
+          defaultValue: "Size, More filters",
+          helpText: "Enter filter names separated by commas.",
+        },
+        {
+          type: "range",
+          name: "filterItemsLimit",
+          label: "Options shown before Show more",
+          defaultValue: 10,
+          configs: {
+            min: 1,
+            max: 30,
+            step: 1,
+          },
+        },
+        {
+          type: "select",
+          name: "checkboxShape",
+          label: "Checkbox shape",
+          configs: {
+            options: [
+              { value: "square", label: "Square" },
+              { value: "circle", label: "Circle" },
+            ],
+          },
+          defaultValue: "square",
+        },
         {
           type: "select",
           name: "width",

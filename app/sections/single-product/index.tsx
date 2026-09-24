@@ -8,26 +8,29 @@ import {
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
-import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
-import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
+import type {
+  ProductQuery,
+  ProductVariantFragmentFragment,
+  VariantsQuery,
+} from "storefront-api.generated";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { ProductDetail } from "~/components/product-form/product-detail";
+import { Quantity } from "~/components/product-form/quantity";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/queries";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { getExcerpt } from "~/utils/misc";
+import { useProductFormState } from "../../components/product-form/pdp-form";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
 import { ProductMedia } from "../../components/product-form/product-media";
-import { Quantity } from "../../components/product-form/quantity";
 import { ProductVariants } from "../../components/product-form/variants";
 
 interface SingleProductData extends SectionProps {
   product: WeaverseProduct;
-  // product information props
   addToCartText: string;
   soldOutText: string;
   unavailableText: string;
@@ -37,7 +40,6 @@ interface SingleProductData extends SectionProps {
   showShippingPolicy: boolean;
   showRefundPolicy: boolean;
   hideUnavailableOptions: boolean;
-  // product media props
   showThumbnails: boolean;
   imageAspectRatio: string;
   mediaDirection: "horizontal" | "vertical";
@@ -75,27 +77,27 @@ let SingleProduct = ({
     loaderData,
     ...rest
   } = props;
-  let { storeDomain, product, shop, variants: _variants } = loaderData || {};
-  const [isLoading, setIsLoading] = useState(false);
+
+  let { storeDomain, product, variants: _variants, shop } = loaderData || {};
   let variants = _variants?.product?.variants;
-  let [selectedVariant, setSelectedVariant] = useState<any>(
-    product?.selectedVariant,
-  );
-  let [quantity, setQuantity] = useState<number>(1);
   const { judgemeReviews } = useLoaderData<ProductLoaderType>();
-  let atcText = selectedVariant?.availableForSale
-    ? addToCartText
-    : selectedVariant?.quantityAvailable === -1
-      ? unavailableText
-      : soldOutText;
-  useEffect(() => {
-    if (!selectedVariant) {
-      setSelectedVariant(variants?.nodes?.[0]);
-    } else if (selectedVariant?.id !== product?.selectedVariant?.id) {
-      setSelectedVariant(product?.selectedVariant);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product?.selectedVariant, selectedVariant, variants?.nodes?.[0]]);
+  let {
+    isLoading,
+    setIsLoading,
+    selectedVariant,
+    quantity,
+    setQuantity,
+    atcText,
+    handleSelectedVariantChange,
+  } = useProductFormState<ProductVariantFragmentFragment>({
+    product,
+    variants,
+    addToCartText,
+    soldOutText,
+    unavailableText,
+    syncVariantWithUrl: false,
+  });
+
   let themeSettings = useThemeSettings();
   let swatches = themeSettings?.swatches || {
     configs: [],
@@ -105,17 +107,6 @@ let SingleProduct = ({
     },
   };
 
-  let handleSelectedVariantChange = (variant: any) => {
-    setSelectedVariant(variant);
-    // update the url
-    let searchParams = new URLSearchParams(window.location.search);
-    for (const option of variant.selectedOptions) {
-      searchParams.set(option.name, option.value);
-    }
-    let url = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.replaceState({}, "", url);
-  };
-
   if (!product || !selectedVariant) {
     return (
       <section className="w-full py-12 md:py-24 lg:py-32" ref={ref} {...rest}>
@@ -123,6 +114,7 @@ let SingleProduct = ({
       </section>
     );
   }
+
   if (product && variants) {
     const { title, vendor, descriptionHtml } = product;
     const { shippingPolicy, refundPolicy } = shop;
@@ -130,9 +122,9 @@ let SingleProduct = ({
       <Section ref={ref} {...rest}>
         <div
           className={clsx(
-            "grid grid-cols-1 items-start gap-5 lg:grid-cols-2",
-            "lg:gap-[clamp(30px,5%,60px)]",
-            "lg:grid-cols-[1fr_clamp(360px,45%,480px)]",
+            "grid grid-cols-1 items-start gap-5 md:grid-cols-2",
+            "md:gap-[clamp(30px,5%,60px)]",
+            "md:grid-cols-[1fr_clamp(360px,45%,480px)]",
           )}
         >
           <ProductMedia
@@ -162,7 +154,7 @@ let SingleProduct = ({
                   >
                     {title}
                   </h2>
-                  {judgemeReviews?.rating === 0 && (
+                  {judgemeReviews?.rating > 0 && (
                     <div
                       data-motion="fade-up"
                       className="flex items-center gap-0.5"
@@ -186,7 +178,7 @@ let SingleProduct = ({
                     data-motion="fade-up"
                     className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
                   >
-                    {selectedVariant?.compareAtPrice && (
+                    {showSalePrice && selectedVariant?.compareAtPrice && (
                       <Money
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
@@ -211,19 +203,18 @@ let SingleProduct = ({
                   onSelectedVariantChange={handleSelectedVariantChange}
                   swatch={swatches}
                   variants={variants}
-                  options={product?.options}
-                  handle={product?.handle}
                   hideUnavailableOptions={hideUnavailableOptions}
                   data-motion="fade-up"
                 />
               </div>
-              <Quantity
-                data-motion="fade-up"
-                value={quantity}
-                isDisabled={isLoading}
-                onChange={setQuantity}
-              />
-              <div className="flex flex-col gap-3 sm:w-[360px] p-4 sm:p-0">
+              <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-[360px] p-4 sm:p-0 md:items-end">
+                <div data-motion="fade-up">
+                  <Quantity
+                    value={quantity}
+                    isDisabled={isLoading}
+                    onChange={setQuantity}
+                  />
+                </div>
                 <div data-motion="fade-up">
                   <AddToCartButton
                     disabled={!selectedVariant?.availableForSale}
@@ -231,6 +222,7 @@ let SingleProduct = ({
                       {
                         merchandiseId: selectedVariant?.id,
                         quantity,
+                        selectedVariant,
                       },
                     ]}
                     variant="primary"
@@ -244,7 +236,7 @@ let SingleProduct = ({
                   </AddToCartButton>
                 </div>
                 {selectedVariant?.availableForSale && (
-                  <div data-motion="fade-up">
+                  <div data-motion="fade-up" className="md:col-span-2">
                     <ShopPayButton
                       width="100%"
                       variantIdsAndQuantities={[
@@ -259,53 +251,36 @@ let SingleProduct = ({
                   </div>
                 )}
               </div>
-            </div>
-            <div
-              data-motion="fade-up"
-              className="flex flex-col gap-4 mt-20 w-full"
-            >
-              {descriptionHtml && (
-                <div className="flex flex-col gap-3">
-                  {showDetails && (
-                    <p
-                      className="prose text-base font-normal line-clamp-4"
-                      dangerouslySetInnerHTML={{
-                        __html: descriptionHtml
-                          .replace(/(<br\s*\/?>\s*)+/g, "")
-                          .trim(),
-                      }}
-                    />
-                  )}
-                  <Link
-                    to={`/products/${product?.handle}`}
-                    className="underline font-body text-text-primary font-normal"
-                  >
-                    View full details
-                  </Link>
-                </div>
+              {showShippingPolicy && shippingPolicy?.body && (
+                <ProductDetail
+                  title="Shipping"
+                  content={getExcerpt(shippingPolicy.body)}
+                  learnMore={`/policies/${shippingPolicy.handle}`}
+                />
               )}
-              <div className="grid gap-4 py-4">
-                {showShippingPolicy && shippingPolicy?.body && (
-                  <ProductDetail
-                    title="Shipping"
-                    content={getExcerpt(shippingPolicy.body)}
-                    learnMore={`/policies/${shippingPolicy.handle}`}
-                  />
-                )}
-                {showRefundPolicy && refundPolicy?.body && (
-                  <ProductDetail
-                    title="Returns"
-                    content={getExcerpt(refundPolicy.body)}
-                    learnMore={`/policies/${refundPolicy.handle}`}
-                  />
-                )}
-              </div>
+              {showRefundPolicy && refundPolicy?.body && (
+                <ProductDetail
+                  title="Returns"
+                  content={getExcerpt(refundPolicy.body)}
+                  learnMore={`/policies/${refundPolicy.handle}`}
+                />
+              )}
+              {showDetails && descriptionHtml && (
+                <ProductDetail title="Details" content={descriptionHtml} />
+              )}
+              <Link
+                to={`/products/${product?.handle}`}
+                className="w-fit text-sm underline"
+              >
+                View full details
+              </Link>
             </div>
           </div>
         </div>
       </Section>
     );
   }
+
   return <div ref={ref} {...rest} />;
 };
 
