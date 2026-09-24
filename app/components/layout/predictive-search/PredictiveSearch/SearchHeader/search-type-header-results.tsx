@@ -24,10 +24,12 @@ export function SearchTypeHeaderResults({
       return;
     }
     const updatePanelTop = () => {
-      const inputBottom =
-        searchInputRef.current?.getBoundingClientRect().bottom;
-      if (inputBottom) {
-        setPanelTop(inputBottom + 16);
+      const menuTop = searchInputRef.current
+        ?.closest("header")
+        ?.querySelector<HTMLElement>("[data-header-menu-row]")
+        ?.getBoundingClientRect().top;
+      if (menuTop !== undefined) {
+        setPanelTop(menuTop);
       }
     };
     updatePanelTop();

@@ -126,10 +126,10 @@ export default function PromotionGrid({
           )}
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-9">
-            <p className="text-sm font-normal leading-normal">
+            <p className="text-center font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-inverse">
               {collection.title}
             </p>
-            <h3 className="mt-1 max-w-sm font-heading text-3xl font-normal leading-tight md:text-4xl">
+            <h3 className="mt-1 max-w-sm text-center font-heading text-[26px] leading-[110%] font-normal text-text-inverse">
               {headings[index]}
             </h3>
             <span
@@ -139,7 +139,7 @@ export default function PromotionGrid({
                   size: "sm",
                   shape: "default",
                 }),
-                "mt-5 px-5",
+                "mt-5 px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",
               )}
             >
               {buttonText ?? "Explore Now"}

@@ -17,7 +17,9 @@ import { Button } from "~/components/button";
 import { CartMain } from "~/components/cart/cart";
 import { IconNewsletter } from "~/components/icon";
 import { Input } from "~/components/input";
-import { getLocaleFromRequest } from "~/utils/locale";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { useRootLoaderData } from "~/root";
+import { getLocaleFromRequest, usePrefixPathWithLocale } from "~/utils/locale";
 import { safeRedirectPath } from "~/utils/misc";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
@@ -307,9 +309,13 @@ function CartNewsletter() {
     cartNewsletterSuccessMessage,
   } = useThemeSettings();
   const fetcher = useFetcher<{
-    customer?: unknown;
-    errors?: Array<{ message?: string }>;
+    ok?: boolean;
+    error?: string;
   }>({ key: "cart-newsletter" });
+  const rootData = useRootLoaderData();
+  const isStudio = useWeaverseStudioCheck();
+  const klaviyoConfigured = Boolean(rootData?.integrations?.klaviyoNewsletter);
+  const newsletterAction = usePrefixPathWithLocale("/api/klaviyo");
   const [email, setEmail] = useState("");
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
   const dataAtSubmission = useRef(fetcher.data);
@@ -320,10 +326,8 @@ function CartNewsletter() {
       fetcher.data &&
       fetcher.data !== dataAtSubmission.current,
   );
-  const isSuccess = Boolean(submissionComplete && fetcher.data?.customer);
-  const error = submissionComplete
-    ? fetcher.data?.errors?.find(({ message }) => message)?.message
-    : null;
+  const isSuccess = Boolean(submissionComplete && fetcher.data?.ok);
+  const error = submissionComplete ? fetcher.data?.error : null;
 
   useEffect(() => {
     if (isSuccess) {
@@ -351,43 +355,53 @@ function CartNewsletter() {
             </p>
           )}
         </div>
-        <fetcher.Form
-          method="POST"
-          action="/api/customer"
-          className="flex w-full items-stretch gap-3"
-          onSubmit={() => {
-            dataAtSubmission.current = fetcher.data;
-            setSubmittedEmail(email);
-          }}
-        >
-          <Input
-            variant="custom"
-            type="email"
-            name="email"
-            placeholder={cartNewsletterPlaceholder}
-            required
-            value={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setSubmittedEmail(null);
+        {!klaviyoConfigured ? (
+          isStudio ? (
+            <div className="w-full rounded-md border border-border border-dashed p-4 text-center text-sm text-text-subtle">
+              Configure Klaviyo private token and newsletter list ID
+            </div>
+          ) : null
+        ) : (
+          <fetcher.Form
+            method="POST"
+            action={newsletterAction}
+            className="flex w-full items-stretch gap-3"
+            onSubmit={() => {
+              dataAtSubmission.current = fetcher.data;
+              setSubmittedEmail(email);
             }}
-            className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
-          />
-          <Button
-            type="submit"
-            loading={isSubmitting}
-            disabled={isSubmitting}
-            className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
           >
-            {cartNewsletterButtonText}
-          </Button>
-        </fetcher.Form>
-        <div aria-live="polite" className="min-h-5 text-center text-sm">
-          {isSuccess && (
-            <p className="text-green-700">{cartNewsletterSuccessMessage}</p>
-          )}
-          {error && <p className="text-red-700">{error}</p>}
-        </div>
+            <Input
+              variant="custom"
+              type="email"
+              name="email"
+              placeholder={cartNewsletterPlaceholder}
+              required
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setSubmittedEmail(null);
+              }}
+              className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
+            />
+            <Button
+              type="submit"
+              loading={isSubmitting}
+              disabled={isSubmitting}
+              className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
+            >
+              {cartNewsletterButtonText}
+            </Button>
+          </fetcher.Form>
+        )}
+        {klaviyoConfigured && (
+          <div aria-live="polite" className="min-h-5 text-center text-sm">
+            {isSuccess && (
+              <p className="text-green-700">{cartNewsletterSuccessMessage}</p>
+            )}
+            {error && <p className="text-red-700">{error}</p>}
+          </div>
+        )}
       </div>
     </section>
   );
