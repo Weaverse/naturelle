@@ -12,13 +12,14 @@ export function skipRevalidationForCartActions({
   defaultShouldRevalidate,
   formAction,
   formMethod,
+  nextUrl,
 }: ShouldRevalidateFunctionArgs) {
   if (formAction && formMethod && formMethod.toUpperCase() !== "GET") {
     const actionPath = new URL(formAction, currentUrl).pathname.replace(
       /\.data$/,
       "",
     );
-    if (CART_ACTION_PATH.test(actionPath)) {
+    if (CART_ACTION_PATH.test(actionPath) && currentUrl.href === nextUrl.href) {
       return false;
     }
   }

@@ -11,7 +11,7 @@ import { usePrefixPathWithLocale } from "~/utils/locale";
 
 type CartLayout = "page" | "aside";
 
-function Banner({
+export function CartActionBanner({
   variant,
   children,
 }: {
@@ -145,9 +145,13 @@ export function NoteDialog({
             }}
           />
           {submitted && (
-            <Banner variant="success">Cart note saved successfully</Banner>
+            <CartActionBanner variant="success">
+              Cart note saved successfully
+            </CartActionBanner>
           )}
-          {submitError && <Banner variant="error">{submitError}</Banner>}
+          {submitError && (
+            <CartActionBanner variant="error">{submitError}</CartActionBanner>
+          )}
           <Button
             type="submit"
             loading={fetcher.state !== "idle"}
@@ -240,9 +244,15 @@ export function DiscountDialog({
             required
           />
           {success && (
-            <Banner variant="success">Discount applied successfully</Banner>
+            <CartActionBanner variant="success">
+              Discount applied successfully
+            </CartActionBanner>
           )}
-          {error && <Banner variant="error">Invalid discount code.</Banner>}
+          {error && (
+            <CartActionBanner variant="error">
+              Invalid discount code.
+            </CartActionBanner>
+          )}
           <Button
             type="submit"
             className="w-full rounded-lg"
@@ -264,7 +274,6 @@ export function GiftCardDialog({
   appliedGiftCards: CartApiQueryFragment["appliedGiftCards"];
   layout?: CartLayout;
 }) {
-  const appliedGiftCardCodes = useRef<string[]>([]);
   const [code, setCode] = useState("");
   const fetcher = useFetcher();
   const giftCardCodeId = useId();
@@ -278,31 +287,22 @@ export function GiftCardDialog({
   );
   const error = submitted && !success;
 
-  function saveAppliedCode(gcCode: string) {
-    const formattedCode = gcCode.replace(/\s/g, "");
-    if (!appliedGiftCardCodes.current.includes(formattedCode)) {
-      appliedGiftCardCodes.current.push(formattedCode);
-    }
-  }
-
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const giftCardCode = formData.get("giftCardCode") as string;
+    const giftCardCode = String(formData.get("giftCardCode") || "").trim();
     if (giftCardCode) {
       fetcher.submit(
         {
           [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.GiftCardCodesUpdate,
+            action: CartForm.ACTIONS.GiftCardCodesAdd,
             inputs: {
-              giftCardCode,
-              giftCardCodes: appliedGiftCardCodes.current,
+              giftCardCodes: [giftCardCode],
             },
           }),
         },
         { method: "POST", action: cartRoute },
       );
-      saveAppliedCode(giftCardCode);
     }
   }
 
@@ -348,9 +348,15 @@ export function GiftCardDialog({
             required
           />
           {success && (
-            <Banner variant="success">Gift card applied successfully</Banner>
+            <CartActionBanner variant="success">
+              Gift card applied successfully
+            </CartActionBanner>
           )}
-          {error && <Banner variant="error">Invalid gift card code.</Banner>}
+          {error && (
+            <CartActionBanner variant="error">
+              Invalid gift card code.
+            </CartActionBanner>
+          )}
           <Button
             type="submit"
             className="w-full rounded-lg"

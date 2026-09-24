@@ -1,43 +1,74 @@
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
+import { ProductMetafieldEmptyState } from "./metafield-empty-state";
+import {
+  getProductDetailField,
+  loadProductDetailMetafield,
+  PRODUCT_DETAIL_METAFIELDS,
+} from "./product-metafield";
+import { useProductMetafieldData } from "./use-product-metafield-data";
 
-interface ResultsProps extends HydrogenComponentProps {
-  result1Value: string;
-  result1Label: string;
-  result1Note: string;
-  result2Value: string;
-  result2Label: string;
-  result2Note: string;
-  result3Value: string;
-  result3Label: string;
-  result3Note: string;
+interface ResultsData {
+  metafield?: string;
 }
+
+type ResultsLoaderData = Awaited<ReturnType<typeof loadProductDetailMetafield>>;
+type ResultsProps = HydrogenComponentProps<ResultsLoaderData> & ResultsData;
 
 export default function ClinicalResults({
   ref,
-  result1Value,
-  result1Label,
-  result1Note,
-  result2Value,
-  result2Label,
-  result2Note,
-  result3Value,
-  result3Label,
-  result3Note,
+  metafield,
+  loaderData,
   ...rest
 }: ResultsProps & { ref?: Ref<HTMLElement> }) {
-  const results = [
-    { value: result1Value, label: result1Label, note: result1Note },
-    { value: result2Value, label: result2Label, note: result2Note },
-    { value: result3Value, label: result3Label, note: result3Note },
-  ];
+  loaderData = useProductMetafieldData(metafield, loaderData);
+
+  if (!loaderData?.entries.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        loaderData={loaderData}
+        metafield={metafield}
+      />
+    );
+  }
+
+  const results = loaderData.entries
+    .slice(0, 3)
+    .map((entry) => {
+      const rawValue = getProductDetailField(entry, "value");
+      return {
+        id: entry.id,
+        value:
+          entry.fieldTypes.value?.startsWith("number_") &&
+          /^\d+(\.\d+)?$/.test(rawValue)
+            ? `${rawValue}%`
+            : rawValue,
+        label: getProductDetailField(entry, "label"),
+        note: getProductDetailField(entry, "note"),
+      };
+    })
+    .filter((result) => result.value && result.label && result.note);
+
+  if (!results.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        loaderData={loaderData}
+        metafield={metafield}
+        message="This metafield must contain value, label, and note fields."
+      />
+    );
+  }
 
   return (
     <section ref={ref} {...rest}>
       <div className="grid overflow-hidden rounded-xl bg-text md:grid-cols-3">
         {results.map((result) => (
           <article
-            key={String(result.label)}
+            key={result.id}
             className="px-6 py-8 text-center md:border-l md:border-background-basic/15 md:first:border-l-0"
           >
             <p className="text-center font-display text-[48px] leading-[normal] font-normal text-background-basic">
@@ -56,11 +87,7 @@ export default function ClinicalResults({
   );
 }
 
-const defaults = [
-  ["93%", "Saw firmer skin", "In 4 weeks"],
-  ["87%", "Reported improved hydration", "Immediately"],
-  ["100%", "Would recommend", "Based on clinical study"],
-];
+export const loader = loadProductDetailMetafield;
 
 export const schema = createSchema({
   type: "product-details--results",
@@ -69,26 +96,17 @@ export const schema = createSchema({
   settings: [
     {
       group: "Results",
-      inputs: defaults.flatMap(([value, label, note], index) => [
+      inputs: [
         {
-          type: "text" as const,
-          name: `result${index + 1}Value`,
-          label: `Result ${index + 1} value`,
-          defaultValue: value,
+          type: "text",
+          name: "metafield",
+          label: "Product metafield",
+          defaultValue: PRODUCT_DETAIL_METAFIELDS.results,
+          placeholder: PRODUCT_DETAIL_METAFIELDS.results,
+          helpText:
+            "Use a list of metaobjects with <strong>value</strong>, <strong>label</strong>, and <strong>note</strong> fields.",
         },
-        {
-          type: "text" as const,
-          name: `result${index + 1}Label`,
-          label: `Result ${index + 1} label`,
-          defaultValue: label,
-        },
-        {
-          type: "text" as const,
-          name: `result${index + 1}Note`,
-          label: `Result ${index + 1} note`,
-          defaultValue: note,
-        },
-      ]),
+      ],
     },
   ],
 });

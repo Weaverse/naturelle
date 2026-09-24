@@ -1,7 +1,7 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
-import { type RefObject, useCallback, useState } from "react";
+import { type RefObject, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLoaderData } from "react-router";
 import type { CollectionDetailsQuery } from "storefront-api.generated";
@@ -79,9 +79,6 @@ let CollectionFilters = ({
   const [productNumber, setProductNumber] = useState(
     collection?.products.nodes.length ?? 0,
   );
-  const updateProductNumber = useCallback((count: number) => {
-    setProductNumber(count);
-  }, []);
   const lowestPrice = Number(
     collection.lowestPriceProduct.nodes[0]?.priceRange.minVariantPrice.amount,
   );
@@ -136,7 +133,7 @@ let CollectionFilters = ({
             renderPageContent={({ nodes, hasNextPage, nextPageUrl, state }) => (
               <ProductsLoadedOnScroll
                 nodes={nodes as any}
-                onDisplayedCountChange={updateProductNumber}
+                onDisplayedCountChange={setProductNumber}
                 collection={{
                   title: collection.title,
                   handle: collection.handle,
@@ -148,6 +145,7 @@ let CollectionFilters = ({
               />
             )}
           />
+          <div ref={ref} aria-hidden="true" className="h-px w-full" />
         </ProductListingFilterToolbar>
       </section>
     );

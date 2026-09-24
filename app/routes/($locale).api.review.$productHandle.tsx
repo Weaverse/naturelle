@@ -62,19 +62,22 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
   if (
     !(context.env.JUDGEME_PRIVATE_API_TOKEN && context.env.PUBLIC_STORE_DOMAIN)
   ) {
-    return data(emptyJudgemeReviews(perPage));
+    return data({
+      ...emptyJudgemeReviews(perPage),
+      productHandle,
+    });
   }
 
-  return data(
-    await getJudgemeReviews(
-      context.env.JUDGEME_PRIVATE_API_TOKEN,
-      context.env.PUBLIC_STORE_DOMAIN,
-      productHandle,
-      {
-        weaverseContext: context.weaverse,
-        page,
-        perPage,
-      },
-    ),
+  const reviews = await getJudgemeReviews(
+    context.env.JUDGEME_PRIVATE_API_TOKEN,
+    context.env.PUBLIC_STORE_DOMAIN,
+    productHandle,
+    {
+      weaverseContext: context.weaverse,
+      page,
+      perPage,
+    },
   );
+
+  return data({ ...reviews, productHandle });
 }

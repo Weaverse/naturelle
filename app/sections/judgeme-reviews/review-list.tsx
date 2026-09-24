@@ -8,23 +8,27 @@ import { usePrefixPathWithLocale } from "~/utils/locale";
 
 const REVIEWS_PER_PAGE = 5;
 
-function formatReviewDate(dateString: string) {
+type ReviewsApiResponse = JudgemeReviewsData & {
+  productHandle: string;
+};
+
+const formatReviewDate = (dateString: string) => {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) {
     return dateString;
   }
   return date.toLocaleDateString("en-GB");
-}
+};
 
-export function ReviewList({
+export const ReviewList = ({
   judgemeReviews,
   emptyReviewsText,
 }: {
   judgemeReviews: JudgemeReviewsData;
   emptyReviewsText: string;
-}) {
+}) => {
   const { product } = useLoaderData<ProductLoaderType>();
-  const fetcher = useFetcher<JudgemeReviewsData>();
+  const fetcher = useFetcher<ReviewsApiResponse>();
   const [reviews, setReviews] = useState(judgemeReviews.reviews);
   const [currentPage, setCurrentPage] = useState(judgemeReviews.currentPage);
   const [totalPage, setTotalPage] = useState(judgemeReviews.totalPage);
@@ -48,6 +52,9 @@ export function ReviewList({
       return;
     }
     processedData.current = nextData;
+    if (nextData.productHandle !== product.handle) {
+      return;
+    }
     setReviews((current) => {
       const byId = new Map<string, JudgeMeReviewType>();
       for (const review of [...current, ...nextData.reviews]) {
@@ -57,7 +64,7 @@ export function ReviewList({
     });
     setCurrentPage(nextData.currentPage);
     setTotalPage(nextData.totalPage);
-  }, [fetcher.data, fetcher.state]);
+  }, [fetcher.data, fetcher.state, product.handle]);
 
   const loadMore = () => {
     if (fetcher.state !== "idle" || currentPage >= totalPage) {
@@ -127,4 +134,4 @@ export function ReviewList({
       )}
     </section>
   );
-}
+};

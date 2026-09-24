@@ -1,6 +1,6 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -34,10 +34,7 @@ export function ProductMedia(props: ProductMediaProps) {
     thumbnailLayout = "swiper",
   } = props;
 
-  const media = useMemo(
-    () => _media.filter((med) => med.__typename === "MediaImage"),
-    [_media],
-  );
+  const media = _media.filter((med) => med.__typename === "MediaImage");
   const useStripThumbnails = showThumbnails && thumbnailLayout === "strip";
   const useSwiperThumbnails = showThumbnails && thumbnailLayout === "swiper";
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);

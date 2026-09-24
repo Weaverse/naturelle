@@ -13,7 +13,7 @@ type ReviewActionData = {
   success?: boolean;
 };
 
-export function ReviewForm({
+export const ReviewForm = ({
   judgemeReviews,
   reviewHeading,
   reviewDescription,
@@ -27,7 +27,7 @@ export function ReviewForm({
   writeReviewText: string;
   formHeading: string;
   formDescription: string;
-}) {
+}) => {
   const { product } = useLoaderData<ProductLoaderType>();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -333,6 +333,4 @@ export function ReviewForm({
       )}
     </div>
   );
-}
-
-export default ReviewForm;
+};

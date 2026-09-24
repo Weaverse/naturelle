@@ -150,6 +150,7 @@ let useApplyFirstVariant = () => {
       }
       setSearchParams(searchParams, {
         replace: true, // prevent adding a new entry to the history stack
+        preventScrollReset: true,
       });
     }
     // eslint-disable-next-line

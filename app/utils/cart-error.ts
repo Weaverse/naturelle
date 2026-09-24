@@ -15,3 +15,9 @@ export function getCartMutationError(
     null
   );
 }
+
+export function getCartMutationWarning(
+  data: { warnings?: CartError[] } | null | undefined,
+) {
+  return data?.warnings?.find((warning) => warning.message)?.message ?? null;
+}

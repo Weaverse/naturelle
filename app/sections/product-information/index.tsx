@@ -11,7 +11,6 @@ import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
-import { isImageOption } from "~/components/product-form/options";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
@@ -21,7 +20,6 @@ import { getExcerpt } from "~/utils/misc";
 import {
   ProductQuantityInput,
   ProductShareLinks,
-  ProductVariantImageSelector,
   useProductFormState,
 } from "../../components/product-form/pdp-form";
 import { ProductPlaceholder } from "../../components/product-form/placeholder";
@@ -156,7 +154,7 @@ let ProductInformation = ({
               showSlideCounter={showSlideCounter}
               direction={mediaDirection}
             />
-            {descriptionHtml && (
+            {showDetails && descriptionHtml && (
               <ProductDescription
                 title="Description"
                 content={descriptionHtml}
@@ -220,7 +218,7 @@ let ProductInformation = ({
                       )}
                     </Text>
                   )}
-                  {judgemeReviews?.reviewNumber > 0 ? (
+                  {judgemeReviews.reviewNumber > 0 && (
                     <div
                       data-motion="fade-up"
                       className="flex items-center gap-0.5"
@@ -231,13 +229,6 @@ let ProductInformation = ({
                         {judgemeReviews.reviewNumber} reviews)
                       </span>
                     </div>
-                  ) : (
-                    <p
-                      data-motion="fade-up"
-                      className="text-text-subtle text-sm"
-                    >
-                      No reviews yet
-                    </p>
                   )}
                   {children}
                   <p
@@ -260,15 +251,6 @@ let ProductInformation = ({
                       />
                     ) : null}
                   </p>
-                  {showDetails && descriptionHtml && (
-                    <div
-                      data-motion="fade-up"
-                      className="prose line-clamp-5 max-w-none text-sm text-text-subtle"
-                      dangerouslySetInnerHTML={{
-                        __html: descriptionHtml,
-                      }}
-                    />
-                  )}
                 </div>
                 <ProductVariants
                   isDisabled={isLoading}
@@ -277,8 +259,6 @@ let ProductInformation = ({
                   onSelectedVariantChange={handleSelectedVariantChange}
                   swatch={swatches}
                   variants={variants}
-                  options={product?.options}
-                  handle={product?.handle}
                   hideUnavailableOptions={hideUnavailableOptions}
                   data-motion="fade-up"
                 />
@@ -290,16 +270,6 @@ let ProductInformation = ({
                 requiresSellingPlan={product.requiresSellingPlan}
                 disabled={isLoading}
               />
-              {!product.options.some((option) =>
-                isImageOption(option.name),
-              ) && (
-                <ProductVariantImageSelector
-                  variants={variants.nodes}
-                  selectedVariantId={selectedVariant.id}
-                  disabled={isLoading}
-                  onSelect={handleSelectedVariantChange}
-                />
-              )}
               <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-(--width-button)">
                 <ProductQuantityInput
                   value={quantity}

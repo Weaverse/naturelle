@@ -21,14 +21,15 @@ import {
 export type CartStore = {
   isOpen: boolean;
   serverCart: CartApiQueryFragment | null;
-  cartBootstrapResponseToken: string | null;
   cartBootstrapResolvedPath: string | null;
   pendingAdds: Map<string, PendingAdd>;
   pendingLineUpdates: Map<string, number>;
   lineUpdatesInFlight: Map<string, number>;
   lineUpdateErrors: Map<string, CartMutationResponse>;
+  lineUpdateWarnings: Map<string, CartMutationResponse>;
   pendingLineRemovals: Set<string>;
   lineRemovalErrors: Map<string, CartMutationResponse>;
+  lineRemovalWarnings: Map<string, CartMutationResponse>;
   open: () => void;
   close: () => void;
   toggle: (open?: boolean) => void;
@@ -50,14 +51,15 @@ let pendingAddSequence = 0;
 export const useCartStore = create<CartStore>()((set) => ({
   isOpen: false,
   serverCart: null,
-  cartBootstrapResponseToken: null,
   cartBootstrapResolvedPath: null,
   pendingAdds: new Map(),
   pendingLineUpdates: new Map(),
   lineUpdatesInFlight: new Map(),
   lineUpdateErrors: new Map(),
+  lineUpdateWarnings: new Map(),
   pendingLineRemovals: new Set(),
   lineRemovalErrors: new Map(),
+  lineRemovalWarnings: new Map(),
   open: () => set({ isOpen: true }),
   close: () => set({ isOpen: false }),
   toggle: (open) =>
@@ -95,6 +97,8 @@ export const useCartStore = create<CartStore>()((set) => ({
     set((state) => {
       const lineUpdateErrors = new Map(state.lineUpdateErrors);
       lineUpdateErrors.delete(lineId);
+      const lineUpdateWarnings = new Map(state.lineUpdateWarnings);
+      lineUpdateWarnings.delete(lineId);
       return {
         pendingLineUpdates: stagePendingLineUpdate(
           state.pendingLineUpdates,
@@ -102,6 +106,7 @@ export const useCartStore = create<CartStore>()((set) => ({
           quantity,
         ),
         lineUpdateErrors,
+        lineUpdateWarnings,
       };
     }),
   claimLineUpdate: (lineId) => {
@@ -137,10 +142,17 @@ export const useCartStore = create<CartStore>()((set) => ({
       } else {
         lineUpdateErrors.delete(lineId);
       }
+      const lineUpdateWarnings = new Map(state.lineUpdateWarnings);
+      if (response?.warnings?.length) {
+        lineUpdateWarnings.set(lineId, response);
+      } else {
+        lineUpdateWarnings.delete(lineId);
+      }
       return {
         pendingLineUpdates: settled.pending,
         lineUpdatesInFlight: settled.inFlight,
         lineUpdateErrors,
+        lineUpdateWarnings,
       };
     }),
   stageLineRemoval: (lineId) =>
@@ -149,7 +161,13 @@ export const useCartStore = create<CartStore>()((set) => ({
       pendingLineRemovals.add(lineId);
       const lineRemovalErrors = new Map(state.lineRemovalErrors);
       lineRemovalErrors.delete(lineId);
-      return { pendingLineRemovals, lineRemovalErrors };
+      const lineRemovalWarnings = new Map(state.lineRemovalWarnings);
+      lineRemovalWarnings.delete(lineId);
+      return {
+        pendingLineRemovals,
+        lineRemovalErrors,
+        lineRemovalWarnings,
+      };
     }),
   settleLineRemoval: (lineId, response) =>
     set((state) => {
@@ -164,7 +182,17 @@ export const useCartStore = create<CartStore>()((set) => ({
       } else {
         lineRemovalErrors.delete(lineId);
       }
-      return { pendingLineRemovals, lineRemovalErrors };
+      const lineRemovalWarnings = new Map(state.lineRemovalWarnings);
+      if (response?.warnings?.length) {
+        lineRemovalWarnings.set(lineId, response);
+      } else {
+        lineRemovalWarnings.delete(lineId);
+      }
+      return {
+        pendingLineRemovals,
+        lineRemovalErrors,
+        lineRemovalWarnings,
+      };
     }),
 }));
 

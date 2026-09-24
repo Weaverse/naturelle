@@ -98,6 +98,15 @@ const Testimonials = ({
   let productImage = selectedProduct?.media.nodes.find(
     (media) => media.__typename === "MediaImage",
   )?.image;
+  const displayImage = productImage || backgroundImage;
+  const isDesignMode = useWeaverseStudioCheck();
+
+  const canRenderTestimonials = Boolean(selectedProduct || backgroundImage);
+
+  if (!canRenderTestimonials && !isDesignMode) {
+    return null;
+  }
+
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
     : ratingLink || "#";
@@ -105,7 +114,6 @@ const Testimonials = ({
     loaderData?.judgemeReviews.reviews.slice(0, reviewsToShow) || [];
   const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
   const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
-  const isDesignMode = useWeaverseStudioCheck();
   const hasReviews = reviews.length > 0 && displayedRatingCount > 0;
 
   let sectionStyle: CSSProperties = {
@@ -142,65 +150,55 @@ const Testimonials = ({
       style={sectionStyle}
     >
       <div className="absolute inset-0 hidden md:block">
-        {productImage ? (
+        {displayImage ? (
           <div className="grid h-full grid-cols-2">
             <Image
-              data={productImage}
-              className="h-full w-full object-contain"
+              data={displayImage}
+              className="h-full w-full object-cover"
               sizes="50vw"
             />
             <Image
-              data={productImage}
-              className="h-full w-full object-contain"
+              data={displayImage}
+              className="h-full w-full object-cover"
               sizes="50vw"
             />
           </div>
-        ) : backgroundImage ? (
-          <div className="grid h-full grid-cols-2">
-            <Image
-              data={backgroundImage}
-              className="h-full w-full object-contain"
-              sizes="50vw"
-            />
-            <Image
-              data={backgroundImage}
-              className="h-full w-full object-contain"
-              sizes="50vw"
-            />
-          </div>
-        ) : (
+        ) : isDesignMode ? (
           <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
             <IconImageBlank
               className="w-96 h-96 opacity-80"
               viewBox="0 0 526 526"
             />
           </div>
-        )}
+        ) : null}
       </div>
-      <div className="relative h-[420px] w-full md:hidden">
-        {productImage ? (
-          <Image
-            data={productImage}
-            className="h-full w-full object-contain"
-            sizes="100vw"
-          />
-        ) : backgroundImage ? (
-          <Image
-            data={backgroundImage}
-            className="h-full w-full object-contain"
-            sizes="100vw"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
-            <IconImageBlank
-              className="h-64 w-64 opacity-80"
-              viewBox="0 0 526 526"
+      {(displayImage || isDesignMode) && (
+        <div className="relative h-[420px] w-full md:hidden">
+          {displayImage ? (
+            <Image
+              data={displayImage}
+              className="h-full w-full object-cover"
+              sizes="100vw"
             />
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
+              <IconImageBlank
+                className="h-64 w-64 opacity-80"
+                viewBox="0 0 526 526"
+              />
+            </div>
+          )}
+        </div>
+      )}
       {reviewsPosition === "right" && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 grid grid-cols-1 md:grid-cols-2">
+        <div
+          className={clsx(
+            "pointer-events-none z-20 grid grid-cols-1 md:grid-cols-2",
+            displayImage || isDesignMode
+              ? "absolute inset-x-0 top-0"
+              : "relative",
+          )}
+        >
           <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-16">
             <div className="flex w-full max-w-[247px] flex-col gap-3 rounded-xl border border-(--border-color) bg-(--rating-overlay-background) p-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
               <p className="text-xs font-semibold leading-none uppercase tracking-wide opacity-90">
@@ -251,21 +249,15 @@ const Testimonials = ({
           )}
         >
           <div className="absolute inset-0 md:hidden">
-            {productImage ? (
+            {displayImage ? (
               <Image
-                data={productImage}
-                className="h-full w-full object-contain"
+                data={displayImage}
+                className="h-full w-full object-cover"
                 sizes="100vw"
               />
-            ) : backgroundImage ? (
-              <Image
-                data={backgroundImage}
-                className="h-full w-full object-contain"
-                sizes="100vw"
-              />
-            ) : (
+            ) : isDesignMode ? (
               <div className="h-full w-full bg-background-subtle-2" />
-            )}
+            ) : null}
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
           <div className="relative z-10 flex min-h-full flex-col gap-12 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">

@@ -7,36 +7,72 @@ import {
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
 import { cn } from "~/utils/cn";
+import { ProductMetafieldEmptyState } from "./metafield-empty-state";
+import {
+  getProductDetailField,
+  loadProductDetailMetafield,
+  PRODUCT_DETAIL_METAFIELDS,
+} from "./product-metafield";
+import { useProductMetafieldData } from "./use-product-metafield-data";
 
-interface IngredientsProps extends HydrogenComponentProps {
+interface IngredientsData {
   heading: string;
   description: string;
-  ingredient1Title: string;
-  ingredient1Description: string;
-  ingredient2Title: string;
-  ingredient2Description: string;
-  ingredient3Title: string;
-  ingredient3Description: string;
+  metafield?: string;
 }
+
+type IngredientsLoaderData = Awaited<
+  ReturnType<typeof loadProductDetailMetafield>
+>;
+type IngredientsProps = HydrogenComponentProps<IngredientsLoaderData> &
+  IngredientsData;
 
 export default function KeyIngredients({
   ref,
   heading,
   description,
-  ingredient1Title,
-  ingredient1Description,
-  ingredient2Title,
-  ingredient2Description,
-  ingredient3Title,
-  ingredient3Description,
+  metafield,
+  loaderData,
   className,
   ...rest
 }: IngredientsProps & { ref?: Ref<HTMLElement> }) {
-  const ingredients: [PhosphorIcon, string, string][] = [
-    [Sparkle, ingredient1Title, ingredient1Description],
-    [Clock, ingredient2Title, ingredient2Description],
-    [Drop, ingredient3Title, ingredient3Description],
-  ];
+  loaderData = useProductMetafieldData(metafield, loaderData);
+
+  if (!loaderData?.entries.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        className={className}
+        loaderData={loaderData}
+        metafield={metafield}
+      />
+    );
+  }
+
+  const icons: PhosphorIcon[] = [Sparkle, Clock, Drop];
+  const ingredients = loaderData.entries
+    .slice(0, icons.length)
+    .map((entry, index) => ({
+      id: entry.id,
+      Icon: icons[index],
+      title: getProductDetailField(entry, "title"),
+      copy: getProductDetailField(entry, "content"),
+    }))
+    .filter((ingredient) => ingredient.title && ingredient.copy);
+
+  if (!ingredients.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        className={className}
+        loaderData={loaderData}
+        metafield={metafield}
+        message="This metafield must contain title and content fields."
+      />
+    );
+  }
 
   return (
     <section
@@ -53,18 +89,18 @@ export default function KeyIngredients({
         </p>
       </header>
       <div className="mx-auto flex w-full flex-col gap-6 md:flex-row">
-        {ingredients.map(([Icon, title, copy]) => (
+        {ingredients.map(({ id, Icon, title, copy }) => (
           <article
-            key={title}
+            key={id}
             className="w-full flex-[1_0_0] rounded-xl border border-border-subtle p-6"
           >
             <span className="mb-5 flex size-10 items-center justify-center rounded-full bg-(--product-detail-background-color)">
               <Icon aria-hidden="true" className="size-5" weight="regular" />
             </span>
-            <p className="font-body text-sm leading-[normal] font-semibold text-text">
+            <p className="font-body text-[18px] leading-[normal] font-semibold text-text">
               {title}
             </p>
-            <p className="mt-3 font-body text-xs leading-[normal] font-normal text-(--product-detail-text-color)">
+            <p className="mt-3 font-body text-[14px] leading-[150%] font-normal text-(--product-detail-text-color)">
               {copy}
             </p>
           </article>
@@ -74,20 +110,7 @@ export default function KeyIngredients({
   );
 }
 
-const defaults = [
-  [
-    "TET8™ Patent",
-    "A revolutionary technology clinically shown to target all eight signs of aging.",
-  ],
-  [
-    "Instant Tightening Sugars",
-    "Tightens in three minutes and for up to six hours.",
-  ],
-  [
-    "Micro & Macro Hyaluronic Acid",
-    "Two molecular sizes of hyaluronic acid to replenish moisture and visibly plump skin.",
-  ],
-];
+export const loader = loadProductDetailMetafield;
 
 export const schema = createSchema({
   type: "product-details--ingredients",
@@ -110,20 +133,15 @@ export const schema = createSchema({
           defaultValue:
             "A potent blend of clinical actives and botanical extracts designed to restore youthful vitality.",
         },
-        ...defaults.flatMap(([title, description], index) => [
-          {
-            type: "text" as const,
-            name: `ingredient${index + 1}Title`,
-            label: `Ingredient ${index + 1} title`,
-            defaultValue: title,
-          },
-          {
-            type: "textarea" as const,
-            name: `ingredient${index + 1}Description`,
-            label: `Ingredient ${index + 1} description`,
-            defaultValue: description,
-          },
-        ]),
+        {
+          type: "text",
+          name: "metafield",
+          label: "Product metafield",
+          defaultValue: PRODUCT_DETAIL_METAFIELDS.ingredients,
+          placeholder: PRODUCT_DETAIL_METAFIELDS.ingredients,
+          helpText:
+            "Use a list of metaobjects with <strong>title</strong> and <strong>content</strong> fields.",
+        },
       ],
     },
   ],
