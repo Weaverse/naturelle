@@ -1,4 +1,5 @@
 import { data, type LoaderFunction } from "react-router";
+import { queryProductDetailMetafield } from "~/sections/product-details/product-metafield";
 import { getProductData } from "~/utils/product";
 
 function getRequestQueries<T = Record<string, string>>(request: Request) {
@@ -13,6 +14,16 @@ export const loader: LoaderFunction = async ({ request, params, context }) => {
   try {
     let queries = getRequestQueries(request);
     switch (params.param) {
+      case "product-detail-metafield": {
+        const handle = String(queries.handle || "");
+        const metafield = String(queries.metafield || "");
+        const result = await queryProductDetailMetafield({
+          storefront: context.storefront,
+          handle: handle || null,
+          metafield,
+        });
+        return data({ ...result, requestedMetafield: metafield });
+      }
       case "products": {
         let handle = queries.handle;
         if (!handle) {

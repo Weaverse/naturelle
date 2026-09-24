@@ -5,15 +5,19 @@ export function getCartMutationError(
     | {
         errors?: CartError[];
         userErrors?: CartError[];
-        warnings?: CartError[];
       }
     | null
     | undefined,
 ) {
   return (
     data?.userErrors?.find((error) => error.message)?.message ??
-    data?.warnings?.find((warning) => warning.message)?.message ??
     data?.errors?.find((error) => error.message)?.message ??
     null
   );
+}
+
+export function getCartMutationWarning(
+  data: { warnings?: CartError[] } | null | undefined,
+) {
+  return data?.warnings?.find((warning) => warning.message)?.message ?? null;
 }

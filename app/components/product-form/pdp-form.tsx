@@ -1,25 +1,16 @@
 import clsx from "clsx";
-import {
-  type ComponentProps,
-  type ReactNode,
-  useEffect,
-  useState,
-} from "react";
+import { type ReactNode, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import {
   IconQuickViewFacebook,
   IconQuickViewInstagram,
   IconQuickViewX,
 } from "~/components/icon";
-import { Image } from "~/components/image";
-
-type ProductImage = NonNullable<ComponentProps<typeof Image>["data"]>;
 
 interface ProductVariantLike {
-  id: string;
   availableForSale: boolean;
   quantityAvailable?: number | null;
   selectedOptions: Array<{ name: string; value: string }>;
-  image?: ProductImage | null;
 }
 
 interface ProductFormStateParams<TVariant extends ProductVariantLike> {
@@ -36,15 +27,6 @@ interface ProductFormStateParams<TVariant extends ProductVariantLike> {
   syncVariantWithUrl?: boolean;
 }
 
-interface ProductVariantImageSelectorProps<
-  TVariant extends ProductVariantLike,
-> {
-  variants: TVariant[];
-  selectedVariantId?: string;
-  disabled: boolean;
-  onSelect: (variant: TVariant) => void;
-}
-
 interface ProductQuantityInputProps {
   value: number;
   disabled: boolean;
@@ -59,27 +41,15 @@ interface ProductShareLinksProps {
   className?: string;
 }
 
-function syncVariantToUrl(variant: ProductVariantLike) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const searchParams = new URLSearchParams(window.location.search);
-  for (const option of variant.selectedOptions) {
-    searchParams.set(option.name, option.value);
-  }
-  const url = `${window.location.pathname}?${searchParams.toString()}`;
-  window.history.replaceState({}, "", url);
-}
-
-export function useProductFormState<TVariant extends ProductVariantLike>({
+export const useProductFormState = <TVariant extends ProductVariantLike>({
   product,
   variants,
   addToCartText,
   soldOutText,
   unavailableText,
   syncVariantWithUrl = true,
-}: ProductFormStateParams<TVariant>) {
+}: ProductFormStateParams<TVariant>) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<TVariant | undefined>(
@@ -104,7 +74,14 @@ export function useProductFormState<TVariant extends ProductVariantLike>({
   const handleSelectedVariantChange = (variant: TVariant) => {
     setSelectedVariant(variant);
     if (syncVariantWithUrl) {
-      syncVariantToUrl(variant);
+      const nextSearchParams = new URLSearchParams(searchParams);
+      for (const option of variant.selectedOptions) {
+        nextSearchParams.set(option.name, option.value);
+      }
+      setSearchParams(nextSearchParams, {
+        replace: true,
+        preventScrollReset: true,
+      });
     }
   };
 
@@ -117,75 +94,14 @@ export function useProductFormState<TVariant extends ProductVariantLike>({
     atcText,
     handleSelectedVariantChange,
   };
-}
+};
 
-export function ProductVariantImageSelector<
-  TVariant extends ProductVariantLike,
->({
-  variants,
-  selectedVariantId,
-  disabled,
-  onSelect,
-}: ProductVariantImageSelectorProps<TVariant>) {
-  const imageVariants = variants.filter((variant) => variant.image);
-  if (imageVariants.length < 2) {
-    return null;
-  }
-
-  const selectedIndex = Math.max(
-    0,
-    imageVariants.findIndex((variant) => variant.id === selectedVariantId),
-  );
-  const selectedType = `Set ${String.fromCharCode(65 + selectedIndex)}`;
-
-  return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm">
-        <span className="font-semibold">Type:</span> {selectedType}
-      </p>
-      <div className="flex flex-wrap gap-2.5">
-        {imageVariants.map((variant, index) => {
-          const isSelected = variant.id === selectedVariantId;
-          const image = variant.image;
-          if (!image) {
-            return null;
-          }
-          return (
-            <button
-              key={variant.id}
-              type="button"
-              disabled={disabled || !variant.availableForSale}
-              aria-label={`Select Set ${String.fromCharCode(65 + index)}`}
-              aria-pressed={isSelected}
-              className={clsx(
-                "size-12 overflow-hidden rounded-lg border p-0.5 transition-colors",
-                isSelected
-                  ? "border-border"
-                  : "border-transparent hover:border-border-subtle",
-                !variant.availableForSale &&
-                  "diagonal cursor-not-allowed border-border-subtle opacity-50",
-              )}
-              onClick={() => onSelect(variant)}
-            >
-              <Image
-                data={image}
-                sizes="48px"
-                className="h-full w-full rounded-md object-cover"
-              />
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-export function ProductQuantityInput({
+export const ProductQuantityInput = ({
   value,
   disabled,
   onChange,
   className,
-}: ProductQuantityInputProps) {
+}: ProductQuantityInputProps) => {
   return (
     <div
       className={clsx(
@@ -219,9 +135,9 @@ export function ProductQuantityInput({
       </button>
     </div>
   );
-}
+};
 
-function ShareLink({
+const ShareLink = ({
   href,
   label,
   children,
@@ -229,7 +145,7 @@ function ShareLink({
   href: string;
   label: string;
   children: ReactNode;
-}) {
+}) => {
   return (
     <a
       href={href}
@@ -241,14 +157,14 @@ function ShareLink({
       {children}
     </a>
   );
-}
+};
 
-export function ProductShareLinks({
+export const ProductShareLinks = ({
   productUrl,
   title,
   label = "Share:",
   className,
-}: ProductShareLinksProps) {
+}: ProductShareLinksProps) => {
   return (
     <div className={clsx("flex items-center gap-3 pt-2 text-sm", className)}>
       <span className="font-semibold">{label}</span>
@@ -272,4 +188,4 @@ export function ProductShareLinks({
       </ShareLink>
     </div>
   );
-}
+};

@@ -1,6 +1,7 @@
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { CSSProperties, Ref } from "react";
 import { cn } from "~/utils/cn";
+import { PRODUCT_DETAIL_METAFIELDS } from "./product-metafield";
 
 interface ProductDetailsProps extends HydrogenComponentProps {
   textColor: string;
@@ -71,11 +72,26 @@ export const schema = createSchema({
   ],
   presets: {
     children: [
-      { type: "product-details--benefits" },
-      { type: "product-details--story" },
-      { type: "product-details--ingredients" },
-      { type: "product-details--how-to-use" },
-      { type: "product-details--results" },
+      {
+        type: "product-details--benefits",
+        metafield: PRODUCT_DETAIL_METAFIELDS.benefits,
+      },
+      {
+        type: "product-details--story",
+        metafield: PRODUCT_DETAIL_METAFIELDS.story,
+      },
+      {
+        type: "product-details--ingredients",
+        metafield: PRODUCT_DETAIL_METAFIELDS.ingredients,
+      },
+      {
+        type: "product-details--how-to-use",
+        metafield: PRODUCT_DETAIL_METAFIELDS.howToUse,
+      },
+      {
+        type: "product-details--results",
+        metafield: PRODUCT_DETAIL_METAFIELDS.results,
+      },
       { type: "product-details--badges" },
     ],
   },

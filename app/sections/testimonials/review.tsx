@@ -25,18 +25,18 @@ const Review = ({
     <div
       data-motion="fade-up"
       ref={ref}
-      className="relative flex flex-col rounded-2xl border border-(--border-color) bg-black/20 px-6 py-4"
+      className="relative flex flex-col rounded-2xl border border-(--border-color) bg-black/20 px-6 py-4 gap-3"
     >
       <div className="flex items-center gap-4">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-button-primary-background font-medium text-text-inverse">
           {reviewerName?.trim().charAt(0).toUpperCase()}
         </div>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-3">
             {reviewerName && (
-              <h4 className="font-medium text-(--text-color)">
+              <p className="font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-(--text-color)">
                 {reviewerName}
-              </h4>
+              </p>
             )}
             {review.verified && (
               <span className="rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
@@ -44,12 +44,16 @@ const Review = ({
               </span>
             )}
           </div>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-(--text-color)">
-            {date && <time dateTime={review.created_at}>{date}</time>}
+          <div className="flex flex-wrap items-center font-body text-xs leading-none font-normal tracking-[0.24px] text-(--text-color)">
+            {date && (
+              <span>
+                Reviewed: <time dateTime={review.created_at}>{date}</time>
+              </span>
+            )}
           </div>
         </div>
       </div>
-      <div className="mt-3 flex items-center gap-4">
+      <div className="flex items-center gap-4">
         <div className="flex [&_svg]:size-4">
           <StarRating rating={review.rating} />
         </div>
@@ -58,10 +62,12 @@ const Review = ({
         </span>
       </div>
       {review.title && (
-        <h5 className="mt-4 font-medium text-(--text-color)">{review.title}</h5>
+        <p className="font-heading text-[26px] leading-[110%] font-normal text-(--text-color)">
+          {review.title}
+        </p>
       )}
       {review.body && (
-        <p className="mt-2 text-sm font-normal text-(--text-color)">
+        <p className="font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-(--text-color)">
           {review.body}
         </p>
       )}

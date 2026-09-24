@@ -8,41 +8,71 @@ import {
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { Ref } from "react";
 import { cn } from "~/utils/cn";
+import { ProductMetafieldEmptyState } from "./metafield-empty-state";
+import {
+  getProductDetailField,
+  loadProductDetailMetafield,
+  PRODUCT_DETAIL_METAFIELDS,
+} from "./product-metafield";
+import { useProductMetafieldData } from "./use-product-metafield-data";
 
-interface BenefitsProps extends HydrogenComponentProps {
+interface BenefitsData {
   heading: string;
   description: string;
-  benefit1Title: string;
-  benefit1Description: string;
-  benefit2Title: string;
-  benefit2Description: string;
-  benefit3Title: string;
-  benefit3Description: string;
-  benefit4Title: string;
-  benefit4Description: string;
+  metafield?: string;
 }
+
+type BenefitsLoaderData = Awaited<
+  ReturnType<typeof loadProductDetailMetafield>
+>;
+type BenefitsProps = HydrogenComponentProps<BenefitsLoaderData> & BenefitsData;
 
 export default function ProductBenefits({
   ref,
   heading,
   description,
-  benefit1Title,
-  benefit1Description,
-  benefit2Title,
-  benefit2Description,
-  benefit3Title,
-  benefit3Description,
-  benefit4Title,
-  benefit4Description,
+  metafield,
+  loaderData,
   className,
   ...rest
 }: BenefitsProps & { ref?: Ref<HTMLElement> }) {
-  const benefits: [PhosphorIcon, string, string][] = [
-    [Drop, benefit1Title, benefit1Description],
-    [Shield, benefit2Title, benefit2Description],
-    [Leaf, benefit3Title, benefit3Description],
-    [CheckCircle, benefit4Title, benefit4Description],
-  ];
+  loaderData = useProductMetafieldData(metafield, loaderData);
+
+  if (!loaderData?.entries.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        className={className}
+        loaderData={loaderData}
+        metafield={metafield}
+      />
+    );
+  }
+
+  const icons: PhosphorIcon[] = [Drop, Shield, Leaf, CheckCircle];
+  const benefits = loaderData.entries
+    .slice(0, icons.length)
+    .map((entry, index) => ({
+      id: entry.id,
+      Icon: icons[index],
+      title: getProductDetailField(entry, "title"),
+      copy: getProductDetailField(entry, "content"),
+    }))
+    .filter((benefit) => benefit.title && benefit.copy);
+
+  if (!benefits.length) {
+    return (
+      <ProductMetafieldEmptyState
+        ref={ref}
+        {...rest}
+        className={className}
+        loaderData={loaderData}
+        metafield={metafield}
+        message="This metafield must contain title and content fields."
+      />
+    );
+  }
 
   return (
     <section
@@ -59,9 +89,9 @@ export default function ProductBenefits({
         </p>
       </header>
       <div className="mx-auto flex w-full flex-col gap-4 md:flex-row">
-        {benefits.map(([Icon, title, copy]) => (
+        {benefits.map(({ id, Icon, title, copy }) => (
           <article
-            key={title}
+            key={id}
             className="flex w-full flex-[1_0_0] flex-col items-center gap-3 rounded-xl bg-(--product-detail-background-color) p-6 text-center"
           >
             <Icon aria-hidden="true" className="size-6" weight="regular" />
@@ -78,30 +108,7 @@ export default function ProductBenefits({
   );
 }
 
-const benefitInputs = [1, 2, 3, 4].flatMap((index) => [
-  {
-    type: "text" as const,
-    name: `benefit${index}Title`,
-    label: `Benefit ${index} title`,
-    defaultValue: [
-      "Deep Hydration",
-      "Anti-Aging",
-      "Vegan & Cruelty-Free",
-      "Dermatologist Tested",
-    ][index - 1],
-  },
-  {
-    type: "text" as const,
-    name: `benefit${index}Description`,
-    label: `Benefit ${index} description`,
-    defaultValue: [
-      "24-hour moisture lock",
-      "Targets 8 signs of aging",
-      "Ethical luxury",
-      "Clinically proven",
-    ][index - 1],
-  },
-]);
+export const loader = loadProductDetailMetafield;
 
 export const schema = createSchema({
   type: "product-details--benefits",
@@ -115,16 +122,24 @@ export const schema = createSchema({
           type: "text",
           name: "heading",
           label: "Heading",
-          defaultValue: "The Science of Radiance",
+          defaultValue: "Product Benefits",
         },
         {
           type: "textarea",
           name: "description",
           label: "Description",
           defaultValue:
-            "A breakthrough serum that targets the eight signs of aging with clinical precision and visible results.",
+            "Explore the key features and benefits of this product.",
         },
-        ...benefitInputs,
+        {
+          type: "text",
+          name: "metafield",
+          label: "Product metafield",
+          defaultValue: PRODUCT_DETAIL_METAFIELDS.benefits,
+          placeholder: PRODUCT_DETAIL_METAFIELDS.benefits,
+          helpText:
+            "Use a list of metaobjects with <strong>title</strong> and <strong>content</strong> fields.",
+        },
       ],
     },
   ],

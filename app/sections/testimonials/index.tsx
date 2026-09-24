@@ -1,5 +1,9 @@
 import { Image } from "@shopify/hydrogen";
-import type { ComponentLoaderArgs, WeaverseProduct } from "@weaverse/hydrogen";
+import type {
+  ComponentLoaderArgs,
+  WeaverseImage,
+  WeaverseProduct,
+} from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
@@ -14,6 +18,7 @@ import { getJudgemeReviews } from "~/utils/judgeme";
 import Review from "./review";
 
 interface TestimonialsData {
+  backgroundImage?: WeaverseImage;
   product?: WeaverseProduct;
   reviewsPosition: string;
   textColor?: string;
@@ -76,6 +81,7 @@ const Testimonials = ({
   ...props
 }: TestimonialsProps & { ref?: RefObject<HTMLElement | null> }) => {
   let {
+    backgroundImage,
     reviewsPosition,
     textColor,
     borderColor,
@@ -92,6 +98,15 @@ const Testimonials = ({
   let productImage = selectedProduct?.media.nodes.find(
     (media) => media.__typename === "MediaImage",
   )?.image;
+  const displayImage = productImage || backgroundImage;
+  const isDesignMode = useWeaverseStudioCheck();
+
+  const canRenderTestimonials = Boolean(selectedProduct || backgroundImage);
+
+  if (!canRenderTestimonials && !isDesignMode) {
+    return null;
+  }
+
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
     : ratingLink || "#";
@@ -99,7 +114,7 @@ const Testimonials = ({
     loaderData?.judgemeReviews.reviews.slice(0, reviewsToShow) || [];
   const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
   const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
-  const isDesignMode = useWeaverseStudioCheck();
+  const hasReviews = reviews.length > 0 && displayedRatingCount > 0;
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
@@ -107,6 +122,23 @@ const Testimonials = ({
     "--rating-overlay-background": `color-mix(in srgb, ${ratingOverlayColor} 40%, transparent)`,
     "--desktop-content-padding": `${desktopContentPadding}px`,
   } as CSSProperties;
+
+  if (!hasReviews) {
+    if (!isDesignMode) {
+      return null;
+    }
+
+    return (
+      <Section ref={ref} {...rest} style={sectionStyle}>
+        <div className="rounded-lg border border-border-subtle border-dashed bg-background-basic px-6 py-12 text-center text-text">
+          <p className="font-heading text-xl uppercase">Testimonials</p>
+          <p className="mt-2 text-text-subtle text-sm">
+            Choose a product with Judge.me reviews
+          </p>
+        </div>
+      </Section>
+    );
+  }
 
   return (
     <Section
@@ -118,15 +150,15 @@ const Testimonials = ({
       style={sectionStyle}
     >
       <div className="absolute inset-0 hidden md:block">
-        {productImage ? (
+        {displayImage ? (
           <div className="grid h-full grid-cols-2">
             <Image
-              data={productImage}
+              data={displayImage}
               className="h-full w-full object-cover"
               sizes="50vw"
             />
             <Image
-              data={productImage}
+              data={displayImage}
               className="h-full w-full object-cover"
               sizes="50vw"
             />
@@ -140,11 +172,11 @@ const Testimonials = ({
           </div>
         ) : null}
       </div>
-      {(productImage || isDesignMode) && (
+      {(displayImage || isDesignMode) && (
         <div className="relative h-[420px] w-full md:hidden">
-          {productImage ? (
+          {displayImage ? (
             <Image
-              data={productImage}
+              data={displayImage}
               className="h-full w-full object-cover"
               sizes="100vw"
             />
@@ -159,7 +191,14 @@ const Testimonials = ({
         </div>
       )}
       {reviewsPosition === "right" && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 grid grid-cols-1 md:grid-cols-2">
+        <div
+          className={clsx(
+            "pointer-events-none z-20 grid grid-cols-1 md:grid-cols-2",
+            displayImage || isDesignMode
+              ? "absolute inset-x-0 top-0"
+              : "relative",
+          )}
+        >
           <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-16">
             <div className="flex w-full max-w-[247px] flex-col gap-3 rounded-xl border border-(--border-color) bg-(--rating-overlay-background) p-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
               <p className="text-xs font-semibold leading-none uppercase tracking-wide opacity-90">
@@ -210,9 +249,9 @@ const Testimonials = ({
           )}
         >
           <div className="absolute inset-0 md:hidden">
-            {productImage ? (
+            {displayImage ? (
               <Image
-                data={productImage}
+                data={displayImage}
                 className="h-full w-full object-cover"
                 sizes="100vw"
               />
@@ -273,6 +312,11 @@ export const schema = createSchema({
           type: "product",
           name: "product",
           shouldRevalidate: true,
+        },
+        {
+          type: "image",
+          name: "backgroundImage",
+          label: "Background image",
         },
         {
           type: "toggle-group",

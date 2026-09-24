@@ -1,6 +1,11 @@
 import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CartForm, Money } from "@shopify/hydrogen";
+import {
+  AnalyticsEvent,
+  CartForm,
+  Money,
+  useAnalytics,
+} from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { type SyntheticEvent, useState } from "react";
 import { useFetcher } from "react-router";
@@ -107,7 +112,6 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
   const [submittedDiscountCode, setSubmittedDiscountCode] = useState<
     string | null
   >(null);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const dcApplyFetcher = useFetcher({ key: "discount-code-apply" });
   const {
     removingDiscountCode,
@@ -119,6 +123,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
     cartRoute,
   } = useAppliedCodeControls();
   const hasPendingLines = useCartPendingLines();
+  const { publish } = useAnalytics();
   const {
     cost,
     discountCodes,
@@ -160,7 +165,8 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
           action: CartForm.ACTIONS.DiscountCodesUpdate,
           inputs: {
             discountCodes: [
-              ...applicableCodes.map(({ code: appliedCode }) => appliedCode),
+              ...(discountCodes?.map(({ code: appliedCode }) => appliedCode) ||
+                []),
               code,
             ],
           },
@@ -222,7 +228,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
 
       <AppliedCartCodes
         appliedGiftCards={appliedGiftCards}
-        applicableCodes={applicableCodes}
+        discountCodes={discountCodes}
         cartRoute={cartRoute}
         removingGiftCard={removingGiftCard}
         onRemovingGiftCard={setRemovingGiftCard}
@@ -246,12 +252,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
             {cost.totalTaxAmount ? (
               <Money data={cost.totalTaxAmount} />
             ) : (
-              <Money
-                data={{
-                  amount: "0.0",
-                  currencyCode: cost.totalAmount.currencyCode,
-                }}
-              />
+              "Calculated at checkout"
             )}
           </span>
         </div>
@@ -292,16 +293,6 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
         </Dialog.Root>
       )}
 
-      <label className="flex cursor-pointer items-center gap-2 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text">
-        <input
-          type="checkbox"
-          checked={acceptedTerms}
-          onChange={(event) => setAcceptedTerms(event.target.checked)}
-          className="size-4 rounded border-border"
-        />
-        <span>I agree with Terms & Conditions</span>
-      </label>
-
       {checkoutUrl && (
         <a
           href={checkoutUrl}
@@ -309,17 +300,21 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
             shape: "default",
             className: cn(
               "h-12 w-full rounded-lg",
-              (isCartUpdating || !acceptedTerms) &&
-                "pointer-events-none opacity-50",
+              isCartUpdating && "pointer-events-none opacity-50",
             ),
           })}
-          aria-disabled={isCartUpdating || !acceptedTerms || undefined}
+          aria-disabled={isCartUpdating || undefined}
           aria-busy={isCartUpdating || undefined}
-          tabIndex={isCartUpdating || !acceptedTerms ? -1 : undefined}
+          tabIndex={isCartUpdating ? -1 : undefined}
           onClick={(event) => {
-            if (isCartUpdating || !acceptedTerms) {
+            if (isCartUpdating) {
               event.preventDefault();
+              return;
             }
+
+            publish(AnalyticsEvent.CUSTOM_EVENT, {
+              eventName: "checkout_started",
+            });
           }}
         >
           Checkout
@@ -371,7 +366,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
   const subtotal = Number(cost?.subtotalAmount?.amount || 0);
   const total = Number(cost?.totalAmount?.amount || 0);
   const hasDiscount = subtotal > total && total > 0;
-  const applicableCodes = getApplicableCodes(discountCodes);
+  const { publish } = useAnalytics();
 
   return (
     <section
@@ -385,7 +380,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       <AppliedCartCodes
         className="mb-4 justify-end"
         appliedGiftCards={appliedGiftCards}
-        applicableCodes={applicableCodes}
+        discountCodes={discountCodes}
         cartRoute={cartRoute}
         removingGiftCard={removingGiftCard}
         onRemovingGiftCard={setRemovingGiftCard}
@@ -477,6 +472,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       {checkoutUrl && (
         <a
           href={checkoutUrl}
+          target="_self"
           className={buttonVariants({
             shape: "default",
             className: cn(
@@ -490,7 +486,12 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           onClick={(event) => {
             if (isCartUpdating) {
               event.preventDefault();
+              return;
             }
+
+            publish(AnalyticsEvent.CUSTOM_EVENT, {
+              eventName: "checkout_started",
+            });
           }}
         >
           Continue to Checkout
@@ -503,7 +504,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
 function AppliedCartCodes({
   className,
   appliedGiftCards,
-  applicableCodes,
+  discountCodes,
   cartRoute,
   removingGiftCard,
   onRemovingGiftCard,
@@ -514,7 +515,7 @@ function AppliedCartCodes({
 }: {
   className?: string;
   appliedGiftCards: CartWithOptimistic["appliedGiftCards"];
-  applicableCodes: NonNullable<CartWithOptimistic["discountCodes"]>;
+  discountCodes: CartWithOptimistic["discountCodes"];
   cartRoute: string;
   removingGiftCard: string | null;
   onRemovingGiftCard: (code: string) => void;
@@ -523,6 +524,8 @@ function AppliedCartCodes({
   onRemovingDiscountCode: (code: string) => void;
   dcRemoveFetcher: { state: string };
 }) {
+  const applicableCodes = getApplicableCodes(discountCodes);
+
   if (!(appliedGiftCards?.length > 0 || applicableCodes.length > 0)) {
     return null;
   }
@@ -562,7 +565,7 @@ function AppliedCartCodes({
         );
       })}
       {applicableCodes.map((discount) => {
-        const updatedCodes = applicableCodes
+        const updatedCodes = (discountCodes || [])
           .map((item) => item.code)
           .filter((code) => code !== discount.code);
         const isDCRemoving =

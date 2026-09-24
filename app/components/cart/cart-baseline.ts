@@ -1,3 +1,4 @@
+import { CartForm } from "@shopify/hydrogen";
 import type { Fetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import type { CartMutationResponse } from "./cart-types";
@@ -18,6 +19,17 @@ export function getTimestampMs(dateString: string | undefined): number {
 export function hasCartResponseErrors(value: unknown) {
   const response = value as CartMutationResponse | undefined;
   return Boolean(response?.errors?.length || response?.userErrors?.length);
+}
+
+export function getCartFormInput(fetcher: Fetcher<unknown>) {
+  if (!fetcher.formData) {
+    return null;
+  }
+  try {
+    return CartForm.getFormInput(fetcher.formData);
+  } catch {
+    return null;
+  }
 }
 
 export function recordCartMutation(cart: CartApiQueryFragment) {
@@ -93,7 +105,7 @@ export function resolveBaselineCart(
   }
 
   for (const fetcher of fetchers) {
-    if (fetcher.state !== "idle" || hasCartResponseErrors(fetcher.data)) {
+    if (fetcher.state === "submitting" || hasCartResponseErrors(fetcher.data)) {
       continue;
     }
     const fetcherCart = (fetcher.data as CartMutationResponse | undefined)

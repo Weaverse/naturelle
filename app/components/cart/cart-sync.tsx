@@ -1,17 +1,13 @@
 import { CartForm } from "@shopify/hydrogen";
 import { useEffect, useLayoutEffect, useRef } from "react";
-import {
-  type Fetcher,
-  useFetcher,
-  useFetchers,
-  useLocation,
-} from "react-router";
+import { type Fetcher, useFetcher, useLocation } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 import {
   canApplyNullCartBootstrap,
   clearFreshestFetcherCart,
   ensureCartBootstrapRequestToken,
+  getCartFormInput,
   getCurrentCartBootstrapPath,
   getCurrentCartBootstrapRequestToken,
   getTimestampMs,
@@ -32,17 +28,6 @@ type CartBootstrapResponse = {
   cartRequestToken: string;
 };
 
-function getFormInput(fetcher: Fetcher<unknown>) {
-  if (!fetcher.formData) {
-    return null;
-  }
-  try {
-    return CartForm.getFormInput(fetcher.formData);
-  } catch {
-    return null;
-  }
-}
-
 function syncFetcherResponse(fetcher: Fetcher<unknown>) {
   const response = fetcher.data as CartMutationResponse | undefined;
   const cart = response?.cart;
@@ -54,7 +39,7 @@ function syncFetcherResponse(fetcher: Fetcher<unknown>) {
     }
   }
 
-  const formInput = getFormInput(fetcher);
+  const formInput = getCartFormInput(fetcher);
   if (!formInput) {
     return;
   }
@@ -73,15 +58,15 @@ function syncFetcherResponse(fetcher: Fetcher<unknown>) {
 }
 
 /**
- * Captures the retained idle result exposed to a mounted fetcher owner. The
- * root coordinator covers owners that unmount while a request is in flight;
- * both paths reconcile into the same Zustand source of truth.
+ * Captures a completed action result exposed to a mounted fetcher owner. The
+ * result is available while the fetcher is loading, before React Router can
+ * discard it during idle cleanup.
  */
 export function useCartFetcherSync(fetcher: Fetcher<unknown>) {
   const lastResponse = useRef<object | null>(null);
   const response = fetcher.data;
   if (
-    fetcher.state === "idle" &&
+    fetcher.state !== "submitting" &&
     response &&
     typeof response === "object" &&
     response !== lastResponse.current
@@ -100,7 +85,6 @@ export function CartStoreSync() {
     key: CART_BOOTSTRAP_FETCHER_KEY,
   });
   const loadBootstrap = bootstrapFetcher.load;
-  const fetchers = useFetchers();
   const cartRoute = usePrefixPathWithLocale("/cart");
   const apiCartPath = usePrefixPathWithLocale("/api/cart");
   const location = useLocation();
@@ -111,25 +95,6 @@ export function CartStoreSync() {
   const pendingLineRemovals = useCartStore(
     (state) => state.pendingLineRemovals,
   );
-  const processedResponses = useRef(new WeakSet<object>());
-
-  for (const fetcher of fetchers) {
-    const response = fetcher.data;
-    if (
-      (response &&
-        typeof response === "object" &&
-        "cartRequestToken" in response) ||
-      fetcher.state !== "idle" ||
-      !response ||
-      typeof response !== "object" ||
-      processedResponses.current.has(response)
-    ) {
-      continue;
-    }
-    processedResponses.current.add(response);
-    queueMicrotask(() => syncFetcherResponse(fetcher));
-  }
-
   const cartRequestToken = ensureCartBootstrapRequestToken(
     location.key,
     apiCartPath,
@@ -159,7 +124,6 @@ export function CartStoreSync() {
     }
 
     const updates: Partial<CartStore> = {
-      cartBootstrapResponseToken: responseToken,
       cartBootstrapResolvedPath: getCurrentCartBootstrapPath(),
     };
     const resolved = bootstrapPayload.cart;
@@ -221,11 +185,7 @@ function CartLineQuantityMutation({
   useCartFetcherSync(fetcher);
 
   useEffect(() => {
-    if (
-      fetcher.state === "idle" &&
-      fetcher.data &&
-      submittedQuantity !== undefined
-    ) {
+    if (fetcher.state === "idle" && submittedQuantity !== undefined) {
       useCartStore
         .getState()
         .settleLineUpdate(lineId, submittedQuantity, fetcher.data);
@@ -285,7 +245,7 @@ function CartLineRemovalMutation({
   useCartFetcherSync(fetcher);
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data && submitted.current) {
+    if (fetcher.state === "idle" && submitted.current) {
       submitted.current = false;
       useCartStore.getState().settleLineRemoval(lineId, fetcher.data);
     }

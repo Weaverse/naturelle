@@ -26,6 +26,7 @@ import {
   getSortLink,
   type SortParam,
 } from "~/utils/filter";
+import { parsePriceFilterParam } from "~/utils/product-filters";
 import { Drawer, useDrawer } from "./drawer";
 
 type DrawerFilterProps = {
@@ -43,7 +44,7 @@ type DrawerFilterProps = {
   checkboxShape?: CheckboxShape;
 };
 
-export function DrawerFilter({
+export const DrawerFilter = ({
   filters,
   appliedFilters = [],
   productNumber = 0,
@@ -55,7 +56,7 @@ export function DrawerFilter({
   displayAsButtonFor = "Size, More filters",
   filterItemsLimit = 10,
   checkboxShape = "square",
-}: DrawerFilterProps) {
+}: DrawerFilterProps) => {
   const { openDrawer, isOpen, closeDrawer } = useDrawer();
   return (
     <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 lg:px-0">
@@ -104,15 +105,14 @@ export function DrawerFilter({
       </div>
     </div>
   );
-}
+};
 
-function ListItemFilter({
+const ListItemFilter = ({
   option,
   appliedFilters,
   displayAsButton = false,
   displayAsSwatch = false,
   showFiltersCount = true,
-  singleSelect = false,
   checkboxShape = "square",
 }: {
   option: Filter["values"][0];
@@ -120,9 +120,8 @@ function ListItemFilter({
   displayAsButton?: boolean;
   displayAsSwatch?: boolean;
   showFiltersCount?: boolean;
-  singleSelect?: boolean;
   checkboxShape?: CheckboxShape;
-}) {
+}) => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const location = useLocation();
@@ -130,22 +129,11 @@ function ListItemFilter({
   let appliedFilter = appliedFilters.find(
     (f) => JSON.stringify(f.filter) === option.input,
   );
-  const optionInput = JSON.parse(option.input as string) as ProductFilter;
-  const checked = singleSelect
-    ? Object.entries(optionInput).every(([key, value]) => {
-        const values = params.getAll(`${FILTER_URL_PREFIX}${key}`);
-        return values.at(-1) === JSON.stringify(value);
-      })
-    : Boolean(appliedFilter);
+  const checked = Boolean(appliedFilter);
 
   let handleCheckedChange = (isChecked: boolean) => {
     if (isChecked) {
       const nextParams = new URLSearchParams(params);
-      if (singleSelect) {
-        for (const key of Object.keys(optionInput)) {
-          nextParams.delete(`${FILTER_URL_PREFIX}${key}`);
-        }
-      }
       const link = getFilterLink(option.input as string, nextParams, location);
       navigate(link, { preventScrollReset: true });
     } else if (appliedFilter) {
@@ -235,9 +223,9 @@ function ListItemFilter({
       />
     </div>
   );
-}
+};
 
-export function FiltersDrawer({
+export const FiltersDrawer = ({
   filters = [],
   appliedFilters = [],
   desktop = false,
@@ -248,7 +236,7 @@ export function FiltersDrawer({
   displayAsButtonFor = "Size, More filters",
   filterItemsLimit = 10,
   checkboxShape = "square",
-}: Omit<DrawerFilterProps, "children"> & { desktop?: boolean }) {
+}: Omit<DrawerFilterProps, "children"> & { desktop?: boolean }) => {
   const [params] = useSearchParams();
   const filterMarkup = (filter: Filter, option: Filter["values"][0]) => {
     switch (filter.type) {
@@ -257,19 +245,11 @@ export function FiltersDrawer({
         const availablePrice = JSON.parse(
           option.input as string,
         ) as ProductFilter;
-        const price = priceFilter
-          ? (JSON.parse(priceFilter) as ProductFilter["price"])
-          : undefined;
-        const min = Number.isNaN(Number(price?.min))
-          ? undefined
-          : Number(price?.min);
-        const max = Number.isNaN(Number(price?.max))
-          ? undefined
-          : Number(price?.max);
+        const price = parsePriceFilterParam(priceFilter);
         return (
           <PriceRangeFilter
-            min={min}
-            max={max}
+            min={price?.min ?? undefined}
+            max={price?.max ?? undefined}
             lowestPrice={priceRange?.min ?? availablePrice.price?.min}
             highestPrice={priceRange?.max ?? availablePrice.price?.max}
           />
@@ -352,9 +332,9 @@ export function FiltersDrawer({
       </div>
     </nav>
   );
-}
+};
 
-function FilterValues({
+const FilterValues = ({
   options,
   appliedFilters,
   displayAsButton,
@@ -370,7 +350,7 @@ function FilterValues({
   showFiltersCount: boolean;
   limit: number;
   checkboxShape: CheckboxShape;
-}) {
+}) => {
   const [expanded, setExpanded] = useState(false);
   const safeLimit = Math.max(1, limit || 10);
   const hasMore = options.length > safeLimit;
@@ -413,15 +393,15 @@ function FilterValues({
       )}
     </>
   );
-}
+};
 
-export function AppliedFilters({
+export const AppliedFilters = ({
   filters = [],
   clearTo,
 }: {
   filters: AppliedFilter[];
   clearTo?: string;
-}) {
+}) => {
   const [params] = useSearchParams();
   const location = useLocation();
 
@@ -455,11 +435,9 @@ export function AppliedFilters({
       </Link>
     </div>
   );
-}
+};
 
-const MINIMUM_PRICE_GAP = 1;
-
-function getCurrencySymbol(currencyCode: string, locale: string) {
+const getCurrencySymbol = (currencyCode: string, locale: string) => {
   try {
     return (
       new Intl.NumberFormat(locale, {
@@ -473,9 +451,28 @@ function getCurrencySymbol(currencyCode: string, locale: string) {
   } catch {
     return currencyCode;
   }
-}
+};
 
-function PriceRangeFilter({
+const getCurrencyFractionDigits = (currencyCode: string, locale: string) => {
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: currencyCode,
+    }).resolvedOptions().maximumFractionDigits;
+  } catch {
+    return 2;
+  }
+};
+
+const parsePriceInput = (value: string) => {
+  if (!value) {
+    return undefined;
+  }
+  const parsedValue = Number(value);
+  return Number.isFinite(parsedValue) ? parsedValue : undefined;
+};
+
+const PriceRangeFilter = ({
   lowestPrice = 0,
   highestPrice,
   max,
@@ -485,19 +482,24 @@ function PriceRangeFilter({
   highestPrice?: number;
   max?: number;
   min?: number;
-}) {
+}) => {
   const location = useLocation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const rootData = useRouteLoaderData<typeof rootLoader>("root");
   const selectedLocale = rootData?.selectedLocale;
   const currencyCode = selectedLocale?.currency ?? "USD";
-  const currencySymbol = getCurrencySymbol(
+  const locale = selectedLocale
+    ? `${selectedLocale.language}-${selectedLocale.country}`
+    : "en-US";
+  const currencySymbol = getCurrencySymbol(currencyCode, locale);
+  const currencyFractionDigits = getCurrencyFractionDigits(
     currencyCode,
-    selectedLocale
-      ? `${selectedLocale.language}-${selectedLocale.country}`
-      : "en-US",
+    locale,
   );
+  const priceStep = 10 ** -currencyFractionDigits;
+  const roundPrice = (value: number) =>
+    Number(value.toFixed(currencyFractionDigits));
 
   const [minPrice, setMinPrice] = useState(min);
   const [maxPrice, setMaxPrice] = useState(max);
@@ -514,17 +516,14 @@ function PriceRangeFilter({
         ? undefined
         : Math.max(
             lowestPrice,
-            Math.min(nextMin, (nextMax ?? maximumPrice) - MINIMUM_PRICE_GAP),
+            Math.min(nextMin, (nextMax ?? maximumPrice) - priceStep),
           );
     const normalizedMax =
       nextMax === undefined
         ? undefined
         : Math.min(
             maximumPrice,
-            Math.max(
-              nextMax,
-              (normalizedMin ?? lowestPrice) + MINIMUM_PRICE_GAP,
-            ),
+            Math.max(nextMax, (normalizedMin ?? lowestPrice) + priceStep),
           );
     setMinPrice(normalizedMin);
     setMaxPrice(normalizedMax);
@@ -561,32 +560,39 @@ function PriceRangeFilter({
 
   const incrementMin = () =>
     setAndCommitMin(
-      Math.min((minPrice ?? lowestPrice) + 1, (maxPrice ?? maximumPrice) - 1),
+      roundPrice(
+        Math.min(
+          (minPrice ?? lowestPrice) + priceStep,
+          (maxPrice ?? maximumPrice) - priceStep,
+        ),
+      ),
     );
   const decrementMin = () =>
-    setAndCommitMin(Math.max((minPrice ?? lowestPrice) - 1, lowestPrice));
+    setAndCommitMin(
+      roundPrice(Math.max((minPrice ?? lowestPrice) - priceStep, lowestPrice)),
+    );
   const incrementMax = () =>
     setAndCommitMax(
-      Math.min((maxPrice ?? highestPrice ?? 0) + 1, maximumPrice),
+      roundPrice(
+        Math.min((maxPrice ?? highestPrice ?? 0) + priceStep, maximumPrice),
+      ),
     );
   const decrementMax = () =>
     setAndCommitMax(
-      Math.max(
-        (maxPrice ?? highestPrice ?? lowestPrice) - 1,
-        (minPrice ?? lowestPrice) + 1,
+      roundPrice(
+        Math.max(
+          (maxPrice ?? highestPrice ?? lowestPrice) - priceStep,
+          (minPrice ?? lowestPrice) + priceStep,
+        ),
       ),
     );
 
   const onChangeMax = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const parsedValue = Number.parseInt(value, 10);
-    setMaxPrice(Number.isNaN(parsedValue) ? undefined : parsedValue);
+    setMaxPrice(parsePriceInput(event.target.value));
   };
 
   const onChangeMin = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const parsedValue = Number.parseInt(value, 10);
-    setMinPrice(Number.isNaN(parsedValue) ? undefined : parsedValue);
+    setMinPrice(parsePriceInput(event.target.value));
   };
 
   return (
@@ -607,12 +613,8 @@ function PriceRangeFilter({
               type="number"
               inputMode="decimal"
               min={lowestPrice}
-              max={
-                maxPrice !== undefined
-                  ? maxPrice - MINIMUM_PRICE_GAP
-                  : highestPrice
-              }
-              step={MINIMUM_PRICE_GAP}
+              max={maxPrice !== undefined ? maxPrice - priceStep : highestPrice}
+              step={priceStep}
               value={minPrice ?? ""}
               placeholder="From"
               onChange={onChangeMin}
@@ -634,13 +636,9 @@ function PriceRangeFilter({
               name="maxPrice"
               type="number"
               inputMode="decimal"
-              min={
-                minPrice !== undefined
-                  ? minPrice + MINIMUM_PRICE_GAP
-                  : lowestPrice
-              }
+              min={minPrice !== undefined ? minPrice + priceStep : lowestPrice}
               max={highestPrice}
-              step={MINIMUM_PRICE_GAP}
+              step={priceStep}
               value={maxPrice ?? ""}
               placeholder="To"
               onChange={onChangeMax}
@@ -657,9 +655,9 @@ function PriceRangeFilter({
       </div>
     </div>
   );
-}
+};
 
-function PriceStepper({
+const PriceStepper = ({
   onIncrement,
   onDecrement,
   label,
@@ -667,7 +665,7 @@ function PriceStepper({
   onIncrement: () => void;
   onDecrement: () => void;
   label: "min" | "max";
-}) {
+}) => {
   return (
     <span className="flex shrink-0 flex-col gap-1">
       <button
@@ -686,15 +684,16 @@ function PriceStepper({
       </button>
     </span>
   );
-}
+};
 
-export default function SortMenu({
+export const SortMenu = ({
   showSearchSort = false,
 }: {
   showSearchSort?: boolean;
-}) {
+}) => {
   const productSortItems: { label: string; key: SortParam }[] = [
     { label: "Relevance", key: "relevance" },
+    { label: "Featured", key: "featured" },
     { label: "Alphabetically, A-Z", key: "alphabetical-a-z" },
     { label: "Alphabetically, Z-A", key: "alphabetical-z-a" },
     { label: "Oldest to Newest", key: "oldest" },
@@ -716,7 +715,7 @@ export default function SortMenu({
   const items = showSearchSort ? searchSortItems : productSortItems;
   const [params] = useSearchParams();
   const location = useLocation();
-  const defaultItem = showSearchSort ? searchSortItems[0] : productSortItems[1];
+  const defaultItem = items[0];
   const activeItem =
     items.find((item) => item.key === params.get("sort")) || defaultItem;
 
@@ -767,4 +766,4 @@ export default function SortMenu({
       </Menu.Items>
     </Menu>
   );
-}
+};

@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 import { Link } from "~/components/link";
 
 interface FaqItemProps extends HydrogenComponentProps {
+  contentType?: "question" | "paragraph";
   question?: string;
   showParagraph?: boolean;
   paragraph?: string;
@@ -12,18 +13,21 @@ interface FaqItemProps extends HydrogenComponentProps {
 
 export default function FaqItem({
   ref,
+  contentType,
   question,
   showParagraph = false,
   paragraph,
   href,
   ...rest
 }: FaqItemProps & { ref?: RefObject<HTMLDivElement | null> }) {
-  const hasLink = Boolean(href?.trim());
-  const showBody = Boolean(paragraph) && showParagraph;
+  const isLegacyParagraph = contentType === "paragraph";
+  const hasLink = !isLegacyParagraph && Boolean(href?.trim());
+  const showBody = isLegacyParagraph || (Boolean(paragraph) && showParagraph);
 
   return (
     <div ref={ref} className="flex flex-col gap-1" {...rest}>
       {question &&
+        !isLegacyParagraph &&
         (hasLink ? (
           <Link
             to={href as string}
@@ -46,7 +50,7 @@ export default function FaqItem({
         ))}
       {showBody && (
         <p className="py-2 font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text">
-          {paragraph}
+          {isLegacyParagraph ? question : paragraph}
         </p>
       )}
     </div>

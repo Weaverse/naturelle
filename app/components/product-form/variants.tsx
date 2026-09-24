@@ -1,3 +1,4 @@
+import { getProductOptions } from "@shopify/hydrogen";
 import clsx from "clsx";
 import type {
   ProductQuery,
@@ -11,9 +12,7 @@ interface ProductVariantsProps {
   variants: {
     nodes: ProductVariantFragmentFragment[];
   };
-  handle: string;
   product: NonNullable<ProductQuery["product"]>;
-  options: NonNullable<ProductQuery["product"]>["options"];
   swatch: {
     configs: any[];
     swatches: any;
@@ -22,12 +21,12 @@ interface ProductVariantsProps {
   isDisabled?: boolean;
 }
 
-export function ProductVariants(props: ProductVariantsProps) {
+export const ProductVariants = (props: ProductVariantsProps) => {
   let {
     selectedVariant,
     onSelectedVariantChange,
     variants,
-    options,
+    product,
     swatch,
     hideUnavailableOptions,
     isDisabled,
@@ -35,6 +34,11 @@ export function ProductVariants(props: ProductVariantsProps) {
 
   let selectedOptions = selectedVariant?.selectedOptions;
   let nodes = variants?.nodes;
+  const productOptions = getProductOptions({
+    ...product,
+    selectedOrFirstAvailableVariant: selectedVariant,
+    adjacentVariants: nodes,
+  });
   let handleSelectOption = (optionName: string, value: string) => {
     let newSelectedOptions = selectedOptions?.map((opt) => {
       if (opt.name === optionName) {
@@ -45,22 +49,17 @@ export function ProductVariants(props: ProductVariantsProps) {
       }
       return opt;
     });
-    let newSelectedVariant =
-      findVariantByOptions(nodes, newSelectedOptions) ??
-      findVariantByOptionValue(nodes, optionName, value) ??
-      ({
-        ...selectedVariant,
-        selectedOptions: newSelectedOptions,
-        availableForSale: false,
-        quantityAvailable: -1,
-      } as ProductVariantFragmentFragment);
-    onSelectedVariantChange(newSelectedVariant);
+    const matchingVariant = findVariantByOptions(nodes, newSelectedOptions);
+    const fallbackVariant = productOptions
+      .find((option) => option.name === optionName)
+      ?.optionValues.find(
+        (optionValue) => optionValue.name === value,
+      )?.firstSelectableVariant;
+    const newSelectedVariant = matchingVariant ?? fallbackVariant;
+    if (newSelectedVariant) {
+      onSelectedVariantChange(newSelectedVariant);
+    }
   };
-
-  let selectedOptionMap = new Map<string, string>();
-  for (const opt of selectedOptions ?? []) {
-    selectedOptionMap.set(opt.name, opt.value);
-  }
 
   if (selectedOptions?.every((opt) => opt.value === "Default Title")) {
     return null;
@@ -68,34 +67,25 @@ export function ProductVariants(props: ProductVariantsProps) {
 
   return (
     <div data-motion="fade-up" className="flex flex-col gap-6">
-      {options.map((option) => {
+      {productOptions.map((option) => {
         let optionName = option.name;
         const shouldRenderAsImage = isImageOption(optionName);
-        let clonedSelectedOptionMap = new Map(selectedOptionMap);
         let values = option.optionValues
           .map((optionValue) => {
-            clonedSelectedOptionMap.set(optionName, optionValue.name);
-            let matchingVariant = findVariantByOptions(
-              nodes,
-              clonedSelectedOptionMap,
-            );
-            const selectableVariant =
-              matchingVariant ??
-              findVariantByOptionValue(nodes, optionName, optionValue.name);
-            const imageVariant =
-              matchingVariant ??
-              optionValue.firstSelectableVariant ??
-              selectableVariant;
-            if (hideUnavailableOptions && !selectableVariant) {
+            if (hideUnavailableOptions && !optionValue.exists) {
               return null;
             }
             return {
-              isActive: selectedOptionMap.get(optionName) === optionValue.name,
-              isAvailable: Boolean(selectableVariant?.availableForSale),
+              exists: optionValue.exists,
+              isActive: optionValue.selected,
+              isAvailable: optionValue.available,
               search: "",
               to: "",
               value: optionValue.name,
-              image: shouldRenderAsImage ? imageVariant?.image : undefined,
+              image: shouldRenderAsImage
+                ? (optionValue.variant?.image ??
+                  optionValue.firstSelectableVariant?.image)
+                : undefined,
             };
           })
           .filter(Boolean);
@@ -139,49 +129,23 @@ export function ProductVariants(props: ProductVariantsProps) {
       })}
     </div>
   );
-}
+};
 
-function findVariantByOptions(
+const findVariantByOptions = (
   nodes: ProductVariantFragmentFragment[] | undefined,
   selectedOptions:
     | ProductVariantFragmentFragment["selectedOptions"]
-    | Map<string, string>
     | undefined,
-) {
+) => {
   if (!nodes?.length || !selectedOptions) {
     return undefined;
   }
-  const selectedByName =
-    selectedOptions instanceof Map
-      ? selectedOptions
-      : new Map(selectedOptions.map((opt) => [opt.name, opt.value]));
+  const selectedByName = new Map(
+    selectedOptions.map((opt) => [opt.name, opt.value]),
+  );
   return nodes.find((variant) =>
     variant.selectedOptions.every(
       (opt) => opt.value === selectedByName.get(opt.name),
     ),
   );
-}
-
-function findVariantByOptionValue(
-  nodes: ProductVariantFragmentFragment[] | undefined,
-  optionName: string,
-  value: string,
-) {
-  if (!nodes?.length) {
-    return undefined;
-  }
-  return (
-    nodes.find(
-      (variant) =>
-        variant.availableForSale &&
-        variant.selectedOptions.some(
-          (opt) => opt.name === optionName && opt.value === value,
-        ),
-    ) ??
-    nodes.find((variant) =>
-      variant.selectedOptions.some(
-        (opt) => opt.name === optionName && opt.value === value,
-      ),
-    )
-  );
-}
+};

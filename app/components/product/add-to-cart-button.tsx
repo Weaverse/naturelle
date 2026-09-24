@@ -104,6 +104,7 @@ function AddToCartContent({
   variant: "primary" | "secondary" | "outline";
 }) {
   const pendingToken = useRef<string | null>(null);
+  const submitted = useRef(false);
   const isAdding = fetcher.state !== "idle";
   const errorMessage = getCartMutationError(fetcher.data);
   useCartFetcherSync(fetcher);
@@ -113,21 +114,15 @@ function AddToCartContent({
   }, [fetcher.state, onFetchingStateChange]);
 
   useEffect(() => {
-    if (fetcher.state !== "idle" || !fetcher.data || !pendingToken.current) {
+    if (fetcher.state !== "idle" || !submitted.current) {
       return;
     }
-    useCartStore.getState().clearPendingAdd(pendingToken.current);
+    submitted.current = false;
+    if (pendingToken.current) {
+      useCartStore.getState().clearPendingAdd(pendingToken.current);
+    }
     pendingToken.current = null;
-  }, [fetcher.data, fetcher.state]);
-
-  useEffect(
-    () => () => {
-      if (pendingToken.current) {
-        useCartStore.getState().clearPendingAdd(pendingToken.current);
-      }
-    },
-    [],
-  );
+  }, [fetcher.state]);
 
   return (
     <AddToCartAnalytics fetcher={fetcher} onAdded={onAdded}>
@@ -146,6 +141,7 @@ function AddToCartContent({
           if (event.defaultPrevented) {
             return;
           }
+          submitted.current = true;
           pendingToken.current = useCartStore.getState().stagePendingAdd(lines);
           useCartStore.getState().open();
         }}

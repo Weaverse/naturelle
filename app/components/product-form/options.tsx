@@ -23,6 +23,7 @@ interface VariantOptionProps {
     colorSwatches: any[];
   };
   values: {
+    exists: boolean;
     isActive: boolean;
     isAvailable: boolean;
     search: string;
@@ -51,6 +52,7 @@ export function VariantOption(props: VariantOptionProps) {
             <button
               type="button"
               key={value.value}
+              disabled={!value.exists}
               className={clsx(
                 "p-0.5 border-2 rounded-full cursor-pointer h-11 w-11",
                 value.isAvailable && selectedOptionValue === value.value
@@ -80,6 +82,7 @@ export function VariantOption(props: VariantOptionProps) {
           <button
             type="button"
             key={value.value}
+            disabled={!value.exists}
             className={cn(
               "border-2 rounded-full cursor-pointer h-[50px] px-5 py-3",
               value.isAvailable && selectedOptionValue === value.value
@@ -104,7 +107,7 @@ export function VariantOption(props: VariantOptionProps) {
             <button
               type="button"
               key={value.value}
-              disabled={!value.isAvailable}
+              disabled={!value.exists}
               aria-label={`${name}: ${value.value}`}
               aria-pressed={selectedOptionValue === value.value}
               className={clsx(
@@ -143,7 +146,11 @@ export function VariantOption(props: VariantOptionProps) {
         >
           {values.map((value) => {
             return (
-              <option key={value.value} value={value.value}>
+              <option
+                key={value.value}
+                value={value.value}
+                disabled={!value.exists}
+              >
                 {value.value}
               </option>
             );
@@ -162,7 +169,7 @@ export function VariantOption(props: VariantOptionProps) {
         <button
           type="button"
           key={value.value}
-          disabled={!value.isAvailable}
+          disabled={!value.exists}
           className={clsx(
             "min-h-12 cursor-pointer rounded-xl border px-4 py-3 text-base font-semibold leading-none transition-colors",
             isMorphology && "min-w-16",

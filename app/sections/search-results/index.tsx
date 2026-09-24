@@ -1,10 +1,7 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
-import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
-import { useCallback, useEffect, useState } from "react";
 import { Form, useLoaderData, useLocation, useNavigate } from "react-router";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
-import { DrawerFilter } from "~/components/drawer-filter";
 import { Grid } from "~/components/grid";
 import { IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
@@ -15,26 +12,7 @@ import { PageHeader, Text } from "~/components/text";
 import type { loader as searchLoader } from "~/routes/($locale).search";
 import { getImageLoadingPriority } from "~/utils/image";
 
-interface SearchResultsProps extends HydrogenComponentProps {
-  ref?: React.Ref<HTMLElement>;
-  expandFilters?: boolean;
-  showFiltersCount?: boolean;
-  enableSwatches?: boolean;
-  displayAsButtonFor?: string;
-  filterItemsLimit?: number;
-  checkboxShape?: "square" | "circle";
-}
-
-export default function SearchResults({
-  ref,
-  expandFilters = true,
-  showFiltersCount = true,
-  enableSwatches = true,
-  displayAsButtonFor = "Size, More filters",
-  filterItemsLimit = 10,
-  checkboxShape = "square",
-  ...props
-}: SearchResultsProps) {
+export default function SearchResults() {
   const {
     searchTerm,
     products,
@@ -44,12 +22,6 @@ export default function SearchResults({
     highestPriceProduct,
   } = useLoaderData<typeof searchLoader>();
   const noResults = Boolean(searchTerm && products?.nodes?.length === 0);
-  const [displayedProductCount, setDisplayedProductCount] = useState(
-    products.nodes.length,
-  );
-  const updateDisplayedProductCount = useCallback((count: number) => {
-    setDisplayedProductCount(count);
-  }, []);
   const location = useLocation();
   const navigate = useNavigate();
   const clearFiltersParams = new URLSearchParams();
@@ -58,10 +30,10 @@ export default function SearchResults({
   }
   const clearFiltersTo = `${location.pathname}?${clearFiltersParams.toString()}`;
   const lowestPrice = Number(
-    lowestPriceProduct.nodes[0]?.priceRange.minVariantPrice.amount,
+    lowestPriceProduct?.nodes[0]?.priceRange.minVariantPrice.amount,
   );
   const highestPrice = Number(
-    highestPriceProduct.nodes[0]?.priceRange.maxVariantPrice.amount,
+    highestPriceProduct?.nodes[0]?.priceRange.maxVariantPrice.amount,
   );
   const priceRange = {
     min: Number.isFinite(lowestPrice) ? lowestPrice : undefined,
@@ -69,8 +41,12 @@ export default function SearchResults({
   };
   const storefrontFilters = (productfilters as Filter[] | undefined) ?? [];
 
+  if (!products) {
+    return null;
+  }
+
   return (
-    <section ref={ref} {...props} className="bg-background-basic">
+    <section className="bg-background-basic">
       <PageHeader variant="search">
         <div className="w-full flex flex-col items-center gap-6 px-4 md:px-6">
           <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
@@ -107,41 +83,24 @@ export default function SearchResults({
           </Form>
         </div>
       </PageHeader>
-      {noResults ? (
-        <>
-          <DrawerFilter
-            showSearchSort
-            appliedFilters={appliedFilters}
-            productNumber={displayedProductCount}
-            filters={storefrontFilters}
-            priceRange={priceRange}
-            expandFilters={expandFilters}
-            showFiltersCount={showFiltersCount}
-            enableSwatches={enableSwatches}
-            displayAsButtonFor={displayAsButtonFor}
-            filterItemsLimit={filterItemsLimit}
-            checkboxShape={checkboxShape}
-          />
-          <div className="mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0">
-            <NoResults />
-          </div>
-        </>
-      ) : (
-        <ProductListingFilterToolbar
-          showSearchSort
-          appliedFilters={appliedFilters}
-          productNumber={displayedProductCount}
-          filters={storefrontFilters}
-          priceRange={priceRange}
-          expandFilters={expandFilters}
-          showFiltersCount={showFiltersCount}
-          enableSwatches={enableSwatches}
-          displayAsButtonFor={displayAsButtonFor}
-          filterItemsLimit={filterItemsLimit}
-          checkboxShape={checkboxShape}
-          clearFiltersTo={clearFiltersTo}
-          contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
-        >
+      <ProductListingFilterToolbar
+        showSearchSort
+        appliedFilters={appliedFilters}
+        productNumber={products.totalCount}
+        filters={storefrontFilters}
+        priceRange={priceRange}
+        expandFilters
+        showFiltersCount
+        enableSwatches
+        displayAsButtonFor="Size, More filters"
+        filterItemsLimit={10}
+        checkboxShape="square"
+        clearFiltersTo={clearFiltersTo}
+        contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
+      >
+        {noResults ? (
+          <NoResults />
+        ) : (
           <ProductListingPagination
             connection={products}
             renderPrevious={({ PreviousLink, isLoading }) => (
@@ -159,45 +118,26 @@ export default function SearchResults({
               </div>
             )}
             renderPageContent={({ nodes }) => (
-              <>
-                <DisplayedCountSync
-                  count={nodes.length}
-                  onChange={updateDisplayedProductCount}
-                />
-                <Grid
-                  data-test="product-grid"
-                  layout="products"
-                  className="w-full! gap-y-10!"
-                >
-                  {nodes.map((product: ProductCardFragment, index) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      loading={getImageLoadingPriority(index)}
-                      enableQuickView
-                    />
-                  ))}
-                </Grid>
-              </>
+              <Grid
+                data-test="product-grid"
+                layout="products"
+                className="w-full! gap-y-10!"
+              >
+                {nodes.map((product: ProductCardFragment, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    loading={getImageLoadingPriority(index)}
+                    enableQuickView
+                  />
+                ))}
+              </Grid>
             )}
           />
-        </ProductListingFilterToolbar>
-      )}
+        )}
+      </ProductListingFilterToolbar>
     </section>
   );
-}
-
-function DisplayedCountSync({
-  count,
-  onChange,
-}: {
-  count: number;
-  onChange: (count: number) => void;
-}) {
-  useEffect(() => {
-    onChange(count);
-  }, [count, onChange]);
-  return null;
 }
 
 function NoResults() {
@@ -207,67 +147,3 @@ function NoResults() {
     </div>
   );
 }
-
-export const schema = createSchema({
-  type: "search-results",
-  title: "Search results",
-  limit: 1,
-  enabledOn: {
-    pages: ["CUSTOM"],
-  },
-  settings: [
-    {
-      group: "Search filters",
-      inputs: [
-        {
-          type: "switch",
-          name: "expandFilters",
-          label: "Expand filter groups",
-          defaultValue: true,
-        },
-        {
-          type: "switch",
-          name: "showFiltersCount",
-          label: "Show option counts",
-          defaultValue: true,
-        },
-        {
-          type: "switch",
-          name: "enableSwatches",
-          label: "Enable color swatches",
-          defaultValue: true,
-        },
-        {
-          type: "text",
-          name: "displayAsButtonFor",
-          label: "Display as buttons",
-          defaultValue: "Size, More filters",
-          helpText: "Enter filter names separated by commas.",
-        },
-        {
-          type: "range",
-          name: "filterItemsLimit",
-          label: "Options shown before Show more",
-          defaultValue: 10,
-          configs: {
-            min: 1,
-            max: 30,
-            step: 1,
-          },
-        },
-        {
-          type: "select",
-          name: "checkboxShape",
-          label: "Checkbox shape",
-          configs: {
-            options: [
-              { value: "square", label: "Square" },
-              { value: "circle", label: "Circle" },
-            ],
-          },
-          defaultValue: "square",
-        },
-      ],
-    },
-  ],
-});

@@ -7,6 +7,7 @@ import type { SearchSortKeys } from "@shopify/hydrogen/storefront-api-types";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/.server/seo";
 import { SEARCH_QUERY } from "~/graphql/queries";
+import SearchResults from "~/sections/search-results";
 import { PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
 import {
@@ -14,7 +15,6 @@ import {
   getFiltersFromSearchParams,
   getPriceRangeFilters,
 } from "~/utils/product-filters";
-import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;
@@ -30,25 +30,18 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const filters = getFiltersFromSearchParams(searchParams);
   const priceRangeFilters = getPriceRangeFilters(filters);
 
-  const [productSearchData, weaverseData] = await Promise.all([
-    storefront.query(SEARCH_QUERY, {
-      variables: {
-        searchTerm,
-        productFilters: filters,
-        priceRangeFilters,
-        sortKey,
-        reverse,
-        ...variables,
-        country: storefront.i18n.country,
-        language: storefront.i18n.language,
-      },
-    }),
-    context.weaverse.loadPage({
-      type: "CUSTOM",
-    }),
-  ]);
-
-  validateWeaverseData(weaverseData);
+  const productSearchData = await storefront.query(SEARCH_QUERY, {
+    variables: {
+      searchTerm,
+      productFilters: filters,
+      priceRangeFilters,
+      sortKey,
+      reverse,
+      ...variables,
+      country: storefront.i18n.country,
+      language: storefront.i18n.language,
+    },
+  });
 
   const { search: productSearch } = productSearchData;
   const products = productSearch;
@@ -89,7 +82,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     products,
     lowestPriceProduct: productSearchData.lowestPriceProduct,
     highestPriceProduct: productSearchData.highestPriceProduct,
-    weaverseData,
   };
 }
 
@@ -97,7 +89,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Search() {
-  return <WeaverseContent />;
+  return <SearchResults />;
 }
 
 function getSearchSortValuesFromParam(sortParam: SortParam | null): {

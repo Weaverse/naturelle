@@ -100,10 +100,10 @@ const PLACEHOLDER_COLLECTION: CollectionNode = {
   },
 };
 
-export default function Collections({
+const Collections = ({
   ref,
   ...props
-}: CollectionsProps & { ref?: RefObject<HTMLElement | null> }) {
+}: CollectionsProps & { ref?: RefObject<HTMLElement | null> }) => {
   const {
     loaderData,
     heading,
@@ -309,7 +309,9 @@ export default function Collections({
       {children}
     </Section>
   );
-}
+};
+
+export default Collections;
 
 export const schema = createSchema({
   type: "collections",

@@ -102,10 +102,7 @@ export default function Collection() {
   return <WeaverseContent />;
 }
 
-export function getSortValuesFromParam(
-  sortParam: SortParam | null,
-  defaultSort: "alphabetical" | "relevance" = "alphabetical",
-): {
+export function getSortValuesFromParam(sortParam: SortParam | null): {
   sortKey: ProductCollectionSortKeys;
   reverse: boolean;
 } {
@@ -150,9 +147,12 @@ export function getSortValuesFromParam(
         sortKey: "MANUAL",
         reverse: false,
       };
+    case "relevance":
+      return {
+        sortKey: "RELEVANCE",
+        reverse: false,
+      };
     default:
-      return defaultSort === "relevance"
-        ? { sortKey: "RELEVANCE", reverse: false }
-        : { sortKey: "TITLE", reverse: false };
+      return { sortKey: "RELEVANCE", reverse: false };
   }
 }

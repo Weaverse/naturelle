@@ -12,11 +12,9 @@ import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
-import { isImageOption } from "~/components/product-form/options";
 import {
   ProductQuantityInput,
   ProductShareLinks,
-  ProductVariantImageSelector,
   useProductFormState,
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
@@ -215,20 +213,9 @@ export function QuickView({
                 onSelectedVariantChange={handleSelectedVariantChange}
                 swatch={swatches}
                 variants={variants}
-                options={product.options}
-                handle={product.handle}
                 hideUnavailableOptions={theme.hideUnavailableOptions}
               />
             </div>
-
-            {!product.options.some((option) => isImageOption(option.name)) && (
-              <ProductVariantImageSelector
-                variants={variants.nodes}
-                selectedVariantId={selectedVariant.id}
-                disabled={isLoading}
-                onSelect={handleSelectedVariantChange}
-              />
-            )}
 
             <SellingPlanSelector
               sellingPlanGroups={product.sellingPlanGroups}
@@ -362,8 +349,10 @@ export function QuickViewTrigger({
     <>
       <div
         className={clsx(
-          "absolute z-10 transition-opacity duration-300 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100",
-          alwaysShowButton ? "inset-x-3 bottom-4" : "right-3 bottom-3",
+          "absolute z-10 transition-opacity duration-300",
+          alwaysShowButton
+            ? "inset-x-3 bottom-4"
+            : "right-3 bottom-3 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100",
         )}
       >
         {!alwaysShowButton && (
