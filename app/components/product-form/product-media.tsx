@@ -1,6 +1,6 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -35,7 +35,10 @@ export function ProductMedia(props: ProductMediaProps) {
     thumbnailLayout = "swiper",
   } = props;
 
-  const media = _media.filter((med) => med.__typename === "MediaImage");
+  const media = useMemo(
+    () => _media.filter((med) => med.__typename === "MediaImage"),
+    [_media],
+  );
   const useStripThumbnails = showThumbnails && thumbnailLayout === "strip";
   const useSwiperThumbnails = showThumbnails && thumbnailLayout === "swiper";
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
@@ -43,13 +46,23 @@ export function ProductMedia(props: ProductMediaProps) {
   let [zoomMediaId, setZoomMediaId] = useState<string | null>(null);
   let [zoomModalOpen, setZoomModalOpen] = useState(false);
   let [currentIndex, setCurrentIndex] = useState(0);
+  const previousVariantId = useRef(selectedVariant?.id);
 
   useEffect(() => {
-    if (selectedVariant && swiper) {
-      const index = getSelectedVariantMediaIndex(media, selectedVariant);
-      if (index >= 0 && index !== swiper.realIndex) {
-        slideToMedia(swiper, index);
-      }
+    if (!selectedVariant || !swiper) {
+      return;
+    }
+
+    const variantChanged = previousVariantId.current !== selectedVariant.id;
+    previousVariantId.current = selectedVariant.id;
+
+    if (!variantChanged) {
+      return;
+    }
+
+    const index = getSelectedVariantMediaIndex(media, selectedVariant);
+    if (index >= 0 && index !== swiper.realIndex) {
+      slideToMedia(swiper, index);
     }
   }, [media, selectedVariant, swiper]);
 

@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import { createSchema, useThemeSettings } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
@@ -110,15 +110,6 @@ let ProductInformation = ({
     product?.sellingPlanGroups,
     product?.requiresSellingPlan,
   );
-  let themeSettings = useThemeSettings();
-  let swatches = themeSettings?.swatches || {
-    configs: [],
-    swatches: {
-      imageSwatches: [],
-      colorSwatches: [],
-    },
-  };
-
   if (!product || !selectedVariant) {
     return (
       <section className="w-full py-12 md:py-24 lg:py-32" ref={ref} {...rest}>
@@ -254,11 +245,9 @@ let ProductInformation = ({
                   </p>
                 </div>
                 <ProductVariants
-                  isDisabled={isLoading}
                   product={product}
                   selectedVariant={selectedVariant}
                   onSelectedVariantChange={handleSelectedVariantChange}
-                  swatch={swatches}
                   variants={variants}
                   hideUnavailableOptions={hideUnavailableOptions}
                   data-motion="fade-up"

@@ -1,58 +1,42 @@
+import type { MappedProductOptions } from "@shopify/hydrogen";
 import clsx from "clsx";
 import { Image } from "~/components/image";
-import { cn } from "~/utils/cn";
-export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
-const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
-const OPTIONS_AS_IMAGE = ["Image", "Images", "Type", "Types"];
-const OPTIONS_AS_DROPDOWN = ["Dropdown", "Dropdowns"];
-const OPTION_AS_MORPHOLOGY = ["Size", "Shape", "Sizes"];
+import type { VariantDisplayType } from "./variants";
 
-export function isImageOption(optionName: string) {
-  const normalizedOptionName = optionName.trim().toLowerCase();
-  return OPTIONS_AS_IMAGE.some(
-    (name) => name.toLowerCase() === normalizedOptionName,
-  );
-}
+type ShopifyOptionValue = MappedProductOptions["optionValues"][number];
 
 interface VariantOptionProps {
   selectedOptionValue: string;
   onSelectOptionValue: (optionValue: string) => void;
   name: string;
-  swatches: {
-    imageSwatches: any[];
-    colorSwatches: any[];
-  };
+  displayType: VariantDisplayType;
   values: {
     exists: boolean;
-    isActive: boolean;
     isAvailable: boolean;
-    search: string;
-    to: string;
     value: string;
     image?: any;
+    swatch?: ShopifyOptionValue["swatch"];
   }[];
 }
 
 export function VariantOption(props: VariantOptionProps) {
-  let { name, values, selectedOptionValue, onSelectOptionValue, swatches } =
+  let { name, values, selectedOptionValue, onSelectOptionValue, displayType } =
     props;
-  const normalizedName = name.trim().toLowerCase();
 
   let disabledClassName = "diagonal opacity-50 cursor-not-allowed";
-  // show value by Type
-
-  if (OPTIONS_AS_COLOR.includes(name)) {
+  if (displayType === "swatch") {
     return (
       <div className="flex gap-4 flex-wrap">
         {values.map((value) => {
-          let swatchColor: string =
-            swatches.colorSwatches.find((color) => color.name === value.value)
-              ?.value || value.value;
+          const swatchImage = value.swatch?.image?.previewImage;
+          const swatchColor = value.swatch?.color || value.value;
           return (
             <button
               type="button"
               key={value.value}
               disabled={!value.exists}
+              aria-label={`${name}: ${value.value}`}
+              aria-pressed={selectedOptionValue === value.value}
               className={clsx(
                 "p-0.5 border-2 rounded-full cursor-pointer h-11 w-11",
                 value.isAvailable && selectedOptionValue === value.value
@@ -63,43 +47,25 @@ export function VariantOption(props: VariantOptionProps) {
               )}
               onClick={() => onSelectOptionValue(value.value)}
             >
-              <div
-                className={clsx("w-full h-full rounded-full")}
-                style={{
-                  backgroundColor: swatchColor,
-                }}
-              />
+              {swatchImage ? (
+                <Image
+                  data={swatchImage}
+                  sizes="40px"
+                  className="h-full w-full rounded-full object-cover"
+                />
+              ) : (
+                <div
+                  className="h-full w-full rounded-full"
+                  style={{ backgroundColor: swatchColor }}
+                />
+              )}
             </button>
           );
         })}
       </div>
     );
   }
-  if (OPTIONS_AS_BUTTON.includes(name)) {
-    return (
-      <div className="flex gap-4 flex-wrap">
-        {values.map((value) => (
-          <button
-            type="button"
-            key={value.value}
-            disabled={!value.exists}
-            className={cn(
-              "border-2 rounded-full cursor-pointer h-[50px] px-5 py-3",
-              value.isAvailable && selectedOptionValue === value.value
-                ? "border-border/90 bg-[#E5E6D4]"
-                : value.isAvailable
-                  ? "border-border-subtle"
-                  : `${disabledClassName} border-[#C2C3C2] text-[#C2C3C2] bg-[#EBEBEA]`,
-            )}
-            onClick={() => onSelectOptionValue(value.value)}
-          >
-            {value.value}
-          </button>
-        ))}
-      </div>
-    );
-  }
-  if (isImageOption(name)) {
+  if (displayType === "image") {
     return (
       <div className="flex gap-4 flex-wrap">
         {values.map((value) => {
@@ -135,11 +101,13 @@ export function VariantOption(props: VariantOptionProps) {
       </div>
     );
   }
-  if (OPTIONS_AS_DROPDOWN.includes(name)) {
+  if (displayType === "dropdown") {
     return (
       <div>
         <select
           className="min-w-[120px] w-fit rounded-md border p-1"
+          value={selectedOptionValue}
+          aria-label={name}
           onChange={(e) => {
             onSelectOptionValue(e.target.value);
           }}
@@ -159,9 +127,7 @@ export function VariantOption(props: VariantOptionProps) {
       </div>
     );
   }
-  const isMorphology = OPTION_AS_MORPHOLOGY.some(
-    (optionName) => optionName.toLowerCase() === normalizedName,
-  );
+  const isMorphology = displayType === "morphology";
 
   return (
     <div className="flex flex-wrap gap-3">

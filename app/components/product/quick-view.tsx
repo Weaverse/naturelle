@@ -57,11 +57,6 @@ export function QuickView({
     unavailableText: theme.unavailableText || "Unavailable",
     syncVariantWithUrl: false,
   });
-  const swatches = theme?.swatches || {
-    configs: [],
-    swatches: { imageSwatches: [], colorSwatches: [] },
-  };
-
   if (!product || !selectedVariant || !variants) {
     return null;
   }
@@ -207,11 +202,9 @@ export function QuickView({
               </div>
 
               <ProductVariants
-                isDisabled={isLoading}
                 product={product}
                 selectedVariant={selectedVariant}
                 onSelectedVariantChange={handleSelectedVariantChange}
-                swatch={swatches}
                 variants={variants}
                 hideUnavailableOptions={theme.hideUnavailableOptions}
               />
