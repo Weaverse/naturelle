@@ -46,7 +46,17 @@ export async function loader(args: LoaderFunctionArgs) {
     { handle: params.blogHandle, data: blog },
     { handle: params.articleHandle, data: article },
   );
-  const relatedArticles = blog.articles.nodes.filter(
+  const articles = blog.articles.nodes;
+  const currentArticleIndex = articles.findIndex(
+    (art) => art?.handle === params.articleHandle,
+  );
+  const previousArticle =
+    currentArticleIndex > 0 ? articles[currentArticleIndex - 1] : null;
+  const nextArticle =
+    currentArticleIndex >= 0 && currentArticleIndex < articles.length - 1
+      ? articles[currentArticleIndex + 1]
+      : null;
+  const relatedArticles = articles.filter(
     (art: any) => art?.handle !== params?.articleHandle,
   );
 
@@ -60,6 +70,9 @@ export async function loader(args: LoaderFunctionArgs) {
 
   return data({
     article,
+    articleUrl: request.url,
+    previousArticle,
+    nextArticle,
     blog: {
       handle: params.blogHandle,
     },
