@@ -12,21 +12,21 @@ type ReviewsApiResponse = JudgemeReviewsData & {
   productHandle: string;
 };
 
-const formatReviewDate = (dateString: string) => {
+function formatReviewDate(dateString: string) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) {
     return dateString;
   }
   return date.toLocaleDateString("en-GB");
-};
+}
 
-export const ReviewList = ({
+export function ReviewList({
   judgemeReviews,
   emptyReviewsText,
 }: {
   judgemeReviews: JudgemeReviewsData;
   emptyReviewsText: string;
-}) => {
+}) {
   const { product } = useLoaderData<ProductLoaderType>();
   const fetcher = useFetcher<ReviewsApiResponse>();
   const [reviews, setReviews] = useState(judgemeReviews.reviews);
@@ -134,4 +134,4 @@ export const ReviewList = ({
       )}
     </section>
   );
-};
+}

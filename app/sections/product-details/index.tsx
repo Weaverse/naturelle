@@ -43,6 +43,9 @@ export default function ProductDetails({
 export const schema = createSchema({
   type: "product-details",
   title: "Product details",
+  enabledOn: {
+    pages: ["PRODUCT"],
+  },
   settings: [
     {
       group: "Theme",

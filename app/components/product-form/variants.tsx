@@ -21,7 +21,7 @@ interface ProductVariantsProps {
   isDisabled?: boolean;
 }
 
-export const ProductVariants = (props: ProductVariantsProps) => {
+export function ProductVariants(props: ProductVariantsProps) {
   let {
     selectedVariant,
     onSelectedVariantChange,
@@ -129,14 +129,14 @@ export const ProductVariants = (props: ProductVariantsProps) => {
       })}
     </div>
   );
-};
+}
 
-const findVariantByOptions = (
+function findVariantByOptions(
   nodes: ProductVariantFragmentFragment[] | undefined,
   selectedOptions:
     | ProductVariantFragmentFragment["selectedOptions"]
     | undefined,
-) => {
+) {
   if (!nodes?.length || !selectedOptions) {
     return undefined;
   }
@@ -148,4 +148,4 @@ const findVariantByOptions = (
       (opt) => opt.value === selectedByName.get(opt.name),
     ),
   );
-};
+}

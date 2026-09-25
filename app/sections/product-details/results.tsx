@@ -6,7 +6,6 @@ import {
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
 } from "./product-metafield";
-import { useProductMetafieldData } from "./use-product-metafield-data";
 
 interface ResultsData {
   metafield?: string;
@@ -21,8 +20,6 @@ export default function ClinicalResults({
   loaderData,
   ...rest
 }: ResultsProps & { ref?: Ref<HTMLElement> }) {
-  loaderData = useProductMetafieldData(metafield, loaderData);
-
   if (!loaderData?.entries.length) {
     return (
       <ProductMetafieldEmptyState
@@ -103,6 +100,7 @@ export const schema = createSchema({
           label: "Product metafield",
           defaultValue: PRODUCT_DETAIL_METAFIELDS.results,
           placeholder: PRODUCT_DETAIL_METAFIELDS.results,
+          shouldRevalidate: true,
           helpText:
             "Use a list of metaobjects with <strong>value</strong>, <strong>label</strong>, and <strong>note</strong> fields.",
         },

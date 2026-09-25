@@ -13,7 +13,6 @@ import {
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
 } from "./product-metafield";
-import { useProductMetafieldData } from "./use-product-metafield-data";
 
 interface StoryData {
   eyebrow: string;
@@ -35,7 +34,6 @@ export default function ProductStory({
   ...rest
 }: StoryProps & { ref?: Ref<HTMLElement> }) {
   const isDesignMode = useWeaverseStudioCheck();
-  loaderData = useProductMetafieldData(metafield, loaderData);
   const story = loaderData?.entries[0];
   if (!story) {
     return (
@@ -141,6 +139,7 @@ export const schema = createSchema({
           label: "Product metafield",
           defaultValue: PRODUCT_DETAIL_METAFIELDS.story,
           placeholder: PRODUCT_DETAIL_METAFIELDS.story,
+          shouldRevalidate: true,
           helpText:
             "Use a metaobject with <strong>title</strong> and <strong>content</strong> fields.",
         },

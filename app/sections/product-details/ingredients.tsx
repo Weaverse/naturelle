@@ -13,7 +13,6 @@ import {
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
 } from "./product-metafield";
-import { useProductMetafieldData } from "./use-product-metafield-data";
 
 interface IngredientsData {
   heading: string;
@@ -36,8 +35,6 @@ export default function KeyIngredients({
   className,
   ...rest
 }: IngredientsProps & { ref?: Ref<HTMLElement> }) {
-  loaderData = useProductMetafieldData(metafield, loaderData);
-
   if (!loaderData?.entries.length) {
     return (
       <ProductMetafieldEmptyState
@@ -139,6 +136,7 @@ export const schema = createSchema({
           label: "Product metafield",
           defaultValue: PRODUCT_DETAIL_METAFIELDS.ingredients,
           placeholder: PRODUCT_DETAIL_METAFIELDS.ingredients,
+          shouldRevalidate: true,
           helpText:
             "Use a list of metaobjects with <strong>title</strong> and <strong>content</strong> fields.",
         },
