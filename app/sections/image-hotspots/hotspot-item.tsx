@@ -8,19 +8,22 @@ import {
   useChildInstances,
   useItemInstance,
   useParentInstance,
+  useThemeSettings,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { type CSSProperties, type RefObject, useContext } from "react";
 import { createPortal } from "react-dom";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
-import { ProductCard } from "~/components/product/product-card";
+import {
+  getProductCardBadge,
+  ProductCard,
+} from "~/components/product/product-card";
 import { PRODUCT_QUERY } from "~/graphql/queries";
 import { HotspotsContext } from "./image-item";
 
 export interface HotspotsItemData {
   badgeText: string;
-  eyebrow: string;
   heading: string;
   icon: "circle" | "plus" | "bag" | "tag";
   iconSize: number;
@@ -53,7 +56,6 @@ let HotspotsItem = ({
 }: HotspotsItemProps & { ref?: RefObject<HTMLButtonElement | null> }) => {
   let {
     badgeText,
-    eyebrow,
     heading,
     icon,
     iconSize,
@@ -72,6 +74,10 @@ let HotspotsItem = ({
     ...rest
   } = props;
   let Icon = ICONS[icon];
+  const themeSettings = useThemeSettings();
+  const productBadge = loaderData?.product
+    ? getProductCardBadge(loaderData.product, badgeText, themeSettings)
+    : null;
   const { activeItem, panelTarget, selectItem } = useContext(HotspotsContext);
   const itemInstance = useItemInstance();
   const parentInstance = useParentInstance();
@@ -127,9 +133,9 @@ let HotspotsItem = ({
                 backgroundColor: `color-mix(in srgb, ${overlayColor} 10%, transparent)`,
               }}
             />
-            {eyebrow && (
-              <div className="relative z-10 rounded-full bg-background-subtle-1 px-4 py-1.5 text-xs uppercase tracking-wide">
-                {eyebrow}
+            {showBadge && productBadge && (
+              <div className="relative z-10 rounded-full bg-background-subtle-1 px-4 py-0.5 text-center font-body text-[12px] font-normal leading-[160%] tracking-[-0.12px] text-text uppercase">
+                {productBadge.text}
               </div>
             )}
             {heading && (
@@ -141,6 +147,7 @@ let HotspotsItem = ({
               <ProductCard
                 product={loaderData.product}
                 badgeText={badgeText}
+                alwaysShowQuickViewButton
                 showBadge={showBadge}
                 showPrice={showPrice}
                 showStar={showStar}
@@ -264,12 +271,6 @@ export const schema = createSchema({
     {
       group: "Product",
       inputs: [
-        {
-          type: "text",
-          name: "eyebrow",
-          label: "Eyebrow text",
-          defaultValue: "Natural pet care",
-        },
         {
           type: "text",
           name: "heading",

@@ -21,9 +21,10 @@ export function Grid({
     default: `grid-cols-1 ${items === 2 && "md:grid-cols-2"}  ${
       items === 3 && "sm:grid-cols-3"
     } ${items > 3 && "md:grid-cols-3"} ${items >= 4 && "lg:grid-cols-4"}`,
-    products: `grid-cols-2 ${items >= 3 && "md:grid-cols-3"} ${
-      items >= 4 && "lg:grid-cols-4"
-    }`,
+    products:
+      `grid-cols-2 sm:grid-cols-2 ${items >= 4 ? "md:grid-cols-4" : "md:grid-cols-2"} ${
+        items >= 4 ? "lg:grid-cols-4" : ""
+      }`.trim(),
     auto: "auto-cols-auto",
     blog: "grid-cols-1 md:grid-cols-2",
   };

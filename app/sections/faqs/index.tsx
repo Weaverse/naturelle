@@ -15,10 +15,8 @@ interface FaqsData {
   imageBackgroundColor?: string;
   cardEyebrow?: string;
   cardHeading?: string;
-  cardDescription?: string;
   buttonText?: string;
   buttonLink?: string;
-  eyebrow?: string;
   heading?: string;
 }
 
@@ -31,10 +29,8 @@ export default function Faqs({
   imageBackgroundColor,
   cardEyebrow = "Customer service",
   cardHeading = "Still need help?",
-  cardDescription = "Our team is here to help with any questions you may have.",
   buttonText = "Contact us",
   buttonLink = "/pages/contact",
-  eyebrow = "Customer care",
   heading = "Frequently asked questions",
   gap = 24,
   style,
@@ -80,17 +76,12 @@ export default function Faqs({
         <div className="absolute inset-0 bg-(--faq-image-background) opacity-30" />
         <div className="relative z-10 flex h-full min-h-[440px] flex-col items-center justify-center px-8 text-center text-text-inverse md:min-h-[560px] lg:min-h-[600px]">
           {cardEyebrow && (
-            <p className="mb-4 text-sm uppercase tracking-[0.16em]">
+            <p className="mb-4 text-center text-xl font-normal tracking-[-0.2px]">
               {cardEyebrow}
             </p>
           )}
           {cardHeading && (
-            <h3 className="font-heading text-3xl md:text-4xl">{cardHeading}</h3>
-          )}
-          {cardDescription && (
-            <p className="mt-5 max-w-sm text-sm leading-6 md:text-base">
-              {cardDescription}
-            </p>
+            <p className="text-center text-[37px]">{cardHeading}</p>
           )}
           {buttonText && (
             <Button
@@ -105,18 +96,13 @@ export default function Faqs({
         </div>
       </div>
 
-      <div className="flex w-full max-w-page flex-col justify-center py-20 lg:pl-16 lg:pr-10">
-        {eyebrow && (
-          <p className="mb-4 text-sm uppercase tracking-[0.16em] text-text">
-            {eyebrow}
-          </p>
-        )}
+      <div className="flex w-full max-w-page flex-col gap-6 lg:gap-10 justify-center py-20 lg:pl-16 lg:pr-10">
         {heading && (
-          <h2 className="font-heading text-4xl leading-tight text-text md:text-5xl">
+          <h2 className="font-heading text-[44px] leading-[110%] font-normal text-text">
             {heading}
           </h2>
         )}
-        <div className="mt-8 md:mt-10">{children}</div>
+        <div className="flex flex-col gap-4">{children}</div>
       </div>
     </Section>
   );
@@ -131,16 +117,16 @@ export const schema = createSchema({
       inputs: [
         { type: "image", name: "image", label: "Card image" },
         {
-          type: "color",
-          name: "imageBackgroundColor",
-          label: "Card image background and overlay",
-          defaultValue: "#382E23",
-        },
-        {
           type: "text",
           name: "imageAlt",
           label: "Image alt text",
           defaultValue: "Customer service",
+        },
+        {
+          type: "color",
+          name: "imageBackgroundColor",
+          label: "Card image background and overlay",
+          defaultValue: "#382E23",
         },
         {
           type: "text",
@@ -155,13 +141,6 @@ export const schema = createSchema({
           defaultValue: "Still need help?",
         },
         {
-          type: "textarea",
-          name: "cardDescription",
-          label: "Card description",
-          defaultValue:
-            "Our team is here to help with any questions you may have.",
-        },
-        {
           type: "text",
           name: "buttonText",
           label: "Button text",
@@ -172,12 +151,6 @@ export const schema = createSchema({
           name: "buttonLink",
           label: "Button link",
           defaultValue: "/pages/contact",
-        },
-        {
-          type: "text",
-          name: "eyebrow",
-          label: "FAQ eyebrow",
-          defaultValue: "Customer care",
         },
         {
           type: "text",
@@ -204,13 +177,10 @@ export const schema = createSchema({
       {
         type: "faq--item",
         question: "How do you protect my personal information?",
-        href: "/policies/privacy-policy",
-      },
-      {
-        type: "faq--item",
-        contentType: "paragraph",
-        question:
+        showParagraph: true,
+        paragraph:
           "Products are imported automatically from your Shopify admin. We estimate 2-3 hours for set-up. If you want to change the design of Naturelle, we estimate 3-5 hours for set-up.",
+        href: "/policies/privacy-policy",
       },
       {
         type: "faq--item",

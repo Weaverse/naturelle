@@ -6,35 +6,52 @@ import { Link } from "~/components/link";
 interface FaqItemProps extends HydrogenComponentProps {
   contentType?: "question" | "paragraph";
   question?: string;
+  showParagraph?: boolean;
+  paragraph?: string;
   href?: string;
 }
 
 export default function FaqItem({
   ref,
-  contentType = "question",
-  question = "What is your privacy policy?",
-  href = "/policies/privacy-policy",
+  contentType,
+  question,
+  showParagraph = false,
+  paragraph,
+  href,
   ...rest
 }: FaqItemProps & { ref?: RefObject<HTMLDivElement | null> }) {
+  const isLegacyParagraph = contentType === "paragraph";
+  const hasLink = !isLegacyParagraph && Boolean(href?.trim());
+  const showBody = isLegacyParagraph || (Boolean(paragraph) && showParagraph);
+
   return (
-    <div ref={ref} {...rest}>
-      {contentType === "paragraph" ? (
-        <p className="py-2 text-sm leading-6 text-text md:text-base md:leading-7">
-          {question}
+    <div ref={ref} className="flex flex-col gap-1" {...rest}>
+      {question &&
+        !isLegacyParagraph &&
+        (hasLink ? (
+          <Link
+            to={href as string}
+            prefetch="intent"
+            className="group flex min-h-16 w-full items-center justify-between gap-6 py-2 text-left text-base text-text transition-opacity hover:opacity-70 md:min-h-20 md:text-lg"
+          >
+            <span className="text-xl leading-[160%] tracking-[-0.2px]">
+              {question}
+            </span>
+            <ArrowRight
+              aria-hidden="true"
+              className="size-4 shrink-0 text-text transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={1.5}
+            />
+          </Link>
+        ) : (
+          <p className="py-2 text-xl leading-[160%] tracking-[-0.2px] text-text">
+            {question}
+          </p>
+        ))}
+      {showBody && (
+        <p className="py-2 font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text">
+          {isLegacyParagraph ? question : paragraph}
         </p>
-      ) : (
-        <Link
-          to={href || "/policies/privacy-policy"}
-          prefetch="intent"
-          className="group flex min-h-16 w-full items-center justify-between gap-6 py-5 text-left text-base text-text transition-opacity hover:opacity-70 md:min-h-20 md:py-6 md:text-lg"
-        >
-          <span>{question}</span>
-          <ArrowRight
-            aria-hidden="true"
-            className="size-4 shrink-0 text-text transition-transform duration-300 group-hover:translate-x-1"
-            strokeWidth={1.5}
-          />
-        </Link>
       )}
     </div>
   );
@@ -48,30 +65,30 @@ export const schema = createSchema({
       group: "Content",
       inputs: [
         {
-          type: "select",
-          name: "contentType",
-          label: "Content type",
-          configs: {
-            options: [
-              { label: "Question", value: "question" },
-              { label: "Paragraph", value: "paragraph" },
-            ],
-          },
-          defaultValue: "question",
+          type: "textarea",
+          name: "question",
+          label: "Question",
+          defaultValue: "What is your privacy policy?",
+        },
+        {
+          type: "switch",
+          name: "showParagraph",
+          label: "Show paragraph",
+          defaultValue: false,
         },
         {
           type: "textarea",
-          name: "question",
-          label: "Text",
-          defaultValue: "What is your privacy policy?",
+          name: "paragraph",
+          label: "Paragraph",
+          defaultValue:
+            "Products are imported automatically from your Shopify admin.",
+          condition: "showParagraph.eq.true",
         },
         {
           type: "url",
           name: "href",
           label: "Link",
-          defaultValue: "/policies/privacy-policy",
           placeholder: "/policies/privacy-policy",
-          condition: "contentType.eq.question",
         },
       ],
     },

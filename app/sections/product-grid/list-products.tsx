@@ -152,15 +152,18 @@ export default function ProductGridList({
           />
           <div className="absolute inset-0 bg-black/20" />
           {showCollectionTitle && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-text-inverse lg:p-10">
-              {collectionEyebrow && (
-                <p className="mb-3 text-sm uppercase tracking-[0.16em]">
-                  {collectionEyebrow}
-                </p>
-              )}
-              <h3 className="max-w-md font-heading text-4xl font-normal lg:text-5xl">
-                {collectionHeading || collectionTitle}
-              </h3>
+            <div className="absolute inset-0 flex flex-col gap-5 items-center justify-center p-6 text-center text-text-inverse lg:p-10">
+              <div className="flex flex-col gap-1">
+                {collectionEyebrow && (
+                  <p className="text-center font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-inverse">
+                    {collectionEyebrow}
+                  </p>
+                )}
+                <h3 className="max-w-md text-center font-heading text-[44px] leading-[110%] font-normal text-text-inverse">
+                  {collectionHeading || collectionTitle}
+                </h3>
+              </div>
+
               {collectionButtonText && (
                 <span
                   className={buttonVariants({

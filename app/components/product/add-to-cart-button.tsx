@@ -1,15 +1,22 @@
-import type { ShopifyAddToCartPayload } from "@shopify/hydrogen";
+import type {
+  OptimisticCartLineInput,
+  ShopifyAddToCartPayload,
+} from "@shopify/hydrogen";
 import {
   AnalyticsEventName,
   CartForm,
   getClientBrowserParameters,
   sendShopifyAnalytics,
 } from "@shopify/hydrogen";
-import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
 import { useEffect, useRef } from "react";
 import type { FetcherWithComponents } from "react-router";
 import { Button } from "~/components/button";
+import { useCartFetcherSync } from "~/components/cart/cart-sync";
+import { useCartStore } from "~/components/cart/store";
 import { usePageAnalytics } from "~/hooks/use-page-analytics";
+import { getCartMutationError } from "~/utils/cart-error";
+import { cn } from "~/utils/cn";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 export function AddToCartButton({
   children,
@@ -24,7 +31,7 @@ export function AddToCartButton({
   ...props
 }: {
   children: React.ReactNode;
-  lines: CartLineInput[];
+  lines: OptimisticCartLineInput[];
   className?: string;
   variant?: "primary" | "secondary" | "outline";
   width?: "auto" | "full";
@@ -34,6 +41,7 @@ export function AddToCartButton({
   onAdded?: () => void;
   [key: string]: any;
 }) {
+  const cartRoute = usePrefixPathWithLocale("/cart");
   const hasValidLines =
     lines.length > 0 &&
     lines.every(
@@ -41,24 +49,23 @@ export function AddToCartButton({
         typeof line.merchandiseId === "string" &&
         line.merchandiseId.length > 0 &&
         Number.isInteger(line.quantity) &&
-        line.quantity > 0,
+        Number(line.quantity) > 0,
     );
 
   return (
     <CartForm
-      route="/cart"
-      inputs={{
-        lines,
-      }}
+      route={cartRoute}
+      inputs={{ lines }}
       action={CartForm.ACTIONS.LinesAdd}
     >
       {(fetcher: FetcherWithComponents<any>) => (
         <AddToCartContent
           analytics={analytics}
           className={className}
-          disabled={disabled}
+          disabled={Boolean(disabled)}
           fetcher={fetcher}
           hasValidLines={hasValidLines}
+          lines={lines}
           onAdded={onAdded}
           onFetchingStateChange={onFetchingStateChange}
           props={props}
@@ -78,6 +85,7 @@ function AddToCartContent({
   disabled,
   fetcher,
   hasValidLines,
+  lines,
   onAdded,
   onFetchingStateChange,
   props,
@@ -86,17 +94,44 @@ function AddToCartContent({
   analytics?: unknown;
   children: React.ReactNode;
   className: string;
-  disabled?: boolean;
+  disabled: boolean;
   fetcher: FetcherWithComponents<any>;
   hasValidLines: boolean;
+  lines: OptimisticCartLineInput[];
   onAdded?: () => void;
   onFetchingStateChange?: (state: string) => void;
-  props: Record<string, unknown>;
+  props: Record<string, any>;
   variant: "primary" | "secondary" | "outline";
 }) {
+  const pendingToken = useRef<string | null>(null);
+  const submitted = useRef(false);
+  const isAdding = fetcher.state !== "idle";
+  const errorMessage = getCartMutationError(fetcher.data);
+  useCartFetcherSync(fetcher);
+
   useEffect(() => {
     onFetchingStateChange?.(fetcher.state);
   }, [fetcher.state, onFetchingStateChange]);
+
+  useEffect(() => {
+    if (fetcher.state !== "idle" || !submitted.current) {
+      return;
+    }
+    submitted.current = false;
+    if (pendingToken.current) {
+      useCartStore.getState().clearPendingAdd(pendingToken.current);
+    }
+    pendingToken.current = null;
+  }, [fetcher.state]);
+
+  useEffect(
+    () => () => {
+      if (pendingToken.current) {
+        useCartStore.getState().clearPendingAdd(pendingToken.current);
+      }
+    },
+    [],
+  );
 
   return (
     <AddToCartAnalytics fetcher={fetcher} onAdded={onAdded}>
@@ -105,16 +140,28 @@ function AddToCartContent({
         as="button"
         type="submit"
         size="lg"
-        className={className}
-        disabled={Boolean(
-          disabled || fetcher.state !== "idle" || !hasValidLines,
-        )}
+        className={cn("h-12 px-6 py-3 text-base", className)}
+        disabled={Boolean(disabled || isAdding || !hasValidLines)}
         loading={fetcher.state === "submitting"}
         variant={variant}
         {...props}
+        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+          props.onClick?.(event);
+          if (event.defaultPrevented) {
+            return;
+          }
+          submitted.current = true;
+          pendingToken.current = useCartStore.getState().stagePendingAdd(lines);
+          useCartStore.getState().open();
+        }}
       >
         {children}
       </Button>
+      {errorMessage ? (
+        <p role="alert" className="mt-2 text-red-700 text-sm">
+          {errorMessage}
+        </p>
+      ) : null}
     </AddToCartAnalytics>
   );
 }
@@ -151,6 +198,9 @@ function AddToCartAnalytics({
         }
       }
 
+      // The drawer opens synchronously at click time. A completed request may
+      // call the product-specific success callback, but must never reopen a
+      // drawer the customer already dismissed.
       if (
         fetcherData.cart &&
         !fetcherData.userErrors?.length &&
