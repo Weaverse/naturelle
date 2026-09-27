@@ -21,7 +21,59 @@ import { ProductBadge, type ProductBadgeType } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 import { QuickViewTrigger } from "./quick-view";
 
-type CardProduct = ProductCardFragment | NonNullable<ProductQuery["product"]>;
+export type CardProduct =
+  | ProductCardFragment
+  | NonNullable<ProductQuery["product"]>;
+
+type ProductBadgeSettings = {
+  saveBadgeText?: string;
+  newBadgeText?: string;
+  newBadgeDaysOld?: number;
+  soldOutBadgeText?: string;
+};
+
+export function getProductCardBadge(
+  product: CardProduct,
+  customBadge: string | undefined,
+  settings: ProductBadgeSettings,
+): { text: string; type: ProductBadgeType } | null {
+  const variant = product.variants.nodes[0];
+  if (!variant) {
+    return null;
+  }
+
+  const {
+    saveBadgeText = "Save [percentage]%",
+    newBadgeText = "New arrival",
+    newBadgeDaysOld = 30,
+    soldOutBadgeText = "Out of stock",
+  } = settings;
+  const savingsPercentage = getSavingsPercentage(
+    variant.price as MoneyV2,
+    variant.compareAtPrice as MoneyV2,
+  );
+  const publishedAt = (product as CardProduct & { publishedAt?: string })
+    .publishedAt;
+
+  if (!variant.availableForSale) {
+    return { text: customBadge || soldOutBadgeText, type: "sold-out" };
+  }
+  if (savingsPercentage) {
+    return {
+      text:
+        customBadge ||
+        saveBadgeText.replace("[percentage]", String(savingsPercentage)),
+      type: "save",
+    };
+  }
+  if (isNewArrival(publishedAt, newBadgeDaysOld)) {
+    return { text: customBadge || newBadgeText, type: "new" };
+  }
+  if (customBadge) {
+    return { text: customBadge, type: "new" };
+  }
+  return null;
+}
 
 export interface ProductCardProps {
   product: CardProduct;
@@ -38,6 +90,7 @@ export interface ProductCardProps {
   showStar?: boolean;
   showViewDetailsLink?: boolean;
   viewDetailsLinkText?: string;
+  alwaysShowQuickViewButton?: boolean;
 }
 
 export function ProductCard({
@@ -54,7 +107,9 @@ export function ProductCard({
   showStar = true,
   showViewDetailsLink = false,
   viewDetailsLinkText = "View full details",
+  alwaysShowQuickViewButton = false,
 }: ProductCardProps) {
+  const themeSettings = useThemeSettings();
   const {
     pcardEnableQuickView,
     pcardQuickViewButtonText,
@@ -64,11 +119,7 @@ export function ProductCard({
     pcardAlignment = "left",
     pcardShowVendor = false,
     pcardShowSalePrice = true,
-    saveBadgeText = "Save [percentage]%",
-    newBadgeText = "New arrival",
-    newBadgeDaysOld = 30,
-    soldOutBadgeText = "Out of stock",
-  } = useThemeSettings();
+  } = themeSettings;
   const variant = product.variants.nodes[0];
   if (!variant) {
     return null;
@@ -79,7 +130,6 @@ export function ProductCard({
     media?: NonNullable<ProductQuery["product"]>["media"];
     rating?: { value: string } | null;
     ratingCount?: { value: string } | null;
-    publishedAt?: string;
   };
   const mediaImages = cardProduct.media?.nodes.filter(
     (node) => node.__typename === "MediaImage",
@@ -88,25 +138,7 @@ export function ProductCard({
   const secondImage = cardProduct.images?.nodes[1] ?? mediaImages?.[1]?.image;
   const { price, compareAtPrice } = variant;
   const customBadge = label ?? badgeText;
-  const savingsPercentage = getSavingsPercentage(
-    price as MoneyV2,
-    compareAtPrice as MoneyV2,
-  );
-  let badge: { text: string; type: ProductBadgeType } | null = null;
-
-  if (!variant.availableForSale) {
-    badge = { text: customBadge || soldOutBadgeText, type: "sold-out" };
-  } else if (savingsPercentage) {
-    badge = {
-      text:
-        customBadge || saveBadgeText.replace("[percentage]", savingsPercentage),
-      type: "save",
-    };
-  } else if (isNewArrival(cardProduct.publishedAt, newBadgeDaysOld)) {
-    badge = { text: customBadge || newBadgeText, type: "new" };
-  } else if (customBadge) {
-    badge = { text: customBadge, type: "new" };
-  }
+  const badge = getProductCardBadge(product, customBadge, themeSettings);
 
   return (
     <article
@@ -166,6 +198,7 @@ export function ProductCard({
           <QuickViewTrigger
             productHandle={product.handle}
             buttonText={pcardQuickViewButtonText || "Select options"}
+            alwaysShowButton={alwaysShowQuickViewButton}
           />
         )}
       </div>
@@ -187,7 +220,7 @@ export function ProductCard({
           to={`/products/${product.handle}`}
           onClick={onClick}
           prefetch="intent"
-          className="font-semibold line-clamp-1"
+          className="line-clamp-2 text-base font-semibold leading-[160%] tracking-[-0.16px]"
         >
           {product.title}
         </Link>

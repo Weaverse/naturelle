@@ -3,7 +3,7 @@ import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
 export const OPTIONS_AS_COLOR = ["Color", "Colors", "Colour", "Colours"];
 const OPTIONS_AS_BUTTON = ["Button", "Buttons"];
-const OPTIONS_AS_IMAGE = ["Image", "Images"];
+const OPTIONS_AS_IMAGE = ["Image", "Images", "Type", "Types"];
 const OPTIONS_AS_DROPDOWN = ["Dropdown", "Dropdowns"];
 const OPTION_AS_MORPHOLOGY = ["Size", "Shape", "Sizes"];
 
@@ -22,27 +22,20 @@ interface VariantOptionProps {
     imageSwatches: any[];
     colorSwatches: any[];
   };
-  onSelectVariant?: (variant: unknown) => void;
   values: {
+    exists: boolean;
     isActive: boolean;
     isAvailable: boolean;
     search: string;
     to: string;
     value: string;
     image?: any;
-    variant?: unknown;
   }[];
 }
 
 export function VariantOption(props: VariantOptionProps) {
-  let {
-    name,
-    values,
-    selectedOptionValue,
-    onSelectOptionValue,
-    onSelectVariant,
-    swatches,
-  } = props;
+  let { name, values, selectedOptionValue, onSelectOptionValue, swatches } =
+    props;
   const normalizedName = name.trim().toLowerCase();
 
   let disabledClassName = "diagonal opacity-50 cursor-not-allowed";
@@ -59,6 +52,7 @@ export function VariantOption(props: VariantOptionProps) {
             <button
               type="button"
               key={value.value}
+              disabled={!value.exists}
               className={clsx(
                 "p-0.5 border-2 rounded-full cursor-pointer h-11 w-11",
                 value.isAvailable && selectedOptionValue === value.value
@@ -88,6 +82,7 @@ export function VariantOption(props: VariantOptionProps) {
           <button
             type="button"
             key={value.value}
+            disabled={!value.exists}
             className={cn(
               "border-2 rounded-full cursor-pointer h-[50px] px-5 py-3",
               value.isAvailable && selectedOptionValue === value.value
@@ -112,7 +107,7 @@ export function VariantOption(props: VariantOptionProps) {
             <button
               type="button"
               key={value.value}
-              disabled={!value.isAvailable}
+              disabled={!value.exists}
               aria-label={`${name}: ${value.value}`}
               aria-pressed={selectedOptionValue === value.value}
               className={clsx(
@@ -123,13 +118,7 @@ export function VariantOption(props: VariantOptionProps) {
                     ? "border-transparent hover:border-border-subtle"
                     : `${disabledClassName} border-border-subtle bg-background-subtle-1 text-text-subtle`,
               )}
-              onClick={() => {
-                if (value.variant && onSelectVariant) {
-                  onSelectVariant(value.variant);
-                } else {
-                  onSelectOptionValue(value.value);
-                }
-              }}
+              onClick={() => onSelectOptionValue(value.value)}
             >
               {value.image ? (
                 <Image
@@ -157,7 +146,11 @@ export function VariantOption(props: VariantOptionProps) {
         >
           {values.map((value) => {
             return (
-              <option key={value.value} value={value.value}>
+              <option
+                key={value.value}
+                value={value.value}
+                disabled={!value.exists}
+              >
                 {value.value}
               </option>
             );
@@ -176,7 +169,7 @@ export function VariantOption(props: VariantOptionProps) {
         <button
           type="button"
           key={value.value}
-          disabled={!value.isAvailable}
+          disabled={!value.exists}
           className={clsx(
             "min-h-12 cursor-pointer rounded-xl border px-4 py-3 text-base font-semibold leading-none transition-colors",
             isMorphology && "min-w-16",

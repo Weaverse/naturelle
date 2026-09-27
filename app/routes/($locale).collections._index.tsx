@@ -36,7 +36,5 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   return getSeoMeta(loaderData?.seo as SeoConfig);
 };
 export default function Collections() {
-  // const { collections } = useLoaderData<typeof loader>();
-
   return <WeaverseContent />;
 }

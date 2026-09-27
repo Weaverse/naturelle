@@ -111,7 +111,15 @@ const Slide = ({
               </div>
             )}
           </div>
-          <div className="relative flex aspect-square w-full flex-col items-center justify-center gap-6 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 md:h-full md:w-1/2 lg:gap-20 lg:px-16 lg:py-20">
+          <div className="relative flex aspect-square w-full flex-col items-center justify-center gap-8 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 md:h-full md:w-1/2 lg:px-16 lg:py-20">
+            <span
+              aria-hidden="true"
+              className="absolute top-6 h-px w-16 bg-background-basic opacity-60"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute bottom-6 h-px w-16 bg-background-basic opacity-60"
+            />
             <div className="flex flex-[1_0_0] flex-col items-center justify-center gap-6">
               <div
                 data-motion="fade-up"

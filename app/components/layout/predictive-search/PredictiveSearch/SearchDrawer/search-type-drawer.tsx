@@ -31,7 +31,6 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
             <Input
               name="q"
               onChange={fetchResults}
-              onFocus={fetchResults}
               onKeyDown={handleKeyDown}
               placeholder="Enter a keyword"
               ref={inputRef}

@@ -3,7 +3,7 @@ import { Image } from "~/components/image";
 export function ProductPlaceholder(_props: any) {
   return (
     <div className="container px-4 md:px-6 mx-auto pointer-events-none">
-      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-12">
+      <div className="grid items-start gap-6 md:grid-cols-2 md:gap-12">
         <Image
           data={{
             altText: "",

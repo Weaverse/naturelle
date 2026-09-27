@@ -36,7 +36,7 @@ const Slides = ({
       {...rest}
       style={sectionStyle}
       className={clsx(
-        "relative w-full px-5 py-10 md:h-(--section-height) md:px-6 lg:px-10 bg-background-basic",
+        "relative w-full px-5 py-10 md:h-(--section-height) md:px-6 lg:px-10",
         !showIcons && "[&_.slide-icon]:hidden",
         widthClasses[width],
       )}
@@ -44,8 +44,10 @@ const Slides = ({
       <Swiper
         loop={true}
         slidesPerView={1}
+        speed={700}
+        preventInteractionOnTransition={true}
         className="mySwiper h-full"
-        effect={"fade"}
+        effect="fade"
         fadeEffect={{
           crossFade: true,
         }}

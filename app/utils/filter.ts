@@ -8,12 +8,21 @@ export type AppliedFilter = {
 };
 
 export type SortParam =
+  | "alphabetical-a-z"
+  | "alphabetical-z-a"
   | "price-low-high"
   | "price-high-low"
   | "best-selling"
+  | "oldest"
   | "newest"
   | "featured"
   | "relevance";
+
+export function clearPaginationParams(params: URLSearchParams) {
+  params.delete("cursor");
+  params.delete("direction");
+  return params;
+}
 
 export function getAppliedFilterLink(
   filter: AppliedFilter,
@@ -25,6 +34,7 @@ export function getAppliedFilterLink(
     const fullKey = FILTER_URL_PREFIX + key;
     paramsClone.delete(fullKey, JSON.stringify(value));
   }
+  clearPaginationParams(paramsClone);
   return `${location.pathname}?${paramsClone.toString()}`;
 }
 
@@ -33,8 +43,10 @@ export function getSortLink(
   params: URLSearchParams,
   location: Location,
 ) {
-  params.set("sort", sort);
-  return `${location.pathname}?${params.toString()}`;
+  const paramsClone = new URLSearchParams(params);
+  paramsClone.set("sort", sort);
+  clearPaginationParams(paramsClone);
+  return `${location.pathname}?${paramsClone.toString()}`;
 }
 
 export function getFilterLink(
@@ -42,8 +54,8 @@ export function getFilterLink(
   params: URLSearchParams,
   location: ReturnType<typeof useLocation>,
 ) {
-  const paramsClone = new URLSearchParams(params);
-  const newParams = filterInputToParams(rawInput, paramsClone);
+  const newParams = filterInputToParams(rawInput, new URLSearchParams(params));
+  clearPaginationParams(newParams);
   return `${location.pathname}?${newParams.toString()}`;
 }
 
@@ -58,7 +70,7 @@ export function filterInputToParams(
 
   for (const [key, value] of Object.entries(input)) {
     if (params.has(`${FILTER_URL_PREFIX}${key}`, JSON.stringify(value))) {
-      return;
+      return params;
     }
     if (key === "price") {
       // For price, we want to overwrite
