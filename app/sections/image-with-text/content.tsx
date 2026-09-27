@@ -2,11 +2,12 @@ import type { HydrogenComponentProps } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import clsx from "clsx";
 import type { RefObject } from "react";
+import { useIsContactPage } from "~/hooks/use-is-contact-page";
+import { cn } from "~/utils/cn";
 
 let variants = cva(
-  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-16 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
+  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-16 [&_.paragraph]:mx-[unset]",
   {
     variants: {
       alignment: {
@@ -36,11 +37,16 @@ let ImageWithTextContent = ({
   ...props
 }: ImageWithTextContentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { alignment, verticalPadding, children, ...rest } = props;
+  const isContactPage = useIsContactPage();
+
   return (
     <div
       ref={ref}
       {...rest}
-      className={clsx(variants({ alignment, verticalPadding }))}
+      className={cn(
+        variants({ alignment, verticalPadding }),
+        isContactPage && "px-0",
+      )}
     >
       {children}
     </div>

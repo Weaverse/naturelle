@@ -2,6 +2,7 @@ import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { backgroundInputs } from "~/components/background-image";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { useIsContactPage } from "~/hooks/use-is-contact-page";
 import { cn } from "~/utils/cn";
 
 interface ImageWithTextProps extends SectionProps {
@@ -12,17 +13,34 @@ let ImageWithText = ({
   ref,
   ...props
 }: ImageWithTextProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, imagePosition, ...rest } = props;
+  let {
+    children,
+    imagePosition,
+    width,
+    containerClassName,
+    backgroundColor,
+    backgroundImage,
+    borderRadius,
+    ...rest
+  } = props;
+  const isContactPage = useIsContactPage();
 
   return (
     <Section
       ref={ref}
       {...rest}
+      width={isContactPage ? "full" : width}
+      backgroundColor={isContactPage ? undefined : backgroundColor}
+      backgroundImage={isContactPage ? undefined : backgroundImage}
+      borderRadius={isContactPage ? 0 : borderRadius}
       containerClassName={cn(
         "flex gap-10 px-6 py-10 md:gap-0 md:justify-between lg:p-10",
+        isContactPage &&
+          "mx-auto w-full max-w-230 gap-9 px-0 py-0 md:gap-9 lg:p-0",
         imagePosition === "last"
-          ? "flex-col-reverse md:flex-row-reverse"
+          ? "flex-col md:flex-row-reverse"
           : "flex-col md:flex-row",
+        containerClassName,
       )}
     >
       {children}

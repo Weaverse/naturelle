@@ -30,6 +30,7 @@ import * as Hotspots from "~/sections/image-hotspots/index";
 import * as ImageWithTextContent from "~/sections/image-with-text/content";
 import * as ImageWithTextImage from "~/sections/image-with-text/image";
 import * as ImageWithText from "~/sections/image-with-text/index";
+import * as ImageWithTextList from "~/sections/image-with-text-list";
 import * as Instagram from "~/sections/instagram";
 import * as InstagramItem from "~/sections/instagram/item";
 import * as JudgemeReviewSection from "~/sections/judgeme-reviews/index";
@@ -78,6 +79,7 @@ export const components: HydrogenComponent[] = [
   Highlights,
   HightlightItem,
   HighlightContent,
+  ImageWithTextList,
   ImageWithText,
   ImageWithTextImage,
   ImageWithTextContent,
