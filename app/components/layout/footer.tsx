@@ -1,11 +1,12 @@
 import { Disclosure } from "@headlessui/react";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { NavLink, useFetcher } from "react-router";
+import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
+import { Link } from "~/components/link";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { useRootLoaderData } from "~/root";
@@ -39,6 +40,7 @@ let variants = cva("", {
 });
 
 export function Footer() {
+  const { t } = useTranslation();
   let { footerMenu } = useShopMenu();
   let fetcher = useFetcher<{
     ok?: boolean;
@@ -146,13 +148,12 @@ export function Footer() {
             ) : null}
             {isError && (
               <p role="alert" className="mt-2 text-xs text-red-700">
-                {fetcher.data?.error ||
-                  "Something went wrong. Please try again."}
+                {fetcher.data?.error || t("footer.newsletterError")}
               </p>
             )}
             {isSuccess && (
               <p aria-live="polite" className="mt-2 text-xs text-green-700">
-                Thanks! Your subscription request has been received.
+                {t("footer.newsletterSuccess")}
               </p>
             )}
           </div>
@@ -272,11 +273,11 @@ function MenuLink(props: SingleMenuItem) {
         <ul className="flex flex-col items-start gap-3">
           {items.map((subItem, ind) => (
             <li key={ind}>
-              <NavLink to={subItem.to} prefetch="intent">
+              <Link to={subItem.to} prefetch="intent">
                 <span className="text-animation text-base font-normal opacity-80">
                   {subItem.title}
                 </span>
-              </NavLink>
+              </Link>
             </li>
           ))}
         </ul>
@@ -307,11 +308,11 @@ function MenuLink(props: SingleMenuItem) {
                   <ul className="space-y-3 pb-3 pt-2">
                     {items.map((subItem, ind) => (
                       <li key={ind} className="leading-6">
-                        <NavLink key={ind} to={subItem.to} prefetch="intent">
+                        <Link key={ind} to={subItem.to} prefetch="intent">
                           <span className="font-body font-normal">
                             {subItem.title}
                           </span>
-                        </NavLink>
+                        </Link>
                       </li>
                     ))}
                   </ul>

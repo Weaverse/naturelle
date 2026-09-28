@@ -5,6 +5,8 @@ import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import type React from "react";
 
+const BLOCK_CONTENT = /<(?:blockquote|div|h[1-6]|ol|p|pre|table|ul)\b/i;
+
 let variants = cva("paragraph", {
   variants: {
     textSize: {
@@ -60,8 +62,10 @@ export default function Paragraph(props: ParagraphProps) {
     className,
     ...rest
   } = props;
+  const ResolvedTag = Tag === "p" && BLOCK_CONTENT.test(content) ? "div" : Tag;
+
   return (
-    <Tag
+    <ResolvedTag
       ref={ref}
       {...rest}
       data-motion="fade-up"

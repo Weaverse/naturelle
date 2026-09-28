@@ -1,6 +1,8 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useNavigate } from "react-router";
 import { IconClose, IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 import { PredictiveSearchForm } from "../../search-form";
 import { setNativeInputValue } from "../../set-native-input-value";
 import { SearchTypeDrawerResults } from "./search-type-drawer-results";
@@ -11,6 +13,8 @@ interface PredictiveSearchProps {
 }
 
 export function SearchTypeDrawer(props: PredictiveSearchProps) {
+  const { t } = useTranslation();
+  const searchPath = usePrefixPathWithLocale("/search");
   let { isOpen } = props;
   let navigate = useNavigate();
 
@@ -19,7 +23,7 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
       event.preventDefault();
       let searchQuery = (event.target as HTMLInputElement).value.trim();
       if (searchQuery) {
-        navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+        navigate(`${searchPath}?q=${encodeURIComponent(searchQuery)}`);
       }
     }
   };
@@ -32,7 +36,7 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
               name="q"
               onChange={fetchResults}
               onKeyDown={handleKeyDown}
-              placeholder="Enter a keyword"
+              placeholder={t("search.placeholder")}
               ref={inputRef}
               className="rounded-md border-2"
               type="search"
@@ -47,7 +51,7 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
               suffix={
                 <button
                   type="button"
-                  aria-label="Clear search"
+                  aria-label={t("accessibility.clearSearch")}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => {
                     const input = inputRef.current;

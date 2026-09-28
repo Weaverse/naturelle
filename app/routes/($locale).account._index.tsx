@@ -5,6 +5,7 @@ import {
   Pagination,
 } from "@shopify/hydrogen";
 import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import type {
   CustomerFragment,
   CustomerOrdersFragment,
@@ -13,7 +14,6 @@ import type {
 import {
   type ActionFunctionArgs,
   Form,
-  Link,
   type LoaderFunctionArgs,
   type MetaFunction,
   data as response,
@@ -23,12 +23,16 @@ import {
   useOutletContext,
 } from "react-router";
 import Addresses from "~/components/account/addresses";
+import { Link } from "~/components/link";
 import {
   CREATE_ADDRESS_MUTATION,
   DELETE_ADDRESS_MUTATION,
   UPDATE_ADDRESS_MUTATION,
 } from "~/graphql/customer-account/customer-address-mutations";
 import { CUSTOMER_ORDERS_QUERY } from "~/graphql/customer-account/customer-orders-query";
+import { useRootLoaderData } from "~/root";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatDate } from "~/utils/locale";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Orders" }];
@@ -38,9 +42,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 20,
   });
-  let access = await context.customerAccount.getAccessToken();
-  console.log(access);
-
   const { data, errors } = await context.customerAccount.query(
     CUSTOMER_ORDERS_QUERY,
     {
@@ -235,12 +236,12 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
 export default function Account() {
   const { customer } = useLoaderData<{ customer: CustomerOrdersFragment }>();
-  console.log("🚀 ~ customer:", customer);
+  const { t } = useTranslation();
   const { orders } = customer;
   return (
     <div className="space-y-10">
       <div className="orders space-y-4">
-        <h2 className="text-xl">Orders</h2>
+        <h2 className="text-xl">{t("account.orders")}</h2>
         {orders.nodes.length ? (
           <OrdersTable orders={orders} />
         ) : (
@@ -254,6 +255,7 @@ export default function Account() {
 }
 
 function OrdersTable({ orders }: Pick<CustomerOrdersFragment, "orders">) {
+  const { t } = useTranslation();
   return (
     <div className="acccount-orders grid grid-cols-1 gap-4 md:grid-cols-2">
       {orders?.nodes.length ? (
@@ -262,13 +264,21 @@ function OrdersTable({ orders }: Pick<CustomerOrdersFragment, "orders">) {
             return (
               <>
                 <PreviousLink>
-                  {isLoading ? "Loading..." : <span>↑ Load previous</span>}
+                  {isLoading ? (
+                    t("system.loading")
+                  ) : (
+                    <span>↑ {t("account.loadPrevious")}</span>
+                  )}
                 </PreviousLink>
                 {nodes.map((order) => {
                   return <OrderItem key={order.id} order={order} />;
                 })}
                 <NextLink>
-                  {isLoading ? "Loading..." : <span>Load more ↓</span>}
+                  {isLoading ? (
+                    t("system.loading")
+                  ) : (
+                    <span>{t("account.loadMore")} ↓</span>
+                  )}
                 </NextLink>
               </>
             );
@@ -282,25 +292,28 @@ function OrdersTable({ orders }: Pick<CustomerOrdersFragment, "orders">) {
 }
 
 function EmptyOrders() {
+  const { t } = useTranslation();
   return (
     <div>
-      <p>You haven&apos;t placed any orders yet.</p>
+      <p>{t("account.noOrders")}</p>
       <br />
       <p>
-        <Link to="/collections">Start Shopping →</Link>
+        <Link to="/collections">{t("account.startShopping")} →</Link>
       </p>
     </div>
   );
 }
 
 function OrderItem({ order }: { order: OrderItemFragment }) {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
   let item = order.lineItems.nodes[0];
   let length = order.lineItems.nodes.length;
   let image = item?.image;
   let title = item?.title;
   if (length > 1) {
-    title = `${item?.title} + ${length - 1} more`;
+    title = `${item?.title} + ${t("orders.moreItems", { count: length - 1 })}`;
   }
   return (
     <div className="flex gap-2 border border-bar-subtle p-5">
@@ -310,8 +323,8 @@ function OrderItem({ order }: { order: OrderItemFragment }) {
           <h4 className="font-medium">{title}</h4>
         </Link>
         <div className="space-y-1">
-          <p>Order no. {order.number}</p>
-          <p>{new Date(order.processedAt).toDateString()}</p>
+          <p>{t("orders.orderNumber", { number: order.number })}</p>
+          <p>{formatDate(order.processedAt, locale)}</p>
         </div>
 
         <p className="w-fit rounded bg-label-soldout-background p-2 text-white">
@@ -319,7 +332,9 @@ function OrderItem({ order }: { order: OrderItemFragment }) {
         </p>
         {/* <Money data={order.totalPrice} /> */}
         <p>
-          <Link to={`/account/orders/${btoa(order.id)}`}>View Details</Link>
+          <Link to={`/account/orders/${btoa(order.id)}`}>
+            {t("account.viewDetails")}
+          </Link>
         </p>
       </div>
     </div>
@@ -332,53 +347,53 @@ type ActionResponse = {
 };
 
 function AccountProfile() {
+  const { t } = useTranslation();
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
   const actionData = useActionData<ActionResponse>();
   const customer = actionData?.customer ?? account?.customer;
-  console.log("🚀 ~ customer2:", customer);
 
   return (
     <div className="account-profile">
-      <h2 className="text-xl">Account</h2>
+      <h2 className="text-xl">{t("account.title")}</h2>
       <br />
       <div className="space-y-3 border border-bar-subtle p-5">
         <div className="space-y-1">
-          <p>First Name</p>
+          <p>{t("account.firstName")}</p>
           <p className="font-medium">{customer.firstName}</p>
         </div>
         <div className="space-y-1">
-          <p>Last Name</p>
+          <p>{t("account.lastName")}</p>
           <p className="font-medium">{customer.lastName}</p>
         </div>
         <div className="space-y-1">
-          <p>Email</p>
+          <p>{t("account.email")}</p>
           <p className="font-medium">{customer.emailAddress?.emailAddress}</p>
         </div>
       </div>
       <div className="hidden">
         <Form method="PUT">
-          <legend>Personal information</legend>
+          <legend>{t("account.personalInformation")}</legend>
           <fieldset>
-            <label htmlFor="firstName">First name</label>
+            <label htmlFor="firstName">{t("account.firstName")}</label>
             <input
               id="firstName"
               name="firstName"
               type="text"
               autoComplete="given-name"
-              placeholder="First name"
-              aria-label="First name"
+              placeholder={t("account.firstName")}
+              aria-label={t("account.firstName")}
               defaultValue={customer.firstName ?? ""}
               minLength={2}
             />
-            <label htmlFor="lastName">Last name</label>
+            <label htmlFor="lastName">{t("account.lastName")}</label>
             <input
               id="lastName"
               name="lastName"
               type="text"
               autoComplete="family-name"
-              placeholder="Last name"
-              aria-label="Last name"
+              placeholder={t("account.lastName")}
+              aria-label={t("account.lastName")}
               defaultValue={customer.lastName ?? ""}
               minLength={2}
             />
@@ -393,7 +408,7 @@ function AccountProfile() {
             <br />
           )}
           <button type="submit" disabled={state !== "idle"}>
-            {state !== "idle" ? "Updating" : "Update"}
+            {state !== "idle" ? t("account.updating") : t("account.update")}
           </button>
         </Form>
       </div>

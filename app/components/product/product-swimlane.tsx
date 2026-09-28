@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useRef } from "react";
 import type { FeaturedItemsQuery } from "storefront-api.generated";
 import { IconArrowScrollLeft, IconArrowScrollRight } from "~/components/icon";
@@ -19,6 +20,7 @@ export function ProductSwimlane({
   count = 12,
   ...props
 }: ProductSwimlaneProps) {
+  const { t } = useTranslation();
   const swimlaneRef = useRef<HTMLDivElement>(null);
 
   const handleScrollRight = () => {
@@ -53,7 +55,7 @@ export function ProductSwimlane({
         <button
           type="button"
           onClick={handleScrollLeft}
-          aria-label="Scroll left"
+          aria-label={t("carousel.previous")}
           className="absolute md:left-0 bg-white p-2"
         >
           <IconArrowScrollLeft
@@ -64,7 +66,7 @@ export function ProductSwimlane({
         <button
           type="button"
           onClick={handleScrollRight}
-          aria-label="Scroll right"
+          aria-label={t("carousel.next")}
           className="absolute md:right-0 bg-white p-2"
         >
           <IconArrowScrollRight

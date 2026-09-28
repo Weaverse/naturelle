@@ -1,6 +1,6 @@
 import { CircleNotchIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { Image, Money } from "@shopify/hydrogen";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { PaymentMethods } from "~/components/layout/footer/payment-methods";
 import { Link } from "~/components/link";
 import {
@@ -125,9 +125,12 @@ function CartAcceptedPayments({
   showPayPal?: boolean;
   showDiners?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="hidden w-full flex-col items-center justify-center gap-4 px-6 py-4 md:flex [grid-area:payments]">
-      <p className="text-sm text-text-subtle text-center">We accept</p>
+      <p className="text-sm text-text-subtle text-center">
+        {t("cart.acceptedPayments")}
+      </p>
       <PaymentMethods
         showVisa={showVisa}
         showMastercard={showMastercard}
@@ -140,6 +143,7 @@ function CartAcceptedPayments({
 }
 
 function SecureCheckoutNotice({ className }: { className?: string }) {
+  const { t } = useTranslation();
   return (
     <p
       className={cn(
@@ -148,7 +152,7 @@ function SecureCheckoutNotice({ className }: { className?: string }) {
       )}
     >
       <IconLock className="size-3.5 shrink-0" aria-hidden="true" />
-      <span>Secure checkout</span>
+      <span>{t("cart.secureCheckout")}</span>
     </p>
   );
 }
@@ -162,6 +166,7 @@ function CartLines({
   lines: CartWithOptimistic["lines"] | undefined;
   onClose?: () => void;
 }) {
+  const { t } = useTranslation();
   if (!lines) {
     return null;
   }
@@ -170,20 +175,20 @@ function CartLines({
 
   return (
     <section
-      aria-label="Cart items"
+      aria-label={t("cart.items")}
       className={cn(layout === "aside" && "min-h-0 flex-1 overflow-y-auto")}
     >
       {layout === "page" && (
         <>
           <div className="border-border-subtle border-b pb-4 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:hidden">
-            Product
+            {t("account.product")}
           </div>
           <div className="hidden grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] gap-3 border-border-subtle border-b pb-4 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:grid lg:gap-5">
-            <span>Product</span>
-            <span>Price</span>
-            <span>Quantity</span>
-            <span>Total</span>
-            <span className="sr-only">Remove</span>
+            <span>{t("account.product")}</span>
+            <span>{t("product.price")}</span>
+            <span>{t("product.quantity")}</span>
+            <span>{t("cart.total")}</span>
+            <span className="sr-only">{t("cart.remove")}</span>
           </div>
         </>
       )}
@@ -390,6 +395,7 @@ function CartLineRemoveButton({
   lineId: CartLine["id"];
   className?: string;
 }) {
+  const { t } = useTranslation();
   const isPendingRemoval = useCartStore((state) =>
     state.pendingLineRemovals.has(lineId),
   );
@@ -408,7 +414,7 @@ function CartLineRemoveButton({
         "flex size-8 shrink-0 items-center justify-center",
         className,
       )}
-      aria-label="Remove"
+      aria-label={t("cart.remove")}
       onClick={() => {
         if (!isOptimistic) {
           useCartStore.getState().stageLineRemoval(lineId);
@@ -428,6 +434,7 @@ function CartLineQuantity({
   line: CartLine;
   layout: CartLayout;
 }) {
+  const { t } = useTranslation();
   const { id: lineId, isOptimistic } = line;
   const quantity = line.quantity;
   const pendingQuantity = useCartStore((state) =>
@@ -469,7 +476,7 @@ function CartLineQuantity({
   return (
     <div className="flex flex-col items-start gap-2">
       <fieldset
-        aria-label={`Quantity, ${optimisticQuantity}`}
+        aria-label={`${t("product.quantity")}, ${optimisticQuantity}`}
         className={cn(
           "flex h-8 w-fit items-center border border-border-subtle",
           layout === "page" ? "rounded-[2px]" : "rounded-full",
@@ -478,7 +485,7 @@ function CartLineQuantity({
         <button
           type="button"
           className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Decrease quantity"
+          aria-label={t("product.decreaseQuantity")}
           disabled={
             optimisticQuantity <= 1 || isOptimistic || isQuantityUpdating
           }
@@ -494,7 +501,7 @@ function CartLineQuantity({
         <button
           type="button"
           className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="Increase quantity"
+          aria-label={t("product.increaseQuantity")}
           disabled={isOptimistic || isQuantityUpdating}
           name="increase-quantity"
           value={nextQuantity}
@@ -588,18 +595,16 @@ export function CartEmpty({
   layout?: CartLayout;
   onClose?: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div hidden={!visible} className={cn(layout === "aside" && "px-0 py-2")}>
-      <p className="mb-4">
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
-      </p>
+      <p className="mb-4">{t("cart.emptyDescription")}</p>
       <Link
         to="/collections"
         onClick={onClose}
         className="text-animation font-medium"
       >
-        Continue shopping →
+        {t("cart.continueShopping")} →
       </Link>
       <CartPopularCollections layout={layout} />
     </div>

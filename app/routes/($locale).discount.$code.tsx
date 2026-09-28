@@ -1,4 +1,6 @@
 import { type LoaderFunctionArgs, redirect } from "react-router";
+import { prefixPathWithLocale } from "~/utils/locale";
+import { safeRedirectPath } from "~/utils/misc";
 
 /**
  * Automatically applies a discount found on the url
@@ -17,18 +19,25 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  let redirectParam =
+  const redirectParam =
     searchParams.get("redirect") || searchParams.get("return_to") || "/";
-
-  if (redirectParam.includes("//")) {
-    // Avoid redirecting to external URLs to prevent phishing attacks
-    redirectParam = "/";
-  }
 
   searchParams.delete("redirect");
   searchParams.delete("return_to");
 
-  const redirectUrl = `${redirectParam}?${searchParams}`;
+  const fallback = prefixPathWithLocale(
+    "/",
+    context.localization.selectedLocale,
+  );
+  const redirectPath = prefixPathWithLocale(
+    safeRedirectPath(redirectParam, fallback),
+    context.localization.selectedLocale,
+  );
+  const redirectTarget = new URL(redirectPath, request.url);
+  for (const [key, value] of searchParams) {
+    redirectTarget.searchParams.append(key, value);
+  }
+  const redirectUrl = `${redirectTarget.pathname}${redirectTarget.search}${redirectTarget.hash}`;
 
   if (!code) {
     return redirect(redirectUrl);

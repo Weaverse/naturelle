@@ -1,4 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
+import { useTranslation } from "@weaverse/hydrogen";
 import { Fragment, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { cn } from "~/utils/cn";
@@ -29,6 +30,7 @@ export function Drawer({
   isForm?: "cart" | "search" | "menu" | "filter";
   isBackMenu?: boolean;
 }) {
+  const { t } = useTranslation();
   const offScreen = {
     right: "translate-x-full",
     left: "-translate-x-full",
@@ -106,7 +108,7 @@ export function Drawer({
                       onClick={onClose}
                       data-test="close-cart"
                     >
-                      <IconClose aria-label="Close panel" />
+                      <IconClose aria-label={t("accessibility.close")} />
                     </button>
                     {heading !== null && (
                       <Dialog.Title as="span">
@@ -136,7 +138,7 @@ export function Drawer({
                         <IconArrowLeft
                           viewBox="0 0 32 32"
                           className="h-8 w-8 opacity-50"
-                          aria-label="Close panel"
+                          aria-label={t("accessibility.close")}
                         />
                       </button>
                     )}

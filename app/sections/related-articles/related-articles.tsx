@@ -1,12 +1,17 @@
 import { Image } from "@shopify/hydrogen";
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { Suspense } from "react";
-import { Await, Link, useLoaderData } from "react-router";
+import { Await, useLoaderData } from "react-router";
 import type { ArticleFragment } from "storefront-api.generated";
+import { Link } from "~/components/link";
 import { Skeleton } from "~/components/skeleton";
+import { useRootLoaderData } from "~/root";
+import type { I18nLocale } from "~/types/type-locale";
+import { DEFAULT_LOCALE } from "~/utils/const";
 import { getImageLoadingPriority } from "~/utils/image";
+import { formatDate } from "~/utils/locale";
 
 interface RelatedArticlesProps extends HydrogenComponentProps {
   heading: string;
@@ -22,6 +27,8 @@ let RelatedArticles = ({
   ref,
   ...props
 }: RelatedArticlesProps & { ref?: RefObject<HTMLElement | null> }) => {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   let { blog, relatedArticles } = useLoaderData<{
     relatedArticles: any[];
     blog: { handle: string };
@@ -41,7 +48,7 @@ let RelatedArticles = ({
       <section ref={ref} {...rest}>
         <Suspense fallback={<Skeleton className="h-32" />}>
           <Await
-            errorElement="There was a problem loading related products"
+            errorElement={t("blog.relatedError")}
             resolve={relatedArticles}
           >
             <div className="space-y-8 md:space-y-16 md:p-8 lg:p-12 p-4">
@@ -60,6 +67,8 @@ let RelatedArticles = ({
                     showDate={showDate}
                     showReadmore={showReadmore}
                     imageAspectRatio={imageAspectRatio}
+                    locale={locale}
+                    readMoreText={t("blog.readMore")}
                   />
                 ))}
               </ol>
@@ -81,6 +90,8 @@ function ArticleCard({
   showDate,
   showReadmore,
   imageAspectRatio,
+  locale,
+  readMoreText,
 }: {
   blogHandle: string;
   article: ArticleFragment;
@@ -90,6 +101,8 @@ function ArticleCard({
   showAuthor: boolean;
   showReadmore: boolean;
   imageAspectRatio: string;
+  locale: I18nLocale;
+  readMoreText: string;
 }) {
   return (
     <li key={article.id}>
@@ -109,7 +122,11 @@ function ArticleCard({
         <div className="space-y-2.5">
           <h2 className="mt-4 font-medium text-2xl">{article.title}</h2>
           <div className="flex items-center space-x-1">
-            {showDate && <span className="block">{article.publishedAt}</span>}
+            {showDate && article.publishedAt && (
+              <span className="block">
+                {formatDate(article.publishedAt, locale)}
+              </span>
+            )}
             {showDate && showAuthor && <span>•</span>}
             {showAuthor && (
               <span className="block">{article.author?.name}</span>
@@ -118,7 +135,7 @@ function ArticleCard({
           {showExcerpt && <div className="text-sm"> {article.excerpt}</div>}
           {showReadmore && (
             <div>
-              <span className="underline">Read more</span>
+              <span className="underline">{readMoreText}</span>
             </div>
           )}
         </div>

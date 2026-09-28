@@ -1,6 +1,6 @@
 import { Money } from "@shopify/hydrogen";
 import type { CartCost } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { cn } from "~/utils/cn";
 
 interface FreeShippingProgressBarProps {
@@ -12,6 +12,7 @@ export function FreeShippingProgressBar({
   cost,
   className,
 }: FreeShippingProgressBarProps) {
+  const { t } = useTranslation();
   const {
     enableFreeShippingProgressBar,
     freeShippingThreshold,
@@ -34,8 +35,8 @@ export function FreeShippingProgressBar({
       ? freeShippingSuccessMessage
       : freeShippingProgressMessage) ||
     (hasReachedFreeShipping
-      ? "Congratulations! You've got free shipping!"
-      : "{{amount}} away from free shipping!");
+      ? t("cart.freeShippingUnlocked")
+      : t("cart.freeShippingRemaining", { amount: "{{amount}}" }));
 
   return (
     <div className={cn("space-y-2", className)}>

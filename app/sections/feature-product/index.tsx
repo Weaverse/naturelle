@@ -23,7 +23,7 @@ const FeaturedProducts = ({
         ...rest.style,
         backgroundColor: "var(--color-background-basic)",
       }}
-      containerClassName="lg:max-w-[1440px] lg:space-y-[72px]"
+      containerClassName="lg:max-w-page flex flex-col gap-10 lg:gap-16 [&>.heading]:!mb-0"
     >
       {children}
     </Section>

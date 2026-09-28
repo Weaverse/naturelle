@@ -2673,6 +2673,30 @@ export type FeaturedProductsQuery = {
   };
 };
 
+export type StoreLocalizationQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type StoreLocalizationQuery = {
+  localization: {
+    country: Pick<StorefrontAPI.Country, 'isoCode' | 'name'> & {
+      currency: Pick<StorefrontAPI.Currency, 'isoCode'>;
+    };
+    language: Pick<StorefrontAPI.Language, 'isoCode' | 'name' | 'endonymName'>;
+    availableLanguages: Array<
+      Pick<StorefrontAPI.Language, 'isoCode' | 'name' | 'endonymName'>
+    >;
+    availableCountries: Array<
+      Pick<StorefrontAPI.Country, 'isoCode' | 'name'> & {
+        currency: Pick<StorefrontAPI.Currency, 'isoCode'>;
+        availableLanguages: Array<
+          Pick<StorefrontAPI.Language, 'isoCode' | 'name' | 'endonymName'>
+        >;
+      }
+    >;
+  };
+};
+
 export type LayoutQueryVariables = StorefrontAPI.Exact<{
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   headerMenuHandle: StorefrontAPI.Scalars['String']['input'];
@@ -3420,6 +3444,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query featuredProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $pageBy: Int = 16\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    featuredProducts: products(first: $pageBy, sortKey: BEST_SELLING, query: $query) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    rating: metafield(namespace: "reviews", key: "rating") {\n      value\n    }\n    ratingCount: metafield(namespace: "reviews", key: "rating_count") {\n      value\n    }\n    images(first: 2) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    options {\n      ...ProductOption\n    }\n    variants(first: 10) {\n      nodes {\n        ...ProductVariantFragment\n      }\n    }\n  }\n  #graphql\n  fragment ProductOption on ProductOption {\n    name\n    optionValues {\n      name\n      firstSelectableVariant {\n        ...ProductVariantFragment\n      }\n      swatch {\n        color\n        image {\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariantFragment on ProductVariant {\n    id\n    availableForSale\n    quantityAvailable\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n\n': {
     return: FeaturedProductsQuery;
     variables: FeaturedProductsQueryVariables;
+  };
+  '#graphql\n  query StoreLocalization {\n    localization {\n      country {\n        isoCode\n        name\n        currency { isoCode }\n      }\n      language {\n        isoCode\n        name\n        endonymName\n      }\n      availableLanguages {\n        isoCode\n        name\n        endonymName\n      }\n      availableCountries {\n        isoCode\n        name\n        currency { isoCode }\n        availableLanguages {\n          isoCode\n          name\n          endonymName\n        }\n      }\n    }\n  }\n': {
+    return: StoreLocalizationQuery;
+    variables: StoreLocalizationQueryVariables;
   };
   '#graphql\n  query layout(\n    $language: LanguageCode\n    $headerMenuHandle: String!\n    $footerMenuHandle: String!\n  ) @inContext(language: $language) {\n    shop {\n      ...Shop\n    }\n    headerMenu: menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n    footerMenu: menu(handle: $footerMenuHandle) {\n      ...FooterMenu\n    }\n  }\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    resource {\n      __typename\n      ... on Collection {\n        title\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n      ... on Product {\n        title\n        description\n        image: featuredImage {\n          altText\n          height\n          url\n          width\n        }\n        collections(first: 1) {\n          nodes {\n            title\n          }\n        }\n      }\n      ... on Article {\n        image {\n          altText\n          height\n          url\n          width\n        }\n      }\n    }\n    tags\n    title\n    type\n    url\n  }\n\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem2 on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ParentMenuItem2\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n  fragment FooterMenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment FooterChildMenuItem on MenuItem {\n    ...FooterMenuItem\n  }\n  fragment FooterParentMenuItem2 on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterChildMenuItem\n    }\n  }\n  fragment FooterParentMenuItem on MenuItem {\n    ...FooterMenuItem\n    items {\n      ...FooterParentMenuItem2\n    }\n  }\n  fragment FooterMenu on Menu {\n    id\n    items {\n      ...FooterParentMenuItem\n    }\n  }\n': {
     return: LayoutQuery;

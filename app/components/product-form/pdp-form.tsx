@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { type ReactNode, useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import {
@@ -102,6 +103,7 @@ export function ProductQuantityInput({
   onChange,
   className,
 }: ProductQuantityInputProps) {
+  const { t } = useTranslation();
   return (
     <div
       className={cn(
@@ -112,7 +114,7 @@ export function ProductQuantityInput({
       <button
         type="button"
         className="flex h-full items-center justify-center px-5 py-3 text-base disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Decrease quantity"
+        aria-label={t("product.decreaseQuantity")}
         disabled={disabled || value <= 1}
         onClick={() => onChange(Math.max(1, value - 1))}
       >
@@ -127,7 +129,7 @@ export function ProductQuantityInput({
       <button
         type="button"
         className="flex h-full items-center justify-center px-5 py-3 text-base disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="Increase quantity"
+        aria-label={t("product.increaseQuantity")}
         disabled={disabled}
         onClick={() => onChange(value + 1)}
       >
@@ -162,26 +164,27 @@ function ShareLink({
 export function ProductShareLinks({
   productUrl,
   title,
-  label = "Share:",
+  label,
   className,
 }: ProductShareLinksProps) {
+  const { t } = useTranslation();
   return (
     <div className={cn("flex items-center gap-3 pt-2 text-sm", className)}>
-      <span className="font-semibold">{label}</span>
+      <span className="font-semibold">{label ?? t("product.share")}</span>
       <ShareLink
-        label="Share on Facebook"
+        label={t("product.shareFacebook")}
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`}
       >
         <IconQuickViewFacebook className="size-8" />
       </ShareLink>
       <ShareLink
-        label="Share on Instagram"
+        label={t("product.shareInstagram")}
         href={`https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`}
       >
         <IconQuickViewInstagram className="size-8" />
       </ShareLink>
       <ShareLink
-        label="Share on X"
+        label={t("product.shareX")}
         href={`https://x.com/intent/post?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(title)}`}
       >
         <IconQuickViewX className="size-8" />

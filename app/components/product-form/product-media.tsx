@@ -1,4 +1,5 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MediaFragment } from "storefront-api.generated";
@@ -22,6 +23,8 @@ interface ProductMediaProps {
 }
 
 export function ProductMedia(props: ProductMediaProps) {
+  const { t } = useTranslation();
+  const fallbackAlt = t("product.image");
   let {
     selectedVariant,
     showThumbnails,
@@ -110,7 +113,7 @@ export function ProductMedia(props: ProductMediaProps) {
             }
           >
             {media.map((med, i) => {
-              let image = getMediaImage(med);
+              let image = getMediaImage(med, fallbackAlt);
               return (
                 <SwiperSlide key={med.id}>
                   <Image
@@ -161,7 +164,7 @@ export function ProductMedia(props: ProductMediaProps) {
                   <button
                     key={med.id}
                     type="button"
-                    aria-label={`View image ${i + 1}`}
+                    aria-label={t("product.viewImage", { number: i + 1 })}
                     aria-pressed={isActive}
                     className={cn(
                       "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors md:size-[88px]",
@@ -172,7 +175,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     onClick={() => slideToMedia(swiper, i)}
                   >
                     <Image
-                      data={getMediaImage(med)}
+                      data={getMediaImage(med, fallbackAlt)}
                       loading={i === 0 ? "eager" : "lazy"}
                       className="h-full w-full rounded-sm object-cover"
                       aspectRatio={imageAspectRatio}
@@ -194,7 +197,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     <button
                       key={med.id}
                       type="button"
-                      aria-label={`View image ${i + 1}`}
+                      aria-label={t("product.viewImage", { number: i + 1 })}
                       aria-pressed={isActive}
                       className={cn(
                         "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors",
@@ -205,7 +208,7 @@ export function ProductMedia(props: ProductMediaProps) {
                       onClick={() => slideToMedia(swiper, i)}
                     >
                       <Image
-                        data={getMediaImage(med)}
+                        data={getMediaImage(med, fallbackAlt)}
                         loading={i === 0 ? "eager" : "lazy"}
                         className="h-full w-full rounded-sm object-cover"
                         aspectRatio={imageAspectRatio}
@@ -245,7 +248,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     )}
                   >
                     <Image
-                      data={getMediaImage(med)}
+                      data={getMediaImage(med, fallbackAlt)}
                       loading={i === 0 ? "eager" : "lazy"}
                       className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
                       aspectRatio={imageAspectRatio}
@@ -271,10 +274,10 @@ export function ProductMedia(props: ProductMediaProps) {
   );
 }
 
-function getMediaImage(med: MediaFragment) {
+function getMediaImage(med: MediaFragment, fallbackAlt: string) {
   return {
     ...getMediaImageData(med),
-    altText: med.alt || "Product image",
+    altText: med.alt || fallbackAlt,
   };
 }
 

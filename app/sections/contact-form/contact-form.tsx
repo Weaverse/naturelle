@@ -5,6 +5,7 @@ import { Form } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 import { useAnimation } from "~/hooks/use-animation";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 interface ContactFormProps extends HydrogenComponentProps {
   backgroundColor: string;
@@ -29,6 +30,7 @@ let ContactForm = ({
   ref,
   ...props
 }: ContactFormProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const contactAction = usePrefixPathWithLocale("/contact");
   const [scope] = useAnimation(ref);
   let {
     backgroundColor,
@@ -54,7 +56,7 @@ let ContactForm = ({
       className="flex justify-center px-0 md:px-10"
     >
       <Form
-        action="/contact"
+        action={contactAction}
         method="POST"
         encType="multipart/form-data"
         navigate={false}

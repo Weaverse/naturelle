@@ -5,9 +5,12 @@ import {
   CART_MUTATION_FRAGMENT,
   CART_QUERY_FRAGMENT,
 } from "~/graphql/fragments";
-import { getLocaleFromRequest } from "~/utils/locale";
+import {
+  getRequestI18n,
+  loadStoreLocalization,
+} from "~/utils/localization.server";
 import { components } from "~/weaverse/components";
-import { themeSchema } from "~/weaverse/schema.server";
+import { getThemeSchema } from "~/weaverse/schema.server";
 
 const additionalContext = {
   // Additional context for custom properties, CMS clients, 3P SDKs, etc.
@@ -48,7 +51,7 @@ export async function createHydrogenRouterContext(
       cache,
       waitUntil,
       session,
-      i18n: getLocaleFromRequest(request),
+      i18n: getRequestI18n(request),
       cart: {
         queryFragment: CART_QUERY_FRAGMENT,
         mutateFragment: CART_MUTATION_FRAGMENT,
@@ -57,17 +60,20 @@ export async function createHydrogenRouterContext(
     additionalContext,
   );
 
+  const localization = await loadStoreLocalization(
+    hydrogenContext.storefront,
+    request,
+  );
+
   const weaverse = new WeaverseClient({
     ...hydrogenContext,
     request,
     cache,
-    themeSchema,
+    themeSchema: getThemeSchema(localization),
     components,
   });
 
   // Add weaverse directly to the hydrogenContext instance
   // This preserves the RouterContextProvider class instance
-  Object.assign(hydrogenContext, { weaverse });
-
-  return hydrogenContext;
+  return Object.assign(hydrogenContext, { weaverse, localization });
 }

@@ -1,5 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import type { CustomerAddressInput } from "@shopify/hydrogen/customer-account-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import type {
   AddressFragment,
   CustomerFragment,
@@ -21,13 +22,13 @@ function AddressCard(props: {
   address: AddressFragment;
   defaultAddress?: boolean;
 }) {
+  const { t } = useTranslation();
   let { address, defaultAddress } = props;
-  console.log("🚀 ~ address:", address);
   return (
     <div className="space-y-2 border border-bar-subtle p-5">
       {defaultAddress && (
         <div className="w-fit rounded-sm bg-label-soldout-background px-2.5 py-1 text-text-inverse">
-          Default
+          {t("account.defaultAddress")}
         </div>
       )}
       <p className="font-semibold">
@@ -50,7 +51,7 @@ function AddressCard(props: {
             type="submit"
             className="ml-2.5 p-0"
           >
-            Remove
+            {t("account.removeAddress")}
           </Button>
         </Form>
       </div>
@@ -59,9 +60,9 @@ function AddressCard(props: {
 }
 
 export default function Addresses() {
+  const { t } = useTranslation();
   const outlet = useOutlet();
   const { customer } = useOutletContext<{ customer: CustomerFragment }>();
-  console.log("🚀 ~ customer3:", customer);
   const { defaultAddress, addresses: _addresses } = customer;
   let addresses = _addresses.nodes.filter(
     (address) => address.id !== defaultAddress?.id,
@@ -76,7 +77,7 @@ export default function Addresses() {
 
   return (
     <div className="account-addresses">
-      <h2 className="text-xl">Address Book</h2>
+      <h2 className="text-xl">{t("account.addressBook")}</h2>
       <NewAddress />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <AddressCard address={defaultAddress} defaultAddress />
@@ -99,6 +100,7 @@ function AddressPopup({
   open: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={open}
@@ -117,7 +119,7 @@ function AddressPopup({
               onClick={onClose}
               data-test="close-cart"
             >
-              <IconClose aria-label="Close panel" />
+              <IconClose aria-label={t("accessibility.close")} />
             </button>
           </div>
 
@@ -129,14 +131,15 @@ function AddressPopup({
 }
 
 function NewAddress() {
+  const { t } = useTranslation();
   let [isOpen, setIsOpen] = useState(false);
   return (
     <>
       <Button className="mb-5 mt-4" onClick={() => setIsOpen(true)}>
-        Add new address
+        {t("account.addAddress")}
       </Button>
       <AddressPopup
-        title="Add new address"
+        title={t("account.addAddress")}
         open={isOpen}
         onClose={() => setIsOpen(false)}
       >
@@ -147,14 +150,19 @@ function NewAddress() {
 }
 
 function EditAddress({ address }: { address: AddressFragment }) {
+  const { t } = useTranslation();
   let [isOpen, setIsOpen] = useState(false);
   let onClose = () => setIsOpen(false);
   return (
     <>
       <Button variant="link" onClick={() => setIsOpen(true)} className="p-0">
-        Edit
+        {t("account.editAddress")}
       </Button>
-      <AddressPopup title="Edit address" open={isOpen} onClose={onClose}>
+      <AddressPopup
+        title={t("account.editAddress")}
+        open={isOpen}
+        onClose={onClose}
+      >
         <AddressForm
           addressId={address.id}
           address={address}
@@ -168,7 +176,7 @@ function EditAddress({ address }: { address: AddressFragment }) {
                 variant="secondary"
                 onClick={onClose}
               >
-                Cancel
+                {t("account.cancel")}
               </Button>
               <Button
                 disabled={stateForMethod("PUT") !== "idle"}
@@ -176,7 +184,7 @@ function EditAddress({ address }: { address: AddressFragment }) {
                 type="submit"
                 loading={stateForMethod("PUT") !== "idle"}
               >
-                Save
+                {t("account.save")}
               </Button>
             </div>
           )}
@@ -187,6 +195,7 @@ function EditAddress({ address }: { address: AddressFragment }) {
 }
 
 function NewAddressForm({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation();
   const newAddress = {
     address1: "",
     address2: "",
@@ -215,7 +224,7 @@ function NewAddressForm({ onClose }: { onClose: () => void }) {
             variant="secondary"
             onClick={onClose}
           >
-            Cancel
+            {t("account.cancel")}
           </Button>
           <Button
             disabled={stateForMethod("POST") !== "idle"}
@@ -223,7 +232,7 @@ function NewAddressForm({ onClose }: { onClose: () => void }) {
             type="submit"
             loading={stateForMethod("POST") !== "idle"}
           >
-            Save
+            {t("account.save")}
           </Button>
         </div>
       )}
@@ -253,6 +262,7 @@ export function AddressForm({
     ) => ReturnType<typeof useNavigation>["state"];
   }) => React.ReactNode;
 }) {
+  const { t } = useTranslation();
   const { state, formMethod } = useNavigation();
   const action = useActionData<ActionResponse>();
   const error = action?.error?.[0];
@@ -267,60 +277,60 @@ export function AddressForm({
       <fieldset className="space-y-3">
         <input type="hidden" name="addressId" defaultValue={addressId} />
         <Input
-          aria-label="First name"
+          aria-label={t("account.firstName")}
           autoComplete="given-name"
           defaultValue={address?.firstName ?? ""}
           id="firstName"
           name="firstName"
-          placeholder="First name"
+          placeholder={t("account.firstName")}
           required
           type="text"
         />
         <Input
-          aria-label="Last name"
+          aria-label={t("account.lastName")}
           autoComplete="family-name"
           defaultValue={address?.lastName ?? ""}
           id="lastName"
           name="lastName"
-          placeholder="Last name"
+          placeholder={t("account.lastName")}
           required
           type="text"
         />
         <Input
-          aria-label="Company"
+          aria-label={t("account.company")}
           autoComplete="organization"
           defaultValue={address?.company ?? ""}
           id="company"
           name="company"
-          placeholder="Company"
+          placeholder={t("account.company")}
           type="text"
         />
         <Input
-          aria-label="Address line 1"
+          aria-label={t("account.addressLine1")}
           autoComplete="address-line1"
           defaultValue={address?.address1 ?? ""}
           id="address1"
           name="address1"
-          placeholder="Address line 1*"
+          placeholder={`${t("account.addressLine1")}*`}
           required
           type="text"
         />
         <Input
-          aria-label="Address line 2"
+          aria-label={t("account.addressLine2")}
           autoComplete="address-line2"
           defaultValue={address?.address2 ?? ""}
           id="address2"
           name="address2"
-          placeholder="Address line 2"
+          placeholder={t("account.addressLine2")}
           type="text"
         />
         <Input
-          aria-label="City"
+          aria-label={t("account.city")}
           autoComplete="address-level2"
           defaultValue={address?.city ?? ""}
           id="city"
           name="city"
-          placeholder="City"
+          placeholder={t("account.city")}
           required
           type="text"
         />
@@ -335,33 +345,33 @@ export function AddressForm({
           type="text"
         /> */}
         <Input
-          aria-label="Zip"
+          aria-label={t("account.postalCode")}
           autoComplete="postal-code"
           defaultValue={address?.zip ?? ""}
           id="zip"
           name="zip"
-          placeholder="Zip / Postal Code"
+          placeholder={t("account.postalCode")}
           required
           type="text"
         />
         <Input
-          aria-label="territoryCode"
+          aria-label={t("account.country")}
           autoComplete="country"
           defaultValue={address?.territoryCode ?? ""}
           id="territoryCode"
           name="territoryCode"
-          placeholder="Country"
+          placeholder={t("account.country")}
           required
           type="text"
           maxLength={2}
         />
         <Input
-          aria-label="Phone Number"
+          aria-label={t("account.phoneNumber")}
           autoComplete="tel"
           defaultValue={address?.phoneNumber ?? ""}
           id="phoneNumber"
           name="phoneNumber"
-          placeholder="Phone Number"
+          placeholder={t("account.phoneNumber")}
           pattern="^\+?[1-9]\d{3,14}$"
           type="tel"
         />
@@ -371,7 +381,7 @@ export function AddressForm({
             name="defaultAddress"
             defaultChecked={isDefaultAddress}
           />
-          <span>Set as default address</span>
+          <span>{t("account.setDefaultAddress")}</span>
         </div>
         {error ? (
           <p>

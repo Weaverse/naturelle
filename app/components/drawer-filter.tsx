@@ -3,6 +3,7 @@ import type {
   Filter,
   ProductFilter,
 } from "@shopify/hydrogen/storefront-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import {
   Link,
@@ -26,6 +27,7 @@ import {
   getSortLink,
   type SortParam,
 } from "~/utils/filter";
+import { intlLocale } from "~/utils/locale";
 import { parsePriceFilterParam } from "~/utils/product-filters";
 import { Drawer, useDrawer } from "./drawer";
 
@@ -57,6 +59,7 @@ export function DrawerFilter({
   filterItemsLimit = 10,
   checkboxShape = "square",
 }: DrawerFilterProps) {
+  const { t } = useTranslation();
   const { openDrawer, isOpen, closeDrawer } = useDrawer();
   return (
     <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 lg:px-0">
@@ -71,10 +74,12 @@ export function DrawerFilter({
             classNameContainer="flex items-center justify-center gap-2"
           >
             <IconFilters className="size-5" viewBox="0 0 16 16" />
-            <span className="font-heading text-xl font-normal">Filters</span>
+            <span className="font-heading text-xl font-normal">
+              {t("collection.filter")}
+            </span>
           </Button>
           <span className="font-heading hidden text-xl font-medium tracking-tight lg:inline">
-            {productNumber} Products
+            {productNumber} {t("collection.products")}
           </span>
         </div>
 
@@ -84,7 +89,7 @@ export function DrawerFilter({
             open={isOpen}
             onClose={closeDrawer}
             openFrom="left"
-            heading="FILTER"
+            heading={t("collection.filter")}
             isForm="filter"
           >
             <div className="w-full px-6 md:w-96">
@@ -237,6 +242,7 @@ export function FiltersDrawer({
   filterItemsLimit = 10,
   checkboxShape = "square",
 }: Omit<DrawerFilterProps, "children"> & { desktop?: boolean }) {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const filterMarkup = (filter: Filter, option: Filter["values"][0]) => {
     switch (filter.type) {
@@ -265,7 +271,7 @@ export function FiltersDrawer({
 
   return (
     <nav
-      aria-label="Product filters"
+      aria-label={t("collection.filterProducts")}
       className={cn("min-w-0 overflow-x-hidden", desktop && "w-full")}
     >
       <div className="divide-y divide-border-subtle">
@@ -351,6 +357,7 @@ function FilterValues({
   limit: number;
   checkboxShape: CheckboxShape;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const safeLimit = Math.max(1, limit || 10);
   const hasMore = options.length > safeLimit;
@@ -386,8 +393,10 @@ function FilterValues({
             onClick={() => setExpanded((current) => !current)}
           >
             {expanded
-              ? "Show less"
-              : `Show more (+${options.length - visibleOptions.length})`}
+              ? t("collection.showLess")
+              : t("collection.showMore", {
+                  count: options.length - visibleOptions.length,
+                })}
           </button>
         </li>
       )}
@@ -402,6 +411,7 @@ export function AppliedFilters({
   filters: AppliedFilter[];
   clearTo?: string;
 }) {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const location = useLocation();
 
@@ -431,7 +441,7 @@ export function AppliedFilters({
         className="font-heading text-sm underline underline-offset-4"
         preventScrollReset
       >
-        Clear all
+        {t("collection.clearAll")}
       </Link>
     </div>
   );
@@ -483,15 +493,14 @@ function PriceRangeFilter({
   max?: number;
   min?: number;
 }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const rootData = useRouteLoaderData<typeof rootLoader>("root");
   const selectedLocale = rootData?.selectedLocale;
   const currencyCode = selectedLocale?.currency ?? "USD";
-  const locale = selectedLocale
-    ? `${selectedLocale.language}-${selectedLocale.country}`
-    : "en-US";
+  const locale = selectedLocale ? intlLocale(selectedLocale) : "en-US";
   const currencySymbol = getCurrencySymbol(currencyCode, locale);
   const currencyFractionDigits = getCurrencyFractionDigits(
     currencyCode,
@@ -599,8 +608,9 @@ function PriceRangeFilter({
     <div className="space-y-5">
       {highestPrice !== undefined && (
         <p className="font-heading text-base text-foreground-subtle">
-          The highest price is: {currencySymbol}
-          {highestPrice}
+          {t("collection.highestPrice", {
+            price: `${currencySymbol}${highestPrice}`,
+          })}
         </p>
       )}
       <div className="flex w-full min-w-0 items-center gap-3 overflow-hidden">
@@ -608,7 +618,7 @@ function PriceRangeFilter({
           <span aria-hidden="true">{currencySymbol}</span>
           <div className="flex h-10 min-w-0 flex-1 items-center rounded-lg border border-border-subtle bg-background-basic px-3">
             <input
-              aria-label="Minimum price"
+              aria-label={t("collection.minimumPrice")}
               name="minPrice"
               type="number"
               inputMode="decimal"
@@ -616,7 +626,7 @@ function PriceRangeFilter({
               max={maxPrice !== undefined ? maxPrice - priceStep : highestPrice}
               step={priceStep}
               value={minPrice ?? ""}
-              placeholder="From"
+              placeholder={t("collection.from")}
               onChange={onChangeMin}
               onBlur={() => commitPrice()}
               className="min-w-0 w-full appearance-none border-none bg-transparent p-0 text-base outline-none ring-0 focus:outline-none focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -632,7 +642,7 @@ function PriceRangeFilter({
           <span aria-hidden="true">{currencySymbol}</span>
           <div className="flex h-10 min-w-0 flex-1 items-center rounded-lg border border-border-subtle bg-background-basic px-3">
             <input
-              aria-label="Maximum price"
+              aria-label={t("collection.maximumPrice")}
               name="maxPrice"
               type="number"
               inputMode="decimal"
@@ -640,7 +650,7 @@ function PriceRangeFilter({
               max={highestPrice}
               step={priceStep}
               value={maxPrice ?? ""}
-              placeholder="To"
+              placeholder={t("collection.to")}
               onChange={onChangeMax}
               onBlur={() => commitPrice()}
               className="min-w-0 w-full appearance-none border-none bg-transparent p-0 text-base outline-none ring-0 focus:outline-none focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -691,24 +701,25 @@ export function SortMenu({
 }: {
   showSearchSort?: boolean;
 }) {
+  const { t } = useTranslation();
   const productSortItems: { label: string; key: SortParam }[] = [
-    { label: "Relevance", key: "relevance" },
-    { label: "Featured", key: "featured" },
-    { label: "Alphabetically, A-Z", key: "alphabetical-a-z" },
-    { label: "Alphabetically, Z-A", key: "alphabetical-z-a" },
-    { label: "Oldest to Newest", key: "oldest" },
-    { label: "Newest to Oldest", key: "newest" },
-    { label: "Best Selling", key: "best-selling" },
+    { label: t("collection.relevance"), key: "relevance" },
+    { label: t("collection.featured"), key: "featured" },
+    { label: t("collection.alphabeticalAZ"), key: "alphabetical-a-z" },
+    { label: t("collection.alphabeticalZA"), key: "alphabetical-z-a" },
+    { label: t("collection.oldest"), key: "oldest" },
+    { label: t("collection.newest"), key: "newest" },
+    { label: t("collection.bestSelling"), key: "best-selling" },
   ];
 
   const searchSortItems: { label: string; key: SortParam }[] = [
-    { label: "Relevance", key: "relevance" },
+    { label: t("collection.relevance"), key: "relevance" },
     {
-      label: "Price, (low to high)",
+      label: t("collection.priceLowHigh"),
       key: "price-low-high",
     },
     {
-      label: "Price, (high to low)",
+      label: t("collection.priceHighLow"),
       key: "price-high-low",
     },
   ];
@@ -725,10 +736,10 @@ export function SortMenu({
       className="relative z-30 flex items-center justify-end gap-3"
     >
       <span className="mr-3 hidden shrink-0 font-heading text-base font-normal md:inline">
-        Sort by
+        {t("collection.sortBy")}
       </span>
       <Menu.Button
-        aria-label={`Sort products: ${activeItem.label}`}
+        aria-label={t("collection.sortProducts", { sort: activeItem.label })}
         className="flex h-12 items-center justify-between gap-2 rounded-sm border border-border px-3 py-2.5 text-left md:h-15 md:min-w-48 md:gap-3 md:px-4 md:py-3.5"
       >
         <span className="font-heading max-w-[7.5rem] text-ellipsis overflow-hidden whitespace-nowrap text-sm font-normal md:hidden">

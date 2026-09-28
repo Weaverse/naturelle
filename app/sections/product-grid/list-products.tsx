@@ -4,6 +4,7 @@ import {
   createSchema,
   type HydrogenComponentProps,
   IMAGES_PLACEHOLDERS,
+  useTranslation,
   type WeaverseCollection,
 } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
@@ -14,7 +15,10 @@ import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { PRODUCT_CARD_FRAGMENT } from "~/graphql/fragments";
+import { useRootLoaderData } from "~/root";
+import { DEFAULT_LOCALE } from "~/utils/const";
 import { getImageLoadingPriority } from "~/utils/image";
+import { formatCurrency } from "~/utils/locale";
 
 type ProductGridListData = {
   collection?: WeaverseCollection;
@@ -85,6 +89,8 @@ export const loader = async ({
 };
 
 function ProductPlaceholder() {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <div className="flex aspect-square items-center justify-center overflow-hidden rounded-(--border-radius-lg) bg-background-subtle-2">
@@ -94,9 +100,11 @@ function ProductPlaceholder() {
         />
       </div>
       <div className="grid gap-1">
-        <p className="text-sm text-text-subtle">Vendor</p>
-        <p className="font-heading text-lg font-medium">Product title</p>
-        <p className="text-sm">$0.00</p>
+        <p className="text-sm text-text-subtle">{t("product.exampleVendor")}</p>
+        <p className="font-heading text-lg font-medium">
+          {t("product.exampleTitle")}
+        </p>
+        <p className="text-sm">{formatCurrency(0, locale)}</p>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Image, Money } from "@shopify/hydrogen";
 import clsx from "clsx";
-import { Link } from "react-router";
+import { Link } from "~/components/link";
 import type { SearchResultItemProps } from "~/types/search-types";
 
 export function SearchResultItem({

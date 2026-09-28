@@ -1,5 +1,6 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { Link } from "react-router";
+import { Link } from "~/components/link";
 import type {
   NormalizedPredictiveSearchResultItem,
   NormalizedPredictiveSearchResults,
@@ -13,6 +14,7 @@ export function PredictiveSearchResult({
   searchTerm,
   type,
 }: SearchResultTypeProps) {
+  const { t } = useTranslation();
   const isSuggestions = type === "queries";
   const categoryUrl = `/search?q=${
     searchTerm.current
@@ -25,7 +27,7 @@ export function PredictiveSearchResult({
     >
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
         <span className="uppercase font-semibold font-heading text-xl">
-          {isSuggestions ? "Suggestions" : type}
+          {isSuggestions ? t("search.suggestions") : type}
         </span>
       </Link>
       <ul

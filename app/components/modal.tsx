@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useEffect } from "react";
 import { Button } from "~/components/button";
 import { IconClose } from "./icon";
@@ -5,12 +6,13 @@ import { IconClose } from "./icon";
 export function Modal({
   children,
   onClose,
-  ariaLabel = "Product quick view",
+  ariaLabel,
 }: {
   children: React.ReactNode;
   onClose?: () => void;
   ariaLabel?: string;
 }) {
+  const { t } = useTranslation();
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
     return () => {
@@ -21,7 +23,7 @@ export function Modal({
   return (
     <div
       className="relative z-50 block"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? t("product.quickView")}
       role="dialog"
       aria-modal="true"
     >
@@ -35,7 +37,7 @@ export function Modal({
                 type="button"
                 variant="custom"
                 size="icon"
-                aria-label="Close panel"
+                aria-label={t("accessibility.close")}
                 className="text-body hover:text-body/50"
                 onClick={onClose}
               >

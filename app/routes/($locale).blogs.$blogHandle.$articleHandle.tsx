@@ -7,6 +7,7 @@ import { redirectIfHandleIsLocalized } from "~/.server/redirect";
 import { seoPayload } from "~/.server/seo";
 import { ARTICLE_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
+import { intlLocale } from "~/utils/locale";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
@@ -60,11 +61,15 @@ export async function loader(args: LoaderFunctionArgs) {
     (art: any) => art?.handle !== params?.articleHandle,
   );
 
-  const formattedDate = new Intl.DateTimeFormat(`${language}-${country}`, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(article.publishedAt));
+  const formattedDate = new Intl.DateTimeFormat(
+    intlLocale({ language, country }),
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    },
+  ).format(new Date(article.publishedAt));
 
   const seo = seoPayload.article({ article, url: request.url });
 

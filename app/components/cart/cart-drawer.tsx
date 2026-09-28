@@ -1,4 +1,5 @@
 import type { CartCost } from "@shopify/hydrogen/storefront-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import {
   useCart,
   useCartBootstrapResolved,
@@ -16,13 +17,14 @@ export function toggleCartDrawer(open: boolean) {
 }
 
 export function CartDrawerTrigger({ compact = false }: { compact?: boolean }) {
+  const { t } = useTranslation();
   const cart = useCart();
   const openCart = useCartStore((state) => state.open);
 
   return (
     <button
       type="button"
-      aria-label="Open cart"
+      aria-label={t("accessibility.openCart")}
       onClick={openCart}
       className={cn(
         "focus:ring-border relative flex items-center justify-center",
@@ -49,6 +51,7 @@ export function CartDrawerTrigger({ compact = false }: { compact?: boolean }) {
 }
 
 export function CartDrawer() {
+  const { t } = useTranslation();
   const cart = useCart();
   const bootstrapResolved = useCartBootstrapResolved();
   const cartReady = bootstrapResolved || Boolean(cart?.isOptimistic);
@@ -60,7 +63,7 @@ export function CartDrawer() {
       open={isOpen}
       onClose={closeCart}
       openFrom="right"
-      heading="CART"
+      heading={t("cart.title")}
       isForm="cart"
     >
       <div className="flex min-h-0 flex-1 flex-col">

@@ -85,6 +85,8 @@ export default function PromotionGrid({
 }: PromotionGridProps & { ref?: RefObject<HTMLElement | null> }) {
   const {
     loaderData,
+    firstCollection: _firstCollection,
+    secondCollection: _secondCollection,
     firstHeading,
     secondHeading,
     buttonText,
@@ -111,7 +113,7 @@ export default function PromotionGrid({
     >
       {collections.map((collection, index) => (
         <Link
-          key={collection.id}
+          key={`${collection.id}-${index}`}
           to={`/collections/${collection.handle}`}
           aria-label={`View ${collection.title} collection`}
           className="group relative aspect-video min-w-0 overflow-hidden rounded-xl bg-background-subtle-2 text-text-inverse"
@@ -129,9 +131,7 @@ export default function PromotionGrid({
             <p className="text-center font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-inverse">
               {collection.title}
             </p>
-            <h3 className="mt-1 max-w-sm text-center font-heading text-[26px] leading-[110%] font-normal text-text-inverse">
-              {headings[index]}
-            </h3>
+            <h4 className="mt-1 max-w-sm text-center">{headings[index]}</h4>
             <span
               className={cn(
                 buttonVariants({

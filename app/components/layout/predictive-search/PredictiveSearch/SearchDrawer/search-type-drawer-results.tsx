@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import { useTranslation } from "@weaverse/hydrogen";
+import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { usePredictiveSearch } from "~/hooks/use-predictive-search";
 import type { NormalizedPredictiveSearchResultItem } from "~/types/search-types";
@@ -6,6 +7,7 @@ import { PopularKeywords } from "../../popular-keywords";
 import { setNativeInputValue } from "../../set-native-input-value";
 
 export function SearchTypeDrawerResults() {
+  const { t } = useTranslation();
   const { results, totalResults, searchTerm, searchInputRef } =
     usePredictiveSearch();
 
@@ -26,7 +28,7 @@ export function SearchTypeDrawerResults() {
       <div className="custom-scroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
         <PopularKeywords onKeywordClick={setSearchKeyword} />
         <section className="mt-8">
-          <ResultHeading>Most searched products</ResultHeading>
+          <ResultHeading>{t("search.mostSearchedProducts")}</ResultHeading>
           <ProductGrid products={items("products")} />
         </section>
       </div>
@@ -36,10 +38,8 @@ export function SearchTypeDrawerResults() {
   if (!hasMobileResults) {
     return (
       <div className="w-full border-t border-border-subtle bg-background-basic p-6 text-text">
-        <ResultHeading>No results</ResultHeading>
-        <p className="text-sm">
-          No results found for <q>{term}</q>
-        </p>
+        <ResultHeading>{t("search.empty")}</ResultHeading>
+        <p className="text-sm">{t("search.noResults", { term })}</p>
       </div>
     );
   }
@@ -48,7 +48,7 @@ export function SearchTypeDrawerResults() {
     <div className="custom-scroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
       {items("queries").length > 0 && (
         <section>
-          <ResultHeading>Suggestions</ResultHeading>
+          <ResultHeading>{t("search.suggestions")}</ResultHeading>
           <ul className="space-y-2">
             {items("queries").map((query) => (
               <li key={query.id}>
@@ -66,14 +66,14 @@ export function SearchTypeDrawerResults() {
       )}
       {items("products").length > 0 && (
         <section className="mt-8">
-          <ResultHeading>Products</ResultHeading>
+          <ResultHeading>{t("search.products")}</ResultHeading>
           <ProductGrid products={items("products")} />
           <div className="mt-6 flex justify-center">
             <Link
               to={`/search?q=${encodeURIComponent(term)}`}
               className="rounded-md bg-text px-5 py-2 text-sm text-background-basic"
             >
-              Show All Results ({totalResults})
+              {t("search.viewAll")} ({totalResults})
             </Link>
           </div>
         </section>

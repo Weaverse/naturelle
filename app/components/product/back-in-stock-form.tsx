@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useRouteLoaderData } from "react-router";
 import { Button } from "~/components/button";
@@ -15,6 +16,7 @@ export function BackInStockForm({
   availableForSale?: boolean | null;
   enabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const rootData = useRouteLoaderData<RootLoader>("root");
   const action = usePrefixPathWithLocale("/api/back-in-stock");
   const fetcher = useFetcher<BackInStockResponse>();
@@ -34,12 +36,12 @@ export function BackInStockForm({
     }
     if (fetcher.data.ok) {
       setError("");
-      setMessage("We'll email you when this product is back in stock.");
+      setMessage(t("product.backInStockSuccess"));
     } else {
       setMessage("");
-      setError(fetcher.data.error || "Something went wrong. Please try again.");
+      setError(fetcher.data.error || t("product.backInStockError"));
     }
-  }, [currentVariantId, fetcher.data]);
+  }, [currentVariantId, fetcher.data, t]);
 
   useEffect(() => {
     if (submittedVariantIdRef.current !== currentVariantId) {
@@ -56,9 +58,9 @@ export function BackInStockForm({
   return (
     <div className="space-y-3 rounded-lg border border-border p-4">
       <div>
-        <p className="font-heading text-lg">Notify me when available</p>
+        <p className="font-heading text-lg">{t("product.backInStockTitle")}</p>
         <p className="mt-1 text-sm text-text-subtle">
-          Enter your email and we'll let you know when this variant returns.
+          {t("product.backInStockDescription")}
         </p>
       </div>
       <fetcher.Form
@@ -77,8 +79,8 @@ export function BackInStockForm({
           required
           type="email"
           name="email"
-          aria-label="Email address"
-          placeholder="Email address"
+          aria-label={t("product.backInStockEmail")}
+          placeholder={t("product.backInStockEmail")}
           className="min-h-12 min-w-0 flex-1 rounded-md border border-border bg-background px-3 outline-none focus-visible:ring-2 focus-visible:ring-text-primary"
         />
         <Button
@@ -87,7 +89,7 @@ export function BackInStockForm({
           loading={fetcher.state === "submitting"}
           disabled={fetcher.state !== "idle"}
         >
-          Notify me
+          {t("product.backInStockNotify")}
         </Button>
       </fetcher.Form>
       {error || message ? (

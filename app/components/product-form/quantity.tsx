@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { Input } from "~/components/input";
 
@@ -7,6 +8,7 @@ interface QuantityProps {
   onChange: (value: number) => void;
 }
 export function Quantity(props: QuantityProps) {
+  const { t } = useTranslation();
   let { value, onChange, isDisabled } = props;
   let handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Prevent the user from entering non-numeric characters
@@ -23,7 +25,7 @@ export function Quantity(props: QuantityProps) {
   return (
     <div className="space-y-3">
       <legend className="whitespace-pre-wrap max-w-prose text-base font-body font-semibold leading-snug">
-        Quantity
+        {t("product.quantity")}
       </legend>
       <div
         className={clsx(
@@ -34,7 +36,7 @@ export function Quantity(props: QuantityProps) {
         <button
           type="button"
           name="decrease-quantity"
-          aria-label="Decrease quantity"
+          aria-label={t("product.decreaseQuantity")}
           className={clsx(
             "h-12 rounded-md border-2 border-border-subtle px-5 py-3 text-base transition",
             value <= 1 && "opacity-50 cursor-not-allowed",
@@ -55,7 +57,7 @@ export function Quantity(props: QuantityProps) {
           type="button"
           className="h-12 rounded-md border-2 border-border-subtle px-5 py-3 text-base transition"
           name="increase-quantity"
-          aria-label="Increase quantity"
+          aria-label={t("product.increaseQuantity")}
           onClick={() => onChange(value + 1)}
           disabled={isDisabled}
         >
