@@ -64,6 +64,21 @@ type JudgemeRequestOptions = {
   page?: number;
 };
 
+type JudgemeProductLookup =
+  | { status: "found"; product: JudgemeProduct }
+  | { status: "not-found" }
+  | { status: "unavailable" };
+
+class JudgemeRequestError extends Error {
+  status: number;
+
+  constructor(status: number) {
+    super(`Judge.me request failed with status ${status}`);
+    this.name = "JudgemeRequestError";
+    this.status = status;
+  }
+}
+
 function isFetchContext(
   value?: JudgemeFetchContext | JudgemeRequestOptions,
 ): value is JudgemeFetchContext {
@@ -84,9 +99,49 @@ function buildJudgemeUrl(
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options);
   if (!response.ok) {
-    throw new Error(`Judge.me request failed with status ${response.status}`);
+    throw new JudgemeRequestError(response.status);
   }
   return response.json() as Promise<T>;
+}
+
+async function fetchJudgemeProduct(
+  fetcher: JsonFetcher,
+  apiToken: string,
+  shopDomain: string,
+  handle: string,
+) {
+  const productData = await fetcher<{ product?: JudgemeProduct }>(
+    buildJudgemeUrl(JUDGEME_PRODUCT_API, {
+      api_token: apiToken,
+      shop_domain: shopDomain,
+      handle,
+    }),
+    { signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS) },
+  );
+  return productData.product ?? null;
+}
+
+export async function getJudgemeProduct(
+  apiToken: string,
+  shopDomain: string,
+  handle: string,
+): Promise<JudgemeProductLookup> {
+  try {
+    const product = await fetchJudgemeProduct(
+      fetchJson,
+      apiToken,
+      shopDomain,
+      handle,
+    );
+    return product ? { status: "found", product } : { status: "not-found" };
+  } catch (error) {
+    if (error instanceof JudgemeRequestError && error.status === 404) {
+      return { status: "not-found" };
+    }
+    // Do not log the request URL because Judge.me authenticates via query string.
+    console.error("Unable to resolve Judge.me product");
+    return { status: "unavailable" };
+  }
 }
 
 export async function getJudgemeReviews(
@@ -110,15 +165,13 @@ export async function getJudgemeReviews(
     page = contextOrOptions.page || page;
   }
   try {
-    const productData = await fetcher<{ product?: JudgemeProduct }>(
-      buildJudgemeUrl(JUDGEME_PRODUCT_API, {
-        api_token: apiToken,
-        shop_domain: shopDomain,
-        handle,
-      }),
-      { signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS) },
+    const product = await fetchJudgemeProduct(
+      fetcher,
+      apiToken,
+      shopDomain,
+      handle,
     );
-    if (!productData.product?.id) {
+    if (!product?.id) {
       return emptyJudgemeReviews(perPage);
     }
 
@@ -141,7 +194,7 @@ export async function getJudgemeReviews(
         buildJudgemeUrl(JUDGEME_REVIEWS_API, {
           api_token: apiToken,
           shop_domain: shopDomain,
-          product_id: productData.product.id,
+          product_id: product.id,
           page,
           per_page: perPage,
         }),
@@ -173,19 +226,27 @@ export async function getJudgemeReviews(
 export async function createJudgemeReview(
   apiToken: string,
   shopDomain: string,
-  formData: FormData,
+  submission: {
+    name: string;
+    email: string;
+    rating: number;
+    title: string;
+    body: string;
+    productExternalId: number;
+    productHandle: string;
+  },
 ) {
   const url = "https://judge.me/api/v1/reviews";
   const body = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    rating: formData.get("rating"),
-    title: formData.get("title"),
-    body: formData.get("body"),
-    id: formData.get("id"), // external_id (product id)
-    url: formData.get("url"), // product handle or url
+    name: submission.name,
+    email: submission.email,
+    rating: submission.rating,
+    title: submission.title,
+    body: submission.body,
+    id: submission.productExternalId,
+    url: submission.productHandle,
     shop_domain: shopDomain,
-    platform: "shopify", // or custom
+    platform: "shopify",
   };
 
   try {

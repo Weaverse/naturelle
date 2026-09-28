@@ -59,7 +59,7 @@ export const schema = createSchema({
     children: [
       {
         type: "heading",
-        Content: "What our customers say",
+        content: "What our customers say",
       },
       {
         type: "judgeme-review--index",

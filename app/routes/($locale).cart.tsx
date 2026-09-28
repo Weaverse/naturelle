@@ -329,6 +329,20 @@ function CartNewsletter() {
     }
   }, [isSuccess]);
 
+  if (!klaviyoConfigured) {
+    if (!isStudio) {
+      return null;
+    }
+
+    return (
+      <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
+        <div className="w-full max-w-xl rounded-md border border-border border-dashed p-4 text-center text-sm text-text-subtle">
+          Configure Klaviyo private token and newsletter list ID
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
       <div className="flex w-full max-w-xl flex-col items-center gap-4">
@@ -349,45 +363,35 @@ function CartNewsletter() {
             </p>
           )}
         </div>
-        {!klaviyoConfigured ? (
-          isStudio ? (
-            <div className="w-full rounded-md border border-border border-dashed p-4 text-center text-sm text-text-subtle">
-              Configure Klaviyo private token and newsletter list ID
-            </div>
-          ) : null
-        ) : (
-          <fetcher.Form
-            ref={formRef}
-            method="POST"
-            action={newsletterAction}
-            className="flex w-full items-stretch gap-3"
+        <fetcher.Form
+          ref={formRef}
+          method="POST"
+          action={newsletterAction}
+          className="flex w-full items-stretch gap-3"
+        >
+          <Input
+            variant="custom"
+            type="email"
+            name="email"
+            placeholder={cartNewsletterPlaceholder}
+            required
+            className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
+          />
+          <Button
+            type="submit"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
           >
-            <Input
-              variant="custom"
-              type="email"
-              name="email"
-              placeholder={cartNewsletterPlaceholder}
-              required
-              className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
-            />
-            <Button
-              type="submit"
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
-            >
-              {cartNewsletterButtonText}
-            </Button>
-          </fetcher.Form>
-        )}
-        {klaviyoConfigured && (
-          <div aria-live="polite" className="min-h-5 text-center text-sm">
-            {isSuccess && (
-              <p className="text-green-700">{cartNewsletterSuccessMessage}</p>
-            )}
-            {error && <p className="text-red-700">{error}</p>}
-          </div>
-        )}
+            {cartNewsletterButtonText}
+          </Button>
+        </fetcher.Form>
+        <div aria-live="polite" className="min-h-5 text-center text-sm">
+          {isSuccess && (
+            <p className="text-green-700">{cartNewsletterSuccessMessage}</p>
+          )}
+          {error && <p className="text-red-700">{error}</p>}
+        </div>
       </div>
     </section>
   );
