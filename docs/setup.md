@@ -87,9 +87,9 @@ need the additional variables described below.
   usable credential to it.
 - Oxygen variables are configured separately for **Preview**, **Production**,
   and any custom environments. A local `.env` is not uploaded by a Git push.
-- A `PUBLIC_*` variable is allowed in storefront/browser configuration. It is
-  not a Shopify Admin API credential and should still be shared only where
-  needed.
+- Use `PUBLIC_*` only for values Shopify or the provider explicitly documents
+  as browser-safe. The prefix is a naming convention, not a security control,
+  and never makes a private credential safe to expose.
 - Private Storefront, Weaverse, Judge.me, and Klaviyo tokens are server-only.
   Never add `PUBLIC_` to a private or admin token to make it available in
   browser code.
@@ -110,7 +110,6 @@ need the additional variables described below.
 | `WEAVERSE_PROJECT_ID` | Yes | Public identifier | `<weaverse-project-id>` | Weaverse Studio project settings, project URL, or setup prompt. |
 | `WEAVERSE_API_KEY` | For the Contact us form | **Private** | `<weaverse-api-key>` | Authenticates the server-side Weaverse mail request. Not required for Studio editing or ordinary page rendering. |
 | `WEAVERSE_HOST` | For the Contact us form or a custom host | Configuration | `https://studio.weaverse.io` | Base host used by the contact action. Use the approved Studio/custom host for the project. |
-| `WEAVERSE_API_BASE` | No | Configuration | `https://api.weaverse.io` | Optional custom Weaverse API base; omit for normal Studio use. |
 
 ### Shopify checkout, accounts, and analytics
 
@@ -119,9 +118,14 @@ need the additional variables described below.
 | `PUBLIC_CHECKOUT_DOMAIN` | For checkout/consent | Public identifier | `<store>.myshopify.com` | Checkout domain from the same connected storefront. Usually provisioned by Hydrogen. |
 | `PUBLIC_STOREFRONT_ID` | For complete analytics | Public identifier | `<hydrogen-storefront-id>` | Numeric Hydrogen storefront ID used by Shopify analytics. |
 | `PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID` | For `/account` | Public client ID | `<customer-account-client-id>` | Customer Account API settings in the Hydrogen/Headless channel. |
-| `PUBLIC_CUSTOMER_ACCOUNT_API_URL` | For custom account configuration | Public URL | `https://shopify.com/<shop-id>/account/customer/api` | Normally provisioned by Shopify; keep the pulled value. |
 | `SHOP_ID` | For customer accounts | Public identifier | `<shop-id>` | Shopify shop identifier used by Hydrogen's Customer Account client. |
 | `PUBLIC_GOOGLE_GTM_ID` | No | Public identifier | `GTM-XXXXXXX` | Optional Google Tag Manager container ID. |
+
+Shopify CLI may also pull `PUBLIC_CUSTOMER_ACCOUNT_API_URL` because it is a
+standard Hydrogen environment value. Naturélle's current Hydrogen client does
+not read it; customer-account URLs are derived from `SHOP_ID` and the API
+version. Keep a pulled value if another tool needs it, but do not treat it as a
+replacement for `SHOP_ID`.
 
 ### Optional Naturélle integrations and content
 
@@ -205,6 +209,8 @@ Logout:   https://<development-domain>
 Do not add a temporary developer URL to production account settings without
 coordinating with the team.
 
+Reference: [Weaverse Customer Account API local development](https://weaverse.io/docs/development-guide/customer-account-local-dev).
+
 ## 6. Connect and use Weaverse Studio
 
 1. Install the [Weaverse Hydrogen Customizer](https://apps.shopify.com/weaverse)
@@ -251,14 +257,40 @@ deployment:
 2. Add, remove, or reorder sections.
 3. Select Shopify products, collections, blogs, or media.
 4. Edit section content and layout settings.
-5. Open **Theme settings** to change global branding, typography, colors,
-   buttons, product cards, badges, forms, page width, spacing, announcement bar,
-   header, and footer options.
+5. Open **Theme settings** to change global search suggestions, variant
+   presentation, layout, announcement bar, header, cart, footer, colors,
+   product badges, typography, motion, quick view, and product cards.
 6. Check desktop and mobile previews.
 7. Publish the page/theme changes when ready.
 
 Publishing Studio content and deploying code are separate actions. Published
 content is read by the currently deployed app through `WEAVERSE_PROJECT_ID`.
+
+### Theme settings reference
+
+Theme settings apply across templates. Section settings apply only to the
+selected section instance. Review both desktop and mobile previews after a
+global change because the same token or setting can affect many pages.
+
+| Group | What merchants configure | Important notes |
+| --- | --- | --- |
+| Search | Popular search keywords | Enter a comma-separated list. Search result layout and filters are implemented by the `/search` route, not by an insertable Studio section. |
+| Product variants | Option names rendered as Shopify swatches, image thumbnails, dropdowns, or size/shape buttons | Values must match Shopify option names. An option should belong to only one presentation list. |
+| Layout | Page width and responsive navigation heights | Treat these as global geometry; verify header, drawers, and full-width sections after changes. |
+| Announcement bar | Up to six messages and icons, CTA, autoplay, timing, spacing, height, sticky behavior, and trial-shipping toggle | Keep messages short and ensure any promotion and CTA destination are current. |
+| Header | Utility links, width, transparent mode, regular/transparent logos, and logo width | Supply a transparent-header logo with enough contrast for hero media. Menu structure still comes from Shopify navigation. |
+| Cart | Banner, free-shipping threshold/messages, note, discount and gift-card controls, plus cart newsletter copy | The newsletter is rendered only when Klaviyo newsletter configuration is complete. Test cart drawer and full cart page. |
+| Footer | Brand copy, width, social links, newsletter copy, trust labels, policy links, and payment icons | Policy links come from Shopify policies. Payment icons are display settings; enable only methods the store actually accepts. |
+| Colors, typography, animations and effects | Global design tokens, base type scale, view transitions, and scroll reveal | Check contrast, motion preference, and long localized content before publishing. |
+| Product badges | Sale, new-arrival, and sold-out labels and new-arrival age | These values affect product cards globally. |
+| Quick view | Product form labels, stock treatment, policy links, media layout, thumbnails, and image spacing | Keep behavior aligned with the Product information and Single product sections. |
+| Product card | Quick view, image ratio/radius/hover image, alignment, vendor, and price display | Use one catalog image treatment across collections and search. |
+
+Shopify resource data—products, variants, collections, menus, policies,
+selling plans, metafields, and metaobjects—is edited in Shopify Admin. Studio
+chooses and presents that data; it does not replace Shopify as its source of
+truth. See the [section guide](sections.md) for Product details metafield
+requirements and composition examples.
 
 ### Developer workflow
 
@@ -332,7 +364,7 @@ References:
 
 - <https://shopify.dev/docs/storefronts/headless/hydrogen/deployments/github>
 - <https://shopify.dev/docs/storefronts/headless/hydrogen/environments>
-- <https://docs.weaverse.io/oxygen-deployment>
+- <https://weaverse.io/docs/guides/deployment/oxygen>
 
 ### Manual or custom CI deployment
 

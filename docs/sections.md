@@ -76,7 +76,8 @@ Copy recommendations:
 | Single product | Standalone purchasable product feature | Product, optional Judge.me summary | Home, editorial, landing |
 | Hotspots | Shoppable image with product markers | Image hotspots → Hotspot item | Home, routine or editorial page |
 | Image with text | Brand, ingredient, or routine story | Content and Image blocks | Any content page |
-| Product details | Long-form product education | Benefits, story, ingredients, use, results, badges | PDP, product campaign |
+| Image with text list | Alternating story rows on a Shopify Page | Image with text blocks | Page template only |
+| Product details | Shopify-metafield-driven product education | Benefits, story, ingredients, use, results, badges | Product template only |
 | Before & after | Visual result comparison | Heading and Slider | PDP support, results landing |
 | Testimonials | Social proof with product/review context | Product, background image, Judge.me data | Home, landing, PDP support |
 | Highlights | Three or four concise benefits | Heading, List items → Highlight | Home, service, collection |
@@ -97,9 +98,12 @@ Copy recommendations:
 | Blog post | Current Shopify article body | Current article | Article template only |
 | Related articles | More content from the current blog | Current article/blog | Article template only |
 | Page | Native Shopify page body | Current page | Page template only |
-| Search results | Search/filter result grid | Current search query | Custom search page only |
 | Contact us | Weaverse mail-backed contact form | Heading, fields, submit button | Homepage/`INDEX` only in current schema |
 | Style guide | Internal visual test component | Test text | Development only; do not publish |
+
+The `/search` experience is a fixed React route in the current branch. It uses
+Shopify search/filter data and global theme settings, but it is not registered
+as an insertable Weaverse section.
 
 ## Shared and structural blocks
 
@@ -121,7 +125,7 @@ blocks as standalone page content.
 | Product placement Items | Product placement | Products per row, thumbnail ratio, gap; becomes a one-item-at-a-time slider on mobile. |
 | Product placement Product | Product placement Items | Required manual image and Shopify product selection. |
 | Image hotspots | Hotspots | Required lifestyle image and ratio; accepts Hotspot item blocks. |
-| Hotspot item | Image hotspots | X/Y position, icon, copy, required product, badge/rating/price/detail-link settings. |
+| Hotspots item | Image hotspots | X/Y position, icon, copy, required product, badge/rating/price/detail-link settings. |
 | Highlight List items | Highlights | Items per row, gap, and border color; contains Highlight blocks. |
 | Highlight | List items | Mobile visibility, icon color, heading, and paragraph. |
 | Before/after Slider | Before & after | Required matching before/after images, separator, arrows, and desktop/mobile heights. |
@@ -134,11 +138,11 @@ blocks as standalone page content.
 | Judge.me summary | Product information or Single product | Displays rating/review count when Judge.me is configured; no editable settings. |
 | Judge.me Review index | Judge.me Reviews | Review list position, headings, form copy, button text, and empty state. |
 | Collection list block | Collection list | Collections per row and image lazy loading. |
-| Product detail Benefits | Product details | Heading and concise benefits description. |
-| Product detail Story | Product details | Eyebrow, heading, rich text, image, and image position. |
-| Product detail Key ingredients | Product details | Heading/description and ingredient name/description entries. |
-| Product detail How to use | Product details | Heading and three short ordered steps. |
-| Product detail Clinical results | Product details | Three result/statistic entries defined in the block. |
+| Product detail Benefits | Product details | Editable heading/description plus a Shopify metafield containing up to four `title`/`content` entries. |
+| Product detail Story | Product details | Editable eyebrow/image/layout plus a Shopify metafield containing `title` and `content`. |
+| Product detail Key ingredients | Product details | Editable heading/description plus a Shopify metafield containing up to three `title`/`content` entries. |
+| Product detail How to use | Product details | Editable heading plus a text, rich-text, list, or referenced-metaobject metafield; the first three entries render. |
+| Product detail Clinical results | Product details | A Shopify metafield containing up to three `value`/`label`/`note` entries. |
 | Product detail Product badges | Product details | Up to three short product claims/badges. |
 
 ### Parent and child composition map
@@ -160,6 +164,11 @@ Image with text
 │   └── Subheading / Heading / Paragraph / Button
 └── Image
 
+Image with text list (Page template)
+└── Image with text
+    ├── Content
+    └── Image
+
 Featured products
 ├── Heading
 └── Featured products list
@@ -175,7 +184,7 @@ Product placement
 
 Hotspots
 └── Image hotspots (maximum 2)
-    └── Hotspot item
+    └── Hotspots item
 
 Highlights
 ├── Heading
@@ -233,11 +242,12 @@ Judge.me Reviews
 | Section | Required and optional settings | Media/content guidance | Mobile and usage notes |
 | --- | --- | --- | --- |
 | **Image with text** | Required: one Content block and one Image block. Optional: image position, content alignment/padding, image ratio/width/radius/fit, text/CTA blocks. | Use 4:3 or 3:4 imagery for ingredients, founders, routines, or sourcing. Keep copy to one idea and one CTA. | Content and image stack on mobile and share the row on desktop. Check that the reading order still makes sense when image position changes. |
-| **Product details** | Required: only the blocks relevant to the product story. Optional: text/background colors. | Benefits should be concise; Story may use one 4:3 image; ingredients need plain-language descriptions; usage steps should start with verbs; clinical results need evidence; badges should be short claims. | Blocks are stacked and individually responsive; Story becomes two columns on tablet. Do not duplicate information already present in Product information or add unsupported claims. |
+| **Image with text list** | Page template only. Contains Image with text children and ships with three alternating rows. | Use it for an About, sourcing, values, or service narrative. Keep each row to one idea and use consistent square or portrait media. | Rows stack on mobile; alternating image position becomes visible at desktop widths. Reorder or remove rows instead of inserting unrelated section types inside the list. |
+| **Product details** | Product template only. Required: only the blocks relevant to the product story, each configured with a Shopify product metafield. Optional: text/background colors and Product badges copy. | Create the metafield/metaobject data in Shopify before publishing. Benefits and ingredients use `title`/`content`; Story uses `title`/`content`; How to use uses text entries; Clinical results uses `value`/`label`/`note`. | Blocks hide on the live storefront when their metafield is missing or malformed; Studio shows a diagnostic placeholder. Story becomes two columns on tablet. Do not add unsupported claims. |
 | **Before & after** | Required: Slider with both images. Optional: heading, separator/arrows/colors, independent desktop/mobile height. | Images must match exactly in crop, pose, dimensions, and lighting. Add context and substantiated time frame in surrounding copy. | Uses separate mobile and desktop height settings. Verify the drag handle with touch and never use mismatched subjects or deceptive crops. |
 | **Testimonials** | Required: useful review data and background image; select a product when product-specific Judge.me data is expected. Optional: number shown, review position, rating copy/link, colors, overlay, desktop padding. | Use an authentic review set and a 4:5 lifestyle image with negative space. Keep rating CTA copy factual. | Desktop uses a split/full-height presentation; mobile uses a 420 px image followed by the review panel. Verify contrast on both layers. |
 | **Highlights** | Required: List items with Highlight blocks. Optional: heading, columns, gap, border/icon colors, per-item mobile visibility. | Use 3–4 parallel benefits such as vegan, dermatologist tested, refillable, or free shipping. Keep heading length consistent. | Items reflow by viewport and can be hidden individually on mobile. Do not hide information that is necessary for purchase or compliance. |
-| **FAQs** | Required: FAQ items or service links. Optional: card image/overlay, alt text, card eyebrow/heading/body/CTA, FAQ eyebrow/heading. | Use a 4:5 service image and concise question labels. Current FAQ items link to answers/pages rather than storing long accordion answers. | Two-column desktop layout stacks on mobile. Ensure each link resolves and avoid promising support hours or policies that are not current. |
+| **FAQs** | Required: FAQ items or service links. Optional: card image/overlay, alt text, card eyebrow/heading/CTA, and FAQ heading. Each item can show a short paragraph and/or link. | Use a 4:5 service image and concise question labels. Keep inline answers short; send long policies or support articles to a dedicated page. | Two-column desktop layout stacks on mobile. Ensure each link resolves and avoid promising support hours or policies that are not current. |
 | **Instagram** | Required: Instagram post blocks with images. Strongly recommended: profile URL and post links. Optional: heading/handle, width, desktop count, speed, autoplay, mobile visibility. | Use consistent 1:1 tiles and the real account handle. This section is manually curated; it does not fetch a live Instagram feed. | Can auto-scroll or be hidden on mobile. Test links and keep animation slow enough to inspect each tile. |
 | **Newsletter** | Required: Newsletter input block and useful consent/context copy. Optional: icon, heading, paragraph, placeholder, button label/style. | Explain what subscribers receive; keep the promise specific. Configure Klaviyo variables before publishing. | Blocks stack naturally. Test success, invalid email, duplicate subscription, and provider failure states on the storefront. |
 | **Map** | Required: at least one Map item with a complete geocodable address. Optional: map side, heading, CTA/link/target, item title and paragraph. | Use the public store name, full postal address, current hours, and a directions CTA. | Media and content stack/reverse on mobile depending on map position, then become side-by-side. Verify the embedded location, not just the text address. |
@@ -256,10 +266,41 @@ Judge.me Reviews
 | **Judge.me Reviews** | Product page only. Required: Judge.me Review index and configured token. Optional: heading/paragraph, list side, review/form/empty-state copy. | Keep review copy neutral and do not imply verification that the provider does not supply. | List/form layout adapts by viewport. Test pagination and submission; omit the section when Judge.me is not configured. |
 | **Blog post** | Article page only; no merchant settings. | Renders the current Shopify article body. Format headings, images, tables, and links in Shopify. | Test rich text at narrow widths, especially wide media/tables. Add only once. |
 | **Related articles** | Article page only. Optional: heading, article count, excerpt/date/author/read-more toggles. | Related content comes from the current blog; use consistent featured images and metadata in Shopify. | Cards reflow responsively. Keep the count small—normally three—and avoid repeating the current article. |
-| **Page** | Shopify Page template only. Optional: top/bottom padding. | Renders native Shopify page content. Maintain semantic headings and accessible links in Shopify. | Test rich text, embedded media, and tables on mobile. Add only once. |
-| **Search results** | Custom search page only. Optional: expanded filters, counts, swatches, button-style filter names, item limit, checkbox shape. | Depends on the current search query and Shopify filter configuration. | Test no query, no results, filters, sort, and long queries. Do not place on an ordinary landing page. |
+| **Page** | Shopify Page template only. Optional: top/bottom padding. | Renders native Shopify page content. Maintain semantic headings and accessible links in Shopify. Pair it with Image with text list for structured brand or service stories. | Test rich text, embedded media, and tables on mobile. The `contact` handle receives a narrower content treatment. Add only once. |
 | **Contact us** | Currently enabled on `INDEX` only. Required: heading/subheading, button label, `WEAVERSE_HOST`, and private `WEAVERSE_API_KEY`. Optional: background, alignment, button style, padding. | Use direct, expectation-setting copy and never request sensitive personal/payment data. | Fields stack cleanly on mobile. Test real delivery and safe error messages. A developer must change the schema before this can be inserted on a dedicated Page template. |
 | **Style guide** | Development-only registered component. | No production content or media. | Keep it out of merchant pages; it exists for visual/component checks. |
+
+### Configure Product details metafields
+
+The Product details children load data from the current Shopify product. A
+metafield name without a namespace is treated as `custom.<name>`; an explicit
+`namespace.key` is also supported. The presets use these defaults:
+
+| Block | Studio default | Recommended Shopify definition | Required fields/content |
+| --- | --- | --- | --- |
+| Benefits | `benefit` → `custom.benefit` | List of metaobject references | Up to four entries with `title` and `content` |
+| Product story | `productdetail` → `custom.productdetail` | One metaobject reference | `title` and `content`; `content` may be rich text |
+| Key ingredients | `key_ingredients` → `custom.key_ingredients` | List of metaobject references | Up to three entries with `title` and `content` |
+| How to use | `howtouse` → `custom.howtouse` | List of metaobject references, list of text values, or a text/rich-text value | Up to three entries; use a `content` field for metaobjects |
+| Clinical results | `product_result` → `custom.product_result` | List of metaobject references | Up to three entries with `value`, `label`, and `note` |
+
+Setup workflow:
+
+1. In Shopify Admin, create the required metaobject definitions and fields,
+   then create product metafield definitions that reference them. Set each
+   product metafield definition's Storefront access to `PUBLIC_READ`; otherwise
+   the Storefront API query returns no value.
+2. Populate the metafields on every product that uses the Product details
+   template. Preserve entry order because the section uses it for icons,
+   numbering, and display order.
+3. In Studio, keep the preset metafield name or enter the exact custom
+   `namespace.key`. Changing it triggers a component data refresh.
+4. Preview several products, including one with no value and one with partial
+   data. Missing/malformed data displays a diagnostic only in Studio and hides
+   that block on the published storefront.
+5. Keep numerical clinical values and their notes legally substantiated. A
+   number-type result value is displayed with a percent sign; text values are
+   displayed as entered.
 
 ## Example page compositions
 
@@ -320,11 +361,11 @@ without pushing the product grid too far below the fold.
 1. Product information
 2. Highlights — shipping, returns, or product standards
 3. Product details
-   - Benefits
-   - Product story
-   - Key ingredients
-   - How to use
-   - Clinical results (only with evidence)
+   - Benefits (Shopify metafield)
+   - Product story (Shopify metafield)
+   - Key ingredients (Shopify metafield)
+   - How to use (Shopify metafield)
+   - Clinical results (Shopify metafield; only with evidence)
    - Product badges
 4. Before & after — optional and substantiated
 5. Judge.me Reviews
@@ -346,6 +387,9 @@ the purchase experience.
 6. Blogs
 7. Newsletter
 ```
+
+For a Shopify Page rather than a custom landing page, use **Page** for the
+native body and **Image with text list** for an alternating, structured story.
 
 ### Blog/article experience
 
@@ -384,6 +428,8 @@ developer to enable `Contact us` for the `PAGE` type before composing it.
   filter/review systems to one page.
 - Publishing a Shopify-backed section without selecting its product,
   collection, or blog.
+- Publishing Product details before its configured Shopify metafields and
+  metaobjects are available to the Storefront API.
 - Leaving placeholder copy, placeholder images, empty CTA URLs, or `#` links.
 - Mixing source ratios in one grid while forcing a single display ratio.
 - Using `Adapt to image` with inconsistent image dimensions.

@@ -22,9 +22,10 @@ What you get with Naturelle:
 
 ## Deployment
 
-Efficient deployment options:
-- [Deploy directly to Shopify Oxygen](https://weaverse.io/docs/deployment/oxygen)
-- [Deploy using Vercel](https://wvse.cc/deploy-pilot-to-vercel)
+Shopify Oxygen is the documented production target for this repository:
+
+- [Naturélle Oxygen deployment steps](docs/setup.md#9-deploy-to-shopify-oxygen)
+- [Weaverse Oxygen deployment guide](https://weaverse.io/docs/guides/deployment/oxygen)
 
 ## Getting Started
 
@@ -36,12 +37,21 @@ the [Naturélle setup and usage guide](docs/setup.md).
 - Ensure you have Node.js version 22.12.0 or higher installed.
 - Use the npm package manager included with Node.js.
 
-**Setup Instructions:**
-1. Download [Weaverse Hydrogen](https://apps.shopify.com/weaverse) from the Shopify App Store.
-2. Launch a new Hydrogen storefront within Weaverse.
-3. Use the `@weaverse/cli` to initialize the project and start a local development server as guided in the Weaverse editor.
-   ![Init Weaverse Storefront](https://cdn.shopify.com/s/files/1/0838/0052/3057/files/New_storefront.png?v=1699244454)
-4. Dive into the Weaverse editor to personalize and enhance your storefront to meet your brand needs.
+**Setup overview:**
+
+1. Clone this repository and run commands from the `naturelle/` directory.
+2. Install the [Hydrogen sales channel](https://apps.shopify.com/hydrogen) and
+   [Weaverse Hydrogen Customizer](https://apps.shopify.com/weaverse) on the
+   target Shopify store.
+3. Link the project with `npx shopify hydrogen link`, then pull
+   Shopify-managed values with `npx shopify hydrogen env pull`.
+4. Add `WEAVERSE_PROJECT_ID`, a local `SESSION_SECRET`, and any enabled
+   integration credentials to `.env`.
+5. Run `npm run dev`, register `http://localhost:3456` as a Weaverse preview
+   URL, and open the storefront through Weaverse Studio.
+
+The repository is already initialized; do not scaffold a second Hydrogen or
+Weaverse project over this checkout.
 
 ## Local Development
 
