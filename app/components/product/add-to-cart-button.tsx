@@ -124,6 +124,15 @@ function AddToCartContent({
     pendingToken.current = null;
   }, [fetcher.state]);
 
+  useEffect(
+    () => () => {
+      if (pendingToken.current) {
+        useCartStore.getState().clearPendingAdd(pendingToken.current);
+      }
+    },
+    [],
+  );
+
   return (
     <AddToCartAnalytics fetcher={fetcher} onAdded={onAdded}>
       <input type="hidden" name="analytics" value={JSON.stringify(analytics)} />
@@ -208,19 +217,8 @@ function AddToCartAnalytics({
           cartId: fetcherData.cart.id,
         };
 
-        const cartInputs = formData
-          ? CartForm.getFormInput(formData)
-          : undefined;
-        const lines = cartInputs?.inputs.lines as
-          | Array<{ sellingPlanId?: string }>
-          | undefined;
-        const hasSubscription =
-          Array.isArray(lines) && lines.some((line) => line.sellingPlanId);
-
         sendShopifyAnalytics({
-          eventName: hasSubscription
-            ? ("subscription_added_to_cart" as typeof AnalyticsEventName.ADD_TO_CART)
-            : AnalyticsEventName.ADD_TO_CART,
+          eventName: AnalyticsEventName.ADD_TO_CART,
           payload: addToCartPayload,
         });
       }

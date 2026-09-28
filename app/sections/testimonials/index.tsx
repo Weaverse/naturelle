@@ -14,6 +14,7 @@ import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { PRODUCT_QUERY } from "~/graphql/queries";
 import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { cn } from "~/utils/cn";
 import { getJudgemeReviews } from "~/utils/judgeme";
 import Review from "./review";
 
@@ -192,7 +193,7 @@ const Testimonials = ({
       )}
       {reviewsPosition === "right" && (
         <div
-          className={clsx(
+          className={cn(
             "pointer-events-none z-20 grid grid-cols-1 md:grid-cols-2",
             displayImage || isDesignMode
               ? "absolute inset-x-0 top-0"

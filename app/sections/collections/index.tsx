@@ -62,10 +62,10 @@ export const COLLECTIONS_QUERY = `#graphql
   }
 ` as const;
 
-export const loader = async ({
+export async function loader({
   data,
   weaverse,
-}: ComponentLoaderArgs<CollectionsData>) => {
+}: ComponentLoaderArgs<CollectionsData>) {
   const ids =
     data.collections?.map(
       (collection) => `gid://shopify/Collection/${collection.id}`,
@@ -83,7 +83,7 @@ export const loader = async ({
     collections: nodes.filter((node): node is CollectionNode => Boolean(node)),
     totalCount: Number(allCollections.totalCount),
   };
-};
+}
 
 export type CollectionsLoaderData = Awaited<ReturnType<typeof loader>>;
 
@@ -100,10 +100,10 @@ const PLACEHOLDER_COLLECTION: CollectionNode = {
   },
 };
 
-const Collections = ({
+function Collections({
   ref,
   ...props
-}: CollectionsProps & { ref?: RefObject<HTMLElement | null> }) => {
+}: CollectionsProps & { ref?: RefObject<HTMLElement | null> }) {
   const {
     loaderData,
     heading,
@@ -309,7 +309,7 @@ const Collections = ({
       {children}
     </Section>
   );
-};
+}
 
 export default Collections;
 

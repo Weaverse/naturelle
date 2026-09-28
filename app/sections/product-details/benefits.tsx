@@ -14,7 +14,6 @@ import {
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
 } from "./product-metafield";
-import { useProductMetafieldData } from "./use-product-metafield-data";
 
 interface BenefitsData {
   heading: string;
@@ -36,8 +35,6 @@ export default function ProductBenefits({
   className,
   ...rest
 }: BenefitsProps & { ref?: Ref<HTMLElement> }) {
-  loaderData = useProductMetafieldData(metafield, loaderData);
-
   if (!loaderData?.entries.length) {
     return (
       <ProductMetafieldEmptyState
@@ -137,6 +134,7 @@ export const schema = createSchema({
           label: "Product metafield",
           defaultValue: PRODUCT_DETAIL_METAFIELDS.benefits,
           placeholder: PRODUCT_DETAIL_METAFIELDS.benefits,
+          shouldRevalidate: true,
           helpText:
             "Use a list of metaobjects with <strong>title</strong> and <strong>content</strong> fields.",
         },

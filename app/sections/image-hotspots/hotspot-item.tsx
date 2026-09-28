@@ -147,7 +147,6 @@ let HotspotsItem = ({
               <ProductCard
                 product={loaderData.product}
                 badgeText={badgeText}
-                alwaysShowQuickViewButton
                 showBadge={showBadge}
                 showPrice={showPrice}
                 showStar={showStar}

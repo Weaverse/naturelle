@@ -11,6 +11,7 @@ import {
 
 interface FaqsData {
   image?: WeaverseImage;
+  imageAlt?: string;
   imageBackgroundColor?: string;
   cardEyebrow?: string;
   cardHeading?: string;
@@ -24,6 +25,7 @@ type FaqsProps = SectionProps & FaqsData;
 export default function Faqs({
   ref,
   image,
+  imageAlt,
   imageBackgroundColor,
   cardEyebrow = "Customer service",
   cardHeading = "Still need help?",
@@ -62,7 +64,7 @@ export default function Faqs({
         {image ? (
           <Image
             data={image}
-            alt=""
+            alt={imageAlt || image.altText || "Customer service"}
             className="absolute inset-0 h-full w-full object-cover"
             sizes="(min-width: 1024px) 42vw, 100vw"
           />
@@ -114,6 +116,12 @@ export const schema = createSchema({
       group: "Content",
       inputs: [
         { type: "image", name: "image", label: "Card image" },
+        {
+          type: "text",
+          name: "imageAlt",
+          label: "Image alt text",
+          defaultValue: "Customer service",
+        },
         {
           type: "color",
           name: "imageBackgroundColor",

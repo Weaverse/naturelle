@@ -6,7 +6,6 @@ import {
   loadProductDetailMetafield,
   PRODUCT_DETAIL_METAFIELDS,
 } from "./product-metafield";
-import { useProductMetafieldData } from "./use-product-metafield-data";
 
 interface HowToUseData {
   heading: string;
@@ -25,8 +24,6 @@ export default function HowToUse({
   loaderData,
   ...rest
 }: HowToUseProps & { ref?: Ref<HTMLElement> }) {
-  loaderData = useProductMetafieldData(metafield, loaderData);
-
   if (!loaderData?.entries.length) {
     return (
       <ProductMetafieldEmptyState
@@ -104,6 +101,7 @@ export const schema = createSchema({
           label: "Product metafield",
           defaultValue: PRODUCT_DETAIL_METAFIELDS.howToUse,
           placeholder: PRODUCT_DETAIL_METAFIELDS.howToUse,
+          shouldRevalidate: true,
           helpText:
             "Use text, rich text, or a list of metaobjects with a <strong>content</strong> field.",
         },

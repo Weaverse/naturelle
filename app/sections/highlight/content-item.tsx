@@ -2,6 +2,7 @@ import type { HydrogenComponentProps } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React, { type CSSProperties } from "react";
+import { useIsContactPage } from "~/hooks/use-is-contact-page";
 
 interface ContentProps extends HydrogenComponentProps {
   itemPerRow: number;
@@ -21,6 +22,7 @@ const HighlightContent = ({
   ...props
 }: ContentProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
   let { itemPerRow, gap, borderColor, children, ...rest } = props;
+  const isContactPage = useIsContactPage();
   let style: CSSProperties = {
     "--item-gap": `${gap}px`,
     "--border-color": borderColor,
@@ -31,7 +33,8 @@ const HighlightContent = ({
       ref={ref}
       {...rest}
       className={clsx(
-        "flex flex-col gap-y-6 md:grid md:gap-x-(--item-gap)",
+        "flex flex-col md:grid",
+        isContactPage ? "gap-4" : "gap-y-6 md:gap-x-(--item-gap)",
         itemsPerRowClasses[actualItemPerRow],
       )}
       style={style}

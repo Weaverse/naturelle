@@ -6,8 +6,8 @@ import {
 import type { SearchSortKeys } from "@shopify/hydrogen/storefront-api-types";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/.server/seo";
+import SearchResults from "~/components/search-results";
 import { SEARCH_QUERY } from "~/graphql/queries";
-import SearchResults from "~/sections/search-results";
 import { PAGINATION_SIZE } from "~/utils/const";
 import type { SortParam } from "~/utils/filter";
 import {

@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getJudgemeReviews } from "../app/utils/judgeme.ts";
+import {
+  createJudgemeReview,
+  getJudgemeProduct,
+  getJudgemeReviews,
+} from "../app/utils/judgeme.ts";
 
 const review = {
   id: "review-1",
@@ -111,4 +115,78 @@ test("returns an empty state when Judge.me fails or times out", async (t) => {
 
   assert.equal(result.reviewNumber, 0);
   assert.deepEqual(result.reviews, []);
+});
+
+test("resolves the review product from its handle on the server", async (t) => {
+  let requestedUrl = "";
+  t.mock.method(globalThis, "fetch", async (input) => {
+    requestedUrl = String(input);
+    return Response.json({
+      product: { id: 123, external_id: 456, handle: "serum" },
+    });
+  });
+
+  const product = await getJudgemeProduct(
+    "private-test-token",
+    "shop.example",
+    "serum",
+  );
+
+  assert.equal(product.status, "found");
+  assert.equal(
+    product.status === "found" ? product.product.external_id : null,
+    456,
+  );
+  assert.match(requestedUrl, /handle=serum/);
+});
+
+test("reports a missing Judge.me product", async (t) => {
+  t.mock.method(globalThis, "fetch", async () =>
+    Response.json({}, { status: 404 }),
+  );
+
+  const missingProduct = await getJudgemeProduct(
+    "private-test-token",
+    "shop.example",
+    "missing-product",
+  );
+  assert.equal(missingProduct.status, "not-found");
+});
+
+test("reports an unavailable Judge.me service", async (t) => {
+  t.mock.method(globalThis, "fetch", async () =>
+    Response.json({}, { status: 503 }),
+  );
+  const unavailableProduct = await getJudgemeProduct(
+    "private-test-token",
+    "shop.example",
+    "serum",
+  );
+  assert.equal(unavailableProduct.status, "unavailable");
+});
+
+test("creates a review with the server-resolved product id", async (t) => {
+  let requestBody: Record<string, unknown> = {};
+  t.mock.method(globalThis, "fetch", async (_input, init) => {
+    requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
+    return new Response(null, { status: 201 });
+  });
+
+  const result = await createJudgemeReview(
+    "private-test-token",
+    "shop.example",
+    {
+      name: "Reviewer",
+      email: "reviewer@example.com",
+      rating: 5,
+      title: "Great product",
+      body: "Works well.",
+      productExternalId: 456,
+      productHandle: "serum",
+    },
+  );
+
+  assert.equal(result.status, 201);
+  assert.equal(requestBody.id, 456);
+  assert.equal(requestBody.url, "serum");
 });

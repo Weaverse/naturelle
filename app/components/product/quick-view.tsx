@@ -1,7 +1,6 @@
 import { Portal } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
@@ -19,6 +18,7 @@ import {
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
+import { cn } from "~/utils/cn";
 import {
   getSavingsPercentage,
   isNewArrival,
@@ -57,11 +57,6 @@ export function QuickView({
     unavailableText: theme.unavailableText || "Unavailable",
     syncVariantWithUrl: false,
   });
-  const swatches = theme?.swatches || {
-    configs: [],
-    swatches: { imageSwatches: [], colorSwatches: [] },
-  };
-
   if (!product || !selectedVariant || !variants) {
     return null;
   }
@@ -207,11 +202,9 @@ export function QuickView({
               </div>
 
               <ProductVariants
-                isDisabled={isLoading}
                 product={product}
                 selectedVariant={selectedVariant}
                 onSelectedVariantChange={handleSelectedVariantChange}
-                swatch={swatches}
                 variants={variants}
                 hideUnavailableOptions={theme.hideUnavailableOptions}
               />
@@ -348,7 +341,7 @@ export function QuickViewTrigger({
   return (
     <>
       <div
-        className={clsx(
+        className={cn(
           "absolute z-10 transition-opacity duration-300",
           alwaysShowButton
             ? "inset-x-3 bottom-4"
@@ -385,7 +378,7 @@ export function QuickViewTrigger({
             setOpen(true);
           }}
           loading={state === "loading"}
-          className={clsx(
+          className={cn(
             "h-12 w-full rounded-xl px-6 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background",
             alwaysShowButton ? "inline-flex" : "hidden md:inline-flex",
           )}

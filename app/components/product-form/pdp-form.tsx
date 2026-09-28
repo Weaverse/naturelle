@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { type ReactNode, useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import {
@@ -6,6 +5,7 @@ import {
   IconQuickViewInstagram,
   IconQuickViewX,
 } from "~/components/icon";
+import { cn } from "~/utils/cn";
 
 interface ProductVariantLike {
   availableForSale: boolean;
@@ -41,14 +41,14 @@ interface ProductShareLinksProps {
   className?: string;
 }
 
-export const useProductFormState = <TVariant extends ProductVariantLike>({
+export function useProductFormState<TVariant extends ProductVariantLike>({
   product,
   variants,
   addToCartText,
   soldOutText,
   unavailableText,
   syncVariantWithUrl = true,
-}: ProductFormStateParams<TVariant>) => {
+}: ProductFormStateParams<TVariant>) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -94,17 +94,17 @@ export const useProductFormState = <TVariant extends ProductVariantLike>({
     atcText,
     handleSelectedVariantChange,
   };
-};
+}
 
-export const ProductQuantityInput = ({
+export function ProductQuantityInput({
   value,
   disabled,
   onChange,
   className,
-}: ProductQuantityInputProps) => {
+}: ProductQuantityInputProps) {
   return (
     <div
-      className={clsx(
+      className={cn(
         "flex h-12 items-center overflow-hidden rounded-lg border border-border",
         className,
       )}
@@ -135,9 +135,9 @@ export const ProductQuantityInput = ({
       </button>
     </div>
   );
-};
+}
 
-const ShareLink = ({
+function ShareLink({
   href,
   label,
   children,
@@ -145,7 +145,7 @@ const ShareLink = ({
   href: string;
   label: string;
   children: ReactNode;
-}) => {
+}) {
   return (
     <a
       href={href}
@@ -157,16 +157,16 @@ const ShareLink = ({
       {children}
     </a>
   );
-};
+}
 
-export const ProductShareLinks = ({
+export function ProductShareLinks({
   productUrl,
   title,
   label = "Share:",
   className,
-}: ProductShareLinksProps) => {
+}: ProductShareLinksProps) {
   return (
-    <div className={clsx("flex items-center gap-3 pt-2 text-sm", className)}>
+    <div className={cn("flex items-center gap-3 pt-2 text-sm", className)}>
       <span className="font-semibold">{label}</span>
       <ShareLink
         label="Share on Facebook"
@@ -188,4 +188,4 @@ export const ProductShareLinks = ({
       </ShareLink>
     </div>
   );
-};
+}

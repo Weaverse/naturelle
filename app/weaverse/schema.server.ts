@@ -1,14 +1,7 @@
 import type { HydrogenThemeSchema, InspectorGroup } from "@weaverse/hydrogen";
+import { DEFAULT_VARIANT_DISPLAY_SETTINGS } from "~/components/product-form/variants";
 import { COUNTRIES, DEFAULT_LOCALE } from "~/utils/const";
 import { version } from "../../package.json";
-
-let variantSwatch = {
-  configs: [],
-  swatches: {
-    imageSwatches: [],
-    colorSwatches: [],
-  },
-};
 
 const announcementIconOptions = [
   { value: "sparkle", label: "Sparkle" },
@@ -89,14 +82,51 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
     {
-      group: "Product swatches",
+      group: "Product variants",
       inputs: [
         {
-          type: "swatches",
-          name: "swatches",
-          label: "Config swatches",
-          defaultValue: variantSwatch,
-        } as unknown as InspectorGroup["inputs"][number],
+          type: "text",
+          name: "variantSwatchOptionNames",
+          label: "Swatch option names",
+          defaultValue:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantSwatchOptionNames,
+          placeholder:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantSwatchOptionNames,
+          helpText:
+            "Comma-separated Shopify option names rendered with native color or image swatches.",
+        },
+        {
+          type: "text",
+          name: "variantImageOptionNames",
+          label: "Image option names",
+          defaultValue:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantImageOptionNames,
+          placeholder: DEFAULT_VARIANT_DISPLAY_SETTINGS.variantImageOptionNames,
+          helpText:
+            "Comma-separated Shopify option names rendered as image thumbnails.",
+        },
+        {
+          type: "text",
+          name: "variantDropdownOptionNames",
+          label: "Dropdown option names",
+          defaultValue:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantDropdownOptionNames,
+          placeholder:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantDropdownOptionNames,
+          helpText:
+            "Comma-separated Shopify option names rendered as dropdowns.",
+        },
+        {
+          type: "text",
+          name: "variantMorphologyOptionNames",
+          label: "Size and shape option names",
+          defaultValue:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantMorphologyOptionNames,
+          placeholder:
+            DEFAULT_VARIANT_DISPLAY_SETTINGS.variantMorphologyOptionNames,
+          helpText:
+            "Comma-separated Shopify option names rendered as size or shape buttons.",
+        },
       ],
     },
     {

@@ -1,10 +1,11 @@
 import { MagnifyingGlassPlus } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MediaFragment } from "storefront-api.generated";
 import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import { Image } from "~/components/image";
+import { cn } from "~/utils/cn";
 import { ZoomModal } from "./media-zoom";
 
 interface ProductMediaProps {
@@ -34,21 +35,35 @@ export function ProductMedia(props: ProductMediaProps) {
     thumbnailLayout = "swiper",
   } = props;
 
-  const media = _media.filter((med) => med.__typename === "MediaImage");
+  const media = useMemo(
+    () => _media.filter((med) => med.__typename === "MediaImage"),
+    [_media],
+  );
   const useStripThumbnails = showThumbnails && thumbnailLayout === "strip";
   const useSwiperThumbnails = showThumbnails && thumbnailLayout === "swiper";
+  const usePagination = showPagination && !showThumbnails;
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
   let [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   let [zoomMediaId, setZoomMediaId] = useState<string | null>(null);
   let [zoomModalOpen, setZoomModalOpen] = useState(false);
   let [currentIndex, setCurrentIndex] = useState(0);
+  const previousVariantId = useRef(selectedVariant?.id);
 
   useEffect(() => {
-    if (selectedVariant && swiper) {
-      const index = getSelectedVariantMediaIndex(media, selectedVariant);
-      if (index >= 0 && index !== swiper.realIndex) {
-        slideToMedia(swiper, index);
-      }
+    if (!selectedVariant || !swiper) {
+      return;
+    }
+
+    const variantChanged = previousVariantId.current !== selectedVariant.id;
+    previousVariantId.current = selectedVariant.id;
+
+    if (!variantChanged) {
+      return;
+    }
+
+    const index = getSelectedVariantMediaIndex(media, selectedVariant);
+    if (index >= 0 && index !== swiper.realIndex) {
+      slideToMedia(swiper, index);
     }
   }, [media, selectedVariant, swiper]);
 
@@ -72,21 +87,21 @@ export function ProductMedia(props: ProductMediaProps) {
           <Swiper
             loop={true}
             modules={[
-              ...(showPagination ? [Pagination] : []),
+              ...(usePagination ? [Pagination] : []),
               ...(useSwiperThumbnails ? [Thumbs] : []),
             ]}
-            pagination={showPagination ? { type: "bullets" } : false}
+            pagination={usePagination ? { type: "bullets" } : false}
             spaceBetween={10}
             thumbs={useSwiperThumbnails ? { swiper: thumbsSwiper } : undefined}
             onSwiper={setSwiper}
             onSlideChange={(slider) => setCurrentIndex(slider.realIndex)}
-            className={clsx(
+            className={cn(
               "vt-product-image max-w-full",
-              showPagination &&
+              usePagination &&
                 "pb-5! md:pb-0! md:[&_.swiper-pagination-bullets]:hidden",
             )}
             style={
-              showPagination
+              usePagination
                 ? ({
                     "--swiper-pagination-bottom": "-6px",
                     "--swiper-pagination-color": "var(--color-text-primary)",
@@ -128,9 +143,9 @@ export function ProductMedia(props: ProductMediaProps) {
           </Swiper>
           {showSlideCounter && (
             <span
-              className={clsx(
+              className={cn(
                 "absolute right-2 z-10 font-heading text-sm text-text-primary sm:text-base",
-                showPagination ? "bottom-7 sm:bottom-5" : "bottom-2",
+                usePagination ? "bottom-7 sm:bottom-5" : "bottom-2",
               )}
             >
               {currentIndex + 1}/{media.length}
@@ -148,7 +163,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     type="button"
                     aria-label={`View image ${i + 1}`}
                     aria-pressed={isActive}
-                    className={clsx(
+                    className={cn(
                       "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors md:size-[88px]",
                       isActive
                         ? "border-border/60"
@@ -170,45 +185,77 @@ export function ProductMedia(props: ProductMediaProps) {
           </div>
         )}
         {useSwiperThumbnails && (
-          <div
-            className={clsx(
-              "hidden min-w-0 sm:block",
-              direction === "vertical" &&
-                "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]",
-            )}
-          >
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              loop={false}
-              rewind
-              direction={direction}
-              spaceBetween={spacing}
-              freeMode={true}
-              slidesPerView={"auto"}
-              modules={[FreeMode, Thumbs]}
-              watchSlidesProgress={true}
-              data-motion="fade-up"
-              className="w-full h-full overflow-hidden"
+          <>
+            <div className="min-w-0 w-full sm:hidden">
+              <div className="flex gap-2 overflow-x-auto overscroll-x-contain touch-pan-x pb-0.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
+                {media.map((med, i) => {
+                  const isActive = currentIndex === i;
+                  return (
+                    <button
+                      key={med.id}
+                      type="button"
+                      aria-label={`View image ${i + 1}`}
+                      aria-pressed={isActive}
+                      className={cn(
+                        "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors",
+                        isActive
+                          ? "border-border/60"
+                          : "border-transparent hover:border-border-subtle",
+                      )}
+                      onClick={() => slideToMedia(swiper, i)}
+                    >
+                      <Image
+                        data={getMediaImage(med)}
+                        loading={i === 0 ? "eager" : "lazy"}
+                        className="h-full w-full rounded-sm object-cover"
+                        aspectRatio={imageAspectRatio}
+                        sizes="64px"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div
+              className={clsx(
+                "hidden min-w-0 sm:block",
+                direction === "vertical" &&
+                  "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]",
+              )}
             >
-              {media.map((med, i) => (
-                <SwiperSlide
-                  key={med.id}
-                  className={clsx(
-                    "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
-                    "[&.swiper-slide-thumb-active]:border-border/60",
-                  )}
-                >
-                  <Image
-                    data={getMediaImage(med)}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
-                    aspectRatio={imageAspectRatio}
-                    sizes="auto"
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
+              <Swiper
+                onSwiper={setThumbsSwiper}
+                loop={false}
+                rewind
+                direction={direction}
+                spaceBetween={spacing}
+                freeMode={true}
+                slidesPerView={"auto"}
+                modules={[FreeMode, Thumbs]}
+                watchSlidesProgress={true}
+                data-motion="fade-up"
+                className="w-full h-full overflow-hidden"
+              >
+                {media.map((med, i) => (
+                  <SwiperSlide
+                    key={med.id}
+                    className={cn(
+                      "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
+                      "[&.swiper-slide-thumb-active]:border-border/60",
+                    )}
+                  >
+                    <Image
+                      data={getMediaImage(med)}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
+                      aspectRatio={imageAspectRatio}
+                      sizes="auto"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </>
         )}
       </div>
       {enableZoom && (

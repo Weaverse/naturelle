@@ -28,7 +28,7 @@ export default function ProductBadges({
 
   return (
     <section ref={ref} {...rest}>
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-3">
         {badges.map(([Icon, label]) => (
           <span
             key={label}
