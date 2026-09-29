@@ -14,6 +14,8 @@ function createImageWithTextItem(imagePosition: ImagePosition) {
     imagePosition,
     width: "full",
     borderRadius: 0,
+    sectionPadding: "none",
+    contentGap: 36,
     children: [
       {
         type: "image-with-text--image",
