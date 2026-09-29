@@ -43,8 +43,16 @@ let JudgemeReview = ({
     );
   }
 
-  let rating = Math.round((data.rating || 0) * 100) / 100;
   let reviewNumber = data.reviewNumber || 0;
+  if (reviewNumber === 0) {
+    return (
+      <div {...props} ref={ref}>
+        <span className="text-text-subtle text-sm">No reviews yet</span>
+      </div>
+    );
+  }
+
+  let rating = Math.round((data.rating || 0) * 100) / 100;
 
   return (
     <div {...props} ref={ref}>

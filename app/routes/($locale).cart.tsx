@@ -17,7 +17,9 @@ import { Button } from "~/components/button";
 import { CartMain } from "~/components/cart/cart";
 import { IconNewsletter } from "~/components/icon";
 import { Input } from "~/components/input";
-import { getLocaleFromRequest } from "~/utils/locale";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { useRootLoaderData } from "~/root";
+import { getLocaleFromRequest, usePrefixPathWithLocale } from "~/utils/locale";
 import { safeRedirectPath } from "~/utils/misc";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
@@ -307,22 +309,39 @@ function CartNewsletter() {
     cartNewsletterSuccessMessage,
   } = useThemeSettings();
   const fetcher = useFetcher<{
-    customer?: unknown;
-    errors?: Array<{ message?: string }>;
+    ok?: boolean;
+    error?: string;
   }>({ key: "cart-newsletter" });
+
+  const rootData = useRootLoaderData();
+  const isStudio = useWeaverseStudioCheck();
+  const klaviyoConfigured = Boolean(rootData?.integrations?.klaviyoNewsletter);
+  const newsletterAction = usePrefixPathWithLocale("/api/klaviyo");
   const formRef = useRef<HTMLFormElement>(null);
+
   const isSubmitting = fetcher.state !== "idle";
-  const isSuccess = Boolean(fetcher.state === "idle" && fetcher.data?.customer);
-  const error =
-    fetcher.state === "idle"
-      ? fetcher.data?.errors?.find(({ message }) => message)?.message
-      : null;
+  const isSuccess = Boolean(fetcher.state === "idle" && fetcher.data?.ok);
+  const error = fetcher.state === "idle" ? fetcher.data?.error : null;
 
   useEffect(() => {
     if (isSuccess) {
       formRef.current?.reset();
     }
   }, [isSuccess]);
+
+  if (!klaviyoConfigured) {
+    if (!isStudio) {
+      return null;
+    }
+
+    return (
+      <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
+        <div className="w-full max-w-xl rounded-md border border-border border-dashed p-4 text-center text-sm text-text-subtle">
+          Configure Klaviyo private token and newsletter list ID
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
@@ -347,7 +366,7 @@ function CartNewsletter() {
         <fetcher.Form
           ref={formRef}
           method="POST"
-          action="/api/customer"
+          action={newsletterAction}
           className="flex w-full items-stretch gap-3"
         >
           <Input

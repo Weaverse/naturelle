@@ -14,6 +14,9 @@ import * as CollectionListItem from "~/sections/collection-list/collection-list"
 import * as CollectionList from "~/sections/collection-list/index";
 import * as Collections from "~/sections/collections/index";
 import * as ContactForm from "~/sections/contact-form/contact-form";
+import * as ContactHighlightsContent from "~/sections/contact-highlights/content-item";
+import * as ContactHighlights from "~/sections/contact-highlights/index";
+import * as ContactHighlightItem from "~/sections/contact-highlights/item";
 import * as Countdown from "~/sections/countdown/index";
 import * as CountdownTimer from "~/sections/countdown/timer";
 import * as FaqItem from "~/sections/faqs/faq-item";
@@ -30,6 +33,7 @@ import * as Hotspots from "~/sections/image-hotspots/index";
 import * as ImageWithTextContent from "~/sections/image-with-text/content";
 import * as ImageWithTextImage from "~/sections/image-with-text/image";
 import * as ImageWithText from "~/sections/image-with-text/index";
+import * as ImageWithTextList from "~/sections/image-with-text-list";
 import * as Instagram from "~/sections/instagram";
 import * as InstagramItem from "~/sections/instagram/item";
 import * as JudgemeReviewSection from "~/sections/judgeme-reviews/index";
@@ -75,9 +79,13 @@ export const components: HydrogenComponent[] = [
   ButtonCustom,
 
   VideoBanner,
+  ContactHighlights,
+  ContactHighlightsContent,
+  ContactHighlightItem,
   Highlights,
   HightlightItem,
   HighlightContent,
+  ImageWithTextList,
   ImageWithText,
   ImageWithTextImage,
   ImageWithTextContent,

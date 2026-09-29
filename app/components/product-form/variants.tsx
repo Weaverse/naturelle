@@ -1,10 +1,32 @@
 import { getProductOptions } from "@shopify/hydrogen";
-import clsx from "clsx";
+import { useThemeSettings } from "@weaverse/hydrogen";
 import type {
   ProductQuery,
   ProductVariantFragmentFragment,
 } from "storefront-api.generated";
-import { isImageOption, VariantOption } from "./options";
+import { VariantOption } from "./options";
+
+export type VariantDisplayType =
+  | "swatch"
+  | "image"
+  | "dropdown"
+  | "morphology"
+  | "button";
+
+interface VariantDisplaySettings {
+  variantSwatchOptionNames?: string;
+  variantImageOptionNames?: string;
+  variantDropdownOptionNames?: string;
+  variantMorphologyOptionNames?: string;
+}
+
+export const DEFAULT_VARIANT_DISPLAY_SETTINGS: Required<VariantDisplaySettings> =
+  {
+    variantSwatchOptionNames: "Color, Colors, Colour, Colours",
+    variantImageOptionNames: "Image, Images, Type, Types, Skin Type",
+    variantDropdownOptionNames: "Dropdown, Dropdowns",
+    variantMorphologyOptionNames: "Size, Sizes, Shape, Shapes",
+  };
 
 interface ProductVariantsProps {
   selectedVariant: ProductVariantFragmentFragment;
@@ -13,12 +35,7 @@ interface ProductVariantsProps {
     nodes: ProductVariantFragmentFragment[];
   };
   product: NonNullable<ProductQuery["product"]>;
-  swatch: {
-    configs: any[];
-    swatches: any;
-  };
   hideUnavailableOptions?: boolean;
-  isDisabled?: boolean;
 }
 
 export function ProductVariants(props: ProductVariantsProps) {
@@ -27,10 +44,9 @@ export function ProductVariants(props: ProductVariantsProps) {
     onSelectedVariantChange,
     variants,
     product,
-    swatch,
     hideUnavailableOptions,
-    isDisabled,
   } = props;
+  const themeSettings = useThemeSettings() as VariantDisplaySettings;
 
   let selectedOptions = selectedVariant?.selectedOptions;
   let nodes = variants?.nodes;
@@ -69,7 +85,7 @@ export function ProductVariants(props: ProductVariantsProps) {
     <div data-motion="fade-up" className="flex flex-col gap-6">
       {productOptions.map((option) => {
         let optionName = option.name;
-        const shouldRenderAsImage = isImageOption(optionName);
+        const displayType = getVariantDisplayType(optionName, themeSettings);
         let values = option.optionValues
           .map((optionValue) => {
             if (hideUnavailableOptions && !optionValue.exists) {
@@ -77,42 +93,28 @@ export function ProductVariants(props: ProductVariantsProps) {
             }
             return {
               exists: optionValue.exists,
-              isActive: optionValue.selected,
               isAvailable: optionValue.available,
-              search: "",
-              to: "",
               value: optionValue.name,
-              image: shouldRenderAsImage
-                ? (optionValue.variant?.image ??
-                  optionValue.firstSelectableVariant?.image)
-                : undefined,
+              swatch: optionValue.swatch,
+              image:
+                displayType === "image"
+                  ? (optionValue.swatch?.image?.previewImage ??
+                    optionValue.variant?.image ??
+                    optionValue.firstSelectableVariant?.image)
+                  : undefined,
             };
           })
           .filter(Boolean);
         let handleSelectOptionValue = (value: string) =>
           handleSelectOption(optionName, value);
-        let config = swatch?.configs.find((swatchConfig) => {
-          return (
-            swatchConfig.name.trim().toLowerCase() ===
-            optionName.trim().toLowerCase()
-          );
-        });
         let selectedValue = selectedOptions?.find(
           (opt) => opt.name === optionName,
         )?.value;
 
         return (
-          <div
-            key={optionName}
-            className={clsx(
-              "flex flex-col gap-2",
-              isDisabled && "opacity-50 cursor-not-allowed",
-            )}
-          >
+          <div key={optionName} className="flex flex-col gap-2">
             <legend className="whitespace-pre-wrap max-w-prose leading-snug min-w-16">
-              <span className="font-semibold text-base">
-                {config?.displayName || optionName}:
-              </span>
+              <span className="font-semibold text-base">{optionName}:</span>
               <span className="ml-1 font-normal text-base">
                 {selectedValue}
               </span>
@@ -122,13 +124,63 @@ export function ProductVariants(props: ProductVariantsProps) {
               values={values}
               selectedOptionValue={selectedValue}
               onSelectOptionValue={handleSelectOptionValue}
-              swatches={swatch?.swatches}
+              displayType={displayType}
             />
           </div>
         );
       })}
     </div>
   );
+}
+
+function includesOption(optionNames: string | undefined, optionName: string) {
+  const normalizedOptionName = optionName.trim().toLowerCase();
+  return (optionNames ?? "")
+    .split(",")
+    .some((name) => name.trim().toLowerCase() === normalizedOptionName);
+}
+
+function getVariantDisplayType(
+  optionName: string,
+  settings: VariantDisplaySettings,
+): VariantDisplayType {
+  if (
+    includesOption(
+      settings.variantSwatchOptionNames ??
+        DEFAULT_VARIANT_DISPLAY_SETTINGS.variantSwatchOptionNames,
+      optionName,
+    )
+  ) {
+    return "swatch";
+  }
+  if (
+    includesOption(
+      settings.variantImageOptionNames ??
+        DEFAULT_VARIANT_DISPLAY_SETTINGS.variantImageOptionNames,
+      optionName,
+    )
+  ) {
+    return "image";
+  }
+  if (
+    includesOption(
+      settings.variantDropdownOptionNames ??
+        DEFAULT_VARIANT_DISPLAY_SETTINGS.variantDropdownOptionNames,
+      optionName,
+    )
+  ) {
+    return "dropdown";
+  }
+  if (
+    includesOption(
+      settings.variantMorphologyOptionNames ??
+        DEFAULT_VARIANT_DISPLAY_SETTINGS.variantMorphologyOptionNames,
+      optionName,
+    )
+  ) {
+    return "morphology";
+  }
+  return "button";
 }
 
 function findVariantByOptions(

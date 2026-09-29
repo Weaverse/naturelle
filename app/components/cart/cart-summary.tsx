@@ -1,6 +1,11 @@
 import { CircleNotchIcon, XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { CartForm, Money } from "@shopify/hydrogen";
+import {
+  AnalyticsEvent,
+  CartForm,
+  Money,
+  useAnalytics,
+} from "@shopify/hydrogen";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { type SyntheticEvent, useState } from "react";
 import { useFetcher } from "react-router";
@@ -118,6 +123,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
     cartRoute,
   } = useAppliedCodeControls();
   const hasPendingLines = useCartPendingLines();
+  const { publish } = useAnalytics();
   const {
     cost,
     discountCodes,
@@ -303,7 +309,12 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
           onClick={(event) => {
             if (isCartUpdating) {
               event.preventDefault();
+              return;
             }
+
+            publish(AnalyticsEvent.CUSTOM_EVENT, {
+              eventName: "checkout_started",
+            });
           }}
         >
           Checkout
@@ -355,6 +366,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
   const subtotal = Number(cost?.subtotalAmount?.amount || 0);
   const total = Number(cost?.totalAmount?.amount || 0);
   const hasDiscount = subtotal > total && total > 0;
+  const { publish } = useAnalytics();
 
   return (
     <section
@@ -460,6 +472,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       {checkoutUrl && (
         <a
           href={checkoutUrl}
+          target="_self"
           className={buttonVariants({
             shape: "default",
             className: cn(
@@ -473,7 +486,12 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           onClick={(event) => {
             if (isCartUpdating) {
               event.preventDefault();
+              return;
             }
+
+            publish(AnalyticsEvent.CUSTOM_EVENT, {
+              eventName: "checkout_started",
+            });
           }}
         >
           Continue to Checkout

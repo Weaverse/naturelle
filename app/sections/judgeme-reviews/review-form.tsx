@@ -38,7 +38,6 @@ export function ReviewForm({
   const [reviewBody, setReviewBody] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const formId = useId();
-  const internalId = product.id.split("gid://shopify/Product/")[1];
   const submitReviewApi = usePrefixPathWithLocale(
     `/api/review/${product.handle}`,
   );
@@ -184,7 +183,6 @@ export function ReviewForm({
             onSubmit={handleSubmit}
           >
             <input type="hidden" name="rating" value={rating} />
-            <input type="hidden" name="id" value={internalId} />
 
             <div className="flex flex-col gap-6">
               <fieldset className="flex flex-col gap-2">

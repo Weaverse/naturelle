@@ -18,6 +18,7 @@
     "target": "ES2022",
     "strict": false,
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "types": [

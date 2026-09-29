@@ -106,7 +106,7 @@ export function Header() {
       >
         <div
           className={cn(
-            "hidden w-full items-center justify-center px-6 py-3 md:flex lg:py-4",
+            "hidden w-full items-center justify-center px-6 py-4 md:flex",
             showTransparentHeader
               ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",
@@ -124,7 +124,7 @@ export function Header() {
 
             <Logo
               width={87}
-              className="z-30 flex h-11.5! w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px] px-0.5 pt-0.75 pb-[1.768px]"
+              className="z-30 flex w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px] px-0.5 pt-0.75 pb-0.5"
             />
 
             <div className="flex w-77.75 shrink-0 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal">
@@ -146,6 +146,7 @@ export function Header() {
           </div>
         </div>
         <div
+          data-header-menu-row
           className={cn(
             "z-40 flex h-14.5 items-center justify-center gap-2.5 md:h-16.5",
             showTransparentHeader

@@ -35,6 +35,7 @@ let variants = cva("paragraph", {
   defaultVariants: {
     width: "full",
     textSize: "base",
+    alignment: "left",
   },
 });
 
@@ -142,7 +143,7 @@ export const schema = createSchema({
               },
             ],
           },
-          defaultValue: "narrow",
+          defaultValue: "full",
         },
         {
           type: "toggle-group",
@@ -159,7 +160,7 @@ export const schema = createSchema({
               { value: "right", label: "Right", icon: "align-end-vertical" },
             ],
           },
-          defaultValue: "center",
+          defaultValue: "left",
         },
       ],
     },

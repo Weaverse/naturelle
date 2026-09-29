@@ -2,10 +2,13 @@ import type { HydrogenComponentProps } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
-import { type CSSProperties, useRef } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { useRootLoaderData } from "~/root";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 type VariantStyle =
   | "primary"
@@ -21,32 +24,57 @@ interface InputEmailProps extends HydrogenComponentProps {
   buttonStyle: VariantStyle;
 }
 
+type NewsletterResponse = {
+  ok?: boolean;
+  error?: string;
+};
+
 const NewsletterInput = ({
   ref,
   ...props
 }: InputEmailProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { placeholder, buttonLabel, buttonStyle, ...rest } = props;
-  let fetcher = useFetcher<any>();
+  let fetcher = useFetcher<NewsletterResponse>();
+  const rootData = useRootLoaderData();
+  const isStudio = useWeaverseStudioCheck();
+  const klaviyoConfigured = Boolean(rootData?.integrations?.klaviyoNewsletter);
+  const action = usePrefixPathWithLocale("/api/klaviyo");
   const emailInputRef = useRef<HTMLInputElement>(null);
-  let isError = fetcher.state === "idle" && fetcher.data?.errors;
-  let isSuccess = fetcher.state === "idle" && fetcher.data?.customer;
+  let isError = fetcher.state === "idle" && Boolean(fetcher.data?.error);
+  let isSuccess = fetcher.state === "idle" && Boolean(fetcher.data?.ok);
+  useEffect(() => {
+    if (isSuccess && emailInputRef.current) {
+      emailInputRef.current.value = "";
+    }
+  }, [isSuccess]);
   let alertMessage = "";
   let alertMessageClass = "";
-  if (isError && fetcher.data?.errors) {
-    const firstError = fetcher.data?.errors[0];
+  if (isError) {
     alertMessage =
-      firstError.code === "TAKEN"
-        ? firstError.message
-        : "Some things went wrong!";
+      fetcher.data?.error || "Something went wrong. Please try again.";
     alertMessageClass = "text-red-700";
-  } else if (isSuccess && fetcher.data?.customer && emailInputRef.current) {
-    alertMessage = "Subscribe successfully!";
-    emailInputRef.current.value = "";
+  } else if (isSuccess) {
+    alertMessage = "Thanks! Your subscription request has been received.";
     alertMessageClass = "text-green-700";
   }
   let style: CSSProperties = {
     "--max-width-content": "600px",
   } as CSSProperties;
+
+  if (!klaviyoConfigured) {
+    if (isStudio) {
+      return (
+        <div
+          ref={ref}
+          {...rest}
+          className="rounded-md border border-dashed border-border p-4 text-sm text-text-subtle"
+        >
+          Configure Klaviyo private token and newsletter list ID
+        </div>
+      );
+    }
+    return null;
+  }
 
   return (
     <div
@@ -58,7 +86,7 @@ const NewsletterInput = ({
     >
       <fetcher.Form
         method="POST"
-        action="/api/customer"
+        action={action}
         className="flex sm:w-[var(--max-width-content)] w-full items-center justify-center gap-2"
       >
         <Input
@@ -78,7 +106,10 @@ const NewsletterInput = ({
         </Button>
       </fetcher.Form>
       {alertMessage && (
-        <p className={clsx("!mt-1 text-xs", alertMessageClass)}>
+        <p
+          aria-live="polite"
+          className={clsx("!mt-1 text-xs", alertMessageClass)}
+        >
           {alertMessage}
         </p>
       )}

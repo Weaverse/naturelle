@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import { createSchema, useThemeSettings } from "@weaverse/hydrogen";
+import { createSchema } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
@@ -8,9 +8,13 @@ import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
 import { IconAnnouncementChevron } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
+import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { SellingPlanPrice } from "~/components/product/selling-plan-price";
+import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
+import { useSellingPlanSelection } from "~/hooks/use-selling-plan";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { cn } from "~/utils/cn";
 import { getExcerpt } from "~/utils/misc";
@@ -34,6 +38,7 @@ interface ProductInformationProps extends SectionProps {
   showDetails: boolean;
   showShippingPolicy: boolean;
   showRefundPolicy: boolean;
+  showBackInStockForm: boolean;
   hideUnavailableOptions: boolean;
   // product media props
   showThumbnails: boolean;
@@ -69,6 +74,7 @@ let ProductInformation = ({
     showDetails,
     showShippingPolicy,
     showRefundPolicy,
+    showBackInStockForm = true,
     hideUnavailableOptions,
     showThumbnails,
     imageAspectRatio,
@@ -96,15 +102,14 @@ let ProductInformation = ({
     soldOutText,
     unavailableText,
   });
-  let themeSettings = useThemeSettings();
-  let swatches = themeSettings?.swatches || {
-    configs: [],
-    swatches: {
-      imageSwatches: [],
-      colorSwatches: [],
-    },
-  };
-
+  const {
+    selectedSellingPlan,
+    selectedSellingPlanId,
+    setSelectedSellingPlanId,
+  } = useSellingPlanSelection(
+    product?.sellingPlanGroups,
+    product?.requiresSellingPlan,
+  );
   if (!product || !selectedVariant) {
     return (
       <section className="w-full py-12 md:py-24 lg:py-32" ref={ref} {...rest}>
@@ -232,25 +237,29 @@ let ProductInformation = ({
                     )}
 
                     {selectedVariant ? (
-                      <Money
-                        withoutTrailingZeros
-                        data={selectedVariant.price}
-                        as="span"
+                      <SellingPlanPrice
+                        price={selectedVariant.price}
+                        sellingPlan={selectedSellingPlan}
                       />
                     ) : null}
                   </p>
                 </div>
                 <ProductVariants
-                  isDisabled={isLoading}
                   product={product}
                   selectedVariant={selectedVariant}
                   onSelectedVariantChange={handleSelectedVariantChange}
-                  swatch={swatches}
                   variants={variants}
                   hideUnavailableOptions={hideUnavailableOptions}
                   data-motion="fade-up"
                 />
               </div>
+              <SellingPlanSelector
+                sellingPlanGroups={product.sellingPlanGroups}
+                selectedSellingPlanId={selectedSellingPlanId}
+                onChange={setSelectedSellingPlanId}
+                requiresSellingPlan={product.requiresSellingPlan}
+                disabled={isLoading}
+              />
               <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-(--width-button)">
                 <ProductQuantityInput
                   value={quantity}
@@ -259,12 +268,16 @@ let ProductInformation = ({
                 />
                 <div data-motion="fade-up">
                   <AddToCartButton
-                    disabled={!selectedVariant?.availableForSale}
+                    disabled={
+                      !selectedVariant?.availableForSale ||
+                      (product.requiresSellingPlan && !selectedSellingPlanId)
+                    }
                     lines={[
                       {
                         merchandiseId: selectedVariant?.id,
                         quantity,
                         selectedVariant,
+                        sellingPlanId: selectedSellingPlanId || undefined,
                       },
                     ]}
                     onFetchingStateChange={(state) =>
@@ -278,7 +291,7 @@ let ProductInformation = ({
                   </AddToCartButton>
                 </div>
               </div>
-              {selectedVariant?.availableForSale && (
+              {selectedVariant?.availableForSale && !selectedSellingPlanId && (
                 <div data-motion="fade-up" className="sm:w-(--width-button)">
                   <ShopPayButton
                     width="100%"
@@ -290,6 +303,11 @@ let ProductInformation = ({
                   />
                 </div>
               )}
+              <BackInStockForm
+                variantId={selectedVariant?.id}
+                availableForSale={selectedVariant?.availableForSale}
+                enabled={showBackInStockForm}
+              />
               {(showShippingPolicy || showRefundPolicy) && (
                 <div className="flex flex-col gap-3 py-2 text-sm text-text-subtle">
                   {showShippingPolicy && shippingPolicy?.handle && (
@@ -453,6 +471,14 @@ export const schema = createSchema({
           label: "Show refund policy",
           name: "showRefundPolicy",
           defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show back-in-stock form",
+          name: "showBackInStockForm",
+          defaultValue: true,
+          helpText:
+            "Appears for sold-out variants when KLAVIYO_PRIVATE_API_TOKEN is configured.",
         },
         {
           label: "Hide unavailable options",

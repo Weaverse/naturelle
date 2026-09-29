@@ -29,6 +29,7 @@ const ReviewIndex = ({
     ...rest
   } = props;
   const { judgemeReviews } = useLoaderData<ProductLoaderType>();
+
   return (
     <div
       ref={ref}

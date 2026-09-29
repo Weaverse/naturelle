@@ -40,6 +40,15 @@ export async function loadCriticalData({
     weaverseTheme,
     googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
     swatchesConfigs,
+    integrations: {
+      judgeMe: Boolean(
+        env.JUDGEME_PRIVATE_API_TOKEN && env.PUBLIC_STORE_DOMAIN,
+      ),
+      klaviyo: Boolean(env.KLAVIYO_PRIVATE_API_TOKEN),
+      klaviyoNewsletter: Boolean(
+        env.KLAVIYO_PRIVATE_API_TOKEN && env.KLAVIYO_NEWSLETTER_LIST_ID,
+      ),
+    },
   };
 }
 
