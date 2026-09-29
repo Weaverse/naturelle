@@ -19,26 +19,6 @@ let Page = ({
   let { paddingTop, paddingBottom, ...rest } = props;
 
   let pageContent = usePrefixClassNames(page?.body ?? "", "wv-");
-  const isContactPage = page?.handle === "contact";
-
-  if (page && isContactPage) {
-    return (
-      <section ref={ref} {...rest}>
-        <div
-          className="w-full px-4 md:px-6 lg:px-0"
-          style={{
-            paddingTop: `${paddingTop}px`,
-            paddingBottom: `${paddingBottom}px`,
-          }}
-        >
-          <article
-            className="mx-auto flex w-full max-w-page flex-col gap-12 font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text [&_h2]:text-text [&>:first-child]:w-full [&>:first-child]:max-w-page [&>:first-child_img]:w-full [&>:first-child_img]:max-w-none [&>:not(:first-child)]:mx-auto [&>:not(:first-child)]:w-full [&>:not(:first-child)]:max-w-230"
-            dangerouslySetInnerHTML={{ __html: pageContent }}
-          />
-        </div>
-      </section>
-    );
-  }
 
   if (page) {
     return (

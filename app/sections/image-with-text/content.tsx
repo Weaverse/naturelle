@@ -3,11 +3,9 @@ import { createSchema } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
-import { useIsContactPage } from "~/hooks/use-is-contact-page";
-import { cn } from "~/utils/cn";
 
 let variants = cva(
-  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 px-16 [&_.paragraph]:mx-[unset]",
+  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
   {
     variants: {
       alignment: {
@@ -16,14 +14,15 @@ let variants = cva(
         right: "items-end",
       },
       verticalPadding: {
-        none: "",
-        small: "py-4",
-        medium: "py-11 md:py-14 lg:py-16",
-        large: "py-14 md:py-24 lg:py-20",
+        none: "p-0",
+        small: "px-16 py-4",
+        medium: "px-16 py-11 md:py-14 lg:py-16",
+        large: "px-16 py-14 md:py-24 lg:py-20",
       },
     },
     defaultVariants: {
       alignment: "center",
+      verticalPadding: "medium",
     },
   },
 );
@@ -37,16 +36,11 @@ let ImageWithTextContent = ({
   ...props
 }: ImageWithTextContentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { alignment, verticalPadding, children, ...rest } = props;
-  const isContactPage = useIsContactPage();
-
   return (
     <div
       ref={ref}
       {...rest}
-      className={cn(
-        variants({ alignment, verticalPadding }),
-        isContactPage && "px-0",
-      )}
+      className={variants({ alignment, verticalPadding })}
     >
       {children}
     </div>
@@ -80,7 +74,7 @@ export const schema = createSchema({
         {
           type: "select",
           name: "verticalPadding",
-          label: "Vertical padding",
+          label: "Content padding",
           configs: {
             options: [
               { value: "none", label: "None" },
@@ -97,6 +91,7 @@ export const schema = createSchema({
   childTypes: ["subheading", "heading", "paragraph", "button"],
   presets: {
     alignment: "center",
+    verticalPadding: "medium",
     children: [
       {
         type: "subheading",

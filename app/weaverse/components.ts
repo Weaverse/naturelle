@@ -14,6 +14,9 @@ import * as CollectionListItem from "~/sections/collection-list/collection-list"
 import * as CollectionList from "~/sections/collection-list/index";
 import * as Collections from "~/sections/collections/index";
 import * as ContactForm from "~/sections/contact-form/contact-form";
+import * as ContactHighlightsContent from "~/sections/contact-highlights/content-item";
+import * as ContactHighlights from "~/sections/contact-highlights/index";
+import * as ContactHighlightItem from "~/sections/contact-highlights/item";
 import * as Countdown from "~/sections/countdown/index";
 import * as CountdownTimer from "~/sections/countdown/timer";
 import * as FaqItem from "~/sections/faqs/faq-item";
@@ -76,6 +79,9 @@ export const components: HydrogenComponent[] = [
   ButtonCustom,
 
   VideoBanner,
+  ContactHighlights,
+  ContactHighlightsContent,
+  ContactHighlightItem,
   Highlights,
   HightlightItem,
   HighlightContent,
