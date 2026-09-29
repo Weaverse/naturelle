@@ -8,7 +8,6 @@ import {
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
-import { useIsContactPage } from "~/hooks/use-is-contact-page";
 import { cn } from "~/utils/cn";
 
 let wrapperVariants = cva("w-full h-auto basis-full md:basis-1/2", {
@@ -76,7 +75,6 @@ let ImageWithTextImage = ({
     objectFit,
     ...rest
   } = props;
-  const isContactPage = useIsContactPage();
   let imageData: Partial<WeaverseImage> =
     typeof image === "string" ? { url: image, altText: "Placeholder" } : image;
   let aspRt: string | undefined;
@@ -96,19 +94,13 @@ let ImageWithTextImage = ({
       className={cn(
         "group overflow-hidden",
         wrapperVariants({ width, borderRadius }),
-        isContactPage
-          ? "rounded-[24px] bg-[#d3d3d3] bg-cover bg-center bg-no-repeat"
-          : "rounded-(--border-radius-xl,16px) bg-[#d3d3d3] bg-cover bg-center bg-no-repeat",
       )}
     >
       <Image
         data={imageData}
         sizes="auto"
         aspectRatio={aspRt}
-        className={cn(
-          imageVariants({ objectFit }),
-          isContactPage ? "h-full w-full object-cover" : "w-full object-cover",
-        )}
+        className={imageVariants({ objectFit })}
       />
     </div>
   );

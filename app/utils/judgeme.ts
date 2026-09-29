@@ -6,8 +6,6 @@ import type {
   JudgemeWidgetData,
 } from "~/types/judgeme";
 
-export type * from "~/types/judgeme";
-
 const WIDGET_REGEX =
   /class=['"]jdgm-rev-widg['"][^>]*data-average-rating=['"]([^'"]*)['"]/;
 const REVIEWS_REGEX = /data-number-of-reviews=['"]([^'"]*)['"]/;
