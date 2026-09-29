@@ -2,10 +2,12 @@ import { Disclosure } from "@headlessui/react";
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
 import type React from "react";
+import { useEffect, useRef } from "react";
 import { NavLink, useFetcher } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 import { useShopMenu } from "~/hooks/use-menu-shop";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { useRootLoaderData } from "~/root";
 import {
   type EnhancedMenu,
@@ -13,6 +15,7 @@ import {
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 import { IconPlusLinkFooter } from "../icon";
 import { FooterCountrySelector } from "./country-selector/footer-country-selector";
 import { PaymentMethods } from "./footer/payment-methods";
@@ -37,9 +40,20 @@ let variants = cva("", {
 
 export function Footer() {
   let { footerMenu } = useShopMenu();
-  let fetcher = useFetcher<any>();
-  let isError = fetcher.state === "idle" && fetcher.data?.errors;
-  const { layout } = useRootLoaderData();
+  let fetcher = useFetcher<{
+    ok?: boolean;
+    error?: string;
+  }>();
+  let isError = fetcher.state === "idle" && Boolean(fetcher.data?.error);
+  let isSuccess = fetcher.state === "idle" && Boolean(fetcher.data?.ok);
+  const newsletterInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isSuccess && newsletterInputRef.current) {
+      newsletterInputRef.current.value = "";
+    }
+  }, [isSuccess]);
+  const rootData = useRootLoaderData();
+  const { layout } = rootData;
   const policyItems = [
     layout?.shop?.privacyPolicy,
     layout?.shop?.shippingPolicy,
@@ -67,6 +81,9 @@ export function Footer() {
     showDiners,
     tagNameTitle: Tag = "h6",
   } = settings;
+  const isStudio = useWeaverseStudioCheck();
+  const klaviyoConfigured = Boolean(rootData?.integrations?.klaviyoNewsletter);
+  const newsletterAction = usePrefixPathWithLocale("/api/klaviyo");
   return (
     <footer
       className={cn(
@@ -93,11 +110,17 @@ export function Footer() {
               </p>
             )}
           </div>
-          <div className="flex flex-1 items-center justify-end self-stretch">
-            {newsletterButtonText && (
+          <div className="flex flex-1 flex-col items-end justify-center self-stretch">
+            {newsletterButtonText && !klaviyoConfigured ? (
+              isStudio ? (
+                <div className="w-full max-w-[497px] rounded-md border border-dashed border-(--color-footer-bg) p-4 text-sm text-(--color-footer-bg)">
+                  Configure Klaviyo private token and newsletter list ID
+                </div>
+              ) : null
+            ) : newsletterButtonText ? (
               <fetcher.Form
                 method="POST"
-                action="/api/customer"
+                action={newsletterAction}
                 className="flex w-full max-w-[497px] items-stretch"
               >
                 <Input
@@ -106,6 +129,7 @@ export function Footer() {
                   type="email"
                   name="email"
                   placeholder={newsletterPlaceholder}
+                  ref={newsletterInputRef}
                   required
                 />
 
@@ -119,10 +143,16 @@ export function Footer() {
                   {newsletterButtonText}
                 </Button>
               </fetcher.Form>
-            )}
+            ) : null}
             {isError && (
-              <p className="!mt-1 text-xs text-red-700">
-                {fetcher.data.errors[0].message}
+              <p role="alert" className="mt-2 text-xs text-red-700">
+                {fetcher.data?.error ||
+                  "Something went wrong. Please try again."}
+              </p>
+            )}
+            {isSuccess && (
+              <p aria-live="polite" className="mt-2 text-xs text-green-700">
+                Thanks! Your subscription request has been received.
               </p>
             )}
           </div>

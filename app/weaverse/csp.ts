@@ -43,6 +43,7 @@ export function getWeaverseCsp(
     scriptSrc: [
       "'self'",
       "https://cdn.shopify.com",
+      "https://www.googletagmanager.com",
       "https://www.youtube.com",
       ...weaverseHosts,
     ],

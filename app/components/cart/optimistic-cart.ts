@@ -13,6 +13,10 @@ export type PendingAdd = {
   stagedFromUpdatedAt: string;
 };
 
+function cartLineKey(merchandiseId: string, sellingPlanId?: string | null) {
+  return `${merchandiseId}::${sellingPlanId ?? "one-time"}`;
+}
+
 function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
   const handled = new Set<string>();
   let mutated = false;
@@ -22,11 +26,18 @@ function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
     if (!selectedVariant?.id) {
       continue;
     }
-    handled.add(selectedVariant.id);
+    const sellingPlanId = line.sellingPlanId ?? null;
+    const key = cartLineKey(selectedVariant.id, sellingPlanId);
+    handled.add(key);
     mutated = true;
-    const existingIndex = nodes.findIndex(
-      (node) => node.merchandise?.id === selectedVariant.id,
-    );
+    const existingIndex = nodes.findIndex((node) => {
+      const nodeSellingPlanId =
+        node.sellingPlanAllocation?.sellingPlan?.id ?? null;
+      return (
+        node.merchandise?.id === selectedVariant.id &&
+        nodeSellingPlanId === sellingPlanId
+      );
+    });
     if (existingIndex >= 0) {
       nodes[existingIndex] = {
         ...nodes[existingIndex],
@@ -41,10 +52,13 @@ function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
         ?.currencyCode ?? "USD";
     const zeroMoney = { amount: "0.0", currencyCode };
     nodes.unshift({
-      id: `optimistic-${selectedVariant.id}`,
+      id: `optimistic-${key}`,
       merchandise: selectedVariant,
       quantity: line.quantity || 1,
       isOptimistic: true,
+      sellingPlanAllocation: sellingPlanId
+        ? { sellingPlan: { id: sellingPlanId, name: "Subscription" } }
+        : null,
       cost: {
         totalAmount: zeroMoney,
         amountPerQuantity: zeroMoney,
@@ -56,10 +70,18 @@ function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
   return { handled, mutated };
 }
 
-function cartLineQuantity(cart: CartApiQueryFragment, merchandiseId: string) {
+function cartLineQuantity(
+  cart: CartApiQueryFragment,
+  merchandiseId: string,
+  sellingPlanId?: string | null,
+) {
   return (
-    cart.lines.nodes.find((line) => line.merchandise?.id === merchandiseId)
-      ?.quantity ?? 0
+    cart.lines.nodes.find(
+      (line) =>
+        line.merchandise?.id === merchandiseId &&
+        (line.sellingPlanAllocation?.sellingPlan?.id ?? null) ===
+          (sellingPlanId ?? null),
+    )?.quantity ?? 0
   );
 }
 
@@ -83,9 +105,10 @@ function baselineIncludesFetcherAdd(
     const merchandiseId =
       (line.selectedVariant as { id?: string } | undefined)?.id ??
       line.merchandiseId;
+    const sellingPlanId = line.sellingPlanId ?? null;
     return (
-      cartLineQuantity(baseline, merchandiseId) >=
-      cartLineQuantity(fetcherCart, merchandiseId)
+      cartLineQuantity(baseline, merchandiseId, sellingPlanId) >=
+      cartLineQuantity(fetcherCart, merchandiseId, sellingPlanId)
     );
   });
 }
@@ -201,7 +224,10 @@ export function applyOptimisticMutations(
       const lines = ((inputs.lines ?? []) as OptimisticCartLineInput[]).filter(
         (line) =>
           !staged.handled.has(
-            (line.selectedVariant as { id?: string } | undefined)?.id ?? "",
+            cartLineKey(
+              (line.selectedVariant as { id?: string } | undefined)?.id ?? "",
+              line.sellingPlanId,
+            ),
           ),
       );
       const fetcherCart = (fetcher.data as CartMutationResponse | undefined)

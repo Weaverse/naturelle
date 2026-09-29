@@ -38,18 +38,21 @@ export function parseJudgemeWidgetHTML(html: string): JudgemeWidgetData {
 const JUDGEME_PRODUCT_API = "https://judge.me/api/v1/products/-1";
 const JUDGEME_WIDGET_API = "https://api.judge.me/api/v1/widgets/product_review";
 const JUDGEME_REVIEWS_API = "https://api.judge.me/api/v1/reviews";
+const JUDGEME_REQUEST_TIMEOUT_MS = 5000;
 
-const EMPTY_REVIEWS: JudgemeReviewsData = {
-  averageRating: 0,
-  rating: 0,
-  totalReviews: 0,
-  reviewNumber: 0,
-  ratingDistribution: [],
-  currentPage: 1,
-  totalPage: 0,
-  perPage: 5,
-  reviews: [],
-};
+export function emptyJudgemeReviews(perPage = 5): JudgemeReviewsData {
+  return {
+    averageRating: 0,
+    rating: 0,
+    totalReviews: 0,
+    reviewNumber: 0,
+    ratingDistribution: [],
+    currentPage: 1,
+    totalPage: 0,
+    perPage,
+    reviews: [],
+  };
+}
 
 type JsonFetcher = <T>(url: string, options?: RequestInit) => Promise<T>;
 type JudgemeFetchContext = { fetchWithCache: JsonFetcher };
@@ -58,6 +61,21 @@ type JudgemeRequestOptions = {
   perPage?: number;
   page?: number;
 };
+
+type JudgemeProductLookup =
+  | { status: "found"; product: JudgemeProduct }
+  | { status: "not-found" }
+  | { status: "unavailable" };
+
+class JudgemeRequestError extends Error {
+  status: number;
+
+  constructor(status: number) {
+    super(`Judge.me request failed with status ${status}`);
+    this.name = "JudgemeRequestError";
+    this.status = status;
+  }
+}
 
 function isFetchContext(
   value?: JudgemeFetchContext | JudgemeRequestOptions,
@@ -79,9 +97,49 @@ function buildJudgemeUrl(
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options);
   if (!response.ok) {
-    throw new Error(`Judge.me request failed with status ${response.status}`);
+    throw new JudgemeRequestError(response.status);
   }
   return response.json() as Promise<T>;
+}
+
+async function fetchJudgemeProduct(
+  fetcher: JsonFetcher,
+  apiToken: string,
+  shopDomain: string,
+  handle: string,
+) {
+  const productData = await fetcher<{ product?: JudgemeProduct }>(
+    buildJudgemeUrl(JUDGEME_PRODUCT_API, {
+      api_token: apiToken,
+      shop_domain: shopDomain,
+      handle,
+    }),
+    { signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS) },
+  );
+  return productData.product ?? null;
+}
+
+export async function getJudgemeProduct(
+  apiToken: string,
+  shopDomain: string,
+  handle: string,
+): Promise<JudgemeProductLookup> {
+  try {
+    const product = await fetchJudgemeProduct(
+      fetchJson,
+      apiToken,
+      shopDomain,
+      handle,
+    );
+    return product ? { status: "found", product } : { status: "not-found" };
+  } catch (error) {
+    if (error instanceof JudgemeRequestError && error.status === 404) {
+      return { status: "not-found" };
+    }
+    // Do not log the request URL because Judge.me authenticates via query string.
+    console.error("Unable to resolve Judge.me product");
+    return { status: "unavailable" };
+  }
 }
 
 export async function getJudgemeReviews(
@@ -91,7 +149,7 @@ export async function getJudgemeReviews(
   contextOrOptions?: JudgemeFetchContext | JudgemeRequestOptions,
 ): Promise<JudgemeReviewsData> {
   if (!(apiToken && shopDomain && handle)) {
-    return EMPTY_REVIEWS;
+    return emptyJudgemeReviews();
   }
 
   let fetcher = fetchJson;
@@ -105,15 +163,14 @@ export async function getJudgemeReviews(
     page = contextOrOptions.page || page;
   }
   try {
-    const productData = await fetcher<{ product?: JudgemeProduct }>(
-      buildJudgemeUrl(JUDGEME_PRODUCT_API, {
-        api_token: apiToken,
-        shop_domain: shopDomain,
-        handle,
-      }),
+    const product = await fetchJudgemeProduct(
+      fetcher,
+      apiToken,
+      shopDomain,
+      handle,
     );
-    if (!productData.product?.id) {
-      return EMPTY_REVIEWS;
+    if (!product?.id) {
+      return emptyJudgemeReviews(perPage);
     }
 
     const [widgetData, reviewsData] = await Promise.all([
@@ -125,6 +182,7 @@ export async function getJudgemeReviews(
           page,
           per_page: perPage,
         }),
+        { signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS) },
       ),
       fetcher<{
         reviews?: JudgeMeReviewType[];
@@ -134,15 +192,16 @@ export async function getJudgemeReviews(
         buildJudgemeUrl(JUDGEME_REVIEWS_API, {
           api_token: apiToken,
           shop_domain: shopDomain,
-          product_id: productData.product.id,
+          product_id: product.id,
           page,
           per_page: perPage,
         }),
+        { signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS) },
       ),
     ]);
     const summary = widgetData.widget
       ? parseJudgemeWidgetHTML(widgetData.widget)
-      : EMPTY_REVIEWS;
+      : emptyJudgemeReviews(perPage);
 
     return {
       averageRating: summary.averageRating,
@@ -155,28 +214,37 @@ export async function getJudgemeReviews(
       totalPage: Math.ceil(summary.totalReviews / perPage),
       perPage: reviewsData.per_page || perPage,
     };
-  } catch (error) {
-    console.error("Unable to load Judge.me reviews", error);
-    return EMPTY_REVIEWS;
+  } catch {
+    // Do not log the request URL because Judge.me authenticates via query string.
+    console.error("Unable to load Judge.me reviews");
+    return emptyJudgemeReviews(perPage);
   }
 }
 
 export async function createJudgemeReview(
   apiToken: string,
   shopDomain: string,
-  formData: FormData,
+  submission: {
+    name: string;
+    email: string;
+    rating: number;
+    title: string;
+    body: string;
+    productExternalId: number;
+    productHandle: string;
+  },
 ) {
   const url = "https://judge.me/api/v1/reviews";
   const body = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    rating: formData.get("rating"),
-    title: formData.get("title"),
-    body: formData.get("body"),
-    id: formData.get("id"), // external_id (product id)
-    url: formData.get("url"), // product handle or url
+    name: submission.name,
+    email: submission.email,
+    rating: submission.rating,
+    title: submission.title,
+    body: submission.body,
+    id: submission.productExternalId,
+    url: submission.productHandle,
     shop_domain: shopDomain,
-    platform: "shopify", // or custom
+    platform: "shopify",
   };
 
   try {
@@ -187,6 +255,7 @@ export async function createJudgemeReview(
       }),
       {
         method: "POST",
+        signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS),
         headers: {
           "Content-Type": "application/json",
         },
@@ -198,8 +267,8 @@ export async function createJudgemeReview(
       return { status: res.status, message: "Review created" };
     }
     return { status: res.status, message: "Failed to create review" };
-  } catch (error) {
-    console.error("Error creating Judge.me review:", error);
-    return { status: 500, message: "Internal Server Error" };
+  } catch {
+    console.error("Unable to create Judge.me review");
+    return { status: 503, message: "Review service is unavailable" };
   }
 }

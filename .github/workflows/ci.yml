@@ -37,6 +37,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Unit tests
+        run: npm test
+
       # Typecheck does not see bundler-level breakage: a bad dynamic import, a
       # client-only module pulled into the worker bundle, or a Vite plugin
       # misconfiguration all typecheck clean and fail at deploy. The build
