@@ -81,6 +81,7 @@ Copy recommendations:
 | Before & after | Visual result comparison | Heading and Slider | PDP support, results landing |
 | Testimonials | Social proof with product/review context | Product, background image, Judge.me data | Home, landing, PDP support |
 | Highlights | Three or four concise benefits | Heading, List items → Highlight | Home, service, collection |
+| Contact highlights | Numbered contact or service steps | Heading, Contact highlight list → Contact highlight | Page template, especially contact or service pages |
 | FAQs | Customer-service card and FAQ links/items | FAQ item blocks | Home, FAQ, service page |
 | Countdown | Genuine time-limited promotion | Text, Timer, CTA | Home or campaign landing |
 | Scrolling Text | Short announcement/value ticker | Text and motion settings | Home or campaign landing |
@@ -128,6 +129,8 @@ blocks as standalone page content.
 | Hotspots item | Image hotspots | X/Y position, icon, copy, required product, badge/rating/price/detail-link settings. |
 | Highlight List items | Highlights | Items per row, gap, and border color; contains Highlight blocks. |
 | Highlight | List items | Mobile visibility, icon color, heading, and paragraph. |
+| Contact highlight list | Contact highlights | One to four items per row; contains numbered Contact highlight blocks. |
+| Contact highlight | Contact highlight list | Mobile visibility, heading, and rich-text description. Its displayed number follows its order in the list. |
 | Before/after Slider | Before & after | Required matching before/after images, separator, arrows, and desktop/mobile heights. |
 | Instagram post | Instagram | Required image; post link is strongly recommended. |
 | Map item | Map | Title, full map-searchable address, and opening-hours/contact paragraph. |
@@ -191,6 +194,11 @@ Highlights
 └── List items
     └── Highlight
 
+Contact highlights (Page template)
+├── Heading
+└── Contact highlight list
+    └── Contact highlight
+
 Before & after
 ├── Heading
 └── Slider
@@ -241,12 +249,13 @@ Judge.me Reviews
 
 | Section | Required and optional settings | Media/content guidance | Mobile and usage notes |
 | --- | --- | --- | --- |
-| **Image with text** | Required: one Content block and one Image block. Optional: image position, content alignment/padding, image ratio/width/radius/fit, text/CTA blocks. | Use 4:3 or 3:4 imagery for ingredients, founders, routines, or sourcing. Keep copy to one idea and one CTA. | Content and image stack on mobile and share the row on desktop. Check that the reading order still makes sense when image position changes. |
-| **Image with text list** | Page template only. Contains Image with text children and ships with three alternating rows. | Use it for an About, sourcing, values, or service narrative. Keep each row to one idea and use consistent square or portrait media. | Rows stack on mobile; alternating image position becomes visible at desktop widths. Reorder or remove rows instead of inserting unrelated section types inside the list. |
+| **Image with text** | Required: one Content block and one Image block. Optional: image position, default/none section padding, desktop image/content gap (0–40 px), content alignment/padding, image ratio/width/radius/fit, text/CTA blocks. | Use 4:3 or 3:4 imagery for ingredients, founders, routines, or sourcing. Keep copy to one idea and one CTA. | The image always appears above the content on mobile with a fixed 40 px gap. At desktop widths, image position and the configurable gap apply. |
+| **Image with text list** | Page template only. Contains Image with text children and ships with three alternating rows. Preset rows remove section/content padding and use a 36 px desktop gap. | Use it for an About, sourcing, values, contact, or service narrative. Keep each row to one idea and use consistent square or portrait media. | Rows stack image-first on mobile; alternating image position becomes visible at desktop widths. Reorder or remove rows instead of inserting unrelated section types inside the list. Existing rows may need their new padding/gap settings selected manually. |
 | **Product details** | Product template only. Required: only the blocks relevant to the product story, each configured with a Shopify product metafield. Optional: text/background colors and Product badges copy. | Create the metafield/metaobject data in Shopify before publishing. Benefits and ingredients use `title`/`content`; Story uses `title`/`content`; How to use uses text entries; Clinical results uses `value`/`label`/`note`. | Blocks hide on the live storefront when their metafield is missing or malformed; Studio shows a diagnostic placeholder. Story becomes two columns on tablet. Do not add unsupported claims. |
 | **Before & after** | Required: Slider with both images. Optional: heading, separator/arrows/colors, independent desktop/mobile height. | Images must match exactly in crop, pose, dimensions, and lighting. Add context and substantiated time frame in surrounding copy. | Uses separate mobile and desktop height settings. Verify the drag handle with touch and never use mismatched subjects or deceptive crops. |
 | **Testimonials** | Required: useful review data and background image; select a product when product-specific Judge.me data is expected. Optional: number shown, review position, rating copy/link, colors, overlay, desktop padding. | Use an authentic review set and a 4:5 lifestyle image with negative space. Keep rating CTA copy factual. | Desktop uses a split/full-height presentation; mobile uses a 420 px image followed by the review panel. Verify contrast on both layers. |
 | **Highlights** | Required: List items with Highlight blocks. Optional: heading, columns, gap, border/icon colors, per-item mobile visibility. | Use 3–4 parallel benefits such as vegan, dermatologist tested, refillable, or free shipping. Keep heading length consistent. | Items reflow by viewport and can be hidden individually on mobile. Do not hide information that is necessary for purchase or compliance. |
+| **Contact highlights** | Page template only. Required: Contact highlight list with Contact highlight blocks. Optional: heading, one to four columns, and per-item mobile visibility. | Use short numbered steps, contact methods, service expectations, or preparation instructions. Keep item headings and descriptions parallel in length. | Cards stack with a 16 px gap on mobile and form the configured grid on tablet/desktop. Numbers are generated from item order, so reorder blocks instead of writing numbers into headings. This section is reusable on any Shopify Page and does not inspect the page handle or URL. |
 | **FAQs** | Required: FAQ items or service links. Optional: card image/overlay, alt text, card eyebrow/heading/CTA, and FAQ heading. Each item can show a short paragraph and/or link. | Use a 4:5 service image and concise question labels. Keep inline answers short; send long policies or support articles to a dedicated page. | Two-column desktop layout stacks on mobile. Ensure each link resolves and avoid promising support hours or policies that are not current. |
 | **Instagram** | Required: Instagram post blocks with images. Strongly recommended: profile URL and post links. Optional: heading/handle, width, desktop count, speed, autoplay, mobile visibility. | Use consistent 1:1 tiles and the real account handle. This section is manually curated; it does not fetch a live Instagram feed. | Can auto-scroll or be hidden on mobile. Test links and keep animation slow enough to inspect each tile. |
 | **Newsletter** | Required: Newsletter input block and useful consent/context copy. Optional: icon, heading, paragraph, placeholder, button label/style. | Explain what subscribers receive; keep the promise specific. Configure Klaviyo variables before publishing. | Blocks stack naturally. Test success, invalid email, duplicate subscription, and provider failure states on the storefront. |
@@ -266,7 +275,7 @@ Judge.me Reviews
 | **Judge.me Reviews** | Product page only. Required: Judge.me Review index and configured token. Optional: heading/paragraph, list side, review/form/empty-state copy. | Keep review copy neutral and do not imply verification that the provider does not supply. | List/form layout adapts by viewport. Test pagination and submission; omit the section when Judge.me is not configured. |
 | **Blog post** | Article page only; no merchant settings. | Renders the current Shopify article body. Format headings, images, tables, and links in Shopify. | Test rich text at narrow widths, especially wide media/tables. Add only once. |
 | **Related articles** | Article page only. Optional: heading, article count, excerpt/date/author/read-more toggles. | Related content comes from the current blog; use consistent featured images and metadata in Shopify. | Cards reflow responsively. Keep the count small—normally three—and avoid repeating the current article. |
-| **Page** | Shopify Page template only. Optional: top/bottom padding. | Renders native Shopify page content. Maintain semantic headings and accessible links in Shopify. Pair it with Image with text list for structured brand or service stories. | Test rich text, embedded media, and tables on mobile. The `contact` handle receives a narrower content treatment. Add only once. |
+| **Page** | Shopify Page template only. Optional: top/bottom padding. | Renders native Shopify page content. Maintain semantic headings and accessible links in Shopify. Pair it with Image with text list or Contact highlights for structured brand or service stories. | Test rich text, embedded media, and tables on mobile. Rendering is the same for every page handle. Add only once. |
 | **Contact us** | Currently enabled on `INDEX` only. Required: heading/subheading, button label, `WEAVERSE_HOST`, and private `WEAVERSE_API_KEY`. Optional: background, alignment, button style, padding. | Use direct, expectation-setting copy and never request sensitive personal/payment data. | Fields stack cleanly on mobile. Test real delivery and safe error messages. A developer must change the schema before this can be inserted on a dedicated Page template. |
 | **Style guide** | Development-only registered component. | No production content or media. | Keep it out of merchant pages; it exists for visual/component checks. |
 
@@ -410,14 +419,27 @@ Article template:
 
 ```text
 1. Image banner or Image with text
-2. FAQs
-3. Map — when a physical location exists
-4. Contact us — only on INDEX with the current schema
+2. Contact highlights — optional numbered service/contact steps
+3. FAQs
+4. Map — when a physical location exists
+5. Contact us — only on INDEX with the current schema
+6. Newsletter — optional
+```
+
+### Contact Shopify Page
+
+```text
+1. Page — optional native Shopify introduction
+2. Contact highlights — contact methods, process, or response expectations
+3. Image with text list — optional locations, teams, or service details
+4. FAQs or Map — optional supporting information
 5. Newsletter — optional
 ```
 
-For a dedicated contact Shopify Page, use native page content or ask a
-developer to enable `Contact us` for the `PAGE` type before composing it.
+Use the dedicated **Contact highlights** section instead of changing shared
+sections based on a `contact` handle or URL. The current **Contact us** form is
+still enabled only on `INDEX`; a developer must enable it for `PAGE` before it
+can be added to this composition.
 
 ## Common mistakes to avoid
 
