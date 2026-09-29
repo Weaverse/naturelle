@@ -14,11 +14,13 @@ from providers that still require an adapter.
 | --- | --- | --- | --- |
 | Reviews | Judge.me | **Built in** | Product rating, review form/list, standalone **Judgeme Reviews**, and product-backed **Testimonials** |
 | Reviews | Yotpo, Okendo, Loox | **Adapter required** | Replace or extend the review loader, route, and renderer |
-| Email marketing | Klaviyo | **Built in** | Footer and **Newsletter** section |
+| Email marketing | Klaviyo | **Built in** | Footer, cart page, and **Newsletter** section |
 | Back in stock | Klaviyo | **Built in** | Product information, Single product, and quick view |
 | SMS | Attentive and other SMS providers | **Adapter required** | Dedicated consent UI and server action |
 | Purchase subscriptions | Recharge, Skio, Appstle, and other Shopify subscription apps | **Shopify selling-plan compatible** | Product information, Single product, quick view, and cart |
 | Provider portals and advanced subscription features | Recharge, Skio, Appstle | **Adapter required** | Customer portal, payment-method changes, bundles, migrations, and provider-only data |
+| Wishlist | Swym, Growave, Wishlist Plus, and other apps | **Not included by design** | None today; see Wishlist and loyalty apps |
+| Loyalty/referrals | Yotpo Loyalty, Smile, ReferralCandy, and other apps | **Not included by design** | None today; see Wishlist and loyalty apps |
 | Search/filter | Shopify Storefront API + Search & Discovery | **Built in** | Search, predictive search, and collection filters |
 | Search/merchandising | External providers | **Adapter required** | Search and collection route loaders and result components |
 | Analytics | Hydrogen Analytics + GTM bridge | **Built-in foundation** | Root analytics provider and standard storefront events |
@@ -60,7 +62,7 @@ Production and preview deployments read variables from Shopify admin:
 4. Use independent credentials for staging and production when the provider
    supports separate apps, sites, lists, or workspaces.
 
-See [Weaverse's Oxygen deployment guide](https://docs.weaverse.io/oxygen-deployment)
+See [Weaverse's Oxygen deployment guide](https://weaverse.io/docs/guides/deployment/oxygen)
 for the global deployment workflow.
 
 ### Environment examples
@@ -142,10 +144,28 @@ the browser. Implement a provider adapter that:
 4. keeps moderation and review-write credentials server-only; and
 5. adds only verified provider hosts to `app/weaverse/csp.ts`.
 
+**Yotpo** — the App Key/Store ID may be used as public widget configuration
+only when Yotpo documents that usage; the Secret Key is server-only. Both are
+listed under **Account Settings > General Settings**; generating a secret
+requires an authorized account.
+
+**Okendo** — Okendo documents a Widget Plus installation for Hydrogen/headless
+storefronts. For a custom server integration, get the Merchant API User ID and
+API Key from Okendo integration settings and keep the API key server-only; do
+not call the Merchant REST API directly from the browser. Choose Widget Plus or
+a Naturelle server loader — do not load both.
+
+**Loox** — the Storefront API uses a public Store ID for public review data;
+the Merchant API key is private and must stay in a Naturelle server
+loader/action. Obtain both from Loox **Settings > API Keys**.
+
 References:
 
+- [Find the Yotpo App Key and Secret Key](https://support.yotpo.com/docs/finding-your-yotpo-app-key-and-secret-key-4)
 - [Yotpo custom storefront integration](https://support.yotpo.com/v1/docs/generic-other-platforms-installing-yotpo-reviews-v3)
 - [Okendo headless Widget Plus](https://docs.okendo.io/on-site/advanced-widget-installs/installing-widget-plus-on-headless-instances)
+- [Okendo merchant API credentials](https://docs.okendo.io/merchant-rest-api/quick-start)
+- [Loox APIs and key boundaries](https://help.loox.io/support/solutions/articles/501000356871-loox-reviews-api-and-webhooks)
 - [Loox with Shopify headless commerce](https://help.loox.io/support/solutions/articles/501000162379-integrating-loox-with-shopify-headless-commerce)
 
 For every review adapter, test reviews present/absent, invalid product mapping,
@@ -165,8 +185,8 @@ Create a Klaviyo private API key with the minimum required scopes. Never add a
 
 | Naturelle surface | Route | Required configuration | Purpose/scopes |
 | --- | --- | --- | --- |
-| Footer and **Newsletter** section | `/api/klaviyo` | `KLAVIYO_PRIVATE_API_TOKEN` + `KLAVIYO_NEWSLETTER_LIST_ID` | Bulk subscribe a profile to email marketing and the configured list: `lists:write`, `profiles:write`, and `subscriptions:write` |
-| Product information, Single product, and quick-view back-in-stock form | `/api/back-in-stock` | `KLAVIYO_PRIVATE_API_TOKEN` | Create a back-in-stock subscription; catalog and profile write scopes required by Klaviyo |
+| Footer, cart page, and **Newsletter** section | `/api/klaviyo` | `KLAVIYO_PRIVATE_API_TOKEN` + `KLAVIYO_NEWSLETTER_LIST_ID` | Bulk subscribe a profile to email marketing and the configured list: `lists:write`, `profiles:write`, and `subscriptions:write` |
+| Product information, Single product, and quick-view back-in-stock form | `/api/back-in-stock` | `KLAVIYO_PRIVATE_API_TOKEN` | Create a back-in-stock subscription: `catalogs:write` and `profiles:write` |
 
 The root loader exposes only configured booleans. It never exposes the token or
 list ID. Newsletter UI is hidden in the storefront when either newsletter
@@ -179,7 +199,9 @@ requires only the private token and has a separate configured state.
 2. Set `KLAVIYO_PRIVATE_API_TOKEN` and `KLAVIYO_NEWSLETTER_LIST_ID` locally and
    in the relevant Oxygen environments.
 3. Configure the newsletter description/help text with the consent disclosure
-   required for the merchant's regions and program.
+   required for the merchant's regions and program. Footer and cart newsletter
+   copy lives in global Theme settings; the Newsletter section has its own
+   blocks and copy.
 4. Submit a new email and verify the profile's list membership and email
    marketing consent in Klaviyo.
 5. If the list uses double opt-in, verify the confirmation message and do not
@@ -277,11 +299,29 @@ missing Storefront scope, and a provider-created plan with prepaid pricing.
 With no plan assigned, an optional-subscription product must retain the normal
 one-time purchase flow.
 
+## Wishlist and loyalty apps
+
+Naturélle deliberately ships without wishlist and loyalty/referral surfaces;
+they are not part of the theme design today (this differs from Aspen, which
+has a native wishlist and LoyaltyLion support). Do not add provider scripts,
+app embeds, or sections ad hoc. If product design later approves one:
+
+- implement it as a single shared adapter that follows the credential and
+  environment rules above; provider private keys stay server-only and only
+  provider-documented public keys may run in the browser;
+- surface it through Weaverse sections/components rather than global script
+  injection;
+- add only verified provider hosts to `app/weaverse/csp.ts`; and
+- pass the Integration QA checklist below — including unconfigured-state
+  behavior — before publishing.
+
 ## Search, filters, and merchandising
 
 Naturelle's default search, predictive search, and collection filters use
 Shopify Storefront API data. Configure available filters in Shopify's **Search
-& Discovery** app; no third-party credential is required.
+& Discovery** app; no third-party credential is required. In the current
+branch, `/search` is a fixed React route rather than a Weaverse section; popular
+predictive-search terms are editable in global Theme settings.
 
 For Algolia, Searchspring, Boost, Klevu, or another external provider, the
 adapter should:
@@ -407,15 +447,25 @@ workaround.
 - Ensure private tokens are sent only by the Oxygen server.
 - Rotate a token immediately if it appeared in browser tools or Git history.
 
+### Configured integration shows empty data
+
+- Confirm Shopify IDs, handles, GIDs, catalog sync, customer mapping, locale,
+  and publication status.
+- Test the provider endpoint with a known reviewed/subscribed/customer record.
+- Check caching before assuming the upstream write failed.
+
 ### Studio preview differs from production
 
 Studio can use preview data for account-dependent surfaces. Verify the real
 page on a deployed preview with actual Customer Account authentication and the
-Preview environment's credentials.
+Preview environment's credentials. See the project
+[setup guide](./setup.md) for Studio and Oxygen connection details.
 
 ## Global references
 
-- [Weaverse third-party server-loader pattern](https://docs.weaverse.io/features/why-weaverse-for-hydrogen)
-- [Weaverse deployment overview](https://docs.weaverse.io/deployment)
-- [Weaverse Oxygen deployment](https://docs.weaverse.io/oxygen-deployment)
+- [Weaverse third-party integration guide](https://weaverse.io/docs/features/third-party-integrations)
+- [Weaverse section data fetching](https://weaverse.io/docs/development-guide/data-fetching)
+- [Weaverse environment variables](https://weaverse.io/docs/development-guide/environment-setup)
+- [Weaverse deployment overview](https://weaverse.io/docs/guides/deployment)
+- [Weaverse Oxygen deployment](https://weaverse.io/docs/guides/deployment/oxygen)
 - [Shopify Hydrogen third-party API cookbook](https://shopify.dev/docs/storefronts/headless/hydrogen/cookbook)
