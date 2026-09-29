@@ -114,6 +114,7 @@ export default function ProductGridList({
   ref,
   ...props
 }: ProductGridListProps & { ref?: RefObject<HTMLDivElement | null> }) {
+  const { t } = useTranslation();
   const {
     loaderData,
     showCollectionTitle,
@@ -130,11 +131,11 @@ export default function ProductGridList({
   const productCountProbe = collection?.productCountProbe?.nodes ?? products;
   const collectionImage = collection?.image ?? {
     url: IMAGES_PLACEHOLDERS.collection_1,
-    altText: "Collection image",
+    altText: t("collection.image"),
     width: 1000,
     height: 1400,
   };
-  const collectionTitle = collection?.title ?? "New arrivals";
+  const collectionTitle = collection?.title ?? t("product.newArrivals");
   const collectionHandle = collection?.handle ?? "all";
   const visibleCount = collection ? Math.min(4, products.length) : 4;
   const totalCount = collection ? Math.min(productCountProbe.length, 16) : 16;
@@ -150,7 +151,9 @@ export default function ProductGridList({
         <Link
           to={`/collections/${collectionHandle}`}
           className="group relative min-h-[30rem] overflow-hidden rounded-2xl bg-background-subtle-2 lg:min-h-full"
-          aria-label={`View ${collectionTitle} collection`}
+          aria-label={t("navigation.viewCollection", {
+            collection: collectionTitle,
+          })}
           data-motion="fade-up"
         >
           <Image

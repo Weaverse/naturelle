@@ -3,7 +3,7 @@ import type {
   HydrogenComponentProps,
   WeaverseCollection,
 } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useState } from "react";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
@@ -39,6 +39,7 @@ const ListProducts = ({
   ref,
   ...props
 }: FeaturedProductsProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
   let {
     products,
     totalProduct,
@@ -71,9 +72,11 @@ const ListProducts = ({
           />
         </div>
         <div className="flex flex-col gap-2 px-2">
-          <p className="text-base font-normal">By vendor</p>
-          <h4 className="font-medium">Product title</h4>
-          <p className="text-base font-normal">Price</p>
+          <p className="text-base font-normal">
+            {t("product.byVendor", { vendor: t("product.exampleVendor") })}
+          </p>
+          <h4 className="font-medium">{t("product.exampleTitle")}</h4>
+          <p className="text-base font-normal">{t("product.price")}</p>
         </div>
       </div>
     );

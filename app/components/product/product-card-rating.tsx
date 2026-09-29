@@ -1,4 +1,8 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { StarRating } from "~/components/star-rating";
+import { useRootLoaderData } from "~/root";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatNumber } from "~/utils/locale";
 
 type RatingValue = { value?: number | string };
 
@@ -32,6 +36,8 @@ export function ProductCardRating({
   ratingCount?: number;
   detailed?: boolean;
 }) {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const rating = ratingOverride ?? parseProductRating(ratingValue);
   const parsedRatingCount = Number(ratingCountValue);
   const ratingCount =
@@ -46,7 +52,13 @@ export function ProductCardRating({
           {detailed ? `${rating.toFixed(1)}/5.0` : rating.toFixed(1)}
         </span>
         <span className="font-body text-[13px] font-normal leading-normal text-text">
-          ({ratingCount} reviews)
+          (
+          {ratingCount === 1
+            ? t("reviews.count", { count: formatNumber(ratingCount, locale) })
+            : t("reviews.count_other", {
+                count: formatNumber(ratingCount, locale),
+              })}
+          )
         </span>
       </span>
     </div>

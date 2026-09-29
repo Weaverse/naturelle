@@ -15,7 +15,13 @@ export function PredictiveSearchResult({
   type,
 }: SearchResultTypeProps) {
   const { t } = useTranslation();
-  const isSuggestions = type === "queries";
+  const typeLabel = {
+    articles: t("search.articles"),
+    collections: t("search.collections"),
+    pages: t("search.pages"),
+    products: t("search.products"),
+    queries: t("search.suggestions"),
+  }[type];
   const categoryUrl = `/search?q=${
     searchTerm.current
   }&type=${pluralToSingularSearchType(type)}`;
@@ -27,7 +33,7 @@ export function PredictiveSearchResult({
     >
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
         <span className="uppercase font-semibold font-heading text-xl">
-          {isSuggestions ? t("search.suggestions") : type}
+          {typeLabel}
         </span>
       </Link>
       <ul

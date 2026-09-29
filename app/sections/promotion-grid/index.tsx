@@ -3,6 +3,7 @@ import {
   type ComponentLoaderArgs,
   createSchema,
   IMAGES_PLACEHOLDERS,
+  useTranslation,
   type WeaverseCollection,
 } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
@@ -83,6 +84,7 @@ export default function PromotionGrid({
   ref,
   ...props
 }: PromotionGridProps & { ref?: RefObject<HTMLElement | null> }) {
+  const { t } = useTranslation();
   const {
     loaderData,
     firstCollection: _firstCollection,
@@ -115,7 +117,9 @@ export default function PromotionGrid({
         <Link
           key={`${collection.id}-${index}`}
           to={`/collections/${collection.handle}`}
-          aria-label={`View ${collection.title} collection`}
+          aria-label={t("navigation.viewCollection", {
+            collection: collection.title,
+          })}
           className="group relative aspect-video min-w-0 overflow-hidden rounded-xl bg-background-subtle-2 text-text-inverse"
           data-motion="fade-up"
         >

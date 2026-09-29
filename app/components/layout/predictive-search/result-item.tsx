@@ -1,4 +1,5 @@
 import { Image, Money } from "@shopify/hydrogen";
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { Link } from "~/components/link";
 import type { SearchResultItemProps } from "~/types/search-types";
@@ -7,6 +8,7 @@ export function SearchResultItem({
   goToSearchResult,
   item,
 }: SearchResultItemProps) {
+  const { t } = useTranslation();
   return (
     <li key={item.id}>
       <Link
@@ -31,7 +33,9 @@ export function SearchResultItem({
         <div className="flex flex-col">
           {item.vendor && (
             <p>
-              <small className="text-foreground-subtle">By {item.vendor}</small>
+              <small className="text-foreground-subtle">
+                {t("product.byVendor", { vendor: item.vendor })}
+              </small>
             </p>
           )}
           {item.styledTitle ? (

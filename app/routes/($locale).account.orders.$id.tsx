@@ -11,7 +11,7 @@ import {
 import { CUSTOMER_ORDER_QUERY } from "~/graphql/customer-account/customer-order-query";
 import { useRootLoaderData } from "~/root";
 import { DEFAULT_LOCALE } from "~/utils/const";
-import { formatDate, prefixPathWithLocale } from "~/utils/locale";
+import { formatDate, formatNumber, prefixPathWithLocale } from "~/utils/locale";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [{ title: `Order ${data?.order?.name}` }];
@@ -109,7 +109,12 @@ export default function OrderRoute() {
                 </th>
                 <td>
                   {discountPercentage ? (
-                    <span>-{discountPercentage}% OFF</span>
+                    <span>
+                      -
+                      {t("orders.percentageOff", {
+                        percentage: formatNumber(discountPercentage, locale),
+                      })}
+                    </span>
                   ) : (
                     discountValue && <Money data={discountValue} />
                   )}

@@ -1,6 +1,6 @@
 import { Pagination } from "@shopify/hydrogen";
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useInView } from "react-intersection-observer";
 import { useLoaderData } from "react-router";
@@ -17,6 +17,7 @@ let CollectionListItem = ({
   ref: sectionRef,
   ...props
 }: CollectionListProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
   let { ref, inView } = useInView();
   let { collections } = useLoaderData<StoreCollectionsQuery>();
   let { collectionsPerRow, lazyLoadImage, children, ...rest } = props;
@@ -37,7 +38,7 @@ let CollectionListItem = ({
           <>
             <div className="mb-6 flex items-center justify-center">
               <Button as={PreviousLink} variant="outline">
-                {isLoading ? "Loading..." : "Previous collections"}
+                {isLoading ? t("system.loading") : t("collection.previousPage")}
               </Button>
             </div>
             <CollectionsLoadedOnScroll
@@ -53,7 +54,7 @@ let CollectionListItem = ({
             />
             <div className="mt-6 flex items-center justify-center">
               <Button as={NextLink} variant="outline">
-                {isLoading ? "Loading..." : "Next collections"}
+                {isLoading ? t("system.loading") : t("collection.nextPage")}
               </Button>
             </div>
           </>

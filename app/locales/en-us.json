@@ -11,7 +11,8 @@
     "close": "Close"
   },
   "actions": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "showMore": "Show more +"
   },
   "locale": {
     "selectCountry": "Select country",
@@ -21,7 +22,8 @@
   "navigation": {
     "home": "Home",
     "menu": "Menu",
-    "readMore": "Read more"
+    "readMore": "Read more",
+    "viewCollection": "View {{collection}} collection"
   },
   "search": {
     "title": "Search",
@@ -70,6 +72,22 @@
     "exampleTitle": "Product title",
     "exampleVendor": "Vendor",
     "exampleDescription": "Product description",
+    "vendor": "Vendor:",
+    "type": "Type:",
+    "byVendor": "By {{vendor}}",
+    "newArrivals": "New arrivals",
+    "lowStock": "Hurry up! Only {{count}} items in stock.",
+    "lowStockOne": "Hurry up! Only {{count}} item in stock.",
+    "lowStockThreshold": "Low stock threshold: {{count}}",
+    "shipping": "Shipping",
+    "returns": "Returns",
+    "details": "Details",
+    "learnMore": "Learn more",
+    "viewShippingPolicy": "View shipping policy",
+    "viewReturnsPolicy": "View returns policy",
+    "viewDetails": "View product details",
+    "viewFullDetails": "View full details",
+    "showProduct": "Show {{product}}",
     "share": "Share:",
     "shareFacebook": "Share on Facebook",
     "shareInstagram": "Share on Instagram",
@@ -127,6 +145,7 @@
   },
   "collection": {
     "products": "Products",
+    "image": "Collection image",
     "filter": "Filter",
     "filterProducts": "Filter products",
     "clearAll": "Clear all",
@@ -148,7 +167,15 @@
     "from": "From",
     "to": "To",
     "showLess": "Show less",
-    "showMore": "Show more ({{count}})"
+    "showMore": "Show more ({{count}})",
+    "previous": "Previous collection",
+    "next": "Next collection",
+    "previousPage": "Previous collections",
+    "nextPage": "Next collections",
+    "increaseMinimumPrice": "Increase minimum price",
+    "decreaseMinimumPrice": "Decrease minimum price",
+    "increaseMaximumPrice": "Increase maximum price",
+    "decreaseMaximumPrice": "Decrease maximum price"
   },
   "account": {
     "title": "Account",
@@ -217,11 +244,13 @@
     "orderDate": "Order date",
     "fulfillmentStatus": "Fulfillment status",
     "unfulfilled": "Unfulfilled",
-    "moreItems": "{{count}} more"
+    "moreItems": "{{count}} more",
+    "percentageOff": "{{percentage}}% off"
   },
   "footer": {
     "navigation": "Footer",
     "legal": "Legal",
+    "connect": "Connect",
     "newsletterSuccess": "Thank you for signing up!",
     "newsletterError": "An error occurred while signing up."
   },
@@ -243,7 +272,39 @@
   },
   "carousel": {
     "previous": "Scroll left",
-    "next": "Scroll right"
+    "next": "Scroll right",
+    "previousInstagram": "Previous Instagram post",
+    "nextInstagram": "Next Instagram post"
+  },
+  "instagram": {
+    "post": "Instagram post",
+    "openPost": "Open Instagram post"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message"
+  },
+  "map": {
+    "storeLocation": "Store location map"
+  },
+  "styleGuide": {
+    "title": "Style Guide",
+    "fontFamily": "Font family",
+    "colors": "Colors",
+    "background": "Background",
+    "foreground": "Foreground",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "outline": "Outline",
+    "border": "Border",
+    "label": "Label",
+    "components": "Components",
+    "button": "Button",
+    "link": "Link",
+    "input": "Input",
+    "inputPlaceholder": "Input placeholder"
   },
   "reviews": {
     "count": "{{count}} review",

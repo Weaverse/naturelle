@@ -676,20 +676,22 @@ function PriceStepper({
   onDecrement: () => void;
   label: "min" | "max";
 }) {
+  const { t } = useTranslation();
+  const incrementLabel =
+    label === "min"
+      ? t("collection.increaseMinimumPrice")
+      : t("collection.increaseMaximumPrice");
+  const decrementLabel =
+    label === "min"
+      ? t("collection.decreaseMinimumPrice")
+      : t("collection.decreaseMaximumPrice");
+
   return (
     <span className="flex shrink-0 flex-col gap-1">
-      <button
-        type="button"
-        onClick={onIncrement}
-        aria-label={`Increase ${label} price`}
-      >
+      <button type="button" onClick={onIncrement} aria-label={incrementLabel}>
         <IconCaret direction="up" className="size-3" />
       </button>
-      <button
-        type="button"
-        onClick={onDecrement}
-        aria-label={`Decrease ${label} price`}
-      >
+      <button type="button" onClick={onDecrement} aria-label={decrementLabel}>
         <IconCaret direction="down" className="size-3" />
       </button>
     </span>

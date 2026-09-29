@@ -1,6 +1,6 @@
 import { Portal } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
@@ -18,7 +18,10 @@ import {
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
+import { useRootLoaderData } from "~/root";
 import { cn } from "~/utils/cn";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatNumber, usePrefixPathWithLocale } from "~/utils/locale";
 import {
   getSavingsPercentage,
   isNewArrival,
@@ -35,6 +38,8 @@ export function QuickView({
   data: ProductData;
   onAdded?: () => void;
 }) {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const theme = useThemeSettings();
   const { product, variants: variantData, storeDomain, shop } = data;
   const [requestedSellingPlanId, setRequestedSellingPlanId] = useState<
@@ -52,9 +57,9 @@ export function QuickView({
   } = useProductFormState({
     product,
     variants,
-    addToCartText: theme.addToCartText || "Add to cart",
-    soldOutText: theme.soldOutText || "Sold out",
-    unavailableText: theme.unavailableText || "Unavailable",
+    addToCartText: theme.addToCartText || t("product.addToCart"),
+    soldOutText: theme.soldOutText || t("product.soldOut"),
+    unavailableText: theme.unavailableText || t("product.unavailable"),
     syncVariantWithUrl: false,
   });
   if (!product || !selectedVariant || !variants) {
@@ -145,12 +150,12 @@ export function QuickView({
                   {product.title}
                 </h2>
                 <p className="text-sm text-text-subtle">
-                  Vendor:{" "}
+                  {t("product.vendor")}{" "}
                   <span className="text-text-primary">{product.vendor}</span>
                   {product.productType && (
                     <>
                       <span className="px-2">|</span>
-                      Type:{" "}
+                      {t("product.type")}{" "}
                       <span className="text-text-primary">
                         {product.productType}
                       </span>
@@ -178,11 +183,19 @@ export function QuickView({
                 {showLowStock && (
                   <div className="space-y-2">
                     <p className="text-sm font-semibold">
-                      Hurry up! Only {stock} items in stock.
+                      {stock === 1
+                        ? t("product.lowStockOne", {
+                            count: formatNumber(stock, locale),
+                          })
+                        : t("product.lowStock", {
+                            count: formatNumber(stock, locale),
+                          })}
                     </p>
                     <div
                       role="progressbar"
-                      aria-label={`Low stock threshold: ${lowStockThreshold}`}
+                      aria-label={t("product.lowStockThreshold", {
+                        count: lowStockThreshold,
+                      })}
                       aria-valuemin={0}
                       aria-valuemax={100}
                       aria-valuenow={lowStockThreshold}
@@ -291,7 +304,8 @@ export function QuickView({
                     to={`/policies/${shop.shippingPolicy.handle}`}
                     className="flex items-center gap-2 hover:text-text-primary"
                   >
-                    <span aria-hidden="true">▱</span> View shipping policy
+                    <span aria-hidden="true">▱</span>{" "}
+                    {t("product.viewShippingPolicy")}
                   </Link>
                 )}
                 {theme.showRefundPolicy && shop.refundPolicy?.handle && (
@@ -299,7 +313,8 @@ export function QuickView({
                     to={`/policies/${shop.refundPolicy.handle}`}
                     className="flex items-center gap-2 hover:text-text-primary"
                   >
-                    <span aria-hidden="true">↩</span> View returns policy
+                    <span aria-hidden="true">↩</span>{" "}
+                    {t("product.viewReturnsPolicy")}
                   </Link>
                 )}
               </div>
@@ -309,7 +324,7 @@ export function QuickView({
               to={`/products/${product.handle}`}
               className="w-fit text-sm text-text-primary underline underline-offset-4"
             >
-              View product details
+              {t("product.viewDetails")}
             </Link>
 
             <ProductShareLinks productUrl={productUrl} title={product.title} />
@@ -322,20 +337,25 @@ export function QuickView({
 
 export function QuickViewTrigger({
   productHandle,
-  buttonText = "Select options",
+  buttonText,
   alwaysShowButton = false,
 }: {
   productHandle: string;
   buttonText?: string;
   alwaysShowButton?: boolean;
 }) {
+  const { t } = useTranslation();
+  const resolvedButtonText = buttonText ?? t("product.selectOptions");
+  const productQueryPath = usePrefixPathWithLocale("/api/query/products");
   const [open, setOpen] = useState(false);
-  const { load, data, state } = useFetcher<ProductData>();
+  const { load, data, state } = useFetcher<ProductData | { error: string }>();
+  const productData = data && !("error" in data) ? data : null;
+  const hasError = Boolean(data && "error" in data);
   useEffect(() => {
     if (open && !data && state !== "loading") {
-      load(`/api/query/products?handle=${productHandle}`);
+      load(`${productQueryPath}?handle=${encodeURIComponent(productHandle)}`);
     }
-  }, [open, data, load, state, productHandle]);
+  }, [open, data, load, productHandle, productQueryPath, state]);
 
   return (
     <>
@@ -359,7 +379,7 @@ export function QuickViewTrigger({
             loading={state === "loading"}
             className="h-auto rounded-full border border-border-subtle bg-background-basic p-3 text-text shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border md:hidden"
             classNameContainer="flex items-center justify-center"
-            aria-label={buttonText}
+            aria-label={resolvedButtonText}
           >
             <IconBag
               aria-hidden="true"
@@ -383,13 +403,34 @@ export function QuickViewTrigger({
           )}
           classNameContainer="flex items-center justify-center"
         >
-          {buttonText}
+          {resolvedButtonText}
         </Button>
       </div>
-      {open && data && (
+      {open && productData && (
         <Portal>
           <Modal onClose={() => setOpen(false)}>
-            <QuickView data={data} onAdded={() => setOpen(false)} />
+            <QuickView data={productData} onAdded={() => setOpen(false)} />
+          </Modal>
+        </Portal>
+      )}
+      {open && hasError && (
+        <Portal>
+          <Modal onClose={() => setOpen(false)}>
+            <div className="flex min-h-48 w-[min(90vw,28rem)] flex-col items-center justify-center gap-4 rounded-xl bg-background p-6 text-center">
+              <p>{t("system.loadError")}</p>
+              <Button
+                type="button"
+                variant="primary"
+                loading={state === "loading"}
+                onClick={() =>
+                  load(
+                    `${productQueryPath}?handle=${encodeURIComponent(productHandle)}`,
+                  )
+                }
+              >
+                {t("system.tryAgain")}
+              </Button>
+            </div>
           </Modal>
         </Portal>
       )}

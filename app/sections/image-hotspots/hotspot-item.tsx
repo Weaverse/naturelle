@@ -9,6 +9,7 @@ import {
   useItemInstance,
   useParentInstance,
   useThemeSettings,
+  useTranslation,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { type CSSProperties, type RefObject, useContext } from "react";
@@ -54,6 +55,7 @@ let HotspotsItem = ({
   ref,
   ...props
 }: HotspotsItemProps & { ref?: RefObject<HTMLButtonElement | null> }) => {
+  const { t } = useTranslation();
   let {
     badgeText,
     heading,
@@ -94,7 +96,9 @@ let HotspotsItem = ({
         ref={ref}
         {...rest}
         type="button"
-        aria-label={`Show ${loaderData?.product?.title ?? "product"}`}
+        aria-label={t("product.showProduct", {
+          product: loaderData?.product?.title ?? t("product.exampleTitle"),
+        })}
         aria-pressed={isActive}
         className={clsx(
           "absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full",
