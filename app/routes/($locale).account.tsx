@@ -9,10 +9,9 @@ import {
 } from "react-router";
 import { CUSTOMER_DETAILS_QUERY } from "~/graphql/customer-account/customer-details-query";
 import { usePrefixPathWithLocale } from "~/utils/locale";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
-export function shouldRevalidate() {
-  return true;
-}
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { data, errors } = await context.customerAccount.query(

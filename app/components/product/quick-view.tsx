@@ -168,7 +168,6 @@ export function QuickView({
                       withoutTrailingZeros
                       data={selectedVariant.compareAtPrice}
                       className="text-text-subtle line-through"
-                      as="span"
                     />
                   )}
                   <SellingPlanPrice

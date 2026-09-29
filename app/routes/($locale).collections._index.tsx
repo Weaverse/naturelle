@@ -7,7 +7,10 @@ import type { MetaFunction } from "react-router";
 import { data, type LoaderFunctionArgs } from "react-router";
 import { seoPayload } from "~/.server/seo";
 import { COLLECTIONS_QUERY } from "~/graphql/queries";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {

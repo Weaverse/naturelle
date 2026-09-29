@@ -16,7 +16,7 @@ export function SellingPlanPrice({
   const hasDiscount = Number(adjustedPrice.amount) !== Number(price.amount);
 
   return (
-    <span className={className}>
+    <div className={className}>
       <Money withoutTrailingZeros data={adjustedPrice} />
       {hasDiscount && (
         <Money
@@ -25,6 +25,6 @@ export function SellingPlanPrice({
           className="ml-2 text-text-subtle text-sm line-through"
         />
       )}
-    </span>
+    </div>
   );
 }

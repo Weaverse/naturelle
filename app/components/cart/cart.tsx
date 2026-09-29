@@ -606,7 +606,7 @@ export function CartEmpty({
       >
         {t("cart.continueShopping")} →
       </Link>
-      <CartPopularCollections layout={layout} />
+      {visible ? <CartPopularCollections layout={layout} /> : null}
     </div>
   );
 }

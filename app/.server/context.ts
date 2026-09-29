@@ -6,8 +6,10 @@ import {
   CART_QUERY_FRAGMENT,
 } from "~/graphql/fragments";
 import {
+  getFallbackLocalization,
   getRequestI18n,
   loadStoreLocalization,
+  shouldLoadStoreLocalization,
 } from "~/utils/localization.server";
 import { components } from "~/weaverse/components";
 import { getThemeSchema } from "~/weaverse/schema.server";
@@ -60,10 +62,9 @@ export async function createHydrogenRouterContext(
     additionalContext,
   );
 
-  const localization = await loadStoreLocalization(
-    hydrogenContext.storefront,
-    request,
-  );
+  const localization = shouldLoadStoreLocalization(request)
+    ? await loadStoreLocalization(hydrogenContext.storefront, request)
+    : getFallbackLocalization(request);
 
   const weaverse = new WeaverseClient({
     ...hydrogenContext,

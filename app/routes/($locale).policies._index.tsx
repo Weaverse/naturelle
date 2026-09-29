@@ -1,6 +1,9 @@
 import { useTranslation } from "@weaverse/hydrogen";
 import { data, type LoaderFunctionArgs, useLoaderData } from "react-router";
 import { Link } from "~/components/link";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const policiesData = await context.storefront.query(POLICIES_QUERY);

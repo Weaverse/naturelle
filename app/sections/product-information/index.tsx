@@ -223,7 +223,7 @@ let ProductInformation = ({
                     </div>
                   )}
                   {children}
-                  <p
+                  <div
                     data-motion="fade-up"
                     className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
                   >
@@ -232,7 +232,6 @@ let ProductInformation = ({
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
                         className="text-label-save-background line-through"
-                        as="span"
                       />
                     )}
 
@@ -242,7 +241,7 @@ let ProductInformation = ({
                         sellingPlan={selectedSellingPlan}
                       />
                     ) : null}
-                  </p>
+                  </div>
                 </div>
                 <ProductVariants
                   product={product}

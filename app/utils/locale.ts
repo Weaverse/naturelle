@@ -13,9 +13,16 @@ const STATIC_PATHS = [
   "/.well-known",
   "/cdn-cgi",
   "/api/query",
+  "/api/unstable",
   "/graphiql",
   "/subrequest-profiler",
 ];
+
+export function isLocaleAgnosticPath(pathname: string) {
+  return STATIC_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
 
 export function localeCode(locale: Pick<I18nLocale, "language" | "country">) {
   return `${routeLanguageCode(locale.language)}-${locale.country.toLowerCase()}`;
@@ -185,12 +192,7 @@ export function getCanonicalLocaleRedirect(
   }
 
   const url = new URL(request.url);
-  if (
-    url.pathname.endsWith(".data") ||
-    STATIC_PATHS.some(
-      (path) => url.pathname === path || url.pathname.startsWith(`${path}/`),
-    )
-  ) {
+  if (url.pathname.endsWith(".data") || isLocaleAgnosticPath(url.pathname)) {
     return null;
   }
 

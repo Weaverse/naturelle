@@ -8,9 +8,11 @@ import { seoPayload } from "~/.server/seo";
 import { ARTICLE_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
 import { intlLocale } from "~/utils/locale";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader(args: LoaderFunctionArgs) {
   let { request, params, context } = args;

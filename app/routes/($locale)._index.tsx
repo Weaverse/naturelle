@@ -7,7 +7,10 @@ import type { PageType } from "@weaverse/hydrogen";
 import type { LoaderFunctionArgs, MetaFunction } from "react-router";
 import { seoPayload } from "~/.server/seo";
 import type { Storefront } from "~/types/type-locale";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { validateWeaverseData, WeaverseContent } from "~/weaverse";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const storefront = context.storefront as Storefront;

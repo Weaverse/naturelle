@@ -7,7 +7,10 @@ import {
   useLoaderData,
 } from "react-router";
 import { Link } from "~/components/link";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export const meta: MetaFunction = () => {
   return [{ title: `Hydrogen | Blogs` }];

@@ -9,6 +9,7 @@ import { DEFAULT_LOCALE } from "~/utils/const";
 import {
   getLocaleSegment,
   includeDefaultLocale,
+  isLocaleAgnosticPath,
   localeCode,
   localePathPrefix,
   storefrontLanguageCode,
@@ -45,7 +46,12 @@ export async function loadStoreLocalization(
   try {
     const { localization } = await storefront.query<LocalizationQueryData>(
       LOCALIZATION_QUERY,
-      { cache: CacheCustom({ maxAge: 60, staleWhileRevalidate: 300 }) },
+      {
+        cache: CacheCustom({
+          maxAge: 10,
+          staleWhileRevalidate: 0,
+        }),
+      },
     );
 
     const liveLocales = localization.availableCountries.flatMap((country) => {
@@ -90,12 +96,25 @@ export async function loadStoreLocalization(
     };
   } catch (error) {
     console.warn("Unable to load Shopify Markets localization", error);
-    return {
-      availableLocales: [DEFAULT_LOCALE],
-      defaultLocale: DEFAULT_LOCALE,
-      selectedLocale: DEFAULT_LOCALE,
-    };
+    return getFallbackLocalization(request);
   }
+}
+
+export function shouldLoadStoreLocalization(request: Request) {
+  const url = new URL(request.url);
+  return (
+    (request.method === "GET" || request.method === "HEAD") &&
+    !isLocaleAgnosticPath(url.pathname)
+  );
+}
+
+export function getFallbackLocalization(request: Request): StoreLocalization {
+  const selectedLocale = getRequestI18n(request);
+  return {
+    availableLocales: includeDefaultLocale([selectedLocale], DEFAULT_LOCALE),
+    defaultLocale: DEFAULT_LOCALE,
+    selectedLocale,
+  };
 }
 
 export function getRequestI18n(request: Request): I18nLocale {

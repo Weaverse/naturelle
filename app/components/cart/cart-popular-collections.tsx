@@ -1,6 +1,6 @@
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
-import { type CSSProperties, useEffect } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 import { useFetcher } from "react-router";
 import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
@@ -19,7 +19,12 @@ export function CartPopularCollections({ layout }: { layout?: string }) {
   const { t } = useTranslation();
   let { load, data } = useFetcher<CollectionResponse>();
   let productsApiPath = usePrefixPathWithLocale(`/api/collections`);
+  const loadedPath = useRef<string | null>(null);
   useEffect(() => {
+    if (loadedPath.current === productsApiPath) {
+      return;
+    }
+    loadedPath.current = productsApiPath;
     load(productsApiPath);
   }, [load, productsApiPath]);
   if (!data) {

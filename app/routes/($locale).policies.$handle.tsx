@@ -7,6 +7,9 @@ import {
   useLoaderData,
 } from "react-router";
 import { Link } from "~/components/link";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 type SelectedPolicies = keyof Pick<
   Shop,
