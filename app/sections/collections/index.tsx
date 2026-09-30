@@ -3,6 +3,7 @@ import {
   type ComponentLoaderArgs,
   createSchema,
   IMAGES_PLACEHOLDERS,
+  useTranslation,
   type WeaverseCollection,
 } from "@weaverse/hydrogen";
 import { type CSSProperties, type RefObject, useState } from "react";
@@ -104,6 +105,7 @@ function Collections({
   ref,
   ...props
 }: CollectionsProps & { ref?: RefObject<HTMLElement | null> }) {
+  const { t } = useTranslation();
   const {
     loaderData,
     heading,
@@ -160,7 +162,7 @@ function Collections({
           <div className="hidden items-center gap-3 md:flex">
             <button
               type="button"
-              aria-label="Previous collection"
+              aria-label={t("collection.previous")}
               disabled={!canSlidePrev}
               onClick={() => swiperInstance?.slidePrev()}
               className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
@@ -173,7 +175,7 @@ function Collections({
             </button>
             <button
               type="button"
-              aria-label="Next collection"
+              aria-label={t("collection.next")}
               disabled={!canSlideNext}
               onClick={() => swiperInstance?.slideNext()}
               className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
@@ -223,7 +225,9 @@ function Collections({
             <SwiperSlide key={`${collection.id}-${index}`} className="min-w-0">
               <Link
                 to={`/collections/${collection.handle}`}
-                aria-label={`View ${collection.title} collection`}
+                aria-label={t("navigation.viewCollection", {
+                  collection: collection.title,
+                })}
                 className={cn(
                   "group block min-w-0 w-full overflow-hidden",
                   "rounded-(--border-radius-xl,16px)",
@@ -269,7 +273,7 @@ function Collections({
         <div className="flex items-center gap-3 md:hidden">
           <button
             type="button"
-            aria-label="Previous collection"
+            aria-label={t("collection.previous")}
             disabled={!canSlidePrev}
             onClick={() => swiperInstance?.slidePrev()}
             className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"
@@ -282,7 +286,7 @@ function Collections({
           </button>
           <button
             type="button"
-            aria-label="Next collection"
+            aria-label={t("collection.next")}
             disabled={!canSlideNext}
             onClick={() => swiperInstance?.slideNext()}
             className="flex size-12 items-center justify-center rounded-full bg-background text-text-primary transition-colors hover:bg-background-subtle-2"

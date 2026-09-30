@@ -1,5 +1,9 @@
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema, useChildInstances } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  useChildInstances,
+  useTranslation,
+} from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React, { type RefObject, useState } from "react";
 import { Autoplay } from "swiper/modules";
@@ -31,6 +35,7 @@ const Instagram = ({
   ref,
   ...props
 }: InstagramProps & { ref?: RefObject<HTMLElement | null> }) => {
+  const { t } = useTranslation();
   let {
     width,
     heading,
@@ -157,7 +162,7 @@ const Instagram = ({
             <>
               <button
                 type="button"
-                aria-label="Previous Instagram post"
+                aria-label={t("carousel.previousInstagram")}
                 className="absolute left-0 top-1/2 z-50 flex size-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
                 onClick={() => swiperInstance?.slidePrev()}
               >
@@ -165,7 +170,7 @@ const Instagram = ({
               </button>
               <button
                 type="button"
-                aria-label="Next Instagram post"
+                aria-label={t("carousel.nextInstagram")}
                 className="absolute right-0 top-1/2 z-50 flex size-10 translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
                 onClick={() => swiperInstance?.slideNext()}
               >

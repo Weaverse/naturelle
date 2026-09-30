@@ -1,7 +1,7 @@
 import type { CartQueryDataReturn } from "@shopify/hydrogen";
 import { CartForm, Image } from "@shopify/hydrogen";
 import type { CartLineInput } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useRef } from "react";
 import {
   type ActionFunctionArgs,
@@ -10,6 +10,7 @@ import {
   type HeadersFunction,
   type LoaderFunctionArgs,
   type MetaFunction,
+  redirect,
   useFetcher,
   useLoaderData,
 } from "react-router";
@@ -19,7 +20,7 @@ import { IconNewsletter } from "~/components/icon";
 import { Input } from "~/components/input";
 import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { useRootLoaderData } from "~/root";
-import { getLocaleFromRequest, usePrefixPathWithLocale } from "~/utils/locale";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 import { safeRedirectPath } from "~/utils/misc";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
@@ -48,7 +49,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
     throw new Error("No action provided");
   }
 
-  let status = 200;
   let result: CartQueryDataReturn;
 
   switch (formAction) {
@@ -193,12 +193,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const redirectTo = formData.get("redirectTo") ?? null;
   if (typeof redirectTo === "string") {
-    status = 303;
-    const locale = getLocaleFromRequest(request);
-    responseHeaders.set(
-      "Location",
-      safeRedirectPath(redirectTo, `${locale.pathPrefix}/cart`),
-    );
+    const locale = context.localization.selectedLocale;
+    return redirect(safeRedirectPath(redirectTo, `${locale.pathPrefix}/cart`), {
+      headers: responseHeaders,
+    });
   }
 
   return data(
@@ -211,7 +209,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
         cartId: result.cart?.id,
       },
     },
-    { status, headers: responseHeaders },
+    { headers: responseHeaders },
   );
 }
 
@@ -270,6 +268,7 @@ async function getCartOrNull(cart: AppLoadContext["cart"]) {
 }
 
 export default function Cart() {
+  const { t } = useTranslation();
   const { cartBannerImage } = useThemeSettings();
   const { cart } = useLoaderData<typeof loader>();
 
@@ -285,11 +284,11 @@ export default function Cart() {
             />
             <div className="absolute inset-0 bg-black/10" />
             <h1 className="relative z-10 text-center font-heading text-[44px] leading-[110%] font-normal text-text-inverse">
-              Cart
+              {t("cart.title")}
             </h1>
           </div>
         ) : (
-          <h1 className="sr-only">Cart</h1>
+          <h1 className="sr-only">{t("cart.title")}</h1>
         )}
         <div className="mx-auto w-full max-w-page">
           <CartMain initialCart={cart} layout="page" />

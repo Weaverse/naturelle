@@ -1,10 +1,11 @@
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import { Form } from "react-router";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
 import { useAnimation } from "~/hooks/use-animation";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 
 interface ContactFormProps extends HydrogenComponentProps {
   backgroundColor: string;
@@ -29,6 +30,8 @@ let ContactForm = ({
   ref,
   ...props
 }: ContactFormProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
+  const contactAction = usePrefixPathWithLocale("/contact");
   const [scope] = useAnimation(ref);
   let {
     backgroundColor,
@@ -54,7 +57,7 @@ let ContactForm = ({
       className="flex justify-center px-0 md:px-10"
     >
       <Form
-        action="/contact"
+        action={contactAction}
         method="POST"
         encType="multipart/form-data"
         navigate={false}
@@ -77,21 +80,21 @@ let ContactForm = ({
             data-motion="fade-up"
             type="text"
             name="name"
-            placeholder="Name"
+            placeholder={t("contact.name")}
             className="placeholder-foreground-subtle"
           />
           <Input
             data-motion="fade-up"
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder={t("contact.email")}
             className="placeholder-foreground-subtle"
           />
           <Input
             data-motion="fade-up"
             type="text"
             name="subject"
-            placeholder="Subject"
+            placeholder={t("contact.subject")}
             className="placeholder-foreground-subtle"
           />
           <textarea
@@ -99,7 +102,7 @@ let ContactForm = ({
             className="w-full resize-none rounded-md border-2 border-bar-subtle p-2.5 placeholder-foreground-subtle hover:border-bar focus-visible:border-bar focus-visible:outline-none"
             rows={4}
             name="message"
-            placeholder="Message"
+            placeholder={t("contact.message")}
           />
         </div>
         {buttonLabel && (

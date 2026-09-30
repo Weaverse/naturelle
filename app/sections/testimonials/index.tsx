@@ -4,7 +4,7 @@ import type {
   WeaverseImage,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
@@ -14,8 +14,11 @@ import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { PRODUCT_QUERY } from "~/graphql/queries";
 import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { useRootLoaderData } from "~/root";
 import { cn } from "~/utils/cn";
+import { DEFAULT_LOCALE } from "~/utils/const";
 import { getJudgemeReviews } from "~/utils/judgeme";
+import { formatNumber } from "~/utils/locale";
 import Review from "./review";
 
 interface TestimonialsData {
@@ -81,6 +84,8 @@ const Testimonials = ({
   ref,
   ...props
 }: TestimonialsProps & { ref?: RefObject<HTMLElement | null> }) => {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   let {
     backgroundImage,
     reviewsPosition,
@@ -213,10 +218,11 @@ const Testimonials = ({
                   {displayedRating.toFixed(1)}
                 </strong>
                 <span className="text-xs font-semibold leading-none opacity-90">
-                  out of 5
+                  {t("reviews.outOfFive")}
                 </span>
                 <span className="text-xs font-semibold leading-none opacity-90">
-                  ({displayedRatingCount.toLocaleString("en-US")} reviews)
+                  ({formatNumber(displayedRatingCount, locale)}{" "}
+                  {t("reviews.label")})
                 </span>
               </div>
             </div>

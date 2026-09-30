@@ -15,6 +15,9 @@ import {
   getFiltersFromSearchParams,
   getPriceRangeFilters,
 } from "~/utils/product-filters";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;

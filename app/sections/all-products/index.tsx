@@ -1,5 +1,5 @@
 import { Pagination } from "@shopify/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import { Children } from "react";
 import { useLoaderData } from "react-router";
 import type { AllProductsQuery } from "storefront-api.generated";
@@ -15,6 +15,7 @@ interface AllProductsProps extends SectionProps {
 }
 
 export default function AllProducts(props: AllProductsProps) {
+  const { t } = useTranslation();
   const { ref, heading, children, ...rest } = props;
   const { products } = useLoaderData<AllProductsQuery>();
 
@@ -36,7 +37,7 @@ export default function AllProducts(props: AllProductsProps) {
             <div className="flex flex-col items-center justify-center gap-11">
               <Button as={PreviousLink} variant="outline">
                 <span className="font-heading font-light">
-                  {isLoading ? "Loading..." : "Load previous"}
+                  {isLoading ? t("system.loading") : t("search.loadPrevious")}
                 </span>
               </Button>
               <Grid
@@ -48,7 +49,7 @@ export default function AllProducts(props: AllProductsProps) {
               </Grid>
               <Button as={NextLink} variant="outline">
                 <span className="font-heading font-light">
-                  {isLoading ? "Loading..." : "Show more +"}
+                  {isLoading ? t("system.loading") : t("actions.showMore")}
                 </span>
               </Button>
             </div>

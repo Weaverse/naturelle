@@ -1,5 +1,6 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { usePredictiveSearch } from "~/hooks/use-predictive-search";
 import type { NormalizedPredictiveSearchResultItem } from "~/types/search-types";
@@ -12,6 +13,7 @@ export function SearchTypeHeaderResults({
 }: {
   inline?: boolean;
 }) {
+  const { t } = useTranslation();
   const { results, totalResults, searchInputRef, searchTerm } =
     usePredictiveSearch();
   const items = (type: (typeof results)[number]["type"]) =>
@@ -56,7 +58,7 @@ export function SearchTypeHeaderResults({
       {!term ? (
         <div className="mx-auto grid w-full max-w-page grid-cols-[minmax(0,3fr)_minmax(240px,1fr)] px-6">
           <section className="border-r border-border-subtle p-6">
-            <ResultHeading>Most searched products</ResultHeading>
+            <ResultHeading>{t("search.mostSearchedProducts")}</ResultHeading>
             <div className="grid grid-cols-4 gap-3">
               {items("products").map((product) => (
                 <SearchProductCard key={product.id} item={product} />
@@ -76,7 +78,7 @@ export function SearchTypeHeaderResults({
       ) : totalResults ? (
         <div className="mx-auto grid max-h-[70vh] w-full max-w-page grid-cols-[minmax(0,3fr)_minmax(240px,1fr)] overflow-y-auto px-6">
           <section className="border-r border-border-subtle p-6">
-            <ResultHeading>Products</ResultHeading>
+            <ResultHeading>{t("search.products")}</ResultHeading>
             <div className="grid grid-cols-4 gap-3">
               {items("products").map((product) => (
                 <SearchProductCard key={product.id} item={product} />
@@ -87,22 +89,30 @@ export function SearchTypeHeaderResults({
                 to={`/search?q=${encodeURIComponent(term)}`}
                 className="rounded-md bg-text px-5 py-2 text-sm text-background-basic"
               >
-                Show All Results
+                {t("search.viewAll")}
               </Link>
             </div>
           </section>
           <div className="space-y-6 p-6">
-            <TextResults title="Suggestions" items={items("queries")} />
-            <TextResults title="Collections" items={items("collections")} />
-            <TextResults title="Pages" items={items("articles")} lineClamp />
+            <TextResults
+              title={t("search.suggestions")}
+              items={items("queries")}
+            />
+            <TextResults
+              title={t("search.collections")}
+              items={items("collections")}
+            />
+            <TextResults
+              title={t("search.pages")}
+              items={items("articles")}
+              lineClamp
+            />
           </div>
         </div>
       ) : (
         <div className="mx-auto w-full max-w-page p-6">
-          <ResultHeading>No results</ResultHeading>
-          <p className="text-sm">
-            No results found for <q>{term}</q>
-          </p>
+          <ResultHeading>{t("search.empty")}</ResultHeading>
+          <p className="text-sm">{t("search.noResults", { term })}</p>
         </div>
       )}
     </div>

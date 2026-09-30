@@ -1,6 +1,9 @@
 import { data, type LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
 import { FEATURED_ITEMS_QUERY } from "~/graphql/queries";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context: { storefront } }: LoaderFunctionArgs) {
   return data(await getFeaturedData(storefront));

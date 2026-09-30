@@ -1,7 +1,9 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useNavigate } from "react-router";
 import { IconClose, IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
 import { cn } from "~/utils/cn";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 import { PredictiveSearchForm } from "../../search-form";
 import { setNativeInputValue } from "../../set-native-input-value";
 import { SearchTypeHeaderResults } from "./search-type-header-results";
@@ -14,6 +16,8 @@ interface PredictiveSearchProps {
 }
 
 export function SearchTypeHeader(props: PredictiveSearchProps) {
+  const { t } = useTranslation();
+  const searchPath = usePrefixPathWithLocale("/search");
   let { isOpen, inline = false, onClose } = props;
   let navigate = useNavigate();
 
@@ -22,7 +26,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
       event.preventDefault();
       let searchQuery = (event.target as HTMLInputElement).value.trim();
       if (searchQuery) {
-        navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+        navigate(`${searchPath}?q=${encodeURIComponent(searchQuery)}`);
       }
     }
     if (event.key === "Escape" && inline) {
@@ -59,7 +63,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                 }
               }}
               onClear={fetchResults}
-              placeholder={inline ? "Search..." : "Enter a keyword"}
+              placeholder={t("search.placeholder")}
               onKeyDown={handleKeyDown}
               ref={inputRef}
               className={cn(
@@ -73,7 +77,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               prefixElement={
                 <button
                   type="submit"
-                  aria-label="Submit search"
+                  aria-label={t("search.title")}
                   className="flex size-6 shrink-0 cursor-pointer items-center justify-center text-text-primary"
                 >
                   <IconSearch
@@ -93,7 +97,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                       setNativeInputValue(input, "");
                       input?.focus();
                     }}
-                    aria-label="Clear search"
+                    aria-label={t("accessibility.clearSearch")}
                     className="flex size-6 shrink-0 items-center justify-center text-text-subtle"
                   >
                     <IconClose className="size-5" strokeWidth={2} />

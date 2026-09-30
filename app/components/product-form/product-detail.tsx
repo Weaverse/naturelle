@@ -1,4 +1,5 @@
 import { Disclosure } from "@headlessui/react";
+import { useTranslation } from "@weaverse/hydrogen";
 import { IconPlusLinkFooter } from "~/components/icon";
 import { Link } from "~/components/link";
 import { Text } from "~/components/text";
@@ -12,13 +13,9 @@ export function ProductDetail({
   content: string;
   learnMore?: string;
 }) {
+  const { t } = useTranslation();
   return (
-    <Disclosure
-      key={title}
-      as="div"
-      className="grid w-full gap-2"
-      defaultOpen={true}
-    >
+    <Disclosure as="div" className="grid w-full gap-2" defaultOpen={true}>
       {({ open }) => (
         <div className="contents">
           <Disclosure.Button className="text-left">
@@ -28,7 +25,7 @@ export function ProductDetail({
               </Text>
               <IconPlusLinkFooter
                 open={open}
-                className={`trasition-transform h-5 w-5 duration-300 ${
+                className={`transition-transform h-5 w-5 duration-300 ${
                   open ? "rotate-90" : "rotate-0"
                 }`}
               />
@@ -41,21 +38,19 @@ export function ProductDetail({
             }
           >
             <div className="flex flex-col lg:flex-row gap-6">
-              <p className="font-semibold text-base w-full lg:w-1/3">
-                About this product
-              </p>
+              <p className="font-semibold text-base w-full lg:w-1/3">{title}</p>
               <p
                 className="lg:w-2/3 w-full"
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             </div>
             {learnMore && (
-              <div className="">
+              <div>
                 <Link
                   className="pb-px border-b border-border/30 text-body/50"
                   to={learnMore}
                 >
-                  Learn more
+                  {t("product.learnMore")}
                 </Link>
               </div>
             )}

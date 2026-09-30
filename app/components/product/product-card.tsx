@@ -3,7 +3,7 @@ import type {
   MediaImage,
   MoneyV2,
 } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type {
   ProductCardFragment,
@@ -109,6 +109,7 @@ export function ProductCard({
   viewDetailsLinkText = "View full details",
   alwaysShowQuickViewButton = false,
 }: ProductCardProps) {
+  const { t } = useTranslation();
   const themeSettings = useThemeSettings();
   const {
     pcardEnableQuickView,
@@ -180,7 +181,10 @@ export function ProductCard({
           {pcardShowImageOnHover && secondImage && (
             <Image
               data={secondImage}
-              alt={secondImage.altText || `Second picture of ${product.title}`}
+              alt={
+                secondImage.altText ||
+                t("product.secondPictureOf", { product: product.title })
+              }
               loading="lazy"
               sizes="(min-width: 64em) 25vw, 50vw"
               className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -197,7 +201,7 @@ export function ProductCard({
         {enableQuickView && pcardEnableQuickView !== false && (
           <QuickViewTrigger
             productHandle={product.handle}
-            buttonText={pcardQuickViewButtonText || "Select options"}
+            buttonText={pcardQuickViewButtonText || t("product.selectOptions")}
             alwaysShowButton={alwaysShowQuickViewButton}
           />
         )}

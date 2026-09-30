@@ -1,5 +1,5 @@
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { type CSSProperties, useEffect, useRef } from "react";
@@ -33,6 +33,7 @@ const NewsletterInput = ({
   ref,
   ...props
 }: InputEmailProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
   let { placeholder, buttonLabel, buttonStyle, ...rest } = props;
   let fetcher = useFetcher<NewsletterResponse>();
   const rootData = useRootLoaderData();
@@ -50,11 +51,10 @@ const NewsletterInput = ({
   let alertMessage = "";
   let alertMessageClass = "";
   if (isError) {
-    alertMessage =
-      fetcher.data?.error || "Something went wrong. Please try again.";
+    alertMessage = fetcher.data?.error || t("footer.newsletterError");
     alertMessageClass = "text-red-700";
   } else if (isSuccess) {
-    alertMessage = "Thanks! Your subscription request has been received.";
+    alertMessage = t("footer.newsletterSuccess");
     alertMessageClass = "text-green-700";
   }
   let style: CSSProperties = {

@@ -1,10 +1,18 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
 import { StarRating } from "~/components/star-rating";
+import { useRootLoaderData } from "~/root";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import type { JudgeMeReviewType, JudgemeReviewsData } from "~/types/judgeme";
-import { usePrefixPathWithLocale } from "~/utils/locale";
+import type { I18nLocale } from "~/types/type-locale";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import {
+  formatDate,
+  formatNumber,
+  usePrefixPathWithLocale,
+} from "~/utils/locale";
 
 const REVIEWS_PER_PAGE = 5;
 
@@ -12,12 +20,12 @@ type ReviewsApiResponse = JudgemeReviewsData & {
   productHandle: string;
 };
 
-function formatReviewDate(dateString: string) {
+function formatReviewDate(dateString: string, locale: I18nLocale) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) {
     return dateString;
   }
-  return date.toLocaleDateString("en-GB");
+  return formatDate(date, locale);
 }
 
 export function ReviewList({
@@ -27,6 +35,8 @@ export function ReviewList({
   judgemeReviews: JudgemeReviewsData;
   emptyReviewsText: string;
 }) {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const { product } = useLoaderData<ProductLoaderType>();
   const fetcher = useFetcher<ReviewsApiResponse>();
   const [reviews, setReviews] = useState(judgemeReviews.reviews);
@@ -78,7 +88,8 @@ export function ReviewList({
   return (
     <section className="min-w-0 rounded-lg bg-background-basic p-6 text-text md:p-8">
       <p className="text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text uppercase">
-        Reviews ({judgemeReviews.reviewNumber.toLocaleString()})
+        {t("reviews.title")} (
+        {formatNumber(judgemeReviews.reviewNumber, locale)})
       </p>
       <div className="mx-auto mt-3 h-px w-10 bg-border-subtle" />
 
@@ -98,7 +109,7 @@ export function ReviewList({
                   <p className="font-semibold">{review.reviewer.name}</p>
                   {review.verified && (
                     <p className="text-text-subtle text-xs">
-                      Verified purchase
+                      {t("reviews.verifiedPurchase")}
                     </p>
                   )}
                 </div>
@@ -110,7 +121,7 @@ export function ReviewList({
                   </p>
                 )}
                 <time className="block text-text-subtle text-xs">
-                  {formatReviewDate(review.created_at)}
+                  {formatReviewDate(review.created_at, locale)}
                 </time>
                 <p className="text-sm leading-6">{review.body}</p>
               </div>
@@ -128,7 +139,7 @@ export function ReviewList({
             disabled={fetcher.state !== "idle"}
             onClick={loadMore}
           >
-            Load more
+            {t("reviews.loadMore")}
           </Button>
         </div>
       )}

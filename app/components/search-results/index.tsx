@@ -1,4 +1,5 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import { Form, useLoaderData, useLocation, useNavigate } from "react-router";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
@@ -13,6 +14,7 @@ import type { loader as searchLoader } from "~/routes/($locale).search";
 import { getImageLoadingPriority } from "~/utils/image";
 
 export default function SearchResults() {
+  const { t } = useTranslation();
   const {
     searchTerm,
     products,
@@ -51,8 +53,8 @@ export default function SearchResults() {
         <div className="w-full flex flex-col items-center gap-6 px-4 md:px-6">
           <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
             {searchTerm
-              ? `Search results for “${searchTerm}”`
-              : "Search our site"}
+              ? t("search.resultsFor", { term: searchTerm })
+              : t("search.title")}
           </h1>
           <Form
             method="get"
@@ -62,13 +64,13 @@ export default function SearchResults() {
               defaultValue={searchTerm}
               onClear={() => navigate(location.pathname)}
               name="q"
-              placeholder="What are you looking for?"
+              placeholder={t("search.placeholder")}
               className="w-full rounded border-2 md:w-96 lg:w-[400px]"
               type="search"
               prefixElement={
                 <button
                   type="submit"
-                  aria-label="Search"
+                  aria-label={t("search.title")}
                   className="cursor-pointer"
                 >
                   <IconSearch
@@ -106,14 +108,14 @@ export default function SearchResults() {
             renderPrevious={({ PreviousLink, isLoading }) => (
               <div className="mb-11 flex w-full items-center justify-center">
                 <Button as={PreviousLink} variant="outline">
-                  {isLoading ? "Loading..." : "Previous"}
+                  {isLoading ? t("system.loading") : t("search.loadPrevious")}
                 </Button>
               </div>
             )}
             renderNext={({ NextLink, isLoading }) => (
               <div className="my-11 flex w-full items-center justify-center">
                 <Button as={NextLink} variant="outline">
-                  {isLoading ? "Loading..." : "Show more +"}
+                  {isLoading ? t("system.loading") : t("search.loadMore")}
                 </Button>
               </div>
             )}
@@ -141,9 +143,10 @@ export default function SearchResults() {
 }
 
 function NoResults() {
+  const { t } = useTranslation();
   return (
     <div className="w-full py-4">
-      <Text className="opacity-50">No results, try a different search.</Text>
+      <Text className="opacity-50">{t("search.empty")}</Text>
     </div>
   );
 }

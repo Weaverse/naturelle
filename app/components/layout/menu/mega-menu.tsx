@@ -62,16 +62,8 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                       <IconCaret direction="down" className="size-4" />
                     </>
                   ) : (
-                    <Link
-                      to={to}
-                      className={({ isActive }) =>
-                        cn(
-                          "text-animation transition-none",
-                          isActive && "is-active",
-                        )
-                      }
-                    >
-                      <span>{title}</span>
+                    <Link to={to} className="transition-none">
+                      <span className="text-animation">{title}</span>
                     </Link>
                   )}
                 </Menubar.Trigger>

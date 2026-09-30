@@ -1,6 +1,8 @@
 import type { HydrogenThemeSchema, InspectorGroup } from "@weaverse/hydrogen";
 import { DEFAULT_VARIANT_DISPLAY_SETTINGS } from "~/components/product-form/variants";
-import { COUNTRIES, DEFAULT_LOCALE } from "~/utils/const";
+import enUS from "~/locales/en-us.json";
+import type { StoreLocalization } from "~/types/type-locale";
+import { DEFAULT_LOCALE } from "~/utils/const";
 import { version } from "../../package.json";
 
 const announcementIconOptions = [
@@ -55,16 +57,9 @@ export const themeSchema: HydrogenThemeSchema = {
   i18n: {
     urlStructure: "url-path",
     defaultLocale: DEFAULT_LOCALE,
-    shopLocales: Object.entries(COUNTRIES).map(
-      ([pathPrefix, { label, language, country }]) => {
-        return {
-          pathPrefix: pathPrefix === "default" ? "" : pathPrefix,
-          label,
-          language,
-          country,
-        };
-      },
-    ),
+    shopLocales: [DEFAULT_LOCALE],
+    staticContent: enUS,
+    translation: true,
   },
   settings: [
     {
@@ -1360,3 +1355,16 @@ export const themeSchema: HydrogenThemeSchema = {
     },
   ],
 };
+
+export function getThemeSchema(
+  localization: StoreLocalization,
+): HydrogenThemeSchema {
+  return {
+    ...themeSchema,
+    i18n: {
+      ...themeSchema.i18n,
+      defaultLocale: localization.defaultLocale,
+      shopLocales: localization.availableLocales,
+    },
+  };
+}

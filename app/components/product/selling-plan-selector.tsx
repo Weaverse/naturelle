@@ -1,4 +1,5 @@
 import { Money } from "@shopify/hydrogen";
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { SellingPlanGroupFragment } from "storefront-api.generated";
 import { getSellingPlanDiscount } from "~/utils/selling-plan";
@@ -16,6 +17,7 @@ export function SellingPlanSelector({
   requiresSellingPlan?: boolean;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const groups =
     sellingPlanGroups?.nodes.filter(
       (group) => group.sellingPlans.nodes.length > 0,
@@ -27,7 +29,9 @@ export function SellingPlanSelector({
 
   return (
     <fieldset className="space-y-3" disabled={disabled}>
-      <legend className="mb-3 font-semibold text-sm">Purchase option</legend>
+      <legend className="mb-3 font-semibold text-sm">
+        {t("subscription.purchaseOption")}
+      </legend>
       {!requiresSellingPlan && (
         <label
           className={clsx(
@@ -43,7 +47,9 @@ export function SellingPlanSelector({
             checked={!selectedSellingPlanId}
             onChange={() => onChange(null)}
           />
-          <span className="font-medium text-sm">One-time purchase</span>
+          <span className="font-medium text-sm">
+            {t("subscription.oneTimePurchase")}
+          </span>
         </label>
       )}
 
@@ -79,7 +85,10 @@ export function SellingPlanSelector({
                       <span className="rounded-full bg-background-subtle-2 px-2.5 py-1 font-semibold text-xs">
                         {adjustment && "adjustmentAmount" in adjustment ? (
                           <>
-                            Save <Money data={adjustment.adjustmentAmount} />
+                            {t("subscription.save", {
+                              amount: "",
+                            })}{" "}
+                            <Money data={adjustment.adjustmentAmount} />
                           </>
                         ) : (
                           discount

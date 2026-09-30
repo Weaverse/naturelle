@@ -1,35 +1,27 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { LocaleSelect } from "./locale-select";
-import { LANGUAGE_LABELS, useCountrySelector } from "./use-country-selector";
+import { useCountrySelector } from "./use-country-selector";
 
 export function FooterCountrySelector() {
-  const {
-    countryGroups,
-    getRedirectUrl,
-    languages,
-    observerRef,
-    selectedLocale,
-  } = useCountrySelector();
+  const { t } = useTranslation();
+  const { countryGroups, getRedirectUrl, languages, selectedLocale } =
+    useCountrySelector();
 
   return (
-    <div
-      ref={observerRef}
-      className="flex max-w-full flex-wrap items-center gap-4"
-    >
+    <div className="flex max-w-full flex-wrap items-center gap-4">
       <LocaleSelect
-        ariaLabel="Select language"
-        label={
-          LANGUAGE_LABELS[selectedLocale.language] ?? selectedLocale.language
-        }
+        ariaLabel={t("locale.selectLanguage")}
+        label={selectedLocale.languageName ?? selectedLocale.language}
         options={languages.map((locale) => ({
           key: `${locale.language}-${locale.country}`,
-          label: LANGUAGE_LABELS[locale.language] ?? locale.language,
+          label: locale.languageName ?? locale.language,
           locale,
         }))}
         getRedirectUrl={getRedirectUrl}
         placement="footer"
       />
       <LocaleSelect
-        ariaLabel="Select country"
+        ariaLabel={t("locale.selectCountry")}
         label={selectedLocale.label}
         options={countryGroups.map(([country, countryLocales]) => {
           const locale =

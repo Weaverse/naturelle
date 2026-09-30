@@ -1,4 +1,4 @@
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import {
   type CSSProperties,
@@ -68,6 +68,7 @@ function AnnouncementItem({
 }
 
 export function ScrollingAnnouncement() {
+  const { t } = useTranslation();
   const settings = useThemeSettings();
   const {
     announcementMessage1,
@@ -216,7 +217,7 @@ export function ScrollingAnnouncement() {
           type="button"
           onClick={goPrev}
           disabled={!canNavigate}
-          aria-label="Previous announcement"
+          aria-label={t("announcement.previous")}
           className={clsx(
             "flex h-full w-2 shrink-0 items-center justify-center",
             "text-(--color-topbar-text)/80 transition-opacity",
@@ -261,7 +262,7 @@ export function ScrollingAnnouncement() {
           type="button"
           onClick={goNext}
           disabled={!canNavigate}
-          aria-label="Next announcement"
+          aria-label={t("announcement.next")}
           className={clsx(
             "flex h-full w-2 shrink-0 items-center justify-center",
             "text-(--color-topbar-text)/80 transition-opacity",

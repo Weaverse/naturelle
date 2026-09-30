@@ -26,7 +26,7 @@
     "url": "https://github.com/weaverse/naturelle/issues"
   },
   "scripts": {
-    "build": "shopify hydrogen codegen && react-router build",
+    "build": "shopify hydrogen build --codegen",
     "dev": "react-router typegen && shopify hydrogen dev --codegen --port 3456",
     "dev:ca": "shopify hydrogen dev --codegen --port 3456 --customer-account-push",
     "preview": "shopify hydrogen preview --build",
@@ -43,6 +43,8 @@
     "biome:fix": "biome check --write",
     "format": "biome format --write",
     "format:check": "biome format",
+    "i18n:check": "node scripts/check-translations.mjs",
+    "locale:check": "node --test tests/locale.unit.test.ts",
     "cf-typegen": "wrangler types && react-router typegen",
     "check": "react-router typegen && tsc --noEmit && react-router build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",

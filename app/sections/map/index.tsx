@@ -2,6 +2,7 @@ import {
   createSchema,
   type HydrogenComponentProps,
   useChildInstances,
+  useTranslation,
 } from "@weaverse/hydrogen";
 import {
   createContext,
@@ -33,11 +34,12 @@ export const MapContext = createContext<MapContextValue>({
 });
 
 function MapFrame({ address }: { address: string }) {
+  const { t } = useTranslation();
   return (
     <div className="map-media relative min-h-90 min-w-0 overflow-hidden bg-background-subtle-1 md:min-h-140 md:flex-[1_1_var(--container-xl)]">
       <iframe
         key={address}
-        title="Store location map"
+        title={t("map.storeLocation")}
         src={`https://maps.google.com/maps?t=m&q=${encodeURIComponent(address)}&ie=UTF8&output=embed`}
         className="absolute inset-0 h-full w-full border-0"
         loading="lazy"

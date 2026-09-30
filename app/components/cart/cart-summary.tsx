@@ -6,7 +6,7 @@ import {
   Money,
   useAnalytics,
 } from "@shopify/hydrogen";
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { type SyntheticEvent, useState } from "react";
 import { useFetcher } from "react-router";
 import { buttonVariants } from "~/components/button";
@@ -100,6 +100,7 @@ function getApplicableCodes(
 }
 
 function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
+  const { t } = useTranslation();
   const {
     enableCartNote,
     cartNoteButtonText,
@@ -182,11 +183,11 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
       className="flex w-full flex-col gap-4 rounded-xl bg-background-basic p-5 md:p-6"
     >
       <h2 id="cart-summary" className="sr-only">
-        Order summary
+        {t("cart.orderSummary")}
       </h2>
       <div className="flex items-center justify-between text-sm">
         <span className="font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text">
-          Subtotal
+          {t("cart.subtotal")}
         </span>
         {isCartUpdating ? (
           <Skeleton className="h-4 w-20 rounded" />
@@ -219,7 +220,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
               type="button"
               className="self-start font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle underline underline-offset-2"
             >
-              {giftCardButtonText || "Giftcard"}
+              {giftCardButtonText || t("cart.giftCard")}
             </button>
           </Dialog.Trigger>
           <GiftCardDialog appliedGiftCards={appliedGiftCards} layout="page" />
@@ -243,16 +244,16 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
 
       <div className="flex flex-col gap-4 font-body text-base leading-none font-normal tracking-[-0.16px] text-text">
         <div className="flex justify-between gap-4">
-          <span>Shipping</span>
-          <span>Calculated at checkout</span>
+          <span>{t("account.shipping")}</span>
+          <span>{t("cart.calculatedAtCheckout")}</span>
         </div>
         <div className="flex justify-between gap-4">
-          <span>Estimated tax</span>
+          <span>{t("cart.estimatedTax")}</span>
           <span>
             {cost.totalTaxAmount ? (
               <Money data={cost.totalTaxAmount} />
             ) : (
-              "Calculated at checkout"
+              t("cart.calculatedAtCheckout")
             )}
           </span>
         </div>
@@ -264,7 +265,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
 
       <div className="flex items-center justify-between">
         <span className="font-heading text-[26px] leading-[110%] font-normal text-text">
-          Total
+          {t("cart.total")}
         </span>
         {isCartUpdating ? (
           <Skeleton className="h-6 w-24 rounded" />
@@ -276,7 +277,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
         )}
       </div>
       <p className="font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle">
-        Shipping & taxes calculated at checkout
+        {t("cart.shippingTaxesCheckout")}
       </p>
 
       {enableCartNote && (
@@ -286,7 +287,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
               type="button"
               className="self-start text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text-subtle underline decoration-solid [text-decoration-skip-ink:none] [text-decoration-thickness:auto] [text-underline-position:from-font]"
             >
-              {cartNoteButtonText || "Add a note"}
+              {cartNoteButtonText || t("cart.noteTitle")}
             </button>
           </Dialog.Trigger>
           <NoteDialog cartNote={note} layout="page" />
@@ -317,21 +318,21 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
             });
           }}
         >
-          Checkout
+          {t("cart.checkout")}
         </a>
       )}
       <Link
         to="/collections"
         className="block text-center font-body text-sm leading-none font-normal tracking-[-0.14px] text-text"
       >
-        <span className="text-text-subtle">or </span>
-        <span>Continue shopping</span>
+        <span>{t("cart.continueShopping")}</span>
       </Link>
     </section>
   );
 }
 
 function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
+  const { t } = useTranslation();
   const {
     enableCartNote,
     cartNoteButtonText,
@@ -374,7 +375,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       className="shrink-0 border-border-subtle border-t pt-4 pb-5"
     >
       <h2 id="cart-summary" className="sr-only">
-        Order summary
+        {t("cart.orderSummary")}
       </h2>
 
       <AppliedCartCodes
@@ -391,7 +392,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       />
 
       <div className="flex items-center justify-between">
-        <span className="font-semibold">Subtotal</span>
+        <span className="font-semibold">{t("cart.subtotal")}</span>
         {isCartUpdating ? (
           <Skeleton className="h-4 w-20 rounded" />
         ) : (
@@ -413,7 +414,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       </div>
 
       <p className="mt-1 text-sm text-text-subtle">
-        Shipping and taxes will be calculated at checkout.
+        {t("cart.shippingTaxesCheckout")}
       </p>
 
       {(enableCartNote || enableDiscountCode || enableGiftCard) && (
@@ -425,7 +426,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
                   type="button"
                   className="cursor-pointer underline underline-offset-2"
                 >
-                  {cartNoteButtonText || "Add a note"}
+                  {cartNoteButtonText || t("cart.noteTitle")}
                 </button>
               </Dialog.Trigger>
               <NoteDialog cartNote={note} layout="aside" />
@@ -441,7 +442,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
                   type="button"
                   className="cursor-pointer underline underline-offset-2"
                 >
-                  {discountCodeButtonText || "Discount code"}
+                  {discountCodeButtonText || t("cart.discountCode")}
                 </button>
               </Dialog.Trigger>
               <DiscountDialog discountCodes={discountCodes} layout="aside" />
@@ -457,7 +458,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
                   type="button"
                   className="cursor-pointer underline underline-offset-2"
                 >
-                  {giftCardButtonText || "Giftcard"}
+                  {giftCardButtonText || t("cart.giftCard")}
                 </button>
               </Dialog.Trigger>
               <GiftCardDialog
@@ -494,7 +495,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
             });
           }}
         >
-          Continue to Checkout
+          {t("cart.checkout")}
         </a>
       )}
     </section>
@@ -524,6 +525,7 @@ function AppliedCartCodes({
   onRemovingDiscountCode: (code: string) => void;
   dcRemoveFetcher: { state: string };
 }) {
+  const { t } = useTranslation();
   const applicableCodes = getApplicableCodes(discountCodes);
 
   if (!(appliedGiftCards?.length > 0 || applicableCodes.length > 0)) {
@@ -551,7 +553,9 @@ function AppliedCartCodes({
               <button
                 type="submit"
                 className="flex size-4 items-center justify-center"
-                aria-label={`Remove gift card ***${giftCard.lastCharacters}`}
+                aria-label={t("cart.removeGiftCard", {
+                  digits: giftCard.lastCharacters,
+                })}
                 onClick={() => onRemovingGiftCard(giftCard.lastCharacters)}
               >
                 {isGCRemoving ? (
@@ -586,7 +590,9 @@ function AppliedCartCodes({
               <button
                 type="submit"
                 className="flex size-4 items-center justify-center"
-                aria-label={`Remove discount code ${discount.code}`}
+                aria-label={t("cart.removeDiscountCode", {
+                  code: discount.code,
+                })}
                 onClick={() => onRemovingDiscountCode(discount.code)}
               >
                 {isDCRemoving ? (
@@ -622,6 +628,7 @@ function PageDiscountForm({
   submissionComplete: boolean;
   applied: boolean;
 }) {
+  const { t } = useTranslation();
   if (!enabled) {
     return null;
   }
@@ -632,7 +639,7 @@ function PageDiscountForm({
         htmlFor="cart-discount-code"
         className="font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle"
       >
-        {label || "Discount code"}
+        {label || t("cart.discountCode")}
       </label>
       <div className="flex gap-2">
         <input
@@ -640,7 +647,7 @@ function PageDiscountForm({
           name="discountCode"
           value={code}
           onChange={(event) => onCodeChange(event.target.value)}
-          placeholder="Enter code"
+          placeholder={t("cart.enterCode")}
           className="min-w-0 flex-1 rounded-lg border border-border bg-transparent px-3 py-2 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
         />
         <button
@@ -648,17 +655,17 @@ function PageDiscountForm({
           disabled={!code.trim() || isSubmitting}
           className="rounded-lg bg-text-primary px-5 py-2 text-sm text-text-inverse disabled:opacity-50"
         >
-          Apply
+          {t("cart.apply")}
         </button>
       </div>
       {submissionComplete &&
         (applied ? (
           <CartActionBanner variant="success">
-            Discount applied successfully
+            {t("cart.discountApplied")}
           </CartActionBanner>
         ) : (
           <CartActionBanner variant="error">
-            Invalid discount code.
+            {t("cart.invalidDiscount")}
           </CartActionBanner>
         ))}
     </form>

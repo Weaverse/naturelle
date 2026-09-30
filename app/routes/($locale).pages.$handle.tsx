@@ -5,9 +5,11 @@ import invariant from "tiny-invariant";
 import { redirectIfHandleIsLocalized } from "~/.server/redirect";
 import { seoPayload } from "~/.server/seo";
 import { routeHeaders } from "~/utils/cache";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   invariant(params.handle, "Missing page handle");

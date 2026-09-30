@@ -6,7 +6,7 @@ import "@total-typescript/ts-reset";
 import type { HydrogenEnv, HydrogenSessionData } from "@shopify/hydrogen";
 import type { WeaverseClient } from "@weaverse/hydrogen";
 import type { createHydrogenRouterContext } from "./app/.server/context";
-import type { I18nLocale } from "./app/types/type-locale";
+import type { I18nLocale, StoreLocalization } from "./app/types/type-locale";
 
 declare global {
   /**
@@ -39,6 +39,7 @@ declare module "react-router" {
       i18n: I18nLocale;
     };
     weaverse: WeaverseClient;
+    localization: StoreLocalization;
     additionalContext: HydrogenAdditionalContext;
   }
 

@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { Button } from "~/components/button";
 
 export function GenericError({
@@ -5,8 +6,9 @@ export function GenericError({
 }: {
   error: { message: string; stack?: string } | unknown;
 }) {
-  const heading = "Something's wrong here.";
-  let description = "We found an error while loading this page.";
+  const { t } = useTranslation();
+  const heading = t("system.somethingWentWrong");
+  let description = t("system.loadError");
 
   if (error && typeof error === "object" && "message" in error) {
     description += `\n${(error as { message: string }).message}`;
@@ -22,7 +24,7 @@ export function GenericError({
         </span>
         <Button variant="primary" to="/">
           <span className="font-heading text-xl font-medium">
-            Back to Homepage
+            {t("system.backToHomepage")}
           </span>
         </Button>
       </div>

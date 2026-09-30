@@ -1,6 +1,10 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { StarRating } from "~/components/star-rating";
+import { useRootLoaderData } from "~/root";
 import type { JudgeMeReviewType } from "~/types/judgeme";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatDate } from "~/utils/locale";
 
 interface ReviewProps {
   review: JudgeMeReviewType;
@@ -13,13 +17,11 @@ const Review = ({
   review,
   verifiedLabel = "Verified Buyer",
 }: ReviewProps) => {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const reviewerName = review.reviewer.name;
   const date = review.created_at
-    ? new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }).format(new Date(review.created_at))
+    ? formatDate(review.created_at, locale)
     : undefined;
   return (
     <div
@@ -47,7 +49,8 @@ const Review = ({
           <div className="flex flex-wrap items-center font-body text-xs leading-none font-normal tracking-[0.24px] text-(--text-color)">
             {date && (
               <span>
-                Reviewed: <time dateTime={review.created_at}>{date}</time>
+                {t("reviews.reviewed")}{" "}
+                <time dateTime={review.created_at}>{date}</time>
               </span>
             )}
           </div>

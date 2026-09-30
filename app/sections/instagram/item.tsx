@@ -2,6 +2,7 @@ import {
   createSchema,
   type HydrogenComponentProps,
   IMAGES_PLACEHOLDERS,
+  useTranslation,
   type WeaverseImage,
 } from "@weaverse/hydrogen";
 import { IconFooterInstagram } from "~/components/icon";
@@ -16,21 +17,22 @@ interface InstagramItemProps extends HydrogenComponentProps {
 
 function resolveImage(value?: WeaverseImage | string) {
   if (!value) {
-    return { url: IMAGES_PLACEHOLDERS.collection_4, altText: "Instagram post" };
+    return { url: IMAGES_PLACEHOLDERS.collection_4, altText: "" };
   }
   if (typeof value === "string") {
-    return { url: value, altText: "Instagram post" };
+    return { url: value, altText: "" };
   }
   return value;
 }
 
 const InstagramItem = ({ ref, image, link, ...rest }: InstagramItemProps) => {
+  const { t } = useTranslation();
   const imageData = resolveImage(image);
   const content = (
     <>
       <Image
         data={imageData}
-        alt={imageData.altText || "Instagram post"}
+        alt={imageData.altText || t("instagram.post")}
         className="h-full w-full object-cover"
         sizes="(min-width: 1440px) 17vw, (min-width: 768px) 25vw, 50vw"
       />
@@ -46,7 +48,7 @@ const InstagramItem = ({ ref, image, link, ...rest }: InstagramItemProps) => {
         <Link
           to={link}
           target="_blank"
-          aria-label="Open Instagram post"
+          aria-label={t("instagram.openPost")}
           className="group relative block aspect-square w-full overflow-hidden rounded-md border border-border-subtle"
         >
           {content}

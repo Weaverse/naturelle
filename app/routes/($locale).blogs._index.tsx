@@ -1,12 +1,16 @@
 import { getPaginationVariables, Pagination } from "@shopify/hydrogen";
+import { useTranslation } from "@weaverse/hydrogen";
 import {
   data,
-  Link,
   type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
 } from "react-router";
+import { Link } from "~/components/link";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export const meta: MetaFunction = () => {
   return [{ title: `Hydrogen | Blogs` }];
@@ -31,19 +35,24 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
 };
 
 export default function Blogs() {
+  const { t } = useTranslation();
   const { blogs } = useLoaderData<typeof loader>();
 
   return (
     <>
       <div className="blogs">
-        <h1>Blogs</h1>
+        <h1>{t("blog.title")}</h1>
         <div className="blogs-grid">
           <Pagination connection={blogs}>
             {({ nodes, isLoading, PreviousLink, NextLink }) => {
               return (
                 <>
                   <PreviousLink>
-                    {isLoading ? "Loading..." : <span>↑ Load previous</span>}
+                    {isLoading ? (
+                      t("system.loading")
+                    ) : (
+                      <span>↑ {t("blog.loadPrevious")}</span>
+                    )}
                   </PreviousLink>
                   {nodes.map((blog: any) => {
                     return (
@@ -58,7 +67,11 @@ export default function Blogs() {
                     );
                   })}
                   <NextLink>
-                    {isLoading ? "Loading..." : <span>Load more ↓</span>}
+                    {isLoading ? (
+                      t("system.loading")
+                    ) : (
+                      <span>{t("blog.loadMore")} ↓</span>
+                    )}
                   </NextLink>
                 </>
               );

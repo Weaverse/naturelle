@@ -27,9 +27,11 @@ import {
 import type { Storefront } from "~/types/type-locale";
 import { routeHeaders } from "~/utils/cache";
 import { getJudgemeReviews } from "~/utils/judgeme";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { handle } = params;

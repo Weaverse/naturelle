@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
@@ -15,8 +15,11 @@ import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
 import { Text } from "~/components/text";
 import { useSellingPlanSelection } from "~/hooks/use-selling-plan";
+import { useRootLoaderData } from "~/root";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { cn } from "~/utils/cn";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatNumber } from "~/utils/locale";
 import { getExcerpt } from "~/utils/misc";
 import {
   ProductQuantityInput,
@@ -52,6 +55,8 @@ let ProductInformation = ({
   ref,
   ...props
 }: ProductInformationProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   let {
     product,
     shop,
@@ -148,20 +153,20 @@ let ProductInformation = ({
             />
             {showDetails && descriptionHtml && (
               <ProductDescription
-                title="Description"
+                title={t("product.description")}
                 content={descriptionHtml}
               />
             )}
             {showShippingPolicy && shippingPolicy?.body && (
               <ProductDescription
-                title="Shipping"
+                title={t("product.shipping")}
                 content={getExcerpt(shippingPolicy.body)}
                 learnMore={`/policies/${shippingPolicy.handle}`}
               />
             )}
             {showRefundPolicy && refundPolicy?.body && (
               <ProductDescription
-                title="Returns"
+                title={t("product.returns")}
                 content={getExcerpt(refundPolicy.body)}
                 learnMore={`/policies/${refundPolicy.handle}`}
               />
@@ -193,7 +198,7 @@ let ProductInformation = ({
                     >
                       {showVendor && vendor && (
                         <>
-                          Vendor:{" "}
+                          {t("product.vendor")}{" "}
                           <span className="text-text-primary">{vendor}</span>
                         </>
                       )}
@@ -202,7 +207,7 @@ let ProductInformation = ({
                           {showVendor && vendor && (
                             <span className="px-2">|</span>
                           )}
-                          Type:{" "}
+                          {t("product.type")}{" "}
                           <span className="text-text-primary">
                             {product.productType}
                           </span>
@@ -218,12 +223,25 @@ let ProductInformation = ({
                       <StarRating rating={judgemeReviews.rating} />
                       <span className="ml-1">
                         {judgemeReviews.rating.toFixed(1)}/5.0 (
-                        {judgemeReviews.reviewNumber} reviews)
+                        {judgemeReviews.reviewNumber === 1
+                          ? t("reviews.count", {
+                              count: formatNumber(
+                                judgemeReviews.reviewNumber,
+                                locale,
+                              ),
+                            })
+                          : t("reviews.count_other", {
+                              count: formatNumber(
+                                judgemeReviews.reviewNumber,
+                                locale,
+                              ),
+                            })}
+                        )
                       </span>
                     </div>
                   )}
                   {children}
-                  <p
+                  <div
                     data-motion="fade-up"
                     className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
                   >
@@ -232,7 +250,6 @@ let ProductInformation = ({
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
                         className="text-label-save-background line-through"
-                        as="span"
                       />
                     )}
 
@@ -242,7 +259,7 @@ let ProductInformation = ({
                         sellingPlan={selectedSellingPlan}
                       />
                     ) : null}
-                  </p>
+                  </div>
                 </div>
                 <ProductVariants
                   product={product}
@@ -315,7 +332,8 @@ let ProductInformation = ({
                       to={`/policies/${shippingPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <span aria-hidden="true">▱</span> View shipping policy
+                      <span aria-hidden="true">▱</span>{" "}
+                      {t("product.viewShippingPolicy")}
                     </Link>
                   )}
                   {showRefundPolicy && refundPolicy?.handle && (
@@ -323,7 +341,8 @@ let ProductInformation = ({
                       to={`/policies/${refundPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <span aria-hidden="true">↩</span> View returns policy
+                      <span aria-hidden="true">↩</span>{" "}
+                      {t("product.viewReturnsPolicy")}
                     </Link>
                   )}
                 </div>
@@ -332,7 +351,7 @@ let ProductInformation = ({
                 to={`/products/${product.handle}`}
                 className="w-fit text-sm text-text-primary underline underline-offset-4"
               >
-                View product details
+                {t("product.viewDetails")}
               </Link>
               <ProductShareLinks productUrl={productUrl} title={title} />
             </div>
@@ -354,6 +373,7 @@ function ProductDescription({
   content: string;
   learnMore?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <Disclosure as="div" className="mt-6 border-t border-border-subtle">
       {({ open }) => (
@@ -379,7 +399,7 @@ function ProductDescription({
                 to={learnMore}
                 className="mt-4 inline-block text-sm underline underline-offset-4"
               >
-                Learn more
+                {t("product.learnMore")}
               </Link>
             )}
           </Disclosure.Panel>

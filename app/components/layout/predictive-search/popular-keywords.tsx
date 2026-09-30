@@ -1,10 +1,11 @@
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 
 export function PopularKeywords({
   onKeywordClick,
 }: {
   onKeywordClick?: (keyword: string) => void;
 }) {
+  const { t } = useTranslation();
   const { popularSearchKeywords } = useThemeSettings();
   if (!popularSearchKeywords?.length) {
     return null;
@@ -29,7 +30,7 @@ export function PopularKeywords({
         id="popular-search-keywords"
         className="mb-4 font-heading text-sm uppercase leading-normal text-text-subtle"
       >
-        Popular keywords
+        {t("search.popular")}
       </div>
       <ul className="space-y-2 text-sm text-text">
         {keywords.map((keyword) => (

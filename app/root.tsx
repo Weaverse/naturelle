@@ -6,7 +6,8 @@ import {
   type SeoConfig,
   useNonce,
 } from "@shopify/hydrogen";
-import { withWeaverse } from "@weaverse/hydrogen";
+import { useTranslation, withWeaverse } from "@weaverse/hydrogen";
+import { Fragment } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -29,7 +30,6 @@ import { Header } from "~/components/layout/header";
 import { CustomAnalytics } from "~/components/root/analytics";
 import { GlobalLoading } from "~/components/root/global-loading";
 import { Preloader } from "~/components/root/preloader";
-import { getErrorMessage } from "~/utils/define-message-error";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
@@ -37,6 +37,7 @@ import "@fontsource-variable/montserrat";
 import "@fontsource/belleza";
 import "@fontsource/playfair-display";
 import { DEFAULT_LOCALE } from "./utils/const";
+import { intlLocale } from "./utils/locale";
 import { loadCriticalData, loadDeferredData } from "./utils/root.server";
 
 export type RootLoader = typeof loader;
@@ -89,6 +90,7 @@ export const Layout = withWeaverse(function RootLayout({
 }) {
   const location = useLocation();
   const nonce = useNonce();
+  const { t } = useTranslation();
   const data = useRouteLoaderData<RootLoader>("root");
   const locale = data?.selectedLocale ?? DEFAULT_LOCALE;
   const serverCart = useCartStore((state) => state.serverCart);
@@ -102,7 +104,7 @@ export const Layout = withWeaverse(function RootLayout({
   }
 
   return (
-    <html lang={locale.language}>
+    <html lang={intlLocale(locale)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -122,9 +124,16 @@ export const Layout = withWeaverse(function RootLayout({
             consent={data.consent}
           >
             <CartStoreSync />
-            <Header />
-            <main className="grow">{children}</main>
-            <Footer />
+            <a href="#mainContent" className="sr-only">
+              {t("accessibility.skipToContent")}
+            </a>
+            <Fragment key={`${locale.language}-${locale.country}`}>
+              <Header />
+              <main id="mainContent" className="grow">
+                {children}
+              </main>
+              <Footer />
+            </Fragment>
             <CustomAnalytics />
           </Analytics.Provider>
         ) : (
@@ -146,12 +155,20 @@ function App() {
 export default App;
 
 export function ErrorBoundary() {
+  const { t } = useTranslation();
   const routeError = useRouteError();
   let errorMessage = "";
   let errorStatus = 0;
 
   if (isRouteErrorResponse(routeError)) {
-    errorMessage = getErrorMessage(routeError.status);
+    errorMessage =
+      routeError.status === 404
+        ? t("system.pageNotFoundDescription")
+        : routeError.status === 500
+          ? t("system.internalError")
+          : routeError.status === 403
+            ? t("system.forbidden")
+            : t("system.unexpectedError");
     errorStatus = routeError.status;
   } else if (routeError instanceof Error) {
     errorMessage = routeError.message;
@@ -176,7 +193,7 @@ export function ErrorBoundary() {
         )}
         <Button variant={"primary"} to="/">
           <span className="font-heading font-medium text-xl">
-            Back to Homepage
+            {t("system.backToHomepage")}
           </span>
         </Button>
       </div>

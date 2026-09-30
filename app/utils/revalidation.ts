@@ -1,6 +1,12 @@
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 
 const CART_ACTION_PATH = /(?:^|\/)cart$/;
+const LOCALE_SEGMENT = /^[a-z]{2,3}-[a-z]{2}$/i;
+
+function getLocaleSegment(pathname: string) {
+  const segment = pathname.split("/").filter(Boolean)[0];
+  return segment && LOCALE_SEGMENT.test(segment) ? segment.toLowerCase() : null;
+}
 
 /**
  * Cart mutations are synced into the Zustand store from the fetcher response.
@@ -14,12 +20,19 @@ export function skipRevalidationForCartActions({
   formMethod,
   nextUrl,
 }: ShouldRevalidateFunctionArgs) {
+  // Locale changes must always rebuild route data in the new market context.
+  if (
+    getLocaleSegment(currentUrl.pathname) !== getLocaleSegment(nextUrl.pathname)
+  ) {
+    return true;
+  }
+
   if (formAction && formMethod && formMethod.toUpperCase() !== "GET") {
     const actionPath = new URL(formAction, currentUrl).pathname.replace(
       /\.data$/,
       "",
     );
-    if (CART_ACTION_PATH.test(actionPath) && currentUrl.href === nextUrl.href) {
+    if (CART_ACTION_PATH.test(actionPath)) {
       return false;
     }
   }

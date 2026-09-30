@@ -1,6 +1,12 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { Image } from "~/components/image";
+import { useRootLoaderData } from "~/root";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatCurrency } from "~/utils/locale";
 
 export function ProductPlaceholder(_props: any) {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   return (
     <div className="container px-4 md:px-6 mx-auto pointer-events-none">
       <div className="grid items-start gap-6 md:grid-cols-2 md:gap-12">
@@ -18,18 +24,18 @@ export function ProductPlaceholder(_props: any) {
         <div className="flex flex-col justify-start space-y-5">
           <div className="space-y-4">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              PRODUCT TITLE
+              {t("product.exampleTitle")}
             </h2>
             <p className="text-2xl text-zinc-500 md:text-3xl/relaxed lg:text-3xl/relaxed dark:text-zinc-400">
-              <span>₫0</span>
+              <span>{formatCurrency(0, locale)}</span>
             </p>
             <p className="max-w-[600px] text-zinc-500 md:text-xl/relaxed lg:text-xl/relaxed dark:text-zinc-400">
-              Product description
+              {t("product.exampleDescription")}
             </p>
             <div>
               <div className="flex flex-col flex-wrap mb-4 gap-y-2 last:mb-0">
                 <legend className="whitespace-pre-wrap max-w-prose font-bold text-lg leading-snug min-w-[4rem]">
-                  Size
+                  {t("product.size")}
                 </legend>
                 <div className="flex flex-wrap items-baseline gap-4">
                   <a
@@ -54,7 +60,7 @@ export function ProductPlaceholder(_props: any) {
               </div>
               <div className="flex flex-col flex-wrap mb-4 gap-y-2 last:mb-0">
                 <legend className="whitespace-pre-wrap max-w-prose font-bold text-lg leading-snug min-w-[4rem]">
-                  Color
+                  {t("product.color")}
                 </legend>
                 <div className="flex flex-wrap items-baseline gap-4">
                   <a
@@ -81,13 +87,13 @@ export function ProductPlaceholder(_props: any) {
           </div>
           <div className="space-y-1.5">
             <legend className="whitespace-pre-wrap max-w-prose font-bold text-lg leading-snug">
-              Quantity
+              {t("product.quantity")}
             </legend>
             <div className="rounded-md border w-fit">
               <button
                 type="button"
                 name="decrease-quantity"
-                aria-label="Decrease quantity"
+                aria-label={t("product.decreaseQuantity")}
                 className="w-10 h-10 transition "
               >
                 <span>−</span>
@@ -101,7 +107,7 @@ export function ProductPlaceholder(_props: any) {
                 type="button"
                 className="w-10 h-10 transition text-body hover:text-body"
                 name="increase-quantity"
-                aria-label="Increase quantity"
+                aria-label={t("product.increaseQuantity")}
               >
                 <span>+</span>
               </button>
@@ -113,7 +119,7 @@ export function ProductPlaceholder(_props: any) {
               type="submit"
               data-test="add-to-cart"
             >
-              <span> Add to Cart</span>
+              <span>{t("product.addToCart")}</span>
             </button>
           </div>
         </div>
