@@ -2,6 +2,7 @@ import * as remixBuild from "virtual:react-router/server-build"; // Virtual entr
 import { storefrontRedirect } from "@shopify/hydrogen";
 import { createRequestHandler } from "@shopify/hydrogen/oxygen";
 import { createHydrogenRouterContext } from "~/.server/context";
+import { getCanonicalLocaleRedirect } from "~/utils/locale";
 
 /**
  * Export a fetch handler in module format.
@@ -18,6 +19,13 @@ export default {
         env,
         executionContext,
       );
+      const localeRedirect = getCanonicalLocaleRedirect(
+        request,
+        hydrogenContext.localization,
+      );
+      if (localeRedirect) {
+        return Response.redirect(new URL(localeRedirect, request.url), 302);
+      }
 
       /**
        * Create a Remix request handler and pass

@@ -1,4 +1,4 @@
-import { useThemeSettings } from "@weaverse/hydrogen";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { SearchTypeDrawer } from "~/components/layout/predictive-search/PredictiveSearch/SearchDrawer/search-type-drawer";
@@ -22,6 +22,7 @@ export function SearchToggle({
   compact?: boolean;
   onInlineOpenChange?: (isOpen: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const { isOpen, closeDrawer, openDrawer } = useDrawer();
   const location = useLocation();
   let settings = useThemeSettings();
@@ -77,7 +78,7 @@ export function SearchToggle({
               setIsInlineOpen(true);
               onInlineOpenChange?.(true);
             }}
-            aria-label="Open search"
+            aria-label={t("accessibility.openSearch")}
             className={cn(
               "relative flex items-center justify-center focus:ring-primary/5",
               compact ? "size-5" : "size-6",
@@ -94,7 +95,7 @@ export function SearchToggle({
     <div className={className}>
       <button
         type="button"
-        aria-label="Open search"
+        aria-label={t("accessibility.openSearch")}
         onClick={openDrawer}
         className="relative flex size-6 shrink-0 items-center justify-center focus:ring-primary/5"
       >
@@ -104,7 +105,7 @@ export function SearchToggle({
         open={isOpen}
         onClose={closeDrawer}
         openFrom={openFrom}
-        heading={searchType === "drawerSearch" ? "Search" : ""}
+        heading={searchType === "drawerSearch" ? t("search.title") : ""}
         isForm="search"
       >
         {searchType === "popupSearch" && <SearchTypeHeader isOpen={isOpen} />}

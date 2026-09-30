@@ -371,6 +371,7 @@ export function IconFilters(props: IconProps) {
 export function IconCaret({
   direction = "down",
   stroke = "currentColor",
+  className,
   ...props
 }: IconProps) {
   let rotate: string;
@@ -395,7 +396,7 @@ export function IconCaret({
   return (
     <Icon
       {...props}
-      className={`h-4 w-4 transition ${rotate}`}
+      className={cn("h-4 w-4 transition", rotate, className)}
       viewBox="0 0 16 16"
       fill="transparent"
       stroke={stroke}

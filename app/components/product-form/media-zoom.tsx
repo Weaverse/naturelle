@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, VideoCamera, X } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { parseGid } from "@shopify/hydrogen";
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { useCallback, useEffect, useRef } from "react";
 import type {
@@ -28,6 +29,7 @@ export function ZoomModal({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+  const { t } = useTranslation();
   let scrollAreaRef = useRef<HTMLDivElement>(null);
   let zoomMedia = media.find((med) => med.id === zoomMediaId);
   let zoomMediaIndex = media.findIndex((med) => med.id === zoomMediaId);
@@ -89,7 +91,7 @@ export function ZoomModal({
         >
           <div className="w-full h-full flex items-center justify-center bg-background relative">
             <VisuallyHidden.Root asChild>
-              <Dialog.Title>Product media zoom</Dialog.Title>
+              <Dialog.Title>{t("product.mediaZoom")}</Dialog.Title>
             </VisuallyHidden.Root>
             <div className="hidden md:block absolute top-10 left-8">
               <ScrollArea
@@ -114,7 +116,7 @@ export function ZoomModal({
                         <Image
                           data={{
                             ...previewImage,
-                            altText: alt || "Product image zoom",
+                            altText: alt || t("product.imageZoom"),
                           }}
                           loading="lazy"
                           width={200}
@@ -169,6 +171,7 @@ export function ZoomModal({
 }
 
 function ZoomMedia({ media }: { media: MediaFragment }) {
+  const { t } = useTranslation();
   if (!media) {
     return null;
   }
@@ -176,7 +179,7 @@ function ZoomMedia({ media }: { media: MediaFragment }) {
     let { image, alt } = media as Media_MediaImage_Fragment;
     return (
       <Image
-        data={{ ...image, altText: alt || "Product image zoom" }}
+        data={{ ...image, altText: alt || t("product.imageZoom") }}
         loading="lazy"
         className="object-cover max-w-[95vw] w-auto h-auto md:h-full max-h-screen"
         width={4096}

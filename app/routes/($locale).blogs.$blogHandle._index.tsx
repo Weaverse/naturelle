@@ -12,9 +12,12 @@ import { seoPayload } from "~/.server/seo";
 import { BLOGS_PAGE_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
 import { PAGINATION_SIZE } from "~/utils/const";
+import { intlLocale } from "~/utils/locale";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export const loader = async (args: LoaderFunctionArgs) => {
   let { params, request, context } = args;
@@ -45,10 +48,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return {
       ...article,
       publishedAt: publishedAt
-        ? new Intl.DateTimeFormat(`${language}-${country}`, {
+        ? new Intl.DateTimeFormat(intlLocale({ language, country }), {
             year: "numeric",
             month: "long",
             day: "numeric",
+            timeZone: "UTC",
           }).format(new Date(publishedAt))
         : "",
     };

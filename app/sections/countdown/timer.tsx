@@ -1,5 +1,5 @@
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import { useEffect, useState } from "react";
 
@@ -7,6 +7,7 @@ const ONE_SEC = 1000;
 const ONE_MIN = ONE_SEC * 60;
 const ONE_HOUR = ONE_MIN * 60;
 const ONE_DAY = ONE_HOUR * 24;
+const EMPTY_REMAINING_TIME = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
 function calculateRemainingTime(endTime: number) {
   let now = Date.now();
@@ -33,11 +34,11 @@ let CountdownTimer = ({
 }: CountDownTimerData &
   HydrogenComponentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { textColor, endTime, ...rest } = props;
-  let [remainingTime, setRemainingTime] = useState(
-    calculateRemainingTime(endTime),
-  );
+  const { t } = useTranslation();
+  let [remainingTime, setRemainingTime] = useState(EMPTY_REMAINING_TIME);
 
   useEffect(() => {
+    setRemainingTime(calculateRemainingTime(endTime));
     let intervalId = setInterval(() => {
       let updatedTimeRemaining = calculateRemainingTime(endTime);
       setRemainingTime(updatedTimeRemaining);
@@ -73,7 +74,9 @@ let CountdownTimer = ({
           </div>
           <div className="h-6 border-r border-[var(--timer-color)] md:h-8 lg:h-[38px]" />
         </div>
-        <div className="text-center text-xs uppercase md:text-sm">Days</div>
+        <div className="text-center text-xs uppercase md:text-sm">
+          {t("countdown.days")}
+        </div>
       </div>
       <div className="space-y-1">
         <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
@@ -82,7 +85,9 @@ let CountdownTimer = ({
           </div>
           <div className="h-6 border-r border-[var(--timer-color)] md:h-8 lg:h-[38px]" />
         </div>
-        <div className="text-center text-xs uppercase md:text-sm">hours</div>
+        <div className="text-center text-xs uppercase md:text-sm">
+          {t("countdown.hours")}
+        </div>
       </div>
       <div className="space-y-1">
         <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
@@ -91,7 +96,9 @@ let CountdownTimer = ({
           </div>
           <div className="h-6 border-r border-[var(--timer-color)] md:h-8 lg:h-[38px]" />
         </div>
-        <div className="text-center text-xs uppercase md:text-sm">minutes</div>
+        <div className="text-center text-xs uppercase md:text-sm">
+          {t("countdown.minutes")}
+        </div>
       </div>
       <div className="space-y-1">
         <div className="flex items-center text-3xl leading-tight font-medium md:text-4xl lg:text-5xl">
@@ -99,7 +106,9 @@ let CountdownTimer = ({
             {remainingTime?.seconds || 0}
           </div>
         </div>
-        <div className="text-center text-xs uppercase md:text-sm">seconds</div>
+        <div className="text-center text-xs uppercase md:text-sm">
+          {t("countdown.seconds")}
+        </div>
       </div>
     </div>
   );

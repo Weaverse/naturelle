@@ -1,19 +1,16 @@
+import type { LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-
 import { CACHE_LONG } from "~/utils/cache";
-import { COUNTRIES } from "~/utils/const";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
-export async function loader() {
-  return data(
-    {
-      ...COUNTRIES,
+export const shouldRevalidate = skipRevalidationForCartActions;
+
+export async function loader({ context }: LoaderFunctionArgs) {
+  return data(context.localization.availableLocales, {
+    headers: {
+      "cache-control": CACHE_LONG,
     },
-    {
-      headers: {
-        "cache-control": CACHE_LONG,
-      },
-    },
-  );
+  });
 }
 
 // no-op

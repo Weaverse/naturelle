@@ -1,5 +1,5 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
 import { type RefObject, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -57,6 +57,7 @@ let CollectionFilters = ({
   ref: sectionRef,
   ...props
 }: CollectionFiltersProps & { ref?: RefObject<HTMLElement | null> }) => {
+  const { t } = useTranslation();
   let {
     width,
     gap,
@@ -119,14 +120,14 @@ let CollectionFilters = ({
             renderPrevious={({ PreviousLink, isLoading }) => (
               <Button as={PreviousLink} variant="outline" className="mb-14!">
                 <span className="font-heading font-light">
-                  {isLoading ? "Loading..." : "Load previous"}
+                  {isLoading ? t("system.loading") : t("search.loadPrevious")}
                 </span>
               </Button>
             )}
             renderNext={({ NextLink, isLoading }) => (
               <Button as={NextLink} variant="outline" className="mt-14!">
                 <span className="font-heading font-light my-0.5">
-                  {isLoading ? "Loading..." : "Show more +"}
+                  {isLoading ? t("system.loading") : t("actions.showMore")}
                 </span>
               </Button>
             )}

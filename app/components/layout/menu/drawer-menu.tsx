@@ -1,4 +1,5 @@
 import { Disclosure } from "@headlessui/react";
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
@@ -18,6 +19,7 @@ export function HeaderMenuDrawer({
   menu?: EnhancedMenu | null | undefined;
   className?: string;
 }) {
+  const { t } = useTranslation();
   let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
   return (
     <nav
@@ -29,7 +31,7 @@ export function HeaderMenuDrawer({
       <div className="flex h-12.5 self-stretch items-center gap-3">
         <button
           type="button"
-          aria-label="Open menu"
+          aria-label={t("accessibility.openMenu")}
           className="flex size-6 shrink-0 items-center justify-center text-left"
           onClick={openDrawer}
         >
@@ -40,7 +42,7 @@ export function HeaderMenuDrawer({
           open={showMenu}
           onClose={closeDrawer}
           openFrom="left"
-          heading="MENU"
+          heading={t("navigation.menu")}
           isForm="menu"
         >
           <DrawerMenu menu={menu} closeDrawer={closeDrawer} />

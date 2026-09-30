@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { Suspense } from "react";
 import { Await } from "react-router";
 import { useRootLoaderData } from "~/root";
@@ -11,9 +12,11 @@ export function AccountLink({
   className?: string;
   variant?: "icon" | "label";
 }) {
+  const { t } = useTranslation();
   const rootData = useRootLoaderData();
   const isLoggedIn = rootData?.isLoggedIn;
-  const fallback = variant === "label" ? "Sign In / Register" : "Sign in";
+  const fallback =
+    variant === "label" ? t("account.signInRegister") : t("account.signIn");
 
   return (
     <Suspense fallback={fallback}>
@@ -26,7 +29,7 @@ export function AccountLink({
                 to={loggedIn ? "/account" : "/account/login"}
                 className={className}
               >
-                {loggedIn ? "Account" : "Sign In / Register"}
+                {loggedIn ? t("account.title") : t("account.signInRegister")}
               </Link>
             );
           }

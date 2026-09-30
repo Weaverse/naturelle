@@ -3,6 +3,7 @@ import type { AppLoadContext, LoaderFunctionArgs } from "react-router";
 import invariant from "tiny-invariant";
 import { seoPayload } from "~/.server/seo";
 import { POLICIES_QUERY } from "~/routes/($locale).policies._index";
+import { getLocaleSegment, localeCode } from "~/utils/locale";
 import { parseMenu } from "~/utils/menu";
 
 /**
@@ -13,6 +14,16 @@ export async function loadCriticalData({
   request,
   context,
 }: LoaderFunctionArgs) {
+  const requestedLocale = getLocaleSegment(new URL(request.url).pathname);
+  if (
+    requestedLocale &&
+    !context.localization.availableLocales.some(
+      (locale) => localeCode(locale) === requestedLocale,
+    )
+  ) {
+    throw new Response("Unsupported locale", { status: 404 });
+  }
+
   const [layout, swatchesConfigs, weaverseTheme] = await Promise.all([
     getLayoutData(context),
     getSwatchesConfigs(context),
@@ -20,7 +31,7 @@ export async function loadCriticalData({
   ]);
 
   const seo = seoPayload.root({ shop: layout.shop, url: request.url });
-  const { storefront, env } = context;
+  const { storefront, env, localization } = context;
 
   return {
     layout,
@@ -36,7 +47,9 @@ export async function loadCriticalData({
       country: storefront.i18n.country,
       language: storefront.i18n.language,
     },
-    selectedLocale: storefront.i18n,
+    selectedLocale: localization.selectedLocale,
+    availableLocales: localization.availableLocales,
+    defaultLocale: localization.defaultLocale,
     weaverseTheme,
     googleGtmID: context.env.PUBLIC_GOOGLE_GTM_ID,
     swatchesConfigs,

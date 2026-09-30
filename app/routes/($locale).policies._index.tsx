@@ -1,9 +1,9 @@
-import {
-  data,
-  Link,
-  type LoaderFunctionArgs,
-  useLoaderData,
-} from "react-router";
+import { useTranslation } from "@weaverse/hydrogen";
+import { data, type LoaderFunctionArgs, useLoaderData } from "react-router";
+import { Link } from "~/components/link";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const policiesData = await context.storefront.query(POLICIES_QUERY);
@@ -17,11 +17,12 @@ export async function loader({ context }: LoaderFunctionArgs) {
 }
 
 export default function Policies() {
+  const { t } = useTranslation();
   const { policies } = useLoaderData<typeof loader>();
 
   return (
     <div className="policies">
-      <h1>Policies</h1>
+      <h1>{t("system.policies")}</h1>
       <div>
         {policies.map((policy: any) => {
           if (!policy) {

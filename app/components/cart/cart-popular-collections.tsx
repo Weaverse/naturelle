@@ -1,6 +1,6 @@
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings } from "@weaverse/hydrogen";
-import { type CSSProperties, useEffect } from "react";
+import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
+import { type CSSProperties, useEffect, useRef } from "react";
 import { useFetcher } from "react-router";
 import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
@@ -16,9 +16,15 @@ type CollectionResponse = {
 };
 
 export function CartPopularCollections({ layout }: { layout?: string }) {
+  const { t } = useTranslation();
   let { load, data } = useFetcher<CollectionResponse>();
   let productsApiPath = usePrefixPathWithLocale(`/api/collections`);
+  const loadedPath = useRef<string | null>(null);
   useEffect(() => {
+    if (loadedPath.current === productsApiPath) {
+      return;
+    }
+    loadedPath.current = productsApiPath;
     load(productsApiPath);
   }, [load, productsApiPath]);
   if (!data) {
@@ -34,7 +40,7 @@ export function CartPopularCollections({ layout }: { layout?: string }) {
         layout === "aside" ? "mt-8 overflow-auto" : "mt-16",
       )}
     >
-      <h5>Popular collections</h5>
+      <h5>{t("cart.popularCollections")}</h5>
       <Grid
         items={layout === "aside" ? 2 : 3}
         data-test="collection-grid"

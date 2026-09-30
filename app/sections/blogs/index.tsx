@@ -6,7 +6,7 @@ import type {
 import { createSchema } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { CSSProperties, RefObject } from "react";
-import { IconArrowRight, IconImageBlank } from "~/components/icon";
+import { IconCaret, IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { BLOG_QUERY } from "~/graphql/queries";
@@ -137,7 +137,7 @@ const Blogs = ({
       className="flex h-full w-full justify-center"
       style={sectionStyle}
     >
-      <div className="container flex flex-col gap-6 px-5 py-20 md:px-6">
+      <div className="container flex flex-col gap-10 lg:gap-16 px-5 py-20 md:px-6">
         {children}
         <div className="grid grid-cols-1 gap-(--blog-card-gap) sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {res?.map((idx) => (
@@ -188,9 +188,9 @@ const Blogs = ({
                   {showSeperator && (
                     <div className="w-full border-b border-border-subtle"></div>
                   )}
-                  <span className="inline-flex items-center gap-2 text-sm font-medium">
+                  <span className="inline-flex items-center gap-2 font-body text-sm leading-[normal] font-normal not-italic text-text underline">
                     {readMoreText}
-                    <IconArrowRight className="size-4" />
+                    <IconCaret direction="right" />
                   </span>
                 </div>
               </div>

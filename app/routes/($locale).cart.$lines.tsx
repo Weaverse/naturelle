@@ -1,4 +1,5 @@
 import { type LoaderFunctionArgs, redirect } from "react-router";
+import { prefixPathWithLocale } from "~/utils/locale";
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -22,7 +23,9 @@ export async function loader({ request, context, params }: LoaderFunctionArgs) {
   const { cart } = context;
   const { lines } = params;
   if (!lines) {
-    return redirect("/cart");
+    return redirect(
+      prefixPathWithLocale("/cart", context.localization.selectedLocale),
+    );
   }
   const linesMap = lines.split(",").map((line) => {
     const lineDetails = line.split(":");

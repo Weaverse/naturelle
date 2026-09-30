@@ -1,11 +1,15 @@
 import type { Shop } from "@shopify/hydrogen/storefront-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import {
   data,
-  Link,
   type LoaderFunctionArgs,
   type MetaFunction,
   useLoaderData,
 } from "react-router";
+import { Link } from "~/components/link";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
+
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 type SelectedPolicies = keyof Pick<
   Shop,
@@ -47,6 +51,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 }
 
 export default function Policy() {
+  const { t } = useTranslation();
   const { policy } = useLoaderData<typeof loader>();
 
   return (
@@ -54,7 +59,7 @@ export default function Policy() {
       <br />
       <br />
       <div>
-        <Link to="/policies">← Back to Policies</Link>
+        <Link to="/policies">← {t("system.backToPolicies")}</Link>
       </div>
       <br />
       <h1>{policy.title}</h1>

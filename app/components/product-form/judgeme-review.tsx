@@ -1,5 +1,9 @@
 import type { HydrogenComponentProps } from "@weaverse/hydrogen";
-import { createSchema, useParentInstance } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  useParentInstance,
+  useTranslation,
+} from "@weaverse/hydrogen";
 import { type RefObject, useEffect } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { usePrefixPathWithLocale } from "~/utils/locale";
@@ -15,6 +19,7 @@ let JudgemeReview = ({
   ref,
   ...props
 }: HydrogenComponentProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
   let loaderData = useLoaderData<{
     judgemeReviews: JudgemeReviewsData;
   }>();
@@ -47,7 +52,7 @@ let JudgemeReview = ({
   if (reviewNumber === 0) {
     return (
       <div {...props} ref={ref}>
-        <span className="text-text-subtle text-sm">No reviews yet</span>
+        <span className="text-text-subtle text-sm">{t("reviews.noneYet")}</span>
       </div>
     );
   }

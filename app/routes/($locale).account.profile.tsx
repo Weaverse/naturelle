@@ -1,4 +1,5 @@
 import type { CustomerUpdateInput } from "@shopify/hydrogen/customer-account-api-types";
+import { useTranslation } from "@weaverse/hydrogen";
 import type { CustomerFragment } from "customer-account-api.generated";
 import {
   type ActionFunctionArgs,
@@ -81,6 +82,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
+  const { t } = useTranslation();
   const account = useOutletContext<{ customer: CustomerFragment }>();
   const { state } = useNavigation();
   const actionData = useActionData<ActionResponse>();
@@ -88,45 +90,45 @@ export default function AccountProfile() {
 
   return (
     <div className="account-profile container">
-      <h2>Account</h2>
+      <h2>{t("account.title")}</h2>
       <br />
       <div className="p-5 border border-bar-subtle space-y-3">
         <div className="space-y-1">
-          <p>First Name</p>
+          <p>{t("account.firstName")}</p>
           <p className="font-medium">{customer.firstName}</p>
         </div>
         <div className="space-y-1">
-          <p>Last Name</p>
+          <p>{t("account.lastName")}</p>
           <p className="font-medium">{customer.lastName}</p>
         </div>
         <div className="space-y-1">
-          <p>Email</p>
+          <p>{t("account.email")}</p>
           <p className="font-medium">{customer.emailAddress?.emailAddress}</p>
         </div>
       </div>
       <div className="hidden">
         <Form method="PUT">
-          <legend>Personal information</legend>
+          <legend>{t("account.personalInformation")}</legend>
           <fieldset>
-            <label htmlFor="firstName">First name</label>
+            <label htmlFor="firstName">{t("account.firstName")}</label>
             <input
               id="firstName"
               name="firstName"
               type="text"
               autoComplete="given-name"
-              placeholder="First name"
-              aria-label="First name"
+              placeholder={t("account.firstName")}
+              aria-label={t("account.firstName")}
               defaultValue={customer.firstName ?? ""}
               minLength={2}
             />
-            <label htmlFor="lastName">Last name</label>
+            <label htmlFor="lastName">{t("account.lastName")}</label>
             <input
               id="lastName"
               name="lastName"
               type="text"
               autoComplete="family-name"
-              placeholder="Last name"
-              aria-label="Last name"
+              placeholder={t("account.lastName")}
+              aria-label={t("account.lastName")}
               defaultValue={customer.lastName ?? ""}
               minLength={2}
             />
@@ -141,7 +143,7 @@ export default function AccountProfile() {
             <br />
           )}
           <button type="submit" disabled={state !== "idle"}>
-            {state !== "idle" ? "Updating" : "Update"}
+            {state !== "idle" ? t("account.updating") : t("account.update")}
           </button>
         </Form>
       </div>

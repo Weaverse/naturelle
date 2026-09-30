@@ -1,12 +1,15 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import { type SyntheticEvent, useId, useRef, useState } from "react";
 import { useLoaderData } from "react-router";
 import { Button } from "~/components/button";
 import { IconFilledStar, IconStarReview } from "~/components/icon";
 import { Input } from "~/components/input";
 import { StarRating } from "~/components/star-rating";
+import { useRootLoaderData } from "~/root";
 import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import type { JudgemeReviewsData } from "~/types/judgeme";
-import { usePrefixPathWithLocale } from "~/utils/locale";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { formatNumber, usePrefixPathWithLocale } from "~/utils/locale";
 
 type ReviewActionData = {
   message?: string;
@@ -28,6 +31,8 @@ export function ReviewForm({
   formHeading: string;
   formDescription: string;
 }) {
+  const { t } = useTranslation();
+  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const { product } = useLoaderData<ProductLoaderType>();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -83,9 +88,7 @@ export function ReviewForm({
       setReviewBody("");
       formRef.current?.reset();
     } catch {
-      setMessage(
-        "There was an error submitting your review. Please try again.",
-      );
+      setMessage(t("reviews.submitError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -111,14 +114,18 @@ export function ReviewForm({
             <span className="font-heading text-[2.5rem] font-normal leading-none text-text">
               {displayRating.toFixed(1)}
             </span>
-            <span className="text-text-subtle text-sm">out of 5</span>
+            <span className="text-text-subtle text-sm">
+              {t("reviews.outOfFive")}
+            </span>
           </div>
 
           <div className="space-y-2 text-xs">
             <div className="flex items-center justify-between uppercase">
-              <span>Rating distribution</span>
+              <span>{t("reviews.ratingDistribution")}</span>
               <span className="text-text-subtle">
-                {judgemeReviews.reviewNumber.toLocaleString()} total
+                {t("reviews.total", {
+                  count: formatNumber(judgemeReviews.reviewNumber, locale),
+                })}
               </span>
             </div>
             {ratingRows.map((row) => (
@@ -129,7 +136,10 @@ export function ReviewForm({
                 <span>{row.rating}</span>
                 <div
                   className="h-1 overflow-hidden rounded-full bg-border-subtle"
-                  aria-label={`${row.rating} stars: ${row.frequency} reviews`}
+                  aria-label={t("reviews.starsReviews", {
+                    stars: row.rating,
+                    count: row.frequency,
+                  })}
                   aria-valuemax={100}
                   aria-valuemin={0}
                   aria-valuenow={row.percentage}
@@ -141,7 +151,7 @@ export function ReviewForm({
                   />
                 </div>
                 <span className="text-right text-text-subtle">
-                  {row.frequency.toLocaleString()}
+                  {formatNumber(row.frequency, locale)}
                 </span>
               </div>
             ))}
@@ -186,7 +196,9 @@ export function ReviewForm({
 
             <div className="flex flex-col gap-6">
               <fieldset className="flex flex-col gap-2">
-                <legend className="font-semibold text-sm">Rating</legend>
+                <legend className="font-semibold text-sm">
+                  {t("reviews.rating")}
+                </legend>
                 <div className="flex justify-center gap-1">
                   {[1, 2, 3, 4, 5].map((ratingValue) => (
                     <button
@@ -195,7 +207,9 @@ export function ReviewForm({
                       onClick={() => setRating(ratingValue)}
                       onMouseEnter={() => setHover(ratingValue)}
                       onMouseLeave={() => setHover(0)}
-                      aria-label={`Rate ${ratingValue} out of 5 stars`}
+                      aria-label={t("reviews.rateStars", {
+                        rating: ratingValue,
+                      })}
                       aria-pressed={rating === ratingValue}
                       className="cursor-pointer p-1"
                     >
@@ -213,7 +227,7 @@ export function ReviewForm({
                 htmlFor={`${formId}-email`}
                 className="flex flex-col gap-2 font-semibold text-sm"
               >
-                <span>Email address</span>
+                <span>{t("reviews.emailAddress")}</span>
                 <Input
                   required
                   id={`${formId}-email`}
@@ -224,7 +238,7 @@ export function ReviewForm({
                   className="w-full rounded-lg bg-transparent"
                 />
                 <span className="block font-normal text-text-subtle text-xs">
-                  We will never share your email with anyone else.
+                  {t("reviews.emailPrivacy")}
                 </span>
               </label>
 
@@ -232,7 +246,7 @@ export function ReviewForm({
                 htmlFor={`${formId}-name`}
                 className="flex flex-col gap-2 font-semibold text-sm"
               >
-                <span>Full name</span>
+                <span>{t("reviews.fullName")}</span>
                 <Input
                   required
                   id={`${formId}-name`}
@@ -248,7 +262,7 @@ export function ReviewForm({
                 htmlFor={`${formId}-title`}
                 className="flex flex-col gap-2 font-semibold text-sm"
               >
-                <span>Review title</span>
+                <span>{t("reviews.reviewTitle")}</span>
                 <Input
                   required
                   id={`${formId}-title`}
@@ -262,7 +276,7 @@ export function ReviewForm({
                 htmlFor={`${formId}-body`}
                 className="flex flex-col gap-2 font-semibold text-sm"
               >
-                <span>Your review</span>
+                <span>{t("reviews.yourReview")}</span>
                 <textarea
                   required
                   id={`${formId}-body`}
@@ -274,7 +288,7 @@ export function ReviewForm({
                   className="w-full resize-y rounded-lg border border-border-subtle bg-transparent px-3 py-3 font-normal outline-none focus-visible:border-border"
                 />
                 <span className="flex justify-between font-normal text-text-subtle text-xs">
-                  <span>Your honest opinion helps others</span>
+                  <span>{t("reviews.opinionHint")}</span>
                   <span>{reviewBody.length}/500</span>
                 </span>
               </label>
@@ -296,7 +310,7 @@ export function ReviewForm({
                 className="rounded-lg border-0 bg-transparent"
                 onClick={() => setIsFormVisible(false)}
               >
-                Cancel
+                {t("actions.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -304,7 +318,7 @@ export function ReviewForm({
                 disabled={rating === 0 || isSubmitting}
                 className="rounded-lg"
               >
-                Submit Review
+                {t("reviews.submitReview")}
               </Button>
             </div>
           </form>
@@ -316,16 +330,16 @@ export function ReviewForm({
           role="status"
           className="rounded-lg bg-background-basic p-6 text-center text-text"
         >
-          <p className="font-heading uppercase">Review submitted</p>
+          <p className="font-heading uppercase">{t("reviews.submitted")}</p>
           <p className="mt-2 text-text-subtle text-sm">
-            Thanks for leaving your review.
+            {t("reviews.submittedThanks")}
           </p>
           <button
             type="button"
             className="mt-4 cursor-pointer underline underline-offset-4"
             onClick={() => setIsSuccessVisible(false)}
           >
-            Close
+            {t("accessibility.close")}
           </button>
         </div>
       )}

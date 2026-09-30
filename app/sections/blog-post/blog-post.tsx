@@ -1,6 +1,6 @@
 import { Image } from "@shopify/hydrogen";
 import type { Article } from "@shopify/hydrogen/storefront-api-types";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import { IconArrowLeft, IconArrowRight } from "~/components/icon";
@@ -16,6 +16,7 @@ let BlogPost = ({
   ...props
 }: BlogPostProps & { ref?: RefObject<HTMLElement | null> }) => {
   let { ...rest } = props;
+  const { t } = useTranslation();
   let {
     article,
     articleUrl,
@@ -48,7 +49,7 @@ let BlogPost = ({
             <div className="h-full flex items-center py-6 flex-col gap-4 mx-auto">
               {tags[0] && (
                 <span className="rounded-sm bg-background-subtle-2 px-3.75 py-1 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text">
-                  Product guide
+                  {t("blog.productGuide")}
                 </span>
               )}
               <h2 className="text-center text-text">{title}</h2>
@@ -72,7 +73,7 @@ let BlogPost = ({
             <div className="flex flex-col gap-2 py-0.5 sm:flex-row sm:items-center sm:justify-between">
               {tags.length > 0 && (
                 <p className="font-body text-base leading-[160%] tracking-[-0.16px] text-text-subtle">
-                  <span className="font-semibold">Tags:</span>{" "}
+                  <span className="font-semibold">{t("blog.tags")}</span>{" "}
                   <span className="font-normal">{tags.join(", ")}</span>
                 </p>
               )}
@@ -85,7 +86,7 @@ let BlogPost = ({
             <div aria-hidden="true" className="h-px w-full bg-border-subtle" />
             {(previousArticle || nextArticle) && (
               <nav
-                aria-label="Article navigation"
+                aria-label={t("blog.articleNavigation")}
                 className="grid grid-cols-2 gap-6"
               >
                 <div>
@@ -96,7 +97,7 @@ let BlogPost = ({
                     >
                       <span className="flex items-center gap-2 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-subtle">
                         <IconArrowLeft className="size-5" />
-                        Prev
+                        {t("blog.previous")}
                       </span>
                       <span className="block font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text group-hover:underline">
                         {previousArticle.title}
@@ -111,7 +112,7 @@ let BlogPost = ({
                       className="group flex flex-col gap-2 text-text"
                     >
                       <span className="flex items-center justify-end gap-2 text-right font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-subtle">
-                        Next
+                        {t("blog.next")}
                         <IconArrowRight className="size-5" />
                       </span>
                       <span className="block font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text group-hover:underline">

@@ -1,7 +1,7 @@
 import * as Popover from "@radix-ui/react-popover";
 import { CartForm } from "@shopify/hydrogen";
-import type { CartBuyerIdentityInput } from "@shopify/hydrogen/storefront-api-types";
-import { type ReactNode, useState } from "react";
+import { useTranslation } from "@weaverse/hydrogen";
+import { useState } from "react";
 import { IconCaret } from "~/components/icon";
 import type { Locale } from "~/types/type-locale";
 import { usePrefixPathWithLocale } from "~/utils/locale";
@@ -21,6 +21,8 @@ export function LocaleSelect({
   getRedirectUrl: (locale: Locale) => string;
   placement: "header" | "footer";
 }) {
+  const { t } = useTranslation();
+  const cartRoute = usePrefixPathWithLocale("/cart");
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,19 +31,20 @@ export function LocaleSelect({
         aria-label={ariaLabel}
         className={
           placement === "header"
-            ? "group flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold outline-none"
-            : "group flex max-w-full min-w-0 items-center gap-2 rounded-xl border border-(--color-border-subtle) bg-(--color-background-basic) px-3.5 py-2 font-body text-[12px] leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) outline-none"
+            ? "group flex cursor-pointer items-center gap-1.5 outline-none"
+            : "group flex max-w-full min-w-0 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3.5 py-2 outline-none"
         }
       >
         <span
-          className={placement === "footer" ? "truncate" : "whitespace-nowrap"}
+          className={
+            placement === "footer"
+              ? "truncate font-body text-xs leading-none font-normal not-italic tracking-[-0.12px] text-(--color-footer-text)"
+              : "whitespace-nowrap font-body text-[13px] leading-normal font-semibold not-italic"
+          }
         >
           {label}
         </span>
-        <IconCaret
-          direction="down"
-          className="size-3 shrink-0 transition-transform group-data-[state=open]:rotate-180"
-        />
+        <IconCaret direction="down" className="size-3.5 shrink-0" />
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
@@ -54,44 +57,35 @@ export function LocaleSelect({
           className="z-50 max-h-64 w-max min-w-[var(--radix-popover-trigger-width)] max-w-[var(--radix-popover-content-available-width)] overflow-y-auto rounded-xl border border-(--color-border-subtle) bg-(--color-background-basic) py-1 shadow-lg"
         >
           {options.map(({ key, label: optionLabel, locale }) => (
-            <Popover.Close asChild key={key}>
-              <ChangeLocaleForm
-                redirectTo={getRedirectUrl(locale)}
-                buyerIdentity={{ countryCode: locale.country }}
+            <form key={key} method="post" action={cartRoute}>
+              <input
+                type="hidden"
+                name="redirectTo"
+                value={getRedirectUrl(locale)}
+              />
+              <input
+                type="hidden"
+                name={CartForm.INPUT_NAME}
+                value={JSON.stringify({
+                  action: CartForm.ACTIONS.BuyerIdentityUpdate,
+                  inputs: { buyerIdentity: { countryCode: locale.country } },
+                })}
+              />
+              <button
+                type="submit"
+                aria-label={t("locale.selectOption", { option: optionLabel })}
+                className="block w-full cursor-pointer whitespace-normal px-3.5 py-2 text-left font-body leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) hover:bg-black/5"
               >
-                <button
-                  type="submit"
-                  className="block w-full cursor-pointer whitespace-normal px-3.5 py-2 text-left font-body text-[12px] leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) hover:bg-black/5"
+                <span
+                  className={placement === "footer" ? "text-xs" : "text-[13px]"}
                 >
                   {optionLabel}
-                </button>
-              </ChangeLocaleForm>
-            </Popover.Close>
+                </span>
+              </button>
+            </form>
           ))}
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
-  );
-}
-
-function ChangeLocaleForm({
-  children,
-  buyerIdentity,
-  redirectTo,
-}: {
-  children: ReactNode;
-  buyerIdentity: CartBuyerIdentityInput;
-  redirectTo: string;
-}) {
-  const cartRoute = usePrefixPathWithLocale("/cart");
-  return (
-    <CartForm
-      route={cartRoute}
-      action={CartForm.ACTIONS.BuyerIdentityUpdate}
-      inputs={{ buyerIdentity }}
-    >
-      <input type="hidden" name="redirectTo" value={redirectTo} />
-      {children}
-    </CartForm>
   );
 }

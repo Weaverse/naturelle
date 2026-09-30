@@ -1,3 +1,4 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import type { ComponentType, SVGProps } from "react";
 import {
   IconFooterFacebook,
@@ -31,6 +32,7 @@ export function SocialLinks({
   socialTikTok,
   socialYouTube,
 }: SocialLinksProps) {
+  const { t } = useTranslation();
   const accounts = [
     { name: "Instagram", to: socialInstagram, Icon: socialIcons.instagram },
     { name: "Facebook", to: socialFacebook, Icon: socialIcons.facebook },
@@ -46,7 +48,7 @@ export function SocialLinks({
   return (
     <div className="flex w-full shrink-0 flex-col items-start gap-5 lg:w-auto lg:grow lg:basis-0 lg:shrink-0">
       <h6 className="hidden text-base font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text) lg:block">
-        Connect
+        {t("footer.connect")}
       </h6>
       <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-start">
         {accounts.map(({ to, name, Icon }) => (

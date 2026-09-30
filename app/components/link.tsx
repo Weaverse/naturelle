@@ -6,6 +6,8 @@ import {
   type NavLinkProps as RemixNavLinkProps,
 } from "react-router";
 import { useRootLoaderData } from "~/root";
+import { DEFAULT_LOCALE } from "~/utils/const";
+import { prefixPathWithLocale } from "~/utils/locale";
 
 type LinkProps = Omit<RemixLinkProps, "className"> & {
   className?: RemixNavLinkProps["className"] | RemixLinkProps["className"];
@@ -30,16 +32,12 @@ export function Link(props: LinkProps) {
   const { to, className, ...resOfProps } = props;
   const rootData = useRootLoaderData();
   let { enableViewTransition } = useThemeSettings();
-  const selectedLocale = rootData?.selectedLocale;
+  const selectedLocale = rootData?.selectedLocale ?? DEFAULT_LOCALE;
 
   let toWithLocale = to;
 
-  if (
-    typeof toWithLocale === "string" &&
-    selectedLocale?.pathPrefix &&
-    !toWithLocale.toLowerCase().startsWith(selectedLocale.pathPrefix)
-  ) {
-    toWithLocale = `${selectedLocale.pathPrefix}${to}`;
+  if (typeof toWithLocale === "string") {
+    toWithLocale = prefixPathWithLocale(toWithLocale, selectedLocale);
   }
 
   if (typeof className === "function") {

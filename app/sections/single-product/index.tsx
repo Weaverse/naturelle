@@ -3,6 +3,7 @@ import {
   type ComponentLoaderArgs,
   createSchema,
   type HydrogenComponentProps,
+  useTranslation,
   type WeaverseProduct,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
@@ -61,6 +62,7 @@ let SingleProduct = ({
   ref,
   ...props
 }: SingleProductProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
   let {
     addToCartText,
     soldOutText,
@@ -178,7 +180,7 @@ let SingleProduct = ({
                     </Text>
                   )}
                   {children}
-                  <p
+                  <div
                     data-motion="fade-up"
                     className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
                   >
@@ -187,7 +189,6 @@ let SingleProduct = ({
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
                         className="text-label-save-background line-through"
-                        as="span"
                       />
                     )}
 
@@ -197,7 +198,7 @@ let SingleProduct = ({
                         sellingPlan={selectedSellingPlan}
                       />
                     ) : null}
-                  </p>
+                  </div>
                 </div>
                 <ProductVariants
                   product={product}
@@ -271,26 +272,29 @@ let SingleProduct = ({
               />
               {showShippingPolicy && shippingPolicy?.body && (
                 <ProductDetail
-                  title="Shipping"
+                  title={t("product.shipping")}
                   content={getExcerpt(shippingPolicy.body)}
                   learnMore={`/policies/${shippingPolicy.handle}`}
                 />
               )}
               {showRefundPolicy && refundPolicy?.body && (
                 <ProductDetail
-                  title="Returns"
+                  title={t("product.returns")}
                   content={getExcerpt(refundPolicy.body)}
                   learnMore={`/policies/${refundPolicy.handle}`}
                 />
               )}
               {showDetails && descriptionHtml && (
-                <ProductDetail title="Details" content={descriptionHtml} />
+                <ProductDetail
+                  title={t("product.details")}
+                  content={descriptionHtml}
+                />
               )}
               <Link
                 to={`/products/${product?.handle}`}
                 className="w-fit text-sm underline"
               >
-                View full details
+                {t("product.viewFullDetails")}
               </Link>
             </div>
           </div>

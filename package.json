@@ -42,7 +42,9 @@
     "biome": "biome check",
     "biome:fix": "biome check --write",
     "format": "biome format --write",
-    "format:check": "biome format"
+    "format:check": "biome format",
+    "i18n:check": "node scripts/check-translations.mjs",
+    "locale:check": "node --test tests/locale.unit.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.3.0",

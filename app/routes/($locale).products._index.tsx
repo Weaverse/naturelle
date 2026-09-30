@@ -10,9 +10,11 @@ import { seoPayload } from "~/.server/seo";
 import { ALL_PRODUCTS_QUERY } from "~/graphql/queries";
 import { routeHeaders } from "~/utils/cache";
 import { PAGINATION_SIZE } from "~/utils/const";
+import { skipRevalidationForCartActions } from "~/utils/revalidation";
 import { WeaverseContent } from "~/weaverse";
 
 export const headers = routeHeaders;
+export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({
   request,

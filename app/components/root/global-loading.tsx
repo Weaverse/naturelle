@@ -1,8 +1,10 @@
+import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "react-router";
 
 export function GlobalLoading() {
+  const { t } = useTranslation();
   let transition = useNavigation();
   let active = transition.state !== "idle";
 
@@ -32,7 +34,7 @@ export function GlobalLoading() {
     <div
       role="progressbar"
       aria-hidden={!active}
-      aria-valuetext={active ? "Loading" : undefined}
+      aria-valuetext={active ? t("system.loading") : undefined}
       className="pointer-events-none fixed inset-x-0 left-0 top-0 z-50 h-1 animate-pulse"
     >
       <div
