@@ -1,6 +1,5 @@
 import { Disclosure } from "@headlessui/react";
 import { useTranslation } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import {
@@ -8,9 +7,13 @@ import {
   getMaxDepth,
   type SingleMenuItem,
 } from "~/types/menu";
+import { cn } from "~/utils/cn";
 import { Drawer, useDrawer } from "../../drawer";
 import { IconCaret, IconListMenu } from "../../icon";
 import { SearchToggle } from "../search-toggle";
+
+const menuHeadingClass =
+  "font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-subtle uppercase hover:text-text-primary";
 
 export function HeaderMenuDrawer({
   menu,
@@ -23,7 +26,7 @@ export function HeaderMenuDrawer({
   let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
   return (
     <nav
-      className={clsx(
+      className={cn(
         "z-30 flex h-12.5 min-w-0 flex-1 flex-col items-start gap-2.5 py-2",
         className,
       )}
@@ -61,7 +64,7 @@ function DrawerMenu({
 }) {
   let items = menu?.items as unknown as SingleMenuItem[];
   return (
-    <nav className="grid text-text-subtle overflow-auto border-t border-border-subtle px-6 pb-16 pt-8">
+    <nav className="flex flex-col gap-5 text-text-subtle overflow-auto border-t border-border-subtle px-6 pb-16 pt-8">
       {items.map((item, id) => {
         let { title, ...rest } = item;
         let level = getMaxDepth(item);
@@ -107,16 +110,15 @@ function ItemHeader({
       to={to}
       onClick={closeDrawer}
       className={({ isActive }) =>
-        clsx(
-          "flex items-center justify-between py-3",
+        cn(
+          "flex items-center justify-between ",
+          menuHeadingClass,
           isActive && "text-text-primary",
           isActive && to !== "/" && "underline",
         )
       }
     >
-      <h5 className="font-medium text-xl uppercase hover:text-text-primary">
-        {title}
-      </h5>
+      {title}
     </Link>
   );
 }
@@ -142,23 +144,26 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
       isBackMenu
       // bordered
     >
-      <div className="grid overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
+      <div className="flex flex-col gap-5 overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
         {items.map((item, id) => (
           <div key={id}>
             <Disclosure>
               {({ open }) => (
                 <div className="contents">
                   <Disclosure.Button className="w-full text-left">
-                    <h5 className="flex w-full text-xl justify-between py-3 font-medium uppercase text-text-subtle hover:text-text-primary">
+                    <div className="flex w-full justify-between">
                       {item.items.length > 0 ? (
-                        <span>{item.title}</span>
+                        <span className={menuHeadingClass}>{item.title}</span>
                       ) : (
                         <Link
                           to={item.to}
                           prefetch="intent"
                           onClick={handleCloseAll}
                           className={({ isActive }) =>
-                            isActive ? "text-text-primary underline" : undefined
+                            cn(
+                              "font-heading text-base uppercase text-text-subtle hover:text-text-primary",
+                              isActive && "text-text-primary underline",
+                            )
                           }
                         >
                           {item.title}
@@ -172,16 +177,18 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
                           />
                         </span>
                       )}
-                    </h5>
+                    </div>
                   </Disclosure.Button>
                   {item?.items?.length > 0 ? (
                     <div
                       className={`${
-                        open ? `h-fit max-h-48` : `max-h-0`
-                      } overflow-hidden transition-all duration-300`}
+                        open
+                          ? "max-h-48 overflow-y-auto"
+                          : "max-h-0 overflow-hidden"
+                      } transition-[max-height] duration-300`}
                     >
                       <Disclosure.Panel static>
-                        <ul className="space-y-3 pb-3 pt-2">
+                        <ul className="flex flex-col gap-4 pt-5">
                           {item.items.map((subItem, ind) => (
                             <li key={ind} className="leading-6">
                               <Link
@@ -217,10 +224,10 @@ function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
     <div className="">
       <button
         type="button"
-        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
+        className="flex w-full items-center justify-between text-left"
         onClick={openMenu}
       >
-        <h5 className="font-medium text-xl uppercase">{title}</h5>
+        <span className={menuHeadingClass}>{title}</span>
         <IconCaret direction="right" className="h-4 w-4" />
       </button>
       {content}
@@ -255,7 +262,7 @@ function CollectionMenu({
       isBackMenu
       // bordered
     >
-      <div className="grid overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
+      <div className="flex flex-col gap-5 overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
         {collectionItems.map((item) => (
           <Disclosure key={item.id}>
             {({ open }) => {
@@ -263,8 +270,10 @@ function CollectionMenu({
               return (
                 <div>
                   {products.length > 0 ? (
-                    <Disclosure.Button className="flex w-full items-center justify-between py-3 text-left font-heading text-base uppercase text-text-subtle hover:text-text-primary">
-                      <span>{item.resource?.title || item.title}</span>
+                    <Disclosure.Button className="flex w-full items-center justify-between text-left">
+                      <span className={menuHeadingClass}>
+                        {item.resource?.title || item.title}
+                      </span>
                       <IconCaret
                         className="size-4 shrink-0"
                         direction={open ? "down" : "right"}
@@ -275,21 +284,21 @@ function CollectionMenu({
                       to={item.to}
                       prefetch="intent"
                       onClick={handleCloseAll}
-                      className="block py-3 font-heading text-base uppercase text-text-subtle hover:text-text-primary"
+                      className="block font-heading text-base uppercase text-text-subtle hover:text-text-primary"
                     >
                       {item.resource?.title || item.title}
                     </Link>
                   )}
                   {products.length > 0 && (
                     <Disclosure.Panel>
-                      <ul className="space-y-2 pb-3">
+                      <ul className="flex flex-col gap-4 pt-5">
                         {products.map((product) => (
                           <li key={product.id}>
                             <Link
                               to={product.to}
                               prefetch="intent"
                               onClick={handleCloseAll}
-                              className="block text-sm text-text-subtle hover:text-text-primary"
+                              className="block text-base text-text-subtle hover:text-text-primary"
                             >
                               {product.title}
                             </Link>
@@ -310,10 +319,10 @@ function CollectionMenu({
     <div className="">
       <button
         type="button"
-        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
+        className="flex w-full items-center justify-between text-left"
         onClick={openMenu}
       >
-        <h5 className="font-medium text-xl uppercase">{title}</h5>
+        <span className={menuHeadingClass}>{title}</span>
         <IconCaret direction="right" className="h-4 w-4" />
       </button>
       {content}
@@ -379,10 +388,10 @@ function BrandMenu({
     <div>
       <button
         type="button"
-        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
+        className="flex w-full items-center justify-between  text-left"
         onClick={openMenu}
       >
-        <h5 className="font-medium text-xl uppercase">{title}</h5>
+        <span className={menuHeadingClass}>{title}</span>
         <IconCaret direction="right" className="size-4" />
       </button>
       {content}
@@ -437,10 +446,10 @@ function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
     <div className="">
       <button
         type="button"
-        className="flex w-full items-center justify-between py-3 text-left hover:text-text-primary"
+        className="flex w-full items-center justify-between  text-left"
         onClick={openMenu}
       >
-        <h5 className="font-medium text-xl uppercase">{title}</h5>
+        <span className={menuHeadingClass}>{title}</span>
         <IconCaret direction="right" className="h-4 w-4" />
       </button>
       {content}
