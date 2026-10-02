@@ -117,7 +117,9 @@ export function Drawer({
                             "font-heading text-xl",
                             isForm === "cart"
                               ? "font-normal leading-normal tracking-[-0.01em] text-text"
-                              : "font-semibold text-text-primary",
+                              : isForm === "menu"
+                                ? "leading-[150%] font-normal tracking-[-0.2px] text-text"
+                                : "font-semibold text-text-primary",
                             isForm !== "search" &&
                               isForm !== "cart" &&
                               "uppercase",
