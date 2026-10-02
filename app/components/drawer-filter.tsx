@@ -64,21 +64,22 @@ export function DrawerFilter({
   return (
     <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 lg:px-0">
       <div className="w-full border-t border-border-subtle" />
-      <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex h-14 w-full items-center justify-between">
+        <div className="flex items-center gap-10">
           <Button
             onClick={openDrawer}
             shape="default"
             variant="outline"
             className="rounded-lg px-5 py-3.5"
             classNameContainer="flex items-center justify-center gap-2"
+            style={{ height: 60 }}
           >
-            <IconFilters className="size-5" viewBox="0 0 16 16" />
+            <IconFilters className="size-6" />
             <span className="font-heading text-xl font-normal">
               {t("collection.filter")}
             </span>
           </Button>
-          <span className="font-heading hidden text-xl font-medium tracking-tight lg:inline">
+          <span className="hidden font-body text-base font-normal leading-none tracking-[-0.16px] lg:inline">
             {productNumber} {t("collection.products")}
           </span>
         </div>
@@ -92,7 +93,7 @@ export function DrawerFilter({
             heading={t("collection.filter")}
             isForm="filter"
           >
-            <div className="w-full px-6 md:w-96">
+            <div className="w-full">
               <FiltersDrawer
                 filters={filters}
                 appliedFilters={appliedFilters}
@@ -191,11 +192,11 @@ function ListItemFilter({
         disabled={option.count === 0}
         onClick={() => handleCheckedChange(!checked)}
         className={cn(
-          "flex min-h-10 items-center justify-center rounded-lg border px-3 py-2 text-sm transition-colors",
+          "flex items-center justify-center rounded-xl border-2 px-3 py-2 font-body text-base leading-[160%] font-normal tracking-[-0.16px] transition-colors",
           option.count === 0 &&
             "diagonal cursor-not-allowed text-foreground-subtle opacity-60",
           checked
-            ? "border-text-primary bg-text-primary text-background-basic"
+            ? "border-text-primary"
             : "border-border-subtle hover:border-text-primary",
         )}
       >
@@ -208,12 +209,13 @@ function ListItemFilter({
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text">
       <Checkbox
         checked={checked}
         onCheckedChange={handleCheckedChange}
         disabled={option.count === 0}
         shape={checkboxShape}
+        controlClassName={checkboxShape === "square" ? "rounded-md" : undefined}
         className={cn(
           option.count === 0 && "text-foreground-subtle opacity-60",
         )}
@@ -274,7 +276,7 @@ export function FiltersDrawer({
       aria-label={t("collection.filterProducts")}
       className={cn("min-w-0 overflow-x-hidden", desktop && "w-full")}
     >
-      <div className="divide-y divide-border-subtle">
+      <div className="flex flex-col gap-5">
         {filters.map((filter: Filter) => {
           const label = filter.label.toLowerCase();
           const buttonFilterNames = displayAsButtonFor
@@ -291,12 +293,12 @@ export function FiltersDrawer({
               as="div"
               key={filter.id}
               defaultOpen={expandFilters}
-              className="w-full py-5"
+              className="w-full border-b border-border-subtle pb-6"
             >
               {({ open }) => (
                 <>
                   <Disclosure.Button className="flex w-full items-center justify-between text-left">
-                    <span className="font-heading text-base font-normal">
+                    <span className="font-heading text-xl font-normal leading-[1.6] tracking-[-0.2px]">
                       {filter.label}
                     </span>
                     <IconCaret direction={open ? "down" : "right"} />
@@ -605,18 +607,18 @@ function PriceRangeFilter({
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {highestPrice !== undefined && (
-        <p className="font-heading text-base text-foreground-subtle">
+        <p className="font-body text-base leading-[1.6] tracking-[-0.16px] text-text-primary">
           {t("collection.highestPrice", {
             price: `${currencySymbol}${highestPrice}`,
           })}
         </p>
       )}
-      <div className="flex w-full min-w-0 items-center gap-3 overflow-hidden">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+      <div className="flex w-full min-w-0 items-center gap-6 overflow-hidden">
+        <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex h-10 min-w-0 flex-1 items-center rounded-lg border border-border-subtle bg-background-basic px-3">
+          <div className="flex h-[50px] min-w-0 flex-1 items-center rounded-xl border border-border-subtle bg-background-basic px-3">
             <input
               aria-label={t("collection.minimumPrice")}
               name="minPrice"
@@ -638,9 +640,9 @@ function PriceRangeFilter({
             />
           </div>
         </div>
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex h-10 min-w-0 flex-1 items-center rounded-lg border border-border-subtle bg-background-basic px-3">
+          <div className="flex h-[50px] min-w-0 flex-1 items-center rounded-xl border border-border-subtle bg-background-basic px-3">
             <input
               aria-label={t("collection.maximumPrice")}
               name="maxPrice"
@@ -737,7 +739,7 @@ export function SortMenu({
       as="div"
       className="relative z-30 flex items-center justify-end gap-3"
     >
-      <span className="mr-3 hidden shrink-0 font-heading text-base font-normal md:inline">
+      <span className="hidden shrink-0 font-heading text-xl font-normal leading-[1.6] tracking-[-0.2px] md:inline">
         {t("collection.sortBy")}
       </span>
       <Menu.Button
@@ -747,7 +749,7 @@ export function SortMenu({
         <span className="font-heading max-w-[7.5rem] text-ellipsis overflow-hidden whitespace-nowrap text-sm font-normal md:hidden">
           {activeItem.label}
         </span>
-        <span className="hidden font-heading text-base font-normal md:inline">
+        <span className="hidden font-heading text-xl font-normal leading-[1.6] tracking-[-0.2px] md:inline">
           {activeItem.label}
         </span>
         <IconCaret className="size-4 shrink-0" />

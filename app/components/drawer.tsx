@@ -39,13 +39,13 @@ export function Drawer({
 
   const maxWidth =
     isForm === "cart"
-      ? "max-w-[420px]"
+      ? "max-w-[460px]"
       : isForm === "menu"
         ? "max-w-none md:w-1/2"
         : isForm === "search"
           ? "max-w-none"
           : isForm === "filter"
-            ? "max-w-none md:max-w-96"
+            ? "max-w-none md:max-w-[400px]"
             : "max-w-96";
 
   return (
@@ -81,8 +81,10 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    "transform text-left align-middle shadow-xl transition-all bg-(--color-drawer-bg) flex flex-col",
-                    isForm === "cart" && "overflow-hidden",
+                    "transform text-left align-middle shadow-xl transition-all bg-(--color-drawer-bg) flex flex-col gap-3",
+                    isForm === "cart" && "overflow-hidden px-6 pt-3 pb-6",
+                    isForm === "filter" &&
+                      "gap-4 overflow-y-auto px-6 pt-3 pb-6",
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
@@ -92,8 +94,12 @@ export function Drawer({
                 >
                   <header
                     className={cn(
-                      "sticky top-0 flex items-center px-6 py-5 shrink-0",
-                      isForm === "cart" ? "h-auto px-5 pb-3 pt-5" : "h-nav",
+                      "sticky top-0 flex items-center shrink-0",
+                      isForm === "cart"
+                        ? "h-auto py-2.5"
+                        : isForm === "filter"
+                          ? "h-11"
+                          : "h-nav",
                       heading ? "justify-between" : "justify-items-end",
                       openFrom === "left" ||
                         isForm === "cart" ||
@@ -104,11 +110,21 @@ export function Drawer({
                   >
                     <button
                       type="button"
-                      className="text-text-primary hover:text-text-primary/50 -m-4 p-4 transition"
+                      className={cn(
+                        "text-text-primary transition hover:text-text-primary/50",
+                        isForm === "filter" ? "-mr-3 p-3" : "-m-4 p-4",
+                      )}
                       onClick={onClose}
                       data-test="close-cart"
                     >
-                      <IconClose aria-label={t("accessibility.close")} />
+                      <IconClose
+                        className={
+                          isForm === "cart" || isForm === "filter"
+                            ? "size-5"
+                            : undefined
+                        }
+                        aria-label={t("accessibility.close")}
+                      />
                     </button>
                     {heading !== null && (
                       <Dialog.Title as="span">
@@ -116,10 +132,12 @@ export function Drawer({
                           className={cn(
                             "font-heading text-xl",
                             isForm === "cart"
-                              ? "font-normal leading-normal tracking-[-0.01em] text-text"
-                              : isForm === "menu"
-                                ? "leading-[150%] font-normal tracking-[-0.2px] text-text"
-                                : "font-semibold text-text-primary",
+                              ? "font-normal leading-[150%] tracking-[-0.2px] text-text uppercase"
+                              : isForm === "filter"
+                                ? "font-normal leading-[150%] tracking-[-0.2px] text-text"
+                                : isForm === "menu"
+                                  ? "leading-[150%] font-normal tracking-[-0.2px] text-text"
+                                  : "font-semibold text-text-primary",
                             isForm !== "search" &&
                               isForm !== "cart" &&
                               "uppercase",

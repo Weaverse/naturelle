@@ -50,8 +50,11 @@ export default function SearchResults() {
   return (
     <section className="bg-background-basic">
       <PageHeader variant="search">
-        <div className="w-full flex flex-col items-center gap-6 px-4 md:px-6">
-          <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
+        <div className="flex w-full flex-col items-center gap-6 px-6">
+          <h1
+            className="mx-auto w-full max-w-[688px] text-center font-heading font-normal text-text"
+            style={{ fontSize: "clamp(36px, 4vw, 53px)", lineHeight: 1.1 }}
+          >
             {searchTerm
               ? t("search.resultsFor", { term: searchTerm })
               : t("search.title")}
@@ -65,7 +68,7 @@ export default function SearchResults() {
               onClear={() => navigate(location.pathname)}
               name="q"
               placeholder={t("search.placeholder")}
-              className="w-full rounded border-2 md:w-96 lg:w-[400px]"
+              className="h-[50px] w-full rounded-xl border border-border-subtle bg-background-basic p-3! md:w-[560px]"
               type="search"
               prefixElement={
                 <button
@@ -75,7 +78,7 @@ export default function SearchResults() {
                 >
                   <IconSearch
                     aria-hidden="true"
-                    className="h-6 w-6 opacity-55"
+                    className="size-6"
                     viewBox="0 0 24 24"
                   />
                 </button>
@@ -123,7 +126,7 @@ export default function SearchResults() {
               <Grid
                 data-test="product-grid"
                 layout="products"
-                className="w-full! gap-y-10!"
+                className="w-full! gap-3!"
               >
                 {nodes.map((product: ProductCardFragment, index) => (
                   <ProductCard

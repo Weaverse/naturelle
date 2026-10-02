@@ -44,7 +44,7 @@ export function ProductListingFilterToolbar({
   showSearchSort,
   collections,
   clearFiltersTo,
-  sectionClassName = "mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0",
+  sectionClassName = "mx-auto flex w-full max-w-page items-start gap-10 px-5 py-8 lg:flex-row md:px-6 lg:px-0",
   contentClassName = "min-w-0 flex-1",
   children,
 }: ProductListingFilterToolbarProps) {
@@ -66,7 +66,7 @@ export function ProductListingFilterToolbar({
       />
       <div className={cn(sectionClassName)}>
         <div className="hidden w-[320px] shrink-0 lg:block">
-          <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col overflow-x-hidden overflow-y-auto pr-5">
+          <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col overflow-x-hidden overflow-y-auto">
             <FiltersDrawer
               desktop
               filters={filters}

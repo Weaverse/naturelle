@@ -144,7 +144,7 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        "flex min-w-0 w-full flex-col gap-3 rounded-[var(--pcard-border-radius)] bg-background p-3 transition-[border-radius] duration-300 hover:rounded-none",
+        "flex min-w-0 w-full flex-col gap-5 rounded-[var(--pcard-border-radius)] bg-background px-3 pt-3 pb-5 transition-[border-radius] duration-300 hover:rounded-none",
         className,
       )}
       style={
@@ -209,14 +209,14 @@ export function ProductCard({
 
       <div
         className={clsx(
-          "flex flex-col gap-2 px-2 pb-2 pt-1 font-sans",
+          "flex flex-col gap-2 font-sans",
           pcardAlignment === "center" && "items-center text-center",
           pcardAlignment === "right" && "items-end text-right",
           pcardAlignment === "left" && "items-start text-left",
         )}
       >
         {pcardShowVendor && product.vendor && (
-          <span className="w-fit rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none">
+          <span className="w-fit rounded-lg bg-background-subtle-2 px-2 py-1 text-xs leading-none">
             {product.vendor}
           </span>
         )}
@@ -238,16 +238,20 @@ export function ProductCard({
         )}
         {showPrice && (
           <div className="flex items-center gap-1.5">
+            <Money
+              withoutTrailingZeros
+              data={price}
+              className="font-semibold"
+            />
             {pcardShowSalePrice &&
               compareAtPrice &&
               isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                 <Money
                   withoutTrailingZeros
                   data={compareAtPrice}
-                  className="text-sm line-through text-label-save-background"
+                  className="text-sm line-through text-text-subtle"
                 />
               )}
-            <Money withoutTrailingZeros data={price} className="font-medium" />
           </div>
         )}
         {showViewDetailsLink && (

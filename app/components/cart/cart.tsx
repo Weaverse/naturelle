@@ -73,14 +73,14 @@ function CartDetails({
 
   if (layout === "page") {
     return (
-      <div className="flex flex-col lg:flex-row items-start max-w-page w-full gap-10 px-4 md:px-6 lg:px-0 pb-12 lg:pb-20">
+      <div className="flex w-full max-w-page flex-col items-start gap-10 px-4 pb-12 md:px-6 lg:flex-row lg:px-0 lg:pb-20">
         <div className="mx-auto w-full min-w-0 flex-1">
           <CartLines lines={cart?.lines} layout={layout} onClose={onClose} />
         </div>
 
         <div
           className={cn(
-            "grid w-full shrink-0 grid-cols-1 items-center [grid-template-areas:'summary'_'secure'] lg:ml-auto lg:w-auto lg:gap-4",
+            "grid w-full shrink-0 grid-cols-1 items-center gap-y-4 [grid-template-areas:'summary'_'secure'] lg:ml-auto lg:w-auto",
             hasPaymentMethods
               ? "md:grid-cols-2 md:[grid-template-areas:'payments_summary'_'._secure'] lg:grid-cols-1 lg:[grid-template-areas:'summary'_'payments'_'secure']"
               : "md:ml-auto md:w-1/2 lg:w-auto",
@@ -98,14 +98,14 @@ function CartDetails({
           <div className="flex flex-col gap-4 [grid-area:summary]">
             <CartSummary cart={cart} layout={layout} />
           </div>
-          <SecureCheckoutNotice className="[grid-area:secure]" />
+          <SecureCheckoutNotice className="rounded-xl bg-background px-4 py-2 [grid-area:secure]" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col justify-between">
+    <div className="flex min-h-0 flex-1 flex-col justify-between gap-4">
       <CartLines lines={cart?.lines} layout={layout} onClose={onClose} />
       <CartSummary cart={cart} layout={layout} />
     </div>
@@ -127,8 +127,8 @@ function CartAcceptedPayments({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="hidden w-full flex-col items-center justify-center gap-4 px-6 py-4 md:flex [grid-area:payments]">
-      <p className="text-sm text-text-subtle text-center">
+    <div className="hidden w-full flex-col items-center justify-center gap-4 px-6 py-4 md:flex [grid-area:payments] [&>div]:gap-5">
+      <p className="text-center font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle">
         {t("cart.acceptedPayments")}
       </p>
       <PaymentMethods
@@ -183,7 +183,7 @@ function CartLines({
           <div className="border-border-subtle border-b pb-4 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:hidden">
             {t("account.product")}
           </div>
-          <div className="hidden grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] gap-3 border-border-subtle border-b pb-4 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:grid lg:gap-5">
+          <div className="hidden grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] gap-3 border-border-subtle border-b pb-4 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:grid lg:grid-cols-[298px_repeat(3,minmax(0,1fr))_16px] lg:gap-2.5 lg:pr-5">
             <span>{t("account.product")}</span>
             <span>{t("product.price")}</span>
             <span>{t("product.quantity")}</span>
@@ -195,7 +195,7 @@ function CartLines({
       <ul
         className={cn(
           "grid border-border-subtle",
-          layout === "page" && "border-b",
+          layout === "page" && "border-b lg:gap-4 lg:border-0 lg:pt-4",
           layout === "aside" && "border-t",
           layout === "aside" && "pb-4",
         )}
@@ -242,16 +242,16 @@ function CartLineItem({
   if (layout === "page") {
     return (
       <li
-        className="grid grid-cols-[5rem_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-3 border-border-subtle border-b py-4 last:border-b-0 md:grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] md:items-center md:gap-3 lg:gap-5"
+        className="grid grid-cols-[5rem_minmax(0,1fr)_auto] items-start gap-x-2 gap-y-3 border-border-subtle border-b py-4 last:border-b-0 md:grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] md:items-center md:gap-3 lg:grid-cols-[305px_repeat(3,minmax(0,1fr))_20px] lg:gap-2.5 lg:border-0 lg:px-0 lg:py-1 lg:pr-5"
         hidden={isLineRemoving}
       >
-        <div className="contents md:flex md:min-w-0 md:items-center md:gap-4">
+        <div className="contents md:flex md:min-w-0 md:items-center md:gap-4 lg:gap-2.5">
           {merchandise.image && (
             <Link
               to={lineItemUrl}
               prefetch="intent"
               onClick={onClose}
-              className="col-start-1 row-span-2 row-start-1 size-20 shrink-0 overflow-hidden rounded-sm bg-background-basic md:size-16"
+              className="col-start-1 row-span-2 row-start-1 size-20 shrink-0 overflow-hidden rounded-sm bg-background-basic md:size-16 lg:size-24 lg:rounded-xl"
             >
               <Image
                 alt={merchandise.product.title}
@@ -302,7 +302,7 @@ function CartLineItem({
 
   return (
     <li
-      className="flex gap-4 border-border-subtle border-b py-6"
+      className="flex items-center gap-4 border-border-subtle border-b py-6"
       hidden={isLineRemoving}
     >
       {merchandise.image && (
@@ -310,7 +310,7 @@ function CartLineItem({
           to={lineItemUrl}
           prefetch="intent"
           onClick={onClose}
-          className="w-1/4 shrink-0 self-stretch overflow-hidden rounded-sm"
+          className="size-24 shrink-0 overflow-hidden rounded-sm"
         >
           <Image
             alt={merchandise.product.title}
@@ -322,16 +322,18 @@ function CartLineItem({
           />
         </Link>
       )}
-      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3">
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <Link prefetch="intent" to={lineItemUrl} onClick={onClose}>
-              <p className="line-clamp-1 text-sm font-medium">
+              <p className="line-clamp-1 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text">
                 {merchandise.product.title}
               </p>
             </Link>
             {variantSummary && (
-              <p className="text-sm text-text-subtle">{variantSummary}</p>
+              <p className="font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text-subtle">
+                {variantSummary}
+              </p>
             )}
             {line.sellingPlanAllocation?.sellingPlan?.name && (
               <p className="mt-2 w-fit rounded-full bg-background-subtle-2 px-2.5 py-1 text-text-subtle text-xs">
@@ -411,7 +413,7 @@ function CartLineRemoveButton({
     <button
       type="button"
       className={cn(
-        "flex size-8 shrink-0 items-center justify-center",
+        "flex size-5 shrink-0 items-center justify-center",
         className,
       )}
       aria-label={t("cart.remove")}
@@ -422,7 +424,7 @@ function CartLineRemoveButton({
       }}
       disabled={isOptimistic}
     >
-      <IconRemove className="size-4.5" />
+      <IconRemove className="size-5" />
     </button>
   );
 }
@@ -478,13 +480,18 @@ function CartLineQuantity({
       <fieldset
         aria-label={`${t("product.quantity")}, ${optimisticQuantity}`}
         className={cn(
-          "flex h-8 w-fit items-center border border-border-subtle",
-          layout === "page" ? "rounded-[2px]" : "rounded-full",
+          "flex w-fit items-center border",
+          layout === "page"
+            ? "h-10 gap-2 rounded-[2px] border-border-subtle"
+            : "h-10 rounded-2xl border-border",
         )}
       >
         <button
           type="button"
-          className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+          className={cn(
+            "flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50",
+            layout === "aside" ? "size-10" : "h-10 w-11",
+          )}
           aria-label={t("product.decreaseQuantity")}
           disabled={
             optimisticQuantity <= 1 || isOptimistic || isQuantityUpdating
@@ -495,12 +502,21 @@ function CartLineQuantity({
         >
           <span>&#8722;</span>
         </button>
-        <div className="min-w-6 text-center text-sm" data-test="item-quantity">
+        <div
+          className={cn(
+            "text-center font-body text-sm leading-none font-normal tracking-[-0.14px]",
+            layout === "aside" ? "min-w-8" : "min-w-[26px]",
+          )}
+          data-test="item-quantity"
+        >
           {optimisticQuantity}
         </div>
         <button
           type="button"
-          className="flex size-8 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+          className={cn(
+            "flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50",
+            layout === "aside" ? "size-10" : "h-10 w-11",
+          )}
           aria-label={t("product.increaseQuantity")}
           disabled={isOptimistic || isQuantityUpdating}
           name="increase-quantity"
