@@ -27,11 +27,11 @@ export function HeaderMenuDrawer({
   return (
     <nav
       className={cn(
-        "z-30 flex h-12.5 min-w-0 flex-1 flex-col items-start gap-2.5 py-2",
+        "z-30 flex h-full min-w-0 flex-1 flex-col items-start",
         className,
       )}
     >
-      <div className="flex h-12.5 self-stretch items-center gap-3">
+      <div className="flex h-full self-stretch items-center gap-3">
         <button
           type="button"
           aria-label={t("accessibility.openMenu")}

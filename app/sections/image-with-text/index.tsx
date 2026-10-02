@@ -27,7 +27,7 @@ let ImageWithText = ({
       {...rest}
       style={sectionStyle}
       containerClassName={cn(
-        "flex gap-10 md:gap-(--image-with-text-gap) md:justify-between",
+        "flex gap-10 md:gap-(--image-with-text-gap) md:justify-between lg:h-[720px]",
         sectionPadding === "none" ? "p-0" : "px-6 py-10 lg:p-10",
         imagePosition === "last"
           ? "flex-col md:flex-row-reverse"

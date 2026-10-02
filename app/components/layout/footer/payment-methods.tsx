@@ -45,7 +45,7 @@ export function PaymentMethods({
   }
 
   return (
-    <div className="flex items-start gap-1.5 py-4 md:p-0">
+    <div className="flex items-start gap-3 py-4 md:p-0">
       {paymentIconKeys.map((key) => {
         const Icon = PAYMENT_ICON_MAP[key];
         return Icon ? <Icon key={key} /> : null;

@@ -137,7 +137,7 @@ const Blogs = ({
       className="flex h-full w-full justify-center"
       style={sectionStyle}
     >
-      <div className="container flex flex-col gap-10 lg:gap-16 px-5 py-20 md:px-6">
+      <div className="container flex flex-col gap-10 px-5 py-20 md:px-6 lg:gap-16 lg:px-0">
         {children}
         <div className="grid grid-cols-1 gap-(--blog-card-gap) sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {res?.map((idx) => (
@@ -145,12 +145,12 @@ const Blogs = ({
               key={idx.id}
               to={idx.handle ? `/blogs/${blogs.handle}/${idx.handle}` : "#"}
               data-motion="slide-in"
-              className={"group"}
+              className="group lg:h-[465.75px] lg:overflow-hidden"
             >
-              <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-md bg-background-basic">
+              <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-background-basic">
                 {idx.image ? (
                   <div
-                    className="w-full overflow-hidden"
+                    className="w-full overflow-hidden lg:h-[258.75px] lg:shrink-0 lg:aspect-auto!"
                     style={{ aspectRatio }}
                   >
                     <Image
@@ -161,7 +161,7 @@ const Blogs = ({
                   </div>
                 ) : (
                   <div
-                    className="flex w-full items-center justify-center overflow-hidden bg-background-subtle-2"
+                    className="flex w-full items-center justify-center overflow-hidden bg-background-subtle-2 lg:h-[258.75px] lg:shrink-0 lg:aspect-auto!"
                     style={{ aspectRatio }}
                   >
                     <IconImageBlank
@@ -170,7 +170,7 @@ const Blogs = ({
                     />
                   </div>
                 )}
-                <div className="flex w-full flex-col gap-4 px-5 py-6">
+                <div className="flex w-full flex-col gap-4 px-5 py-6 lg:h-[207px] lg:shrink-0 lg:overflow-hidden">
                   {idx.tags[0] && (
                     <span className="w-fit rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
                       {idx.tags[0]}
@@ -181,6 +181,7 @@ const Blogs = ({
                       size === "custom" &&
                         fontSizeVariants({ mobileSize, desktopSize }),
                       variants({ size, weight }),
+                      "lg:!text-[24px] lg:!leading-[130%] lg:!font-normal",
                     )}
                   >
                     {idx.title}

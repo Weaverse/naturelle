@@ -143,7 +143,7 @@ let HotspotsItem = ({
               </div>
             )}
             {heading && (
-              <h2 className="relative z-10 mt-3 text-center font-heading text-2xl leading-tight lg:mt-4 lg:text-3xl">
+              <h2 className="relative z-10 mt-3 text-center text-2xl leading-[110%] text-text-inverse lg:mt-4 lg:!text-[44px] lg:!leading-[110%]">
                 {heading}
               </h2>
             )}
@@ -161,7 +161,7 @@ let HotspotsItem = ({
             )}
             {paragraph && (
               <div
-                className="relative z-10 mt-6 max-w-[626px] text-center text-sm leading-relaxed text-text lg:mt-10"
+                className="relative z-10 mt-6 max-w-[626px] text-center text-sm leading-relaxed text-text-inverse lg:mt-10 lg:text-base"
                 dangerouslySetInnerHTML={{ __html: paragraph }}
               />
             )}

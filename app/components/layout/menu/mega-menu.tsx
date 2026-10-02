@@ -71,7 +71,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   <Menubar.Content
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
-                      "bg-header-bg shadow-md border-t border-border-subtle mt-1.5",
+                      "border-border-subtle border-t bg-header-bg shadow-md",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >

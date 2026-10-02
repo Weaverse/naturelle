@@ -5,13 +5,14 @@ import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
 
 let variants = cva(
-  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
+  "grow h-auto basis-full md:basis-1/2 flex flex-col justify-center gap-5 lg:h-full [&_.paragraph]:mx-[unset] [&_.paragraph]:w-auto",
   {
     variants: {
       alignment: {
-        left: "items-start",
-        center: "items-center",
-        right: "items-end",
+        left: "items-start [&_.heading]:!text-left [&_.paragraph]:!text-left",
+        center:
+          "items-center [&_.heading]:!text-center [&_.paragraph]:!text-center [&_.paragraph]:!leading-[130%]",
+        right: "items-end [&_.heading]:!text-right [&_.paragraph]:!text-right",
       },
       verticalPadding: {
         none: "p-0",

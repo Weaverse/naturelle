@@ -104,7 +104,7 @@ export function Header() {
       <header
         className={cn(
           "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
-          "bg-header-bg text-(--color-header-text) border-(--color-header-text)",
+          "border-border-subtle bg-header-bg text-(--color-header-text)",
           "hover:bg-header-bg",
           "hover:text-(--color-header-text)",
           "hover:border-(--color-header-text)",
@@ -140,7 +140,7 @@ export function Header() {
 
             <Logo
               width={87}
-              className="z-30 flex w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px] px-0.5 pt-0.75 pb-0.5"
+              className="z-30 flex w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px]"
             />
 
             <div className="flex w-77.75 shrink-0 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal">
@@ -164,7 +164,7 @@ export function Header() {
         <div
           data-header-menu-row
           className={cn(
-            "z-40 flex h-14.5 items-center justify-center gap-2.5 md:h-16.5",
+            "z-40 flex h-14.5 items-center justify-center gap-2.5 md:h-[72px]",
             showTransparentHeader
               ? "bg-transparent"
               : "bg-header-bg md:bg-transparent",

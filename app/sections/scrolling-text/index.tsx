@@ -64,9 +64,10 @@ const ScrollingText = ({
       {...rest}
       style={sectionStyle}
       className={cn(
-        "my-[var(--vertical-margin)] bg-[var(--background-color)] py-[var(--vertical-padding)]",
-        "border-y border-y-[var(--border-color)]",
+        "my-[var(--vertical-margin)] bg-(--background-color) py-[var(--vertical-padding)]",
+        "border-y-2 border-y-[var(--border-color)]",
         "overflow-hidden",
+        "lg:flex lg:h-[77px] lg:items-center lg:py-0",
         variants({ width: scrollWidth }),
         !visibleOnMobile && "hidden md:block",
       )}

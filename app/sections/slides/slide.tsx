@@ -31,9 +31,9 @@ interface SlideProps extends HydrogenComponentProps {
 }
 
 let alignmentClasses: Record<Alignment, string> = {
-  left: "text-left",
-  center: "text-center",
-  right: "text-right",
+  left: "text-left [&_.heading]:!text-left [&_.paragraph]:!text-left",
+  center: "text-center [&_.heading]:!text-center [&_.paragraph]:!text-center",
+  right: "text-right [&_.heading]:!text-right [&_.paragraph]:!text-right",
 };
 
 let AlignImageClasses: Record<AlignImage, string> = {

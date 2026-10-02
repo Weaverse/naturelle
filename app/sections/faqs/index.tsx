@@ -44,8 +44,8 @@ export default function Faqs({
       width="full"
       gap={0}
       verticalPadding="none"
-      className="py-20 px-5 md:px-6 lg:px-40"
-      containerClassName="mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) md:grid-cols-2"
+      className="py-20 px-5 md:px-6 lg:h-[760px] lg:px-0"
+      containerClassName="mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) md:grid-cols-2 lg:h-[600px] lg:grid-cols-[453.333px_minmax(0,1fr)] lg:overflow-hidden lg:px-40"
       style={
         {
           ...style,
@@ -54,7 +54,7 @@ export default function Faqs({
       }
     >
       <div
-        className="relative overflow-hidden rounded-2xl bg-(--faq-image-background)"
+        className="relative min-h-0 overflow-hidden rounded-2xl bg-(--faq-image-background) lg:h-full"
         style={
           {
             "--faq-image-background": imageBackgroundColor,
@@ -81,14 +81,16 @@ export default function Faqs({
             </p>
           )}
           {cardHeading && (
-            <p className="text-center text-[37px]">{cardHeading}</p>
+            <p className="text-center font-heading text-[37px] leading-[110%]">
+              {cardHeading}
+            </p>
           )}
           {buttonText && (
             <Button
               as="a"
               to={buttonLink || "/pages/contact"}
               variant="secondary"
-              className="mt-7"
+              className="mt-7 rounded-xl font-semibold"
             >
               {buttonText}
             </Button>
@@ -98,7 +100,7 @@ export default function Faqs({
 
       <div className="flex w-full max-w-page flex-col gap-6 lg:gap-10 justify-center py-20 lg:pl-16 lg:pr-10">
         {heading && (
-          <h2 className="font-heading text-[44px] leading-[110%] font-normal text-text">
+          <h2 className="!text-[44px] !leading-[110%] font-normal text-text">
             {heading}
           </h2>
         )}

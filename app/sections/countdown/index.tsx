@@ -10,28 +10,31 @@ import { backgroundInputs } from "~/components/background-image";
 import { overlayInputs } from "~/components/overlay";
 import { Section, type SectionProps } from "~/components/section";
 
-let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
-  variants: {
-    layout: {
-      col: "flex flex-col gap-(--countdown-gap)",
-      row: [
-        "flex flex-col gap-(--countdown-gap)",
-        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center",
-        "lg:[&_.countdown-content]:!items-start lg:[&_.heading]:!text-left lg:[&_.paragraph]:!text-left",
-      ],
+let variants = cva(
+  "px-0 md:px-10 [&_.paragraph]:mx-[unset] lg:[&_[data-wv-type='button']]:!rounded-xl lg:[&_[data-wv-type='button']]:!font-semibold",
+  {
+    variants: {
+      layout: {
+        col: "flex flex-col gap-(--countdown-gap)",
+        row: [
+          "flex flex-col gap-(--countdown-gap)",
+          "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center",
+          "lg:[&_.countdown-content]:!items-start lg:[&_.heading]:!text-left lg:[&_.paragraph]:!text-left",
+        ],
+      },
+      alignment: {
+        left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
+        center:
+          "items-center justify-items-center [&_.countdown-content]:items-center [&_.paragraph]:[text-align:center]",
+        right:
+          "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
+      },
     },
-    alignment: {
-      left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
-      center:
-        "items-center justify-items-center [&_.countdown-content]:items-center [&_.paragraph]:[text-align:center]",
-      right:
-        "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
+    defaultVariants: {
+      layout: "row",
     },
   },
-  defaultVariants: {
-    layout: "row",
-  },
-});
+);
 
 interface CountdownProps extends VariantProps<typeof variants>, SectionProps {}
 
@@ -45,6 +48,8 @@ let Countdown = ({
     layout = "row",
     gap = 40,
     verticalPadding = "medium",
+    backgroundFor = "section",
+    borderRadius = 0,
     style,
     ...rest
   } = props;
@@ -75,6 +80,8 @@ let Countdown = ({
     <Section
       ref={ref}
       {...rest}
+      backgroundFor={backgroundFor}
+      borderRadius={borderRadius}
       gap={0}
       verticalPadding={verticalPadding}
       containerClassName={variants({ alignment, layout })}
@@ -91,14 +98,14 @@ let Countdown = ({
             {timerChildren}
             <div className="h-px w-28 border-t border-current opacity-30 lg:h-auto lg:w-auto lg:self-stretch lg:border-t-0 lg:border-r lg:pl-10" />
           </div>
-          <div className="countdown-content w-full flex flex-col items-start gap-2">
+          <div className="countdown-content w-full flex flex-col items-start gap-4 [&_.paragraph]:opacity-80">
             {contentChildren}
           </div>
           {buttonChildren}
         </>
       ) : (
         <>
-          <div className="countdown-content flex flex-col gap-2">
+          <div className="countdown-content flex flex-col gap-4 [&_.paragraph]:opacity-80">
             {contentChildren}
           </div>
           {timerChildren}

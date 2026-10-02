@@ -151,7 +151,7 @@ const Testimonials = ({
       ref={ref}
       {...rest}
       verticalPadding="none"
-      className="relative overflow-hidden px-0 md:h-screen-no-nav"
+      className="relative overflow-hidden px-0 md:h-screen-no-nav lg:h-[931px]"
       containerClassName="max-w-none p-0 md:h-full"
       style={sectionStyle}
     >
@@ -205,8 +205,8 @@ const Testimonials = ({
               : "relative",
           )}
         >
-          <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-16">
-            <div className="flex w-full max-w-[247px] flex-col gap-3 rounded-xl border border-(--border-color) bg-(--rating-overlay-background) p-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+          <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-[72px]">
+            <div className="flex w-full max-w-[320px] flex-col gap-3 rounded-2xl border border-(--border-color) bg-(--rating-overlay-background) p-6 text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl">
               <p className="text-xs font-semibold leading-none uppercase tracking-wide opacity-90">
                 {ratingText}
               </p>
@@ -230,7 +230,7 @@ const Testimonials = ({
               <Link
                 to={productUrl}
                 prefetch="intent"
-                className="pointer-events-auto flex min-h-9 w-fit max-w-[247px] items-center justify-between gap-3 rounded-lg border border-(--border-color) bg-(--color-button-primary-background) px-3 py-2 text-xs font-semibold text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
+                className="pointer-events-auto flex min-h-9 w-fit max-w-[320px] items-center justify-between gap-3 rounded-xl border border-(--border-color) bg-(--color-button-primary-background) px-[18px] py-3 text-sm font-bold text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
               >
                 <span>{ratingButtonText}</span>
                 <IconCaret
@@ -267,8 +267,11 @@ const Testimonials = ({
             ) : null}
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
-          <div className="relative z-10 flex min-h-full flex-col gap-12 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
-            <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
+          <div className="relative z-10 flex min-h-full flex-col gap-10 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
+            <h2
+              className="line-clamp-1 font-normal"
+              style={{ fontSize: 44, lineHeight: "110%" }}
+            >
               {selectedProduct?.title || "Product name"}
             </h2>
             <div className="flex flex-col gap-5">
