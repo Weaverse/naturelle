@@ -1,8 +1,7 @@
 import { useThemeSettings } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouteError } from "react-router";
-import { useWindowScroll } from "react-use";
 import { Logo } from "~/components/layout/logo";
 import { Link } from "~/components/link";
 import { useShopMenu } from "~/hooks/use-menu-shop";
@@ -31,6 +30,19 @@ let variants = cva("", {
   },
 });
 
+function subscribeToScroll(onStoreChange: () => void) {
+  window.addEventListener("scroll", onStoreChange, { passive: true });
+  return () => window.removeEventListener("scroll", onStoreChange);
+}
+
+function getScrollSnapshot() {
+  return window.scrollY;
+}
+
+function getServerScrollSnapshot() {
+  return 0;
+}
+
 export function Header() {
   let { headerMenu } = useShopMenu();
   const settings = useThemeSettings();
@@ -53,7 +65,11 @@ export function Header() {
     enableTransparentHeader,
   } = settings;
   const isHome = useIsHomePath();
-  const { y } = useWindowScroll();
+  const y = useSyncExternalStore(
+    subscribeToScroll,
+    getScrollSnapshot,
+    getServerScrollSnapshot,
+  );
   const [top, setCalculatedTop] = useState(0);
   const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
