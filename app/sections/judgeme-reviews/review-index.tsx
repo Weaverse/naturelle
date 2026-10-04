@@ -36,8 +36,8 @@ const ReviewIndex = ({
       {...rest}
       className={`grid items-start gap-5 pt-10 md:grid-cols-2 ${
         reviewsPosition === "left"
-          ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]"
-          : "lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"
+          ? "lg:grid-cols-[minmax(0,1fr)_458.667px]"
+          : "lg:grid-cols-[458.667px_minmax(0,1fr)]"
       }`}
     >
       {reviewsPosition === "left" && (

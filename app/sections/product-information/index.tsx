@@ -1,6 +1,11 @@
 import { Disclosure } from "@headlessui/react";
+import { ArrowUUpLeft, Truck } from "@phosphor-icons/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import { createSchema, useTranslation } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  useThemeSettings,
+  useTranslation,
+} from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
@@ -56,6 +61,7 @@ let ProductInformation = ({
   ...props
 }: ProductInformationProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   const { t } = useTranslation();
+  const theme = useThemeSettings();
   const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   let {
     product,
@@ -126,6 +132,22 @@ let ProductInformation = ({
     const { title, vendor, descriptionHtml } = product;
     const { shippingPolicy, refundPolicy } = shop;
     const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
+    const stock = selectedVariant.quantityAvailable;
+    const configuredLowStockThreshold = Number(
+      theme.quickViewLowStockThreshold,
+    );
+    const lowStockThreshold = Number.isFinite(configuredLowStockThreshold)
+      ? Math.min(20, Math.max(0, configuredLowStockThreshold))
+      : 5;
+    const stockValue = typeof stock === "number" ? stock : 0;
+    const showLowStock =
+      selectedVariant.availableForSale &&
+      stockValue > 0 &&
+      stockValue <= lowStockThreshold;
+    const lowStockPercentage =
+      lowStockThreshold > 0
+        ? Math.min(100, (stockValue / lowStockThreshold) * 100)
+        : 0;
     return (
       <Section
         ref={ref}
@@ -138,7 +160,8 @@ let ProductInformation = ({
           className={clsx(
             "grid grid-cols-1 items-start gap-8 md:grid-cols-2",
             "md:gap-12",
-            "md:grid-cols-[1fr_clamp(360px,45%,480px)]",
+            "md:grid-cols-[minmax(0,1fr)_clamp(360px,45%,480px)]",
+            "lg:grid-cols-[minmax(0,1fr)_556.8px]",
           )}
         >
           <div className="min-w-0">
@@ -176,8 +199,8 @@ let ProductInformation = ({
             className="min-w-0"
             style={
               {
-                "--shop-pay-button-border-radius": "9999px",
-                "--shop-pay-button-height": "56px",
+                "--shop-pay-button-border-radius": "12px",
+                "--shop-pay-button-height": "50px",
                 "--width-button": widthButton,
               } as React.CSSProperties
             }
@@ -187,29 +210,30 @@ let ProductInformation = ({
                 <div className="flex flex-col gap-4 sm:gap-5">
                   <h1
                     data-motion="fade-up"
-                    className="font-heading text-3xl font-normal leading-tight tracking-tight md:text-4xl"
+                    className="font-heading text-3xl font-normal leading-[1.1] tracking-normal md:text-[44px]"
                   >
                     {title}
                   </h1>
                   {((showVendor && vendor) || product.productType) && (
                     <Text
                       data-motion="fade-up"
-                      className="text-sm font-normal text-text-subtle"
+                      className="flex flex-wrap items-center gap-3 text-base font-semibold leading-[1.6] tracking-[-0.01em] text-text-subtle"
                     >
                       {showVendor && vendor && (
-                        <>
-                          {t("product.vendor")}{" "}
-                          <span className="text-text-primary">{vendor}</span>
-                        </>
+                        <span>
+                          {t("product.vendor")} {vendor}
+                        </span>
                       )}
                       {product.productType && (
                         <>
                           {showVendor && vendor && (
-                            <span className="px-2">|</span>
+                            <span
+                              aria-hidden="true"
+                              className="h-4 w-px bg-border-subtle"
+                            />
                           )}
-                          {t("product.type")}{" "}
-                          <span className="text-text-primary">
-                            {product.productType}
+                          <span>
+                            {t("product.type")} {product.productType}
                           </span>
                         </>
                       )}
@@ -218,10 +242,13 @@ let ProductInformation = ({
                   {judgemeReviews.reviewNumber > 0 && (
                     <div
                       data-motion="fade-up"
-                      className="flex items-center gap-0.5"
+                      className="flex items-center gap-3 text-base leading-none"
                     >
-                      <StarRating rating={judgemeReviews.rating} />
-                      <span className="ml-1">
+                      <StarRating
+                        rating={judgemeReviews.rating}
+                        className="h-5 [&>svg]:size-5"
+                      />
+                      <span>
                         {judgemeReviews.rating.toFixed(1)}/5.0 (
                         {judgemeReviews.reviewNumber === 1
                           ? t("reviews.count", {
@@ -243,13 +270,13 @@ let ProductInformation = ({
                   {children}
                   <div
                     data-motion="fade-up"
-                    className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
+                    className="flex gap-3 font-heading text-[26px]/[1.1] font-normal"
                   >
                     {showSalePrice && selectedVariant?.compareAtPrice && (
                       <Money
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
-                        className="text-label-save-background line-through"
+                        className="text-text-subtle line-through"
                       />
                     )}
 
@@ -260,6 +287,38 @@ let ProductInformation = ({
                       />
                     ) : null}
                   </div>
+                  {showLowStock && (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-base font-semibold">
+                        {stockValue === 1
+                          ? t("product.lowStockOne", {
+                              count: formatNumber(stockValue, locale),
+                            })
+                          : t("product.lowStock", {
+                              count: formatNumber(stockValue, locale),
+                            })}
+                      </p>
+                      <div
+                        role="progressbar"
+                        aria-label={t("product.lowStockThreshold", {
+                          count: lowStockThreshold,
+                        })}
+                        aria-valuemin={0}
+                        aria-valuemax={lowStockThreshold}
+                        aria-valuenow={stockValue}
+                        className="relative h-1 w-full overflow-hidden rounded-full bg-border-subtle"
+                      >
+                        <div
+                          className="h-full w-full origin-left rounded-full transition-[transform,background-color]"
+                          style={{
+                            backgroundColor:
+                              theme.quickViewLowStockProgressColor,
+                            transform: `scaleX(${lowStockPercentage / 100})`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <ProductVariants
                   product={product}
@@ -277,11 +336,12 @@ let ProductInformation = ({
                 requiresSellingPlan={product.requiresSellingPlan}
                 disabled={isLoading}
               />
-              <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-(--width-button)">
+              <div className="grid grid-cols-[auto_1fr] gap-2.5 sm:w-(--width-button)">
                 <ProductQuantityInput
                   value={quantity}
                   disabled={isLoading}
                   onChange={setQuantity}
+                  className="h-[50px] rounded-xl [&>button]:w-[50px] [&>button]:px-0"
                 />
                 <div data-motion="fade-up">
                   <AddToCartButton
@@ -302,7 +362,7 @@ let ProductInformation = ({
                     }
                     variant="primary"
                     data-test="add-to-cart"
-                    className="h-12 w-full rounded-lg"
+                    className="h-[50px] w-full rounded-xl"
                   >
                     <span> {atcText}</span>
                   </AddToCartButton>
@@ -326,13 +386,13 @@ let ProductInformation = ({
                 enabled={showBackInStockForm}
               />
               {(showShippingPolicy || showRefundPolicy) && (
-                <div className="flex flex-col gap-3 py-2 text-sm text-text-subtle">
+                <div className="flex flex-col gap-3 py-2 text-base leading-[1.6] text-text-primary">
                   {showShippingPolicy && shippingPolicy?.handle && (
                     <Link
                       to={`/policies/${shippingPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <span aria-hidden="true">▱</span>{" "}
+                      <Truck aria-hidden="true" className="size-6 shrink-0" />
                       {t("product.viewShippingPolicy")}
                     </Link>
                   )}
@@ -341,19 +401,20 @@ let ProductInformation = ({
                       to={`/policies/${refundPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <span aria-hidden="true">↩</span>{" "}
+                      <ArrowUUpLeft
+                        aria-hidden="true"
+                        className="size-6 shrink-0"
+                      />
                       {t("product.viewReturnsPolicy")}
                     </Link>
                   )}
                 </div>
               )}
-              <Link
-                to={`/products/${product.handle}`}
-                className="w-fit text-sm text-text-primary underline underline-offset-4"
-              >
-                {t("product.viewDetails")}
-              </Link>
-              <ProductShareLinks productUrl={productUrl} title={title} />
+              <ProductShareLinks
+                productUrl={productUrl}
+                title={title}
+                className="gap-2 pt-2 text-base [&>span]:mr-2"
+              />
             </div>
             {product?.metafield && <MetaFieldTable data={product?.metafield} />}
           </div>

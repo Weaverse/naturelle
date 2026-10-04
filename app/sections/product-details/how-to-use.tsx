@@ -58,17 +58,18 @@ export default function HowToUse({
   }
 
   return (
-    <section ref={ref} {...rest}>
-      <div className="rounded-xl bg-(--product-detail-background-color) p-12 gap-10 flex flex-col">
-        <h2 className="text-3xl leading-tight md:text-4xl">{heading}</h2>
+    <section ref={ref} {...rest} data-product-metafield-section>
+      <div className="flex flex-col gap-10 rounded-3xl bg-(--product-detail-background-color) p-6 md:p-12">
+        <h2 className="font-display text-[32px] leading-[normal] font-normal text-text">
+          {heading}
+        </h2>
         <ol className="flex flex-col gap-8">
           {steps.map((step, index) => (
-            <li
-              key={step.id}
-              className="grid grid-cols-[1.5rem_1fr] gap-6 text-sm leading-6"
-            >
-              <span className="font-semibold">{index + 1}</span>
-              <span className="text-(--product-detail-text-color)">
+            <li key={step.id} className="grid grid-cols-[40px_1fr] gap-6">
+              <span className="font-body text-2xl leading-[normal] font-bold text-text">
+                {index + 1}
+              </span>
+              <span className="font-body text-base leading-[160%] font-normal text-(--product-detail-text-color)">
                 {step.content}
               </span>
             </li>

@@ -24,7 +24,7 @@ export default function ProductDetails({
       ref={ref}
       {...rest}
       className={cn(
-        "mx-auto w-full max-w-page rounded-2xl bg-background-basic px-5 pt-20 pb-30 md:px-12 lg:px-0",
+        "mx-auto w-full max-w-page rounded-2xl bg-background-basic px-5 pt-20 pb-30 md:px-12 lg:px-0 [&:not(:has([data-product-metafield-section]))]:hidden",
         className,
       )}
       style={
@@ -35,7 +35,9 @@ export default function ProductDetails({
         } as CSSProperties
       }
     >
-      <div className="mx-auto w-full max-w-300 space-y-20">{children}</div>
+      <div className="mx-auto flex w-full max-w-300 flex-col gap-20">
+        {children}
+      </div>
     </section>
   );
 }

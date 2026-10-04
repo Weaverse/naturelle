@@ -96,17 +96,17 @@ export function ReviewForm({
 
   return (
     <div className="flex w-full flex-col gap-5">
-      <section className="flex flex-col gap-6 rounded-lg bg-background-basic px-8 py-10 text-center text-text">
+      <section className="flex flex-col gap-6 rounded-2xl bg-background-basic px-8 py-10 text-center text-text">
         <div className="flex flex-col items-center gap-4">
           <p className="text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text uppercase">
             {reviewHeading}
           </p>
-          <div className="h-px w-10 bg-border-subtle" />
-          <p className="text-text-subtle text-xs">{reviewDescription}</p>
+          <div className="h-px w-12 bg-border-subtle" />
+          <p className="text-sm text-text-subtle">{reviewDescription}</p>
         </div>
 
-        <div className="flex flex-col gap-5">
-          <div className="flex items-center justify-center gap-2">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-center gap-3">
             <StarRating
               rating={displayRating}
               className="h-6 gap-1 [&>svg]:size-6"
@@ -114,12 +114,12 @@ export function ReviewForm({
             <span className="font-heading text-[2.5rem] font-normal leading-none text-text">
               {displayRating.toFixed(1)}
             </span>
-            <span className="text-text-subtle text-sm">
+            <span className="text-base text-text-subtle">
               {t("reviews.outOfFive")}
             </span>
           </div>
 
-          <div className="space-y-2 text-xs">
+          <div className="flex flex-col gap-3 text-xs">
             <div className="flex items-center justify-between uppercase">
               <span>{t("reviews.ratingDistribution")}</span>
               <span className="text-text-subtle">
@@ -131,11 +131,11 @@ export function ReviewForm({
             {ratingRows.map((row) => (
               <div
                 key={row.rating}
-                className="grid grid-cols-[1rem_minmax(0,1fr)_2.5rem] items-center gap-2"
+                className="grid grid-cols-[0.5rem_minmax(0,1fr)_2.0625rem] items-center gap-3"
               >
                 <span>{row.rating}</span>
                 <div
-                  className="h-1 overflow-hidden rounded-full bg-border-subtle"
+                  className="h-1.5 overflow-hidden rounded-full bg-border-subtle"
                   aria-label={t("reviews.starsReviews", {
                     stars: row.rating,
                     count: row.frequency,
@@ -160,7 +160,7 @@ export function ReviewForm({
 
         <Button
           variant="primary"
-          className="min-h-12 self-center rounded-lg px-6"
+          className="min-h-[50px] self-center rounded-xl px-6 font-semibold"
           onClick={() => {
             setMessage("");
             setIsSuccessVisible(false);
@@ -174,13 +174,15 @@ export function ReviewForm({
       </section>
 
       {isFormVisible && (
-        <section className="flex flex-col gap-8 rounded-lg bg-background-basic px-8 py-10 text-text">
+        <section className="flex flex-col gap-8 rounded-2xl bg-background-basic px-8 py-10 text-text">
           <div className="text-center">
             <p className="text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text uppercase">
               {formHeading}
             </p>
-            <div className="mx-auto mt-3 h-px w-10 bg-border-subtle" />
-            <p className="mt-4 text-text-subtle text-sm">{formDescription}</p>
+            <div className="mx-auto mt-3 h-px w-12 bg-border-subtle" />
+            <p className="mt-4 text-base leading-[1.6] tracking-[-0.01em] text-text-subtle">
+              {formDescription}
+            </p>
           </div>
 
           <form
@@ -195,11 +197,11 @@ export function ReviewForm({
             <input type="hidden" name="rating" value={rating} />
 
             <div className="flex flex-col gap-6">
-              <fieldset className="flex flex-col gap-2">
-                <legend className="font-semibold text-sm">
+              <fieldset className="flex flex-col gap-3">
+                <legend className="text-base font-semibold leading-[1.6] tracking-[-0.01em]">
                   {t("reviews.rating")}
                 </legend>
-                <div className="flex justify-center gap-1">
+                <div className="flex justify-center gap-2">
                   {[1, 2, 3, 4, 5].map((ratingValue) => (
                     <button
                       type="button"
@@ -211,7 +213,7 @@ export function ReviewForm({
                         rating: ratingValue,
                       })}
                       aria-pressed={rating === ratingValue}
-                      className="cursor-pointer p-1"
+                      className="cursor-pointer"
                     >
                       {ratingValue <= (hover || rating) ? (
                         <IconFilledStar className="size-8" />
@@ -225,7 +227,7 @@ export function ReviewForm({
 
               <label
                 htmlFor={`${formId}-email`}
-                className="flex flex-col gap-2 font-semibold text-sm"
+                className="flex flex-col gap-2 text-base font-semibold leading-[1.6] tracking-[-0.01em]"
               >
                 <span>{t("reviews.emailAddress")}</span>
                 <Input
@@ -235,7 +237,8 @@ export function ReviewForm({
                   name="email"
                   placeholder="laura@mymail.com"
                   autoComplete="email"
-                  className="w-full rounded-lg bg-transparent"
+                  variant="custom"
+                  className="h-[50px] w-full rounded-xl bg-transparent text-base font-normal"
                 />
                 <span className="block font-normal text-text-subtle text-xs">
                   {t("reviews.emailPrivacy")}
@@ -244,7 +247,7 @@ export function ReviewForm({
 
               <label
                 htmlFor={`${formId}-name`}
-                className="flex flex-col gap-2 font-semibold text-sm"
+                className="flex flex-col gap-2 text-base font-semibold leading-[1.6] tracking-[-0.01em]"
               >
                 <span>{t("reviews.fullName")}</span>
                 <Input
@@ -254,13 +257,14 @@ export function ReviewForm({
                   name="name"
                   placeholder="Laura"
                   autoComplete="name"
-                  className="w-full rounded-lg bg-transparent"
+                  variant="custom"
+                  className="h-[50px] w-full rounded-xl bg-transparent text-base font-normal"
                 />
               </label>
 
               <label
                 htmlFor={`${formId}-title`}
-                className="flex flex-col gap-2 font-semibold text-sm"
+                className="flex flex-col gap-2 text-base font-semibold leading-[1.6] tracking-[-0.01em]"
               >
                 <span>{t("reviews.reviewTitle")}</span>
                 <Input
@@ -268,13 +272,14 @@ export function ReviewForm({
                   id={`${formId}-title`}
                   type="text"
                   name="title"
-                  className="w-full rounded-lg bg-transparent"
+                  variant="custom"
+                  className="h-[50px] w-full rounded-xl bg-transparent text-base font-normal"
                 />
               </label>
 
               <label
                 htmlFor={`${formId}-body`}
-                className="flex flex-col gap-2 font-semibold text-sm"
+                className="flex flex-col gap-2 text-base font-semibold leading-[1.6] tracking-[-0.01em]"
               >
                 <span>{t("reviews.yourReview")}</span>
                 <textarea
@@ -285,7 +290,8 @@ export function ReviewForm({
                   maxLength={500}
                   value={reviewBody}
                   onChange={(event) => setReviewBody(event.target.value)}
-                  className="w-full resize-y rounded-lg border border-border-subtle bg-transparent px-3 py-3 font-normal outline-none focus-visible:border-border"
+                  placeholder={t("reviews.reviewPlaceholder")}
+                  className="h-40 w-full resize-y rounded-xl border border-border-subtle bg-transparent px-3 py-3 font-normal outline-none placeholder:text-text-subtle focus-visible:border-border"
                 />
                 <span className="flex justify-between font-normal text-text-subtle text-xs">
                   <span>{t("reviews.opinionHint")}</span>
@@ -303,11 +309,11 @@ export function ReviewForm({
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <Button
                 type="button"
                 variant="custom"
-                className="rounded-lg border-0 bg-transparent"
+                className="rounded-xl border-0 bg-transparent font-semibold"
                 onClick={() => setIsFormVisible(false)}
               >
                 {t("actions.cancel")}
@@ -316,7 +322,7 @@ export function ReviewForm({
                 type="submit"
                 loading={isSubmitting}
                 disabled={rating === 0 || isSubmitting}
-                className="rounded-lg"
+                className="rounded-xl font-semibold"
               >
                 {t("reviews.submitReview")}
               </Button>
