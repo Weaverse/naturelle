@@ -12,47 +12,47 @@ const panelVariants = cva(
   "flex transform flex-col bg-(--color-drawer-bg) text-left align-middle shadow-xl transition-all",
   {
     variants: {
-      form: {
+      isForm: {
         cart: "gap-3 overflow-hidden px-6 pt-3 pb-6",
         filter: "gap-4 overflow-y-auto px-6 pt-3 pb-6",
         menu: "",
         search: "",
       },
     },
-    defaultVariants: { form: "search" },
+    defaultVariants: { isForm: "search" },
   },
 );
 
 const headerVariants = cva("sticky top-0 flex shrink-0 items-center", {
   variants: {
-    form: {
+    isForm: {
       cart: "h-auto py-2.5",
       filter: "h-11",
       menu: "h-nav",
       search: "h-nav",
     },
   },
-  defaultVariants: { form: "search" },
+  defaultVariants: { isForm: "search" },
 });
 
 const closeButtonVariants = cva(
   "text-text-primary transition hover:text-text-primary/50",
   {
     variants: {
-      form: {
+      isForm: {
         cart: "-m-4 p-4",
         filter: "-mr-3 p-3",
         menu: "-m-4 p-4",
         search: "-m-4 p-4",
       },
     },
-    defaultVariants: { form: "search" },
+    defaultVariants: { isForm: "search" },
   },
 );
 
 const titleVariants = cva("font-heading text-xl", {
   variants: {
-    form: {
+    isForm: {
       cart: "font-normal leading-[150%] tracking-[-0.2px] text-text",
       filter:
         "font-normal leading-[150%] tracking-[-0.2px] text-text uppercase",
@@ -60,7 +60,7 @@ const titleVariants = cva("font-heading text-xl", {
       search: "font-semibold text-text-primary",
     },
   },
-  defaultVariants: { form: "search" },
+  defaultVariants: { isForm: "search" },
 });
 
 /**
@@ -139,7 +139,7 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    panelVariants({ form: isForm }),
+                    panelVariants({ isForm }),
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
@@ -149,7 +149,7 @@ export function Drawer({
                 >
                   <header
                     className={cn(
-                      headerVariants({ form: isForm }),
+                      headerVariants({ isForm }),
                       heading ? "justify-between" : "justify-items-end",
                       openFrom === "left" ||
                         isForm === "cart" ||
@@ -160,7 +160,7 @@ export function Drawer({
                   >
                     <button
                       type="button"
-                      className={closeButtonVariants({ form: isForm })}
+                      className={closeButtonVariants({ isForm })}
                       onClick={onClose}
                       data-test="close-cart"
                     >
@@ -176,7 +176,7 @@ export function Drawer({
                     {heading !== null && (
                       <Dialog.Title as="span">
                         <span
-                          className={titleVariants({ form: isForm })}
+                          className={titleVariants({ isForm })}
                           id="cart-contents"
                         >
                           {heading}
