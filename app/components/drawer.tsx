@@ -1,9 +1,67 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { useTranslation } from "@weaverse/hydrogen";
+import { cva } from "class-variance-authority";
 import { Fragment, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { cn } from "~/utils/cn";
 import { IconArrowLeft, IconClose } from "./icon";
+
+type DrawerForm = "cart" | "search" | "menu" | "filter";
+
+const panelVariants = cva(
+  "flex transform flex-col bg-(--color-drawer-bg) text-left align-middle shadow-xl transition-all",
+  {
+    variants: {
+      form: {
+        cart: "gap-3 overflow-hidden px-6 pt-3 pb-6",
+        filter: "gap-4 overflow-y-auto px-6 pt-3 pb-6",
+        menu: "",
+        search: "",
+      },
+    },
+    defaultVariants: { form: "search" },
+  },
+);
+
+const headerVariants = cva("sticky top-0 flex shrink-0 items-center", {
+  variants: {
+    form: {
+      cart: "h-auto py-2.5",
+      filter: "h-11",
+      menu: "h-nav",
+      search: "h-nav",
+    },
+  },
+  defaultVariants: { form: "search" },
+});
+
+const closeButtonVariants = cva(
+  "text-text-primary transition hover:text-text-primary/50",
+  {
+    variants: {
+      form: {
+        cart: "-m-4 p-4",
+        filter: "-mr-3 p-3",
+        menu: "-m-4 p-4",
+        search: "-m-4 p-4",
+      },
+    },
+    defaultVariants: { form: "search" },
+  },
+);
+
+const titleVariants = cva("font-heading text-xl", {
+  variants: {
+    form: {
+      cart: "font-normal leading-[150%] tracking-[-0.2px] text-text",
+      filter:
+        "font-normal leading-[150%] tracking-[-0.2px] text-text uppercase",
+      menu: "font-normal leading-[150%] tracking-[-0.2px] text-text uppercase",
+      search: "font-semibold text-text-primary",
+    },
+  },
+  defaultVariants: { form: "search" },
+});
 
 /**
  * Drawer component that opens on user click.
@@ -27,7 +85,7 @@ export function Drawer({
   onClose: () => void;
   openFrom: "right" | "left" | "top";
   children: React.ReactNode;
-  isForm?: "cart" | "search" | "menu" | "filter";
+  isForm?: DrawerForm;
   isBackMenu?: boolean;
 }) {
   const { t } = useTranslation();
@@ -81,10 +139,7 @@ export function Drawer({
               >
                 <Dialog.Panel
                   className={cn(
-                    "transform text-left align-middle shadow-xl transition-all bg-(--color-drawer-bg) flex flex-col gap-3",
-                    isForm === "cart" && "overflow-hidden px-6 pt-3 pb-6",
-                    isForm === "filter" &&
-                      "gap-4 overflow-y-auto px-6 pt-3 pb-6",
+                    panelVariants({ form: isForm }),
                     openFrom === "left"
                       ? `h-screen-dynamic w-screen ${maxWidth}`
                       : openFrom === "top"
@@ -94,12 +149,7 @@ export function Drawer({
                 >
                   <header
                     className={cn(
-                      "sticky top-0 flex items-center shrink-0",
-                      isForm === "cart"
-                        ? "h-auto py-2.5"
-                        : isForm === "filter"
-                          ? "h-11"
-                          : "h-nav",
+                      headerVariants({ form: isForm }),
                       heading ? "justify-between" : "justify-items-end",
                       openFrom === "left" ||
                         isForm === "cart" ||
@@ -110,10 +160,7 @@ export function Drawer({
                   >
                     <button
                       type="button"
-                      className={cn(
-                        "text-text-primary transition hover:text-text-primary/50",
-                        isForm === "filter" ? "-mr-3 p-3" : "-m-4 p-4",
-                      )}
+                      className={closeButtonVariants({ form: isForm })}
                       onClick={onClose}
                       data-test="close-cart"
                     >
@@ -129,19 +176,7 @@ export function Drawer({
                     {heading !== null && (
                       <Dialog.Title as="span">
                         <span
-                          className={cn(
-                            "font-heading text-xl",
-                            isForm === "cart"
-                              ? "font-normal leading-[150%] tracking-[-0.2px] text-text uppercase"
-                              : isForm === "filter"
-                                ? "font-normal leading-[150%] tracking-[-0.2px] text-text"
-                                : isForm === "menu"
-                                  ? "leading-[150%] font-normal tracking-[-0.2px] text-text"
-                                  : "font-semibold text-text-primary",
-                            isForm !== "search" &&
-                              isForm !== "cart" &&
-                              "uppercase",
-                          )}
+                          className={titleVariants({ form: isForm })}
                           id="cart-contents"
                         >
                           {heading}

@@ -91,12 +91,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
         >
           <div className="w-full text-text-primary">
             {bannerHeading && (
-              <h1
-                className="font-heading font-normal"
-                style={{ fontSize: "44px", lineHeight: 1.1 }}
-              >
-                {bannerHeading}
-              </h1>
+              <h1 className="h3 font-normal text-text">{bannerHeading}</h1>
             )}
             {bannerDescription && (
               <p className="mt-6 max-w-full text-base leading-[1.6] tracking-[-0.16px]">

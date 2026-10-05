@@ -51,10 +51,7 @@ export default function SearchResults() {
     <section className="bg-background-basic">
       <PageHeader variant="search">
         <div className="flex w-full flex-col items-center gap-6 px-6">
-          <h1
-            className="mx-auto w-full max-w-[688px] text-center font-heading font-normal text-text"
-            style={{ fontSize: "clamp(36px, 4vw, 53px)", lineHeight: 1.1 }}
-          >
+          <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
             {searchTerm
               ? t("search.resultsFor", { term: searchTerm })
               : t("search.title")}
@@ -68,7 +65,7 @@ export default function SearchResults() {
               onClear={() => navigate(location.pathname)}
               name="q"
               placeholder={t("search.placeholder")}
-              className="h-[50px] w-full rounded-xl border border-border-subtle bg-background-basic p-3! md:w-[560px]"
+              className="w-full rounded-xl border border-border-subtle bg-background-basic p-3! md:w-[560px]"
               type="search"
               prefixElement={
                 <button

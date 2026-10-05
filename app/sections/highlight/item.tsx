@@ -36,7 +36,7 @@ const HighlightItem = ({
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex w-full flex-col items-center rounded-2xl bg-background-basic px-6 py-10 lg:h-[308px] lg:overflow-hidden [&_.heading]:!text-center [&_.paragraph]:!text-center",
+        "flex w-full flex-col items-center rounded-2xl bg-background-basic px-6 py-10",
         !visibleOnMobile && "hidden md:flex",
       )}
     >

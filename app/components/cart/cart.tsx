@@ -413,7 +413,7 @@ function CartLineRemoveButton({
     <button
       type="button"
       className={cn(
-        "flex size-5 shrink-0 items-center justify-center",
+        "flex size-8 shrink-0 items-center justify-center",
         className,
       )}
       aria-label={t("cart.remove")}

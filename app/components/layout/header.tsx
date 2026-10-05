@@ -164,7 +164,7 @@ export function Header() {
         <div
           data-header-menu-row
           className={cn(
-            "z-40 flex h-14.5 items-center justify-center gap-2.5 md:h-[72px]",
+            "z-40 flex items-center justify-center gap-2.5 md:h-18",
             showTransparentHeader
               ? "bg-transparent"
               : "bg-header-bg md:bg-transparent",
@@ -177,7 +177,7 @@ export function Header() {
             <HeaderMenuDrawer menu={headerMenu} className="block md:hidden" />
           )}
           <div className="shrink-0">
-            <Logo className="z-30 flex justify-start md:hidden" />
+            <Logo className="z-30 flex py-1 sm:py-2.5 justify-start md:hidden" />
           </div>
           {typeMenuHeader === "mega" && <MegaMenu menu={headerMenu} />}
           <div className="z-30 flex min-w-0 flex-1 items-center justify-end gap-2 md:hidden">

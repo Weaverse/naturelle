@@ -253,12 +253,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
             {cost.totalTaxAmount ? (
               <Money data={cost.totalTaxAmount} />
             ) : (
-              <Money
-                data={{
-                  amount: "0",
-                  currencyCode: cost.totalAmount.currencyCode,
-                }}
-              />
+              t("cart.calculatedAtCheckout")
             )}
           </span>
         </div>
@@ -282,7 +277,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
         )}
       </div>
       <p className="font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle">
-        {t("cart.shippingTaxesSummary")}
+        {t("cart.shippingTaxesCheckout")}
       </p>
 
       {enableCartNote && (
@@ -305,7 +300,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
           className={buttonVariants({
             shape: "default",
             className: cn(
-              "h-[50px] w-full rounded-xl",
+              "w-full rounded-xl",
               isCartUpdating && "pointer-events-none opacity-50",
             ),
           })}
@@ -419,7 +414,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       </div>
 
       <p className="font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text-subtle">
-        {t("cart.shippingTaxesWillBeCalculated")}
+        {t("cart.shippingTaxesCheckout")}
       </p>
 
       {(enableCartNote || enableDiscountCode || enableGiftCard) && (
@@ -653,12 +648,12 @@ function PageDiscountForm({
           value={code}
           onChange={(event) => onCodeChange(event.target.value)}
           placeholder={t("cart.enterCode")}
-          className="h-[50px] min-w-0 flex-1 rounded-xl border border-border bg-background px-3 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
+          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-3 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
         />
         <button
           type="submit"
           disabled={!code.trim() || isSubmitting}
-          className="h-[50px] rounded-xl bg-text-primary px-6 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:opacity-50"
+          className="rounded-xl bg-text-primary px-6 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:opacity-50"
         >
           {t("cart.apply")}
         </button>

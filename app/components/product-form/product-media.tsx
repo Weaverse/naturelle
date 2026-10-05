@@ -223,7 +223,7 @@ export function ProductMedia(props: ProductMediaProps) {
               className={clsx(
                 "hidden min-w-0 sm:block",
                 direction === "vertical" &&
-                  "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]",
+                  "min-h-0 w-[calc(var(--thumbs-width,0px)-1rem)] self-stretch",
               )}
             >
               <Swiper

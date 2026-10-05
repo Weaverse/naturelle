@@ -114,8 +114,6 @@
     "discountTitle": "Apply a discount code",
     "giftCardTitle": "Redeem a gift card",
     "shippingTaxesCheckout": "Shipping and taxes calculated at checkout",
-    "shippingTaxesSummary": "Shipping & taxes calculated at checkout",
-    "shippingTaxesWillBeCalculated": "Shipping and taxes will be calculated at checkout.",
     "calculatedAtCheckout": "Calculated at checkout",
     "estimatedTax": "Estimated tax",
     "removeItem": "Remove {{product}} from cart",

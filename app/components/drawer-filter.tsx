@@ -64,17 +64,16 @@ export function DrawerFilter({
   return (
     <div className="mx-auto flex w-full max-w-[var(--page-width,1440px)] flex-col items-start gap-6 self-stretch px-6 lg:px-0">
       <div className="w-full border-t border-border-subtle" />
-      <div className="flex h-14 w-full items-center justify-between">
-        <div className="flex items-center gap-10">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-3">
           <Button
             onClick={openDrawer}
             shape="default"
             variant="outline"
             className="rounded-lg px-5 py-3.5"
             classNameContainer="flex items-center justify-center gap-2"
-            style={{ height: 60 }}
           >
-            <IconFilters className="size-6" />
+            <IconFilters className="size-5" viewBox="0 0 16 16" />
             <span className="font-heading text-xl font-normal">
               {t("collection.filter")}
             </span>
@@ -618,7 +617,7 @@ function PriceRangeFilter({
       <div className="flex w-full min-w-0 items-center gap-6 overflow-hidden">
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex h-[50px] min-w-0 flex-1 items-center rounded-xl border border-border-subtle bg-background-basic px-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic p-3">
             <input
               aria-label={t("collection.minimumPrice")}
               name="minPrice"
@@ -642,7 +641,7 @@ function PriceRangeFilter({
         </div>
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex h-[50px] min-w-0 flex-1 items-center rounded-xl border border-border-subtle bg-background-basic px-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic p-3">
             <input
               aria-label={t("collection.maximumPrice")}
               name="maxPrice"

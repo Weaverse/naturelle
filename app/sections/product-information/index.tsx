@@ -1,5 +1,4 @@
 import { Disclosure } from "@headlessui/react";
-import { ArrowUUpLeft, Truck } from "@phosphor-icons/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import {
   createSchema,
@@ -7,6 +6,7 @@ import {
   useTranslation,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
+import { Truck, Undo2 } from "lucide-react";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
@@ -14,6 +14,7 @@ import { IconAnnouncementChevron } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { LowStockIndicator } from "~/components/product/low-stock-indicator";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
@@ -132,22 +133,6 @@ let ProductInformation = ({
     const { title, vendor, descriptionHtml } = product;
     const { shippingPolicy, refundPolicy } = shop;
     const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
-    const stock = selectedVariant.quantityAvailable;
-    const configuredLowStockThreshold = Number(
-      theme.quickViewLowStockThreshold,
-    );
-    const lowStockThreshold = Number.isFinite(configuredLowStockThreshold)
-      ? Math.min(20, Math.max(0, configuredLowStockThreshold))
-      : 5;
-    const stockValue = typeof stock === "number" ? stock : 0;
-    const showLowStock =
-      selectedVariant.availableForSale &&
-      stockValue > 0 &&
-      stockValue <= lowStockThreshold;
-    const lowStockPercentage =
-      lowStockThreshold > 0
-        ? Math.min(100, (stockValue / lowStockThreshold) * 100)
-        : 0;
     return (
       <Section
         ref={ref}
@@ -160,8 +145,7 @@ let ProductInformation = ({
           className={clsx(
             "grid grid-cols-1 items-start gap-8 md:grid-cols-2",
             "md:gap-12",
-            "md:grid-cols-[minmax(0,1fr)_clamp(360px,45%,480px)]",
-            "lg:grid-cols-[minmax(0,1fr)_556.8px]",
+            "md:grid-cols-[1fr_clamp(360px,45%,480px)]",
           )}
         >
           <div className="min-w-0">
@@ -199,8 +183,8 @@ let ProductInformation = ({
             className="min-w-0"
             style={
               {
-                "--shop-pay-button-border-radius": "12px",
-                "--shop-pay-button-height": "50px",
+                "--shop-pay-button-border-radius": "9999px",
+                "--shop-pay-button-height": "56px",
                 "--width-button": widthButton,
               } as React.CSSProperties
             }
@@ -210,7 +194,7 @@ let ProductInformation = ({
                 <div className="flex flex-col gap-4 sm:gap-5">
                   <h1
                     data-motion="fade-up"
-                    className="font-heading text-3xl font-normal leading-[1.1] tracking-normal md:text-[44px]"
+                    className="font-heading text-3xl font-normal leading-tight tracking-tight md:text-4xl"
                   >
                     {title}
                   </h1>
@@ -270,7 +254,7 @@ let ProductInformation = ({
                   {children}
                   <div
                     data-motion="fade-up"
-                    className="flex gap-3 font-heading text-[26px]/[1.1] font-normal"
+                    className="flex gap-3 font-heading text-xl/[1.1] font-medium md:text-2xl/[1.1] lg:text-3xl/[1.1]"
                   >
                     {showSalePrice && selectedVariant?.compareAtPrice && (
                       <Money
@@ -287,38 +271,12 @@ let ProductInformation = ({
                       />
                     ) : null}
                   </div>
-                  {showLowStock && (
-                    <div className="flex flex-col gap-2">
-                      <p className="text-base font-semibold">
-                        {stockValue === 1
-                          ? t("product.lowStockOne", {
-                              count: formatNumber(stockValue, locale),
-                            })
-                          : t("product.lowStock", {
-                              count: formatNumber(stockValue, locale),
-                            })}
-                      </p>
-                      <div
-                        role="progressbar"
-                        aria-label={t("product.lowStockThreshold", {
-                          count: lowStockThreshold,
-                        })}
-                        aria-valuemin={0}
-                        aria-valuemax={lowStockThreshold}
-                        aria-valuenow={stockValue}
-                        className="relative h-1 w-full overflow-hidden rounded-full bg-border-subtle"
-                      >
-                        <div
-                          className="h-full w-full origin-left rounded-full transition-[transform,background-color]"
-                          style={{
-                            backgroundColor:
-                              theme.quickViewLowStockProgressColor,
-                            transform: `scaleX(${lowStockPercentage / 100})`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
+                  <LowStockIndicator
+                    availableForSale={selectedVariant.availableForSale}
+                    stock={selectedVariant.quantityAvailable}
+                    threshold={theme.lowStockThreshold}
+                    progressColor={theme.lowStockProgressColor}
+                  />
                 </div>
                 <ProductVariants
                   product={product}
@@ -341,7 +299,6 @@ let ProductInformation = ({
                   value={quantity}
                   disabled={isLoading}
                   onChange={setQuantity}
-                  className="h-[50px] rounded-xl [&>button]:w-[50px] [&>button]:px-0"
                 />
                 <div data-motion="fade-up">
                   <AddToCartButton
@@ -362,7 +319,7 @@ let ProductInformation = ({
                     }
                     variant="primary"
                     data-test="add-to-cart"
-                    className="h-[50px] w-full rounded-xl"
+                    className="h-12 w-full rounded-lg"
                   >
                     <span> {atcText}</span>
                   </AddToCartButton>
@@ -401,10 +358,7 @@ let ProductInformation = ({
                       to={`/policies/${refundPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <ArrowUUpLeft
-                        aria-hidden="true"
-                        className="size-6 shrink-0"
-                      />
+                      <Undo2 aria-hidden="true" className="size-6 shrink-0" />
                       {t("product.viewReturnsPolicy")}
                     </Link>
                   )}

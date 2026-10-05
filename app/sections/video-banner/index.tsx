@@ -172,7 +172,7 @@ let VideoBanner = ({
       <div
         className={clsx(
           "relative flex items-center justify-center overflow-hidden",
-          "h-(--mobile-height) sm:h-(--desktop-height) lg:h-[844px]",
+          "h-(--mobile-height) sm:h-(--desktop-height)",
           "w-[max(var(--mobile-height)/9*16,100vw)] sm:w-[max(var(--desktop-height)/9*16,100vw)]",
           "translate-x-[min(0px,calc((var(--mobile-height)/9*16-100vw)/-2))] sm:translate-x-[min(0px,calc((var(--desktop-height)/9*16-100vw)/-2))]",
         )}

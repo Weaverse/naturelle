@@ -108,9 +108,9 @@ export default function MapSection({
                   content={heading}
                   size="custom"
                   mobileSize="4xl"
-                  desktopSize="4xl"
+                  desktopSize="5xl"
                   alignment="left"
-                  className="lg:!text-[37px] lg:!leading-[110%] lg:!tracking-[-0.925px]"
+                  className="leading-tight"
                 />
               )}
               {children && (

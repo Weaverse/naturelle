@@ -68,8 +68,8 @@ export default function ProductStory({
     <section ref={ref} {...rest} data-product-metafield-section>
       <div
         className={cn(
-          "grid items-center gap-5 lg:gap-16",
-          showImage && "md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_480px]",
+          "grid items-stretch gap-5 lg:gap-16",
+          showImage && "md:grid-cols-2",
         )}
       >
         <div
@@ -100,7 +100,7 @@ export default function ProductStory({
         {showImage ? (
           <div
             className={cn(
-              "aspect-[4/5] overflow-hidden rounded-3xl lg:h-[600px] lg:w-[480px]",
+              "overflow-hidden rounded-3xl",
               imagePosition === "left" && "md:order-1",
             )}
           >

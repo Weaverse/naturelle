@@ -24,7 +24,7 @@ const JudgemeReviewSection = ({
       width="full"
       overflow="unset"
       verticalPadding="none"
-      containerClassName="mx-auto flex flex-col gap-6 px-5 pt-20 pb-30 md:px-6 md:py-20 lg:max-w-[var(--page-width,1440px)] lg:px-0 [&>.heading]:!m-0 [&>.heading]:font-heading [&>.heading]:text-[44px] [&>.heading]:leading-[1.1] lg:[&>.heading]:text-[53px]"
+      containerClassName="mx-auto flex flex-col gap-6 px-5 pt-20 pb-30 md:px-6 md:py-20 lg:max-w-[var(--page-width,1440px)] lg:px-0 [&>.heading]:!m-0"
     >
       {judgeMeConfigured ? (
         children

@@ -1,5 +1,5 @@
-import { CheckCircle } from "@phosphor-icons/react";
 import { useTranslation } from "@weaverse/hydrogen";
+import { CircleCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
@@ -112,7 +112,7 @@ export function ReviewList({
                   </p>
                   {review.verified && (
                     <p className="flex items-center gap-1.5 text-xs font-medium text-text-subtle">
-                      <CheckCircle aria-hidden="true" className="size-3" />
+                      <CircleCheck aria-hidden="true" className="size-3" />
                       {t("reviews.verifiedPurchase")}
                     </p>
                   )}
@@ -140,7 +140,8 @@ export function ReviewList({
         <div className="flex justify-center pt-6">
           <Button
             variant="outline"
-            className="rounded-xl font-body! font-medium"
+            fontFamily="body"
+            className="rounded-xl text-base font-medium leading-[1.6] tracking-[-0.01em]"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
             onClick={loadMore}

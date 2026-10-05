@@ -1158,7 +1158,7 @@ export const themeSchema: HydrogenThemeSchema = {
         {
           type: "range",
           label: "Low stock threshold",
-          name: "quickViewLowStockThreshold",
+          name: "lowStockThreshold",
           configs: {
             min: 0,
             max: 20,
@@ -1166,12 +1166,12 @@ export const themeSchema: HydrogenThemeSchema = {
           },
           defaultValue: 5,
           helpText:
-            "Show the Quick View low-stock message when inventory is at or below this value.",
+            "Show the low-stock message when inventory is at or below this value.",
         },
         {
           type: "color",
           label: "Low stock bar color",
-          name: "quickViewLowStockProgressColor",
+          name: "lowStockProgressColor",
           defaultValue: "#4BAE42",
         },
         {

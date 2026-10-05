@@ -44,8 +44,8 @@ export default function Faqs({
       width="full"
       gap={0}
       verticalPadding="none"
-      className="py-20 px-5 md:px-6 lg:h-[760px] lg:px-0"
-      containerClassName="mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) md:grid-cols-2 lg:h-[600px] lg:grid-cols-[453.333px_minmax(0,1fr)] lg:overflow-hidden lg:px-40"
+      className="py-20 px-5 md:px-6 lg:px-40"
+      containerClassName="mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) md:grid-cols-2"
       style={
         {
           ...style,
@@ -54,7 +54,7 @@ export default function Faqs({
       }
     >
       <div
-        className="relative min-h-0 overflow-hidden rounded-2xl bg-(--faq-image-background) lg:h-full"
+        className="relative overflow-hidden rounded-2xl bg-(--faq-image-background)"
         style={
           {
             "--faq-image-background": imageBackgroundColor,
@@ -99,11 +99,7 @@ export default function Faqs({
       </div>
 
       <div className="flex w-full max-w-page flex-col gap-6 lg:gap-10 justify-center py-20 lg:pl-16 lg:pr-10">
-        {heading && (
-          <h2 className="!text-[44px] !leading-[110%] font-normal text-text">
-            {heading}
-          </h2>
-        )}
+        {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
         <div className="flex flex-col gap-4">{children}</div>
       </div>
     </Section>

@@ -7,8 +7,8 @@ import { cn } from "~/utils/cn";
 let variants = cva("", {
   variants: {
     width: {
-      full: "w-full h-full",
-      fixed: "w-full h-full container mx-auto",
+      full: "w-full",
+      fixed: "container mx-auto w-full",
     },
   },
 });
@@ -64,12 +64,11 @@ const ScrollingText = ({
       {...rest}
       style={sectionStyle}
       className={cn(
-        "my-[var(--vertical-margin)] bg-(--background-color) py-[var(--vertical-padding)]",
-        "border-y-2 border-y-[var(--border-color)]",
+        "my-(--vertical-margin) flex items-center bg-(--background-color) px-6 py-(--vertical-padding)",
+        "border-y-2 border-y-(--border-color)",
         "overflow-hidden",
-        "lg:flex lg:h-[77px] lg:items-center lg:py-0",
         variants({ width: scrollWidth }),
-        !visibleOnMobile && "hidden md:block",
+        !visibleOnMobile && "hidden md:flex",
       )}
     >
       <div className="block text-center font-heading text-base md:hidden">
@@ -79,7 +78,7 @@ const ScrollingText = ({
         {Array.from({ length: 50 }).map((_, i) => (
           <li
             key={i}
-            className="animate-scrollContent whitespace-nowrap font-heading font-medium text-[var(--text-color)] pr-[var(--gap)] uppercase"
+            className="animate-scrollContent whitespace-nowrap font-heading font-medium text-(--text-color) pr-(--gap) uppercase"
             style={{
               animationDuration: `var(--speed)`,
               fontSize: `${textSize}px`,

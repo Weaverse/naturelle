@@ -151,7 +151,7 @@ const Testimonials = ({
       ref={ref}
       {...rest}
       verticalPadding="none"
-      className="relative overflow-hidden px-0 md:h-screen-no-nav lg:h-[931px]"
+      className="relative overflow-hidden px-0 md:h-screen-no-nav"
       containerClassName="max-w-none p-0 md:h-full"
       style={sectionStyle}
     >
@@ -268,10 +268,7 @@ const Testimonials = ({
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
           <div className="relative z-10 flex min-h-full flex-col gap-10 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
-            <h2
-              className="line-clamp-1 font-normal"
-              style={{ fontSize: 44, lineHeight: "110%" }}
-            >
+            <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
               {selectedProduct?.title || "Product name"}
             </h2>
             <div className="flex flex-col gap-5">

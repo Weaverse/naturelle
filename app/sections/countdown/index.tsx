@@ -10,31 +10,27 @@ import { backgroundInputs } from "~/components/background-image";
 import { overlayInputs } from "~/components/overlay";
 import { Section, type SectionProps } from "~/components/section";
 
-let variants = cva(
-  "px-0 md:px-10 [&_.paragraph]:mx-[unset] lg:[&_[data-wv-type='button']]:!rounded-xl lg:[&_[data-wv-type='button']]:!font-semibold",
-  {
-    variants: {
-      layout: {
-        col: "flex flex-col gap-(--countdown-gap)",
-        row: [
-          "flex flex-col gap-(--countdown-gap)",
-          "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center",
-          "lg:[&_.countdown-content]:!items-start lg:[&_.heading]:!text-left lg:[&_.paragraph]:!text-left",
-        ],
-      },
-      alignment: {
-        left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
-        center:
-          "items-center justify-items-center [&_.countdown-content]:items-center [&_.paragraph]:[text-align:center]",
-        right:
-          "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
-      },
+let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
+  variants: {
+    layout: {
+      col: "flex flex-col gap-(--countdown-gap) [&_.heading]:w-fit [&_.paragraph]:w-fit",
+      row: [
+        "flex flex-col gap-(--countdown-gap)",
+        "max-lg:[&_.heading]:w-fit max-lg:[&_.paragraph]:w-fit",
+        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:[&_.heading]:w-full",
+      ],
     },
-    defaultVariants: {
-      layout: "row",
+    alignment: {
+      left: "items-start justify-items-start [&_.countdown-content]:items-start",
+      center:
+        "items-center justify-items-center [&_.countdown-content]:items-center",
+      right: "items-end justify-items-end [&_.countdown-content]:items-end",
     },
   },
-);
+  defaultVariants: {
+    layout: "row",
+  },
+});
 
 interface CountdownProps extends VariantProps<typeof variants>, SectionProps {}
 
@@ -154,7 +150,6 @@ export const schema = createSchema({
           type: "toggle-group",
           name: "alignment",
           label: "Alignment",
-          condition: "layout.ne.col",
           configs: {
             options: [
               { value: "left", label: "Left", icon: "align-start-vertical" },

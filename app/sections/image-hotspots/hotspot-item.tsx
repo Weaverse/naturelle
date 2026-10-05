@@ -143,9 +143,9 @@ let HotspotsItem = ({
               </div>
             )}
             {heading && (
-              <h2 className="relative z-10 mt-3 text-center text-2xl leading-[110%] text-text-inverse lg:mt-4 lg:!text-[44px] lg:!leading-[110%]">
+              <h3 className="relative z-10 mt-2 text-center font-normal text-text-inverse">
                 {heading}
-              </h2>
+              </h3>
             )}
             {loaderData?.product && (
               <ProductCard
