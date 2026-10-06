@@ -19,7 +19,6 @@ import {
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
-import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 import {
   getSavingsPercentage,
@@ -303,11 +302,9 @@ export function QuickView({
 export function QuickViewTrigger({
   productHandle,
   buttonText,
-  alwaysShowButton = false,
 }: {
   productHandle: string;
   buttonText?: string;
-  alwaysShowButton?: boolean;
 }) {
   const { t } = useTranslation();
   const resolvedButtonText = buttonText ?? t("product.selectOptions");
@@ -324,35 +321,26 @@ export function QuickViewTrigger({
 
   return (
     <>
-      <div
-        className={cn(
-          "absolute z-10 transition-opacity duration-300",
-          alwaysShowButton
-            ? "inset-x-3 bottom-4"
-            : "right-3 bottom-3 md:inset-x-3 md:bottom-4 md:pointer-events-none md:opacity-0 md:group-hover/product-card:pointer-events-auto md:group-hover/product-card:opacity-100 md:group-focus-within/product-card:pointer-events-auto md:group-focus-within/product-card:opacity-100",
-        )}
-      >
-        {!alwaysShowButton && (
-          <Button
-            type="button"
-            variant="custom"
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              setOpen(true);
-            }}
-            loading={state === "loading"}
-            className="h-auto rounded-full border border-border-subtle bg-background-basic p-3 text-text shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border md:hidden"
-            classNameContainer="flex items-center justify-center"
-            aria-label={resolvedButtonText}
-          >
-            <IconBag
-              aria-hidden="true"
-              className="size-3.5 aspect-square"
-              viewBox="0 0 24 24"
-            />
-          </Button>
-        )}
+      <div className="absolute right-3 bottom-3 z-10 transition-opacity duration-300 desktop:inset-x-3 desktop:bottom-4 desktop:pointer-events-none desktop:opacity-0 desktop:group-hover/product-card:pointer-events-auto desktop:group-hover/product-card:opacity-100 desktop:group-focus-within/product-card:pointer-events-auto desktop:group-focus-within/product-card:opacity-100">
+        <Button
+          type="button"
+          variant="custom"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setOpen(true);
+          }}
+          loading={state === "loading"}
+          className="h-auto rounded-full border border-border-subtle bg-background-basic p-3 text-text shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border desktop:hidden"
+          classNameContainer="flex items-center justify-center"
+          aria-label={resolvedButtonText}
+        >
+          <IconBag
+            aria-hidden="true"
+            className="size-3.5 aspect-square"
+            viewBox="0 0 24 24"
+          />
+        </Button>
         <Button
           type="button"
           variant="primary"
@@ -362,11 +350,8 @@ export function QuickViewTrigger({
             setOpen(true);
           }}
           loading={state === "loading"}
-          className={cn(
-            "h-12 w-full rounded-xl px-6 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background",
-            alwaysShowButton ? "inline-flex" : "hidden md:inline-flex",
-          )}
-          classNameContainer="flex items-center justify-center"
+          className="hidden h-12 w-full min-w-0 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background desktop:inline-flex"
+          classNameContainer="min-w-0 truncate"
         >
           {resolvedButtonText}
         </Button>

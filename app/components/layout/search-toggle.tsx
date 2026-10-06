@@ -62,7 +62,13 @@ export function SearchToggle({
 
   if (inline) {
     return (
-      <div className={cn("hidden md:block", className)}>
+      <div
+        className={cn(
+          "hidden desktop:block",
+          isInlineOpen && "min-w-0 flex-1",
+          className,
+        )}
+      >
         {isInlineOpen ? (
           <SearchTypeHeader
             inline

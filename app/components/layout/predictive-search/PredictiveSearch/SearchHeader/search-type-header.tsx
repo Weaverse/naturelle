@@ -43,7 +43,10 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
       >
         {({ fetchResults, inputRef }) => (
           <div
-            className={cn("flex items-center justify-center", !inline && "p-6")}
+            className={cn(
+              "flex items-center",
+              inline ? "justify-end" : "justify-center p-6",
+            )}
           >
             <Input
               name="q"
@@ -69,7 +72,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               className={cn(
                 "w-full rounded-md border-2",
                 inline
-                  ? "h-[50px] w-[min(436px,calc(100vw-96px))] rounded-md border border-border bg-background-basic px-3 py-0 text-base text-text-subtle"
+                  ? "h-[50px] max-w-[436px] border border-border bg-background-basic px-3 py-0 text-base text-text-subtle"
                   : "md:w-96 lg:w-[560px]",
               )}
               type="search"

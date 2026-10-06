@@ -25,7 +25,7 @@ export function SearchTypeDrawerResults() {
 
   if (!term) {
     return (
-      <div className="custom-scroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
+      <div className="hiddenScroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
         <PopularKeywords onKeywordClick={setSearchKeyword} />
         <section className="mt-8">
           <ResultHeading>{t("search.mostSearchedProducts")}</ResultHeading>
@@ -39,13 +39,12 @@ export function SearchTypeDrawerResults() {
     return (
       <div className="w-full border-t border-border-subtle bg-background-basic p-6 text-text">
         <ResultHeading>{t("search.empty")}</ResultHeading>
-        <p className="text-sm">{t("search.noResults", { term })}</p>
       </div>
     );
   }
 
   return (
-    <div className="custom-scroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
+    <div className="hiddenScroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
       {items("queries").length > 0 && (
         <section>
           <ResultHeading>{t("search.suggestions")}</ResultHeading>

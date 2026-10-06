@@ -90,7 +90,6 @@ export interface ProductCardProps {
   showStar?: boolean;
   showViewDetailsLink?: boolean;
   viewDetailsLinkText?: string;
-  alwaysShowQuickViewButton?: boolean;
 }
 
 export function ProductCard({
@@ -107,7 +106,6 @@ export function ProductCard({
   showStar = true,
   showViewDetailsLink = false,
   viewDetailsLinkText = "View full details",
-  alwaysShowQuickViewButton = false,
 }: ProductCardProps) {
   const { t } = useTranslation();
   const themeSettings = useThemeSettings();
@@ -202,7 +200,6 @@ export function ProductCard({
           <QuickViewTrigger
             productHandle={product.handle}
             buttonText={pcardQuickViewButtonText || t("product.selectOptions")}
-            alwaysShowButton={alwaysShowQuickViewButton}
           />
         )}
       </div>

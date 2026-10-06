@@ -28,8 +28,8 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
     }
   };
   return (
-    <div className="border-t border-border-subtle flex flex-col">
-      <PredictiveSearchForm>
+    <div className="flex min-h-0 flex-1 flex-col border-t border-border-subtle">
+      <PredictiveSearchForm className="shrink-0">
         {({ fetchResults, inputRef }) => (
           <div className="mx-auto w-full max-w-full p-6">
             <Input

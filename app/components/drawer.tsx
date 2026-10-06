@@ -99,9 +99,11 @@ export function Drawer({
     isForm === "cart"
       ? "max-w-[460px]"
       : isForm === "menu"
-        ? "max-w-none md:w-1/2"
+        ? "max-w-[430px]"
         : isForm === "search"
-          ? "max-w-none"
+          ? openFrom === "top"
+            ? "max-w-none"
+            : "max-w-[430px]"
           : isForm === "filter"
             ? "max-w-none md:max-w-[400px]"
             : "max-w-96";

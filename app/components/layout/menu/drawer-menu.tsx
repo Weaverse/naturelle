@@ -40,7 +40,7 @@ export function HeaderMenuDrawer({
         >
           <IconListMenu className="size-6" />
         </button>
-        <SearchToggle isOpenDrawerHearder={true} className="md:hidden" />
+        <SearchToggle isOpenDrawerHearder={true} className="desktop:hidden" />
         <Drawer
           open={showMenu}
           onClose={closeDrawer}
