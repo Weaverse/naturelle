@@ -180,7 +180,7 @@ export function GlobalStyle() {
                 --height-nav: ${navHeightTablet}rem;
               }
             }
-            @media (min-width: 60rem) {
+            @media (min-width: 48em) {
               body {
                 --height-nav: ${navHeightDesktop}rem;
               }

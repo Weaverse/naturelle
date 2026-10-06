@@ -173,7 +173,7 @@ export const themeSchema: HydrogenThemeSchema = {
             step: 0.5,
             unit: "rem",
           },
-          defaultValue: 4.5,
+          defaultValue: 6,
         },
       ],
     },

@@ -4,6 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouteError } from "react-router";
 import { Logo } from "~/components/layout/logo";
 import { Link } from "~/components/link";
+import { useLockBodyScroll } from "~/hooks/use-lock-body-scroll";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn } from "~/utils/cn";
 import { useIsHomePath } from "~/utils/locale";
@@ -74,6 +75,8 @@ export function Header() {
   const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
 
+  useLockBodyScroll(isUtilitySearchOpen);
+
   let scrolled = y >= 50;
 
   let enableTransparent = enableTransparentHeader && isHome && !routeError;
@@ -97,21 +100,6 @@ export function Header() {
       : 0;
     setCalculatedTop(calculatedTop);
   }, [y, hasAnnouncement, stickyAnnouncementBar, announcementBarHeight]);
-
-  useEffect(() => {
-    if (!isUtilitySearchOpen) {
-      return;
-    }
-    const previousOverflow = document.body.style.overflow;
-    const previousScrollbarGutter =
-      document.documentElement.style.scrollbarGutter;
-    document.documentElement.style.scrollbarGutter = "stable";
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.documentElement.style.scrollbarGutter = previousScrollbarGutter;
-    };
-  }, [isUtilitySearchOpen]);
 
   return (
     <>

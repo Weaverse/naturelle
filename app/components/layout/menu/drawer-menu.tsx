@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 import { useTranslation } from "@weaverse/hydrogen";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import {
@@ -49,18 +49,6 @@ function menuType(item: SingleMenuItem): MenuType {
   return "link";
 }
 
-function useDesktop() {
-  const [desktop, setDesktop] = useState(false);
-  useEffect(() => {
-    const query = window.matchMedia("(min-width: 60rem)");
-    const update = () => setDesktop(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-  return desktop;
-}
-
 export function HeaderMenuDrawer({
   menu,
   className,
@@ -70,18 +58,8 @@ export function HeaderMenuDrawer({
 }) {
   const { t } = useTranslation();
   const { isOpen, openDrawer, closeDrawer } = useDrawer();
-  const desktop = useDesktop();
   const [active, setActive] = useState<SingleMenuItem | null>(null);
   const [direction, setDirection] = useState(1);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset only when crossing into the desktop layout
-  useEffect(() => {
-    if (desktop) {
-      setActive(null);
-      setDirection(1);
-      closeDrawer();
-    }
-  }, [desktop]);
 
   const close = () => {
     setActive(null);
@@ -112,97 +90,29 @@ export function HeaderMenuDrawer({
         >
           <IconListMenu className="size-6" />
         </button>
-        <SearchToggle isOpenDrawerHearder className="desktop:hidden" />
+        <SearchToggle isOpenDrawerHeader className="desktop:hidden" />
         <Drawer
           open={isOpen}
           onClose={close}
           onBack={back}
           openFrom="left"
-          heading={!desktop && active ? active.title : t("navigation.menu")}
+          heading={active ? active.title : t("navigation.menu")}
           isForm="menu"
-          isBackMenu={!desktop && Boolean(active)}
+          isBackMenu={Boolean(active)}
         >
-          {desktop ? (
-            <DesktopMenu menu={menu} closeDrawer={close} />
-          ) : (
-            <MobileMenu
-              menu={menu}
-              active={active}
-              direction={direction}
-              closeDrawer={close}
-              openMenu={(item) => {
-                setDirection(1);
-                setActive(item);
-              }}
-            />
-          )}
+          <MobileMenu
+            menu={menu}
+            active={active}
+            direction={direction}
+            closeDrawer={close}
+            openMenu={(item) => {
+              setDirection(1);
+              setActive(item);
+            }}
+          />
         </Drawer>
       </div>
     </nav>
-  );
-}
-
-function DesktopMenu({
-  menu,
-  closeDrawer,
-}: {
-  menu?: EnhancedMenu | null;
-  closeDrawer: () => void;
-}) {
-  const items = (menu?.items as unknown as SingleMenuItem[]) ?? [];
-  return (
-    <nav className={cn("flex flex-col gap-5 text-text-subtle", layoutClass)}>
-      {items.map((item) =>
-        menuType(item) === "link" ? (
-          <MenuLink key={item.id} item={item} closeDrawer={closeDrawer} />
-        ) : (
-          <DesktopSubmenu key={item.id} item={item} closeDrawer={closeDrawer} />
-        ),
-      )}
-    </nav>
-  );
-}
-
-function DesktopSubmenu({
-  item,
-  closeDrawer,
-}: {
-  item: SingleMenuItem;
-  closeDrawer: () => void;
-}) {
-  const { isOpen, openDrawer, closeDrawer: closeSubmenu } = useDrawer();
-  const type = menuType(item);
-  const desktopLayoutClass = cn(
-    "overflow-auto border-t border-border-subtle px-6 pb-16",
-    type === "collection" || type === "brand" ? "pt-5" : "pt-8",
-  );
-  const closeAll = () => {
-    closeSubmenu();
-    closeDrawer();
-  };
-  return (
-    <div>
-      <button
-        type="button"
-        className="flex w-full items-center justify-between text-left"
-        onClick={openDrawer}
-      >
-        <span className={headingClass}>{item.title}</span>
-        <IconCaret direction="right" className="size-4" />
-      </button>
-      <Drawer
-        open={isOpen}
-        onClose={closeSubmenu}
-        openFrom="left"
-        heading={item.title}
-        isForm="menu"
-        isBackMenu
-      >
-        <div className={desktopLayoutClass}>
-          <MenuContent item={item} onNavigate={closeAll} desktop />
-        </div>
-      </Drawer>
-    </div>
   );
 }
 
@@ -291,11 +201,9 @@ function MenuLink({
 function MenuContent({
   item,
   onNavigate,
-  desktop = false,
 }: {
   item: SingleMenuItem;
   onNavigate: () => void;
-  desktop?: boolean;
 }) {
   const type = menuType(item);
   if (type === "collection") {
@@ -307,12 +215,28 @@ function MenuContent({
   if (type === "multi") {
     return <MultiContent items={item.items} onNavigate={onNavigate} />;
   }
+  return <SingleContent items={item.items} onNavigate={onNavigate} />;
+}
+
+function AccordionPanel({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: ReactNode;
+}) {
   return (
-    <SingleContent
-      items={item.items}
-      onNavigate={onNavigate}
-      desktop={desktop}
-    />
+    <div
+      inert={!open}
+      className={cn(
+        "grid transition-[grid-template-rows] duration-300",
+        open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+      )}
+    >
+      <div className="min-h-0 overflow-hidden">
+        <Disclosure.Panel static>{children}</Disclosure.Panel>
+      </div>
+    </div>
   );
 }
 
@@ -325,74 +249,60 @@ function MultiContent({
 }) {
   return (
     <div className="flex flex-col gap-5">
-      {items.map((item) => (
-        <Disclosure key={item.id}>
-          {({ open }) => (
-            <div>
-              <Disclosure.Button className="w-full text-left">
-                <div className="flex w-full justify-between">
-                  {item.items.length ? (
-                    <span className={headingClass}>{item.title}</span>
-                  ) : (
-                    <Link
-                      to={item.to}
-                      prefetch="intent"
-                      onClick={onNavigate}
-                      className={({ isActive }) =>
-                        cn(
-                          "font-heading text-base uppercase text-text-subtle hover:text-text-primary",
-                          isActive && "text-text-primary underline",
-                        )
-                      }
-                    >
-                      {item.title}
-                    </Link>
-                  )}
-                  {item.items.length ? (
-                    <IconCaret
-                      className="size-4"
-                      direction={open ? "down" : "right"}
-                    />
-                  ) : null}
-                </div>
-              </Disclosure.Button>
-              {item.items.length ? (
-                <div
-                  className={cn(
-                    "grid transition-[grid-template-rows] duration-300",
-                    open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-                  )}
-                >
-                  <div className="min-h-0 overflow-hidden">
-                    <Disclosure.Panel static>
-                      <ul className="flex flex-col gap-4 pt-5 desktop:max-h-48 desktop:overflow-y-auto">
-                        {item.items.map((subItem) => (
-                          <li key={subItem.id} className="leading-6">
-                            <Link
-                              to={subItem.to}
-                              onClick={onNavigate}
-                              prefetch="intent"
-                              className={({ isActive }) =>
-                                isActive
-                                  ? "text-text-primary underline"
-                                  : "text-text-subtle"
-                              }
-                            >
-                              <span className="font-body hover:text-text-primary text-base font-normal">
-                                {subItem.title}
-                              </span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Disclosure.Panel>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
-        </Disclosure>
-      ))}
+      {items.map((item) =>
+        item.items.length ? (
+          <Disclosure key={item.id}>
+            {({ open }) => (
+              <div>
+                <Disclosure.Button className="flex w-full justify-between text-left">
+                  <span className={headingClass}>{item.title}</span>
+                  <IconCaret
+                    className="size-4"
+                    direction={open ? "down" : "right"}
+                  />
+                </Disclosure.Button>
+                <AccordionPanel open={open}>
+                  <ul className="flex flex-col gap-4 pt-5 desktop:max-h-48 desktop:overflow-y-auto">
+                    {item.items.map((subItem) => (
+                      <li key={subItem.id} className="leading-6">
+                        <Link
+                          to={subItem.to}
+                          onClick={onNavigate}
+                          prefetch="intent"
+                          className={({ isActive }) =>
+                            isActive
+                              ? "text-text-primary underline"
+                              : "text-text-subtle"
+                          }
+                        >
+                          <span className="font-body hover:text-text-primary text-base font-normal">
+                            {subItem.title}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionPanel>
+              </div>
+            )}
+          </Disclosure>
+        ) : (
+          <Link
+            key={item.id}
+            to={item.to}
+            prefetch="intent"
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              cn(
+                "font-heading text-base uppercase text-text-subtle hover:text-text-primary",
+                isActive && "text-text-primary underline",
+              )
+            }
+          >
+            {item.title}
+          </Link>
+        ),
+      )}
     </div>
   );
 }
@@ -409,11 +319,11 @@ function CollectionContent({
   );
   return (
     <div className="flex flex-col gap-5">
-      {collections.map((item) => (
-        <Disclosure key={item.id}>
-          {({ open }) => (
-            <div>
-              {item.items.length ? (
+      {collections.map((item) =>
+        item.items.length ? (
+          <Disclosure key={item.id}>
+            {({ open }) => (
+              <div>
                 <Disclosure.Button className="flex w-full items-center justify-between text-left">
                   <span className={headingClass}>
                     {item.resource?.title || item.title}
@@ -423,18 +333,7 @@ function CollectionContent({
                     direction={open ? "down" : "right"}
                   />
                 </Disclosure.Button>
-              ) : (
-                <Link
-                  to={item.to}
-                  prefetch="intent"
-                  onClick={onNavigate}
-                  className="block font-heading text-base uppercase text-text-subtle hover:text-text-primary"
-                >
-                  {item.resource?.title || item.title}
-                </Link>
-              )}
-              {item.items.length ? (
-                <Disclosure.Panel>
+                <AccordionPanel open={open}>
                   <ul className="flex flex-col gap-4 pt-5">
                     {item.items.map((product) => (
                       <li key={product.id}>
@@ -449,12 +348,22 @@ function CollectionContent({
                       </li>
                     ))}
                   </ul>
-                </Disclosure.Panel>
-              ) : null}
-            </div>
-          )}
-        </Disclosure>
-      ))}
+                </AccordionPanel>
+              </div>
+            )}
+          </Disclosure>
+        ) : (
+          <Link
+            key={item.id}
+            to={item.to}
+            prefetch="intent"
+            onClick={onNavigate}
+            className="block font-heading text-base uppercase text-text-subtle hover:text-text-primary"
+          >
+            {item.resource?.title || item.title}
+          </Link>
+        ),
+      )}
     </div>
   );
 }
@@ -501,14 +410,12 @@ function BrandContent({
 function SingleContent({
   items,
   onNavigate,
-  desktop,
 }: {
   items: SingleMenuItem[];
   onNavigate: () => void;
-  desktop: boolean;
 }) {
   return (
-    <ul className={cn("space-y-3", desktop && "pt-2 pb-3")}>
+    <ul className="space-y-3">
       {items.map((item) => (
         <li key={item.id} className="leading-6">
           <Link

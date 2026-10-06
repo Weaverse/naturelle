@@ -55,7 +55,7 @@ export function usePredictiveSearch(): UseSearchReturn {
 
   return {
     ...search,
-    isLoading: searchFetcher.state !== "idle" || !searchFetcher.data,
+    isLoading: searchFetcher.state !== "idle",
     searchInputRef,
     searchTerm,
   };

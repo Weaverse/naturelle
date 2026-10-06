@@ -10,13 +10,13 @@ import { IconSearch } from "../icon";
 type TypeOpenFrom = "top" | "right" | "left";
 
 export function SearchToggle({
-  isOpenDrawerHearder,
+  isOpenDrawerHeader,
   className,
   inline = false,
   compact = false,
   onInlineOpenChange,
 }: {
-  isOpenDrawerHearder?: boolean;
+  isOpenDrawerHeader?: boolean;
   className?: string;
   inline?: boolean;
   compact?: boolean;
@@ -46,7 +46,7 @@ export function SearchToggle({
         setOpenFrom("left");
       } else {
         setSearchType(settings?.searchType);
-        if (settings?.searchType === "drawerSearch" && isOpenDrawerHearder) {
+        if (settings?.searchType === "drawerSearch" && isOpenDrawerHeader) {
           setOpenFrom("left");
         } else {
           setOpenFrom(settings?.searchType === "popupSearch" ? "top" : "right");
@@ -58,7 +58,7 @@ export function SearchToggle({
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
-  }, [settings?.searchType, isOpenDrawerHearder]);
+  }, [settings?.searchType, isOpenDrawerHeader]);
 
   if (inline) {
     return (
