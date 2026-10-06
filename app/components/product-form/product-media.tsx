@@ -223,7 +223,7 @@ export function ProductMedia(props: ProductMediaProps) {
               className={clsx(
                 "hidden min-w-0 sm:block",
                 direction === "vertical" &&
-                  "min-h-0 w-[calc(var(--thumbs-width,0px)-1rem)] self-stretch",
+                  "relative self-stretch w-[calc(var(--thumbs-width,0px)-1rem)]",
               )}
             >
               <Swiper
@@ -237,7 +237,10 @@ export function ProductMedia(props: ProductMediaProps) {
                 modules={[FreeMode, Thumbs]}
                 watchSlidesProgress={true}
                 data-motion="fade-up"
-                className="w-full h-full overflow-hidden"
+                className={cn(
+                  "h-full w-full overflow-hidden",
+                  direction === "vertical" && "absolute! inset-0",
+                )}
               >
                 {media.map((med, i) => (
                   <SwiperSlide

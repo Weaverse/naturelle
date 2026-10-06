@@ -18,13 +18,15 @@ let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
         "flex flex-col gap-(--countdown-gap)",
         "max-lg:[&_.heading]:w-fit max-lg:[&_.paragraph]:w-fit",
         "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:[&_.heading]:w-full",
+        "lg:[&_.countdown-content]:items-start lg:[&_.heading]:text-left lg:[&_.paragraph]:text-left",
       ],
     },
     alignment: {
-      left: "items-start justify-items-start [&_.countdown-content]:items-start",
+      left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
       center:
-        "items-center justify-items-center [&_.countdown-content]:items-center",
-      right: "items-end justify-items-end [&_.countdown-content]:items-end",
+        "items-center justify-items-center [&_.countdown-content]:items-center [&_.paragraph]:[text-align:center]",
+      right:
+        "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
     },
   },
   defaultVariants: {
@@ -150,6 +152,7 @@ export const schema = createSchema({
           type: "toggle-group",
           name: "alignment",
           label: "Alignment",
+          condition: "layout.ne.col",
           configs: {
             options: [
               { value: "left", label: "Left", icon: "align-start-vertical" },
