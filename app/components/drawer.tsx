@@ -28,7 +28,7 @@ const headerVariants = cva("sticky top-0 flex shrink-0 items-center", {
     isForm: {
       cart: "h-auto py-2.5",
       filter: "h-11",
-      menu: "h-nav",
+      menu: "h-nav px-6",
       search: "h-nav",
     },
   },
@@ -75,6 +75,7 @@ export function Drawer({
   heading,
   open,
   onClose,
+  onBack,
   openFrom = "right",
   isForm,
   isBackMenu = false,
@@ -83,6 +84,7 @@ export function Drawer({
   heading?: string;
   open: boolean;
   onClose: () => void;
+  onBack?: () => void;
   openFrom: "right" | "left" | "top";
   children: React.ReactNode;
   isForm?: DrawerForm;
@@ -189,13 +191,14 @@ export function Drawer({
                       <button
                         type="button"
                         className="text-text-primary hover:text-text-primary/50 -m-4 p-2 transition"
-                        onClick={onClose}
+                        onClick={onBack ?? onClose}
+                        aria-label={t("accessibility.backToMenu")}
                         data-test="close-cart"
                       >
                         <IconArrowLeft
                           viewBox="0 0 32 32"
                           className="h-8 w-8 opacity-50"
-                          aria-label={t("accessibility.close")}
+                          aria-hidden="true"
                         />
                       </button>
                     )}
