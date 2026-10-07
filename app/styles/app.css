@@ -215,6 +215,19 @@
   font-family: var(--font-heading);
 }
 
+.video-banner-content .subheading {
+  font-family: var(--font-body);
+  letter-spacing: var(--body-base-spacing);
+  line-height: 1;
+}
+
+@media (min-width: 90rem) {
+  .countdown--timer .countdown-value {
+    font-size: 72px;
+    line-height: 1;
+  }
+}
+
 .paragraph {
   font-family: var(--font-body);
 }

@@ -8,14 +8,14 @@ import { IconArrowLeft, IconArrowRight, IconCaret } from "~/components/icon";
 let variants = cva(
   [
     "absolute top-1/2 z-50 -translate-y-1/2",
-    "p-4 text-center cursor-pointer",
+    "flex size-[52px] items-center justify-center p-0 text-center cursor-pointer",
     "transition-all duration-200",
   ],
   {
     variants: {
       arrowsColor: {
         light: "text-text bg-transparent border border-border-subtle",
-        dark: "text-gray-100 bg-[#3d490b]",
+        dark: "border border-border-subtle bg-background text-text",
       },
       arrowsShape: {
         square: "",

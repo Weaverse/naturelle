@@ -137,7 +137,7 @@ const Blogs = ({
       className="flex h-full w-full justify-center"
       style={sectionStyle}
     >
-      <div className="container flex flex-col gap-10 lg:gap-16 px-5 py-20 md:px-6">
+      <div className="container flex flex-col gap-10 px-5 py-20 md:px-6 lg:gap-16 lg:px-0">
         {children}
         <div className="grid grid-cols-1 gap-(--blog-card-gap) sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {res?.map((idx) => (
@@ -145,9 +145,9 @@ const Blogs = ({
               key={idx.id}
               to={idx.handle ? `/blogs/${blogs.handle}/${idx.handle}` : "#"}
               data-motion="slide-in"
-              className={"group"}
+              className="group"
             >
-              <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-md bg-background-basic">
+              <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-background-basic">
                 {idx.image ? (
                   <div
                     className="w-full overflow-hidden"

@@ -57,7 +57,7 @@ export interface VideoBannerProps
 }
 
 let variants = cva(
-  "absolute inset-0 max-w-[100vw] mx-auto flex flex-col justify-center items-center z-10",
+  "video-banner-content absolute inset-0 max-w-[100vw] mx-auto flex flex-col justify-center items-center z-10",
   {
     variants: {
       gap: {

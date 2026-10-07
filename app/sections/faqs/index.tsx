@@ -81,14 +81,16 @@ export default function Faqs({
             </p>
           )}
           {cardHeading && (
-            <p className="text-center text-[37px]">{cardHeading}</p>
+            <p className="text-center font-heading text-[37px] leading-[110%]">
+              {cardHeading}
+            </p>
           )}
           {buttonText && (
             <Button
               as="a"
               to={buttonLink || "/pages/contact"}
               variant="secondary"
-              className="mt-7"
+              className="mt-7 rounded-xl font-semibold"
             >
               {buttonText}
             </Button>
@@ -97,11 +99,7 @@ export default function Faqs({
       </div>
 
       <div className="flex w-full max-w-page flex-col gap-6 lg:gap-10 justify-center py-20 lg:pl-16 lg:pr-10">
-        {heading && (
-          <h2 className="font-heading text-[44px] leading-[110%] font-normal text-text">
-            {heading}
-          </h2>
-        )}
+        {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
         <div className="flex flex-col gap-4">{children}</div>
       </div>
     </Section>

@@ -51,7 +51,12 @@ export function ProductMetafieldEmptyState({
   }
 
   return (
-    <section ref={ref} {...rest} className={cn("w-full", className)}>
+    <section
+      ref={ref}
+      {...rest}
+      data-product-metafield-section
+      className={cn("w-full", className)}
+    >
       <div className="rounded-xl border border-dashed border-border-subtle bg-background-basic px-6 py-8 text-center">
         <p className="font-body text-sm font-semibold text-text">
           {loaderData?.status === "loading"

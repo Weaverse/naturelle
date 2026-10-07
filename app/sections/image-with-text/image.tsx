@@ -10,7 +10,7 @@ import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
 import { cn } from "~/utils/cn";
 
-let wrapperVariants = cva("w-full h-auto basis-full md:basis-1/2", {
+let wrapperVariants = cva("w-full h-auto basis-full md:basis-1/2 lg:h-full", {
   variants: {
     width: {
       small: "md:w-[40%]",
@@ -44,7 +44,7 @@ let wrapperVariants = cva("w-full h-auto basis-full md:basis-1/2", {
 });
 
 let imageVariants = cva(
-  "h-auto transition-transform duration-700 ease-out group-hover:scale-105",
+  "h-auto transition-transform duration-700 ease-out group-hover:scale-105 lg:h-full lg:w-full",
   {
     variants: {
       objectFit: {

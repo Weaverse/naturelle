@@ -49,12 +49,12 @@ const InstagramItem = ({ ref, image, link, ...rest }: InstagramItemProps) => {
           to={link}
           target="_blank"
           aria-label={t("instagram.openPost")}
-          className="group relative block aspect-square w-full overflow-hidden rounded-md border border-border-subtle"
+          className="group relative block aspect-square w-full overflow-hidden rounded-2xl"
         >
           {content}
         </Link>
       ) : (
-        <div className="group relative aspect-square w-full overflow-hidden rounded-md border border-border-subtle">
+        <div className="group relative aspect-square w-full overflow-hidden rounded-2xl">
           {content}
         </div>
       )}

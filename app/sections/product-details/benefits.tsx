@@ -1,11 +1,11 @@
-import {
-  CheckCircle,
-  Drop,
-  Leaf,
-  type Icon as PhosphorIcon,
-  Shield,
-} from "@phosphor-icons/react";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
+import {
+  CircleCheck,
+  Droplet,
+  Leaf,
+  type LucideIcon,
+  Shield,
+} from "lucide-react";
 import type { Ref } from "react";
 import { cn } from "~/utils/cn";
 import { ProductMetafieldEmptyState } from "./metafield-empty-state";
@@ -47,7 +47,7 @@ export default function ProductBenefits({
     );
   }
 
-  const icons: PhosphorIcon[] = [Drop, Shield, Leaf, CheckCircle];
+  const icons: LucideIcon[] = [Droplet, Shield, Leaf, CircleCheck];
   const benefits = loaderData.entries
     .slice(0, icons.length)
     .map((entry, index) => ({
@@ -75,13 +75,14 @@ export default function ProductBenefits({
     <section
       ref={ref}
       {...rest}
+      data-product-metafield-section
       className={cn("flex flex-col gap-6", className)}
     >
       <header className="flex flex-col items-start gap-3 self-stretch">
         <h2 className="font-display text-[40px] leading-[normal] font-normal tracking-normal text-text">
           {heading}
         </h2>
-        <p className="font-body text-[18px] leading-[160%] font-normal text-(--product-detail-text-color)">
+        <p className="max-w-[760px] font-body text-[18px] leading-[160%] font-normal text-(--product-detail-text-color)">
           {description}
         </p>
       </header>
@@ -89,9 +90,9 @@ export default function ProductBenefits({
         {benefits.map(({ id, Icon, title, copy }) => (
           <article
             key={id}
-            className="flex w-full flex-[1_0_0] flex-col items-center gap-3 rounded-xl bg-(--product-detail-background-color) p-6 text-center"
+            className="flex w-full flex-[1_0_0] flex-col items-center gap-3 rounded-2xl bg-(--product-detail-background-color) p-6 text-center"
           >
-            <Icon aria-hidden="true" className="size-6" weight="regular" />
+            <Icon aria-hidden="true" className="size-8" strokeWidth={1.5} />
             <p className="font-body text-sm leading-[normal] font-semibold text-text">
               {title}
             </p>

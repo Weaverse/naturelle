@@ -39,6 +39,9 @@ let variants = cva("", {
   },
 });
 
+const footerMenuHeadingClass =
+  "font-body text-base font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text)";
+
 export function Footer() {
   const { t } = useTranslation();
   let { footerMenu } = useShopMenu();
@@ -107,7 +110,7 @@ export function Footer() {
               </Tag>
             )}
             {newsletterDescription && (
-              <p className="text-(--color-footer-bg)">
+              <p className="text-(--color-footer-bg) opacity-85">
                 {newsletterDescription}
               </p>
             )}
@@ -140,7 +143,7 @@ export function Footer() {
                   loading={fetcher.state === "submitting"}
                   type="submit"
                   shape="default"
-                  className="h-auto shrink-0 rounded-l-none rounded-r-xl bg-(--color-footer-bg) px-7 py-3.5 text-(--color-footer-text)"
+                  className="h-auto shrink-0 rounded-l-none rounded-r-xl bg-(--color-footer-bg) px-7 py-3.5 font-semibold text-(--color-footer-text)"
                 >
                   {newsletterButtonText}
                 </Button>
@@ -170,12 +173,12 @@ export function Footer() {
         >
           <div className="flex flex-col items-center gap-3 self-stretch">
             {footerBrandName && (
-              <p className="h1 font-heading font-normal leading-none text-(--color-footer-text)">
+              <p className="h1 font-heading font-normal leading-[1.1] text-(--color-footer-text)">
                 {footerBrandName}
               </p>
             )}
             {footerTagline && (
-              <p className="text-xs font-normal uppercase text-(--color-footer-text)">
+              <p className="text-xs leading-none uppercase text-(--color-footer-text) opacity-60">
                 {footerTagline}
               </p>
             )}
@@ -210,7 +213,7 @@ export function Footer() {
         <div className="w-full gap-8 flex flex-col lg:justify-between items-center md:py-6 lg:pt-8 lg:px-20 lg:pb-12 lg:h-40">
           <div className="hidden w-full border-border-subtle border-t md:flex" />
           <div className="mx-auto flex w-full max-w-page flex-col items-start justify-center gap-4 lg:flex-row lg:justify-between lg:items-center">
-            <p>{footerTextCopyright}</p>
+            <p className="opacity-70">{footerTextCopyright}</p>
             {showPolicyLinks !== false && (
               <PolicyLinks policyItems={policyItems} />
             )}
@@ -263,18 +266,16 @@ function FooterMenu({ menu }: { menu: EnhancedMenu | undefined | null }) {
 }
 
 function MenuLink(props: SingleMenuItem) {
-  let { title, items, to } = props;
+  let { title, items } = props;
   return (
     <>
       <div className="hidden grow-0 shrink-0 flex-col items-start gap-5 md:flex md:basis-[calc((100%-5rem)/3)] lg:grow lg:basis-0">
-        <h6 className="text-base font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text)">
-          {title}
-        </h6>
+        <span className={footerMenuHeadingClass}>{title}</span>
         <ul className="flex flex-col items-start gap-3">
           {items.map((subItem, ind) => (
             <li key={ind}>
               <Link to={subItem.to} prefetch="intent">
-                <span className="text-animation text-base font-normal opacity-80">
+                <span className="text-animation opacity-80">
                   {subItem.title}
                 </span>
               </Link>
@@ -287,7 +288,9 @@ function MenuLink(props: SingleMenuItem) {
           {({ open }) => (
             <div className="contents">
               <Disclosure.Button className="w-full text-left">
-                <h6 className="flex justify-between font-body text-[16px] font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text)">
+                <h6
+                  className={cn("flex justify-between", footerMenuHeadingClass)}
+                >
                   {title}
                   <span>
                     <IconPlusLinkFooter
@@ -308,10 +311,8 @@ function MenuLink(props: SingleMenuItem) {
                   <ul className="space-y-3 pb-3 pt-2">
                     {items.map((subItem, ind) => (
                       <li key={ind} className="leading-6">
-                        <Link key={ind} to={subItem.to} prefetch="intent">
-                          <span className="font-body font-normal">
-                            {subItem.title}
-                          </span>
+                        <Link to={subItem.to} prefetch="intent">
+                          <span className="opacity-80">{subItem.title}</span>
                         </Link>
                       </li>
                     ))}
@@ -329,5 +330,5 @@ function MenuLink(props: SingleMenuItem) {
 function HeaderText({ title }: { title: string; to: string }) {
   const settings = useThemeSettings();
   let { tagNameTitle: Tag = "h6" } = settings || {};
-  return <Tag className="font-semibold uppercase">{title}</Tag>;
+  return <Tag className={footerMenuHeadingClass}>{title}</Tag>;
 }

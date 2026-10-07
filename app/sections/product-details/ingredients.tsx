@@ -1,10 +1,5 @@
-import {
-  Clock,
-  Drop,
-  type Icon as PhosphorIcon,
-  Sparkle,
-} from "@phosphor-icons/react";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
+import { Clock, Droplet, type LucideIcon, Sparkles } from "lucide-react";
 import type { Ref } from "react";
 import { cn } from "~/utils/cn";
 import { ProductMetafieldEmptyState } from "./metafield-empty-state";
@@ -47,7 +42,7 @@ export default function KeyIngredients({
     );
   }
 
-  const icons: PhosphorIcon[] = [Sparkle, Clock, Drop];
+  const icons: LucideIcon[] = [Sparkles, Clock, Droplet];
   const ingredients = loaderData.entries
     .slice(0, icons.length)
     .map((entry, index) => ({
@@ -75,9 +70,10 @@ export default function KeyIngredients({
     <section
       ref={ref}
       {...rest}
+      data-product-metafield-section
       className={cn("flex flex-col gap-10", className)}
     >
-      <header className="max-w-3xl flex flex-col gap-3">
+      <header className="flex max-w-[600px] flex-col gap-3">
         <h2 className="font-display text-[32px] leading-[normal] font-normal tracking-normal text-text">
           {heading}
         </h2>
@@ -89,17 +85,19 @@ export default function KeyIngredients({
         {ingredients.map(({ id, Icon, title, copy }) => (
           <article
             key={id}
-            className="w-full flex-[1_0_0] rounded-xl border border-border-subtle p-6"
+            className="flex w-full flex-[1_0_0] flex-col gap-4 rounded-2xl border border-border-subtle p-6"
           >
-            <span className="mb-5 flex size-10 items-center justify-center rounded-full bg-(--product-detail-background-color)">
-              <Icon aria-hidden="true" className="size-5" weight="regular" />
+            <span className="flex size-12 items-center justify-center rounded-full bg-(--product-detail-background-color)">
+              <Icon aria-hidden="true" className="size-6" strokeWidth={1.5} />
             </span>
-            <p className="font-body text-[18px] leading-[normal] font-semibold text-text">
-              {title}
-            </p>
-            <p className="mt-3 font-body text-[14px] leading-[150%] font-normal text-(--product-detail-text-color)">
-              {copy}
-            </p>
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-[18px] leading-[normal] font-semibold text-text">
+                {title}
+              </p>
+              <p className="font-body text-[14px] leading-[150%] font-normal text-(--product-detail-text-color)">
+                {copy}
+              </p>
+            </div>
           </article>
         ))}
       </div>

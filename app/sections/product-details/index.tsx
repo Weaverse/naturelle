@@ -1,5 +1,6 @@
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
 import type { CSSProperties, Ref } from "react";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { cn } from "~/utils/cn";
 import { PRODUCT_DETAIL_METAFIELDS } from "./product-metafield";
 
@@ -19,12 +20,16 @@ export default function ProductDetails({
   className,
   ...rest
 }: ProductDetailsProps & { ref?: Ref<HTMLElement> }) {
+  const isDesignMode = useWeaverseStudioCheck();
+
   return (
     <section
       ref={ref}
       {...rest}
       className={cn(
         "mx-auto w-full max-w-page rounded-2xl bg-background-basic px-5 pt-20 pb-30 md:px-12 lg:px-0",
+        !isDesignMode &&
+          "[&:not(:has([data-product-metafield-section]))]:hidden",
         className,
       )}
       style={
@@ -35,7 +40,9 @@ export default function ProductDetails({
         } as CSSProperties
       }
     >
-      <div className="mx-auto w-full max-w-300 space-y-20">{children}</div>
+      <div className="mx-auto flex w-full max-w-300 flex-col gap-20">
+        {children}
+      </div>
     </section>
   );
 }

@@ -85,18 +85,16 @@ const CollectionBanner = (props: CollectionBannerProps) => {
         <div
           style={{ backgroundColor: contentBackgroundColor }}
           className={cn(
-            "flex w-full flex-1 p-10 md:px-10 md:py-0",
+            "flex w-full flex-1 p-10 md:w-1/2 md:flex-none md:px-20 md:py-0",
             contentPositionClass[contentPosition],
           )}
         >
-          <div className="max-w-lg text-text-primary">
+          <div className="w-full text-text-primary">
             {bannerHeading && (
-              <h1 className="font-heading text-4xl leading-tight font-normal">
-                {bannerHeading}
-              </h1>
+              <h1 className="h3 font-normal text-text">{bannerHeading}</h1>
             )}
             {bannerDescription && (
-              <p className="mt-6 max-w-md text-base leading-relaxed">
+              <p className="mt-6 max-w-full text-base leading-[1.6] tracking-[-0.16px]">
                 {bannerDescription}
               </p>
             )}
@@ -104,7 +102,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
         </div>
 
         {showImage && bannerImage && (
-          <div className="relative w-full flex-1 overflow-hidden">
+          <div className="relative w-full flex-1 overflow-hidden md:w-1/2 md:flex-none">
             <Image
               data={bannerImage}
               sizes="(min-width: 90rem) 720px, (min-width: 49.125em) 50vw, 100vw"

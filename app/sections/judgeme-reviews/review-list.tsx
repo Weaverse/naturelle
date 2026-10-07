@@ -1,4 +1,5 @@
 import { useTranslation } from "@weaverse/hydrogen";
+import { CircleCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "react-router";
 import { Button } from "~/components/button";
@@ -86,12 +87,12 @@ export function ReviewList({
   };
 
   return (
-    <section className="min-w-0 rounded-lg bg-background-basic p-6 text-text md:p-8">
+    <section className="min-w-0 rounded-2xl bg-background-basic p-6 text-text md:p-8">
       <p className="text-center font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text uppercase">
         {t("reviews.title")} (
         {formatNumber(judgemeReviews.reviewNumber, locale)})
       </p>
-      <div className="mx-auto mt-3 h-px w-10 bg-border-subtle" />
+      <div className="mx-auto mt-4 h-px w-12 bg-border-subtle" />
 
       {reviews.length === 0 ? (
         <p className="py-12 text-center text-text-subtle">{emptyReviewsText}</p>
@@ -101,29 +102,34 @@ export function ReviewList({
             <article
               key={review.id}
               data-motion="fade-up"
-              className="grid gap-4 border-border-subtle border-b py-6 first:pt-0 md:grid-cols-[minmax(8rem,0.8fr)_minmax(0,2fr)] md:gap-8"
+              className="grid gap-4 border-border-subtle border-b py-8 first:pt-0 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-6"
             >
-              <div className="space-y-2">
-                <StarRating rating={review.rating} />
-                <div>
-                  <p className="font-semibold">{review.reviewer.name}</p>
+              <div className="flex flex-col gap-3">
+                <StarRating rating={review.rating} className="gap-1" />
+                <div className="flex flex-col gap-1">
+                  <p className="text-base font-semibold leading-[1.5] tracking-[-0.01em]">
+                    {review.reviewer.name}
+                  </p>
                   {review.verified && (
-                    <p className="text-text-subtle text-xs">
+                    <p className="flex items-center gap-1.5 text-xs font-medium text-text-subtle">
+                      <CircleCheck aria-hidden="true" className="size-3" />
                       {t("reviews.verifiedPurchase")}
                     </p>
                   )}
                 </div>
               </div>
-              <div className="min-w-0 space-y-2">
+              <div className="min-w-0 space-y-3">
                 {review.title && (
                   <p className="font-heading text-xl font-normal leading-normal tracking-[-0.01em] text-text">
                     {review.title}
                   </p>
                 )}
-                <time className="block text-text-subtle text-xs">
+                <time className="block text-[13px] leading-[1.6] tracking-[-0.01em] text-text-subtle">
                   {formatReviewDate(review.created_at, locale)}
                 </time>
-                <p className="text-sm leading-6">{review.body}</p>
+                <p className="text-[15px] leading-[1.6] tracking-[-0.01em]">
+                  {review.body}
+                </p>
               </div>
             </article>
           ))}
@@ -134,7 +140,8 @@ export function ReviewList({
         <div className="flex justify-center pt-6">
           <Button
             variant="outline"
-            className="rounded-lg"
+            fontFamily="body"
+            className="rounded-xl text-base font-medium leading-[1.6] tracking-[-0.01em]"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
             onClick={loadMore}

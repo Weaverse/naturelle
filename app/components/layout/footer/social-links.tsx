@@ -47,7 +47,7 @@ export function SocialLinks({
 
   return (
     <div className="flex w-full shrink-0 flex-col items-start gap-5 lg:w-auto lg:grow lg:basis-0 lg:shrink-0">
-      <h6 className="hidden text-base font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text) lg:block">
+      <h6 className="hidden font-body text-base font-semibold leading-[1.6] tracking-[-0.16px] text-(--color-footer-text) lg:block">
         {t("footer.connect")}
       </h6>
       <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-start">
@@ -58,7 +58,7 @@ export function SocialLinks({
             target="_blank"
             rel="noreferrer"
             aria-label={name}
-            className="flex items-center gap-2 text-base font-normal text-(--color-footer-text) py-1"
+            className="flex items-center gap-2 py-1 text-(--color-footer-text)"
           >
             <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-background-basic">
               <Icon className="size-3.5" />

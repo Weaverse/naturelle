@@ -300,7 +300,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
           className={buttonVariants({
             shape: "default",
             className: cn(
-              "h-12 w-full rounded-lg",
+              "w-full rounded-xl",
               isCartUpdating && "pointer-events-none opacity-50",
             ),
           })}
@@ -321,12 +321,12 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
           {t("cart.checkout")}
         </a>
       )}
-      <Link
-        to="/collections"
-        className="block text-center font-body text-sm leading-none font-normal tracking-[-0.14px] text-text"
-      >
-        <span>{t("cart.continueShopping")}</span>
-      </Link>
+      <p className="text-center font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle">
+        {t("cart.or")}{" "}
+        <Link to="/collections" className="text-text">
+          {t("cart.continueShopping")}
+        </Link>
+      </p>
     </section>
   );
 }
@@ -372,14 +372,14 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
   return (
     <section
       aria-labelledby="cart-summary"
-      className="shrink-0 border-border-subtle border-t pt-4 pb-5"
+      className="shrink-0 border-border-subtle border-t flex flex-col gap-3 pt-3"
     >
       <h2 id="cart-summary" className="sr-only">
         {t("cart.orderSummary")}
       </h2>
 
       <AppliedCartCodes
-        className="mb-4 justify-end"
+        className="justify-end"
         appliedGiftCards={appliedGiftCards}
         discountCodes={discountCodes}
         cartRoute={cartRoute}
@@ -391,14 +391,14 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
         dcRemoveFetcher={dcRemoveFetcher}
       />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between font-body text-base leading-[160%] tracking-[-0.16px] text-text">
         <span className="font-semibold">{t("cart.subtotal")}</span>
         {isCartUpdating ? (
           <Skeleton className="h-4 w-20 rounded" />
         ) : (
           <div className="flex items-center gap-2">
             {hasDiscount && (
-              <span className="text-sm text-text-subtle line-through">
+              <span className="font-normal text-text-subtle line-through">
                 <Money data={cost.subtotalAmount} />
               </span>
             )}
@@ -413,12 +413,12 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
         )}
       </div>
 
-      <p className="mt-1 text-sm text-text-subtle">
+      <p className="font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text-subtle">
         {t("cart.shippingTaxesCheckout")}
       </p>
 
       {(enableCartNote || enableDiscountCode || enableGiftCard) && (
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-1 text-sm">
+        <div className="flex flex-wrap items-center justify-end gap-x-2 font-body text-base leading-none font-normal tracking-[-0.16px] text-text">
           {enableCartNote && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
@@ -477,7 +477,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           className={buttonVariants({
             shape: "default",
             className: cn(
-              "mt-4 w-full rounded-lg",
+              "h-auto w-full rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",
               isCartUpdating && "pointer-events-none opacity-50",
             ),
           })}
@@ -495,7 +495,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
             });
           }}
         >
-          {t("cart.checkout")}
+          {t("cart.continueToCheckout")}
         </a>
       )}
     </section>
@@ -541,7 +541,7 @@ function AppliedCartCodes({
         return (
           <div
             key={giftCard.id}
-            className="flex items-center gap-1 rounded-full bg-background-subtle-1 px-2 py-0.5 text-xs [&>form]:flex"
+            className="flex items-center gap-2 rounded-lg bg-background-subtle-2 px-2 py-1 text-xs leading-none tracking-[0.24px] text-text-subtle [&>form]:flex"
           >
             <span>***{giftCard.lastCharacters}</span>
             <CartForm
@@ -578,7 +578,7 @@ function AppliedCartCodes({
         return (
           <div
             key={discount.code}
-            className="flex items-center gap-1 rounded-full bg-background-subtle-1 px-2 py-0.5 text-xs [&>form]:flex"
+            className="flex items-center gap-2 rounded-lg bg-background-subtle-2 px-2 py-1 text-xs leading-none tracking-[0.24px] text-text-subtle [&>form]:flex"
           >
             <span>{discount.code}</span>
             <CartForm
@@ -648,12 +648,12 @@ function PageDiscountForm({
           value={code}
           onChange={(event) => onCodeChange(event.target.value)}
           placeholder={t("cart.enterCode")}
-          className="min-w-0 flex-1 rounded-lg border border-border bg-transparent px-3 py-2 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
+          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-3 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
         />
         <button
           type="submit"
           disabled={!code.trim() || isSubmitting}
-          className="rounded-lg bg-text-primary px-5 py-2 text-sm text-text-inverse disabled:opacity-50"
+          className="rounded-xl bg-text-primary px-6 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:opacity-50"
         >
           {t("cart.apply")}
         </button>

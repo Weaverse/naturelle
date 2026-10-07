@@ -16,7 +16,7 @@ export function PolicyLinks({
   return (
     <nav
       aria-label={t("footer.legal")}
-      className="flex flex-wrap items-center gap-x-4 gap-y-2"
+      className="flex flex-wrap items-center gap-x-6 gap-y-2"
     >
       {policyItems
         .filter((policy): policy is Policy => Boolean(policy))
@@ -25,7 +25,7 @@ export function PolicyLinks({
             key={handle}
             to={`/policies/${handle}`}
             prefetch="intent"
-            className="transition-opacity hover:opacity-70"
+            className="opacity-70 transition-opacity hover:opacity-100"
           >
             {title}
           </Link>

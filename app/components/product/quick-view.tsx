@@ -9,6 +9,7 @@ import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { LowStockIndicator } from "~/components/product/low-stock-indicator";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import {
@@ -18,10 +19,8 @@ import {
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
-import { useRootLoaderData } from "~/root";
 import { cn } from "~/utils/cn";
-import { DEFAULT_LOCALE } from "~/utils/const";
-import { formatNumber, usePrefixPathWithLocale } from "~/utils/locale";
+import { usePrefixPathWithLocale } from "~/utils/locale";
 import {
   getSavingsPercentage,
   isNewArrival,
@@ -39,7 +38,6 @@ export function QuickView({
   onAdded?: () => void;
 }) {
   const { t } = useTranslation();
-  const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   const theme = useThemeSettings();
   const { product, variants: variantData, storeDomain, shop } = data;
   const [requestedSellingPlanId, setRequestedSellingPlanId] = useState<
@@ -73,16 +71,6 @@ export function QuickView({
   );
   const selectedSellingPlanId = selectedSellingPlan?.id ?? null;
 
-  const stock = selectedVariant.quantityAvailable;
-  const configuredLowStockThreshold = Number(theme.quickViewLowStockThreshold);
-  const lowStockThreshold = Number.isFinite(configuredLowStockThreshold)
-    ? Math.min(20, Math.max(0, configuredLowStockThreshold))
-    : 5;
-  const showLowStock =
-    selectedVariant.availableForSale &&
-    typeof stock === "number" &&
-    stock > 0 &&
-    stock <= lowStockThreshold;
   const publishedAt = (product as typeof product & { publishedAt?: string })
     .publishedAt;
   const savingsPercentage = getSavingsPercentage(
@@ -180,37 +168,14 @@ export function QuickView({
                     sellingPlan={selectedSellingPlan}
                   />
                 </div>
-                {showLowStock && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold">
-                      {stock === 1
-                        ? t("product.lowStockOne", {
-                            count: formatNumber(stock, locale),
-                          })
-                        : t("product.lowStock", {
-                            count: formatNumber(stock, locale),
-                          })}
-                    </p>
-                    <div
-                      role="progressbar"
-                      aria-label={t("product.lowStockThreshold", {
-                        count: lowStockThreshold,
-                      })}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-valuenow={lowStockThreshold}
-                      className="relative h-1 w-full overflow-hidden rounded-full bg-border-subtle"
-                    >
-                      <div
-                        className="h-full w-full origin-left rounded-full transition-[transform,background-color]"
-                        style={{
-                          backgroundColor: theme.quickViewLowStockProgressColor,
-                          transform: `scaleX(${lowStockThreshold / 100})`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
+                <LowStockIndicator
+                  availableForSale={selectedVariant.availableForSale}
+                  stock={selectedVariant.quantityAvailable}
+                  threshold={theme.lowStockThreshold}
+                  progressColor={theme.lowStockProgressColor}
+                  className="space-y-2"
+                  messageClassName="text-sm"
+                />
               </div>
 
               <ProductVariants
