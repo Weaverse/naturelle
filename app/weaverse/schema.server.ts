@@ -146,7 +146,7 @@ export const themeSchema: HydrogenThemeSchema = {
           configs: {
             min: 2,
             max: 8,
-            step: 1,
+            step: 0.5,
             unit: "rem",
           },
           defaultValue: 3,
@@ -158,7 +158,7 @@ export const themeSchema: HydrogenThemeSchema = {
           configs: {
             min: 2,
             max: 8,
-            step: 1,
+            step: 0.5,
             unit: "rem",
           },
           defaultValue: 4,
@@ -170,7 +170,7 @@ export const themeSchema: HydrogenThemeSchema = {
           configs: {
             min: 2,
             max: 8,
-            step: 1,
+            step: 0.5,
             unit: "rem",
           },
           defaultValue: 6,

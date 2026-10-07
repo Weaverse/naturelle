@@ -53,5 +53,10 @@ export function usePredictiveSearch(): UseSearchReturn {
           );
   }, []);
 
-  return { ...search, searchInputRef, searchTerm };
+  return {
+    ...search,
+    isLoading: searchFetcher.state !== "idle",
+    searchInputRef,
+    searchTerm,
+  };
 }

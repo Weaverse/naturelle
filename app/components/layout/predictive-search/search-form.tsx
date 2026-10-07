@@ -4,7 +4,10 @@ import type {
   PredictiveSearchResponse,
   SearchFromProps,
 } from "~/types/search-types";
-import { PREDICTIVE_SEARCH_FETCHER_KEY } from "~/types/search-types";
+import {
+  PREDICTIVE_SEARCH_FETCHER_KEY,
+  PREDICTIVE_SEARCH_LIMIT,
+} from "~/types/search-types";
 
 /**
  *  Search form component that posts search requests to the `/search` route
@@ -35,7 +38,7 @@ export function PredictiveSearchForm({
     }
     debounceTimerRef.current = setTimeout(() => {
       fetcher.submit(
-        { q: newSearchTerm, limit: "8" },
+        { q: newSearchTerm, limit: String(PREDICTIVE_SEARCH_LIMIT) },
         { method, action: localizedAction },
       );
     }, 300);
@@ -52,7 +55,10 @@ export function PredictiveSearchForm({
     inputRef?.current?.setAttribute("type", "search");
     inputRef?.current?.focus();
     fetcher.submit(
-      { q: inputRef.current?.value || "", limit: "8" },
+      {
+        q: inputRef.current?.value || "",
+        limit: String(PREDICTIVE_SEARCH_LIMIT),
+      },
       { method, action: localizedAction },
     );
 
