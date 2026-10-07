@@ -45,13 +45,13 @@ export function ProductCardRating({
     (Number.isFinite(parsedRatingCount) ? Math.max(0, parsedRatingCount) : 0);
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <StarRating rating={rating} />
+    <div className="flex flex-wrap items-center gap-1.5">
+      <StarRating rating={rating} className="h-3.5 [&>svg]:size-3.5" />
       <span className="inline-flex items-center gap-1">
         <span className="font-body text-[13px] font-semibold leading-normal text-text">
           {detailed ? `${rating.toFixed(1)}/5.0` : rating.toFixed(1)}
         </span>
-        <span className="font-body text-[13px] font-normal leading-normal text-text">
+        <span className="font-body text-[13px] font-normal leading-normal text-text-subtle">
           (
           {ratingCount === 1
             ? t("reviews.count", { count: formatNumber(ratingCount, locale) })

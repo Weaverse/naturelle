@@ -65,7 +65,7 @@ export default function ProductStory({
   const showImage = Boolean(imageData?.url) && (isDesignMode || !isPlaceholder);
 
   return (
-    <section ref={ref} {...rest}>
+    <section ref={ref} {...rest} data-product-metafield-section>
       <div
         className={cn(
           "grid items-stretch gap-5 lg:gap-16",
@@ -79,7 +79,7 @@ export default function ProductStory({
           )}
         >
           <div className="flex flex-col gap-3">
-            <p className="mb-4 font-body text-xs leading-[normal] font-bold uppercase text-(--product-detail-text-color)">
+            <p className="font-body text-xs leading-[normal] font-bold uppercase text-(--product-detail-text-color)">
               {eyebrow}
             </p>
             <h2 className="font-display text-[32px] leading-[normal] font-normal tracking-normal text-text">

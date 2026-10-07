@@ -1,10 +1,5 @@
-import {
-  Heart,
-  Leaf,
-  type Icon as PhosphorIcon,
-  Recycle,
-} from "@phosphor-icons/react";
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
+import { Heart, Leaf, type LucideIcon, RefreshCw } from "lucide-react";
 import type { Ref } from "react";
 
 interface BadgesProps extends HydrogenComponentProps {
@@ -20,21 +15,21 @@ export default function ProductBadges({
   badge3,
   ...rest
 }: BadgesProps & { ref?: Ref<HTMLElement> }) {
-  const badges: [PhosphorIcon, string][] = [
+  const badges: [LucideIcon, string][] = [
     [Leaf, badge1],
     [Heart, badge2],
-    [Recycle, badge3],
+    [RefreshCw, badge3],
   ];
 
   return (
     <section ref={ref} {...rest}>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center gap-3 pt-10 md:flex-row md:gap-12">
         {badges.map(([Icon, label]) => (
           <span
             key={label}
-            className="inline-flex items-center gap-2 rounded-full border border-border-subtle px-4 py-2 font-body text-sm leading-[normal] font-semibold text-text"
+            className="inline-flex items-center gap-3 rounded-full border border-border-subtle px-4 py-3 font-body text-sm leading-[normal] font-semibold text-text"
           >
-            <Icon aria-hidden="true" className="size-4" weight="bold" />
+            <Icon aria-hidden="true" className="size-5" strokeWidth={1.5} />
             {label}
           </span>
         ))}

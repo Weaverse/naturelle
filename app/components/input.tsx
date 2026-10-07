@@ -13,7 +13,7 @@ const inputVariants = cva(
         default:
           "flex w-full rounded-md border-2 border-border-subtle text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-border hover:border-border disabled:cursor-not-allowed disabled:opacity-50",
         search:
-          "px-0 py-2 text-sm placeholder-text-subtle w-full focus:ring-0 border-x-0 border-t-0 transition border-b-2 border-border/10 focus:border-border/50",
+          "w-full border-x-0 border-t-0 border-b-2 border-border/10 px-0 py-0 text-base leading-[1.6] tracking-[-0.16px] placeholder-text-subtle transition focus:border-border/50 focus:ring-0",
         minisearch:
           "hidden md:inline-block text-left lg:text-right border-b transition border-transparent -mb-px border-x-0 border-t-0 appearance-none px-0 py-1 focus:ring-transparent placeholder:opacity-20 placeholder-text-subtle focus:border-bar/50",
         error: "border-red-500",

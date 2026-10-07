@@ -120,7 +120,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     data={image}
                     loading={i === 0 ? "eager" : "lazy"}
                     aspectRatio={imageAspectRatio}
-                    className="fadeIn h-auto w-full rounded-sm object-cover"
+                    className="fadeIn h-auto w-full rounded-2xl object-cover"
                     sizes="auto"
                   />
                   {enableZoom && (
@@ -167,7 +167,7 @@ export function ProductMedia(props: ProductMediaProps) {
                     aria-label={t("product.viewImage", { number: i + 1 })}
                     aria-pressed={isActive}
                     className={cn(
-                      "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors md:size-[88px]",
+                      "size-16 shrink-0 overflow-hidden rounded-2xl border p-0 transition-colors sm:size-[100px]",
                       isActive
                         ? "border-border/60"
                         : "border-transparent hover:border-border-subtle",
@@ -177,9 +177,9 @@ export function ProductMedia(props: ProductMediaProps) {
                     <Image
                       data={getMediaImage(med, fallbackAlt)}
                       loading={i === 0 ? "eager" : "lazy"}
-                      className="h-full w-full rounded-sm object-cover"
+                      className="h-full w-full rounded-[15px] object-cover"
                       aspectRatio={imageAspectRatio}
-                      sizes="88px"
+                      sizes="100px"
                     />
                   </button>
                 );
@@ -200,7 +200,7 @@ export function ProductMedia(props: ProductMediaProps) {
                       aria-label={t("product.viewImage", { number: i + 1 })}
                       aria-pressed={isActive}
                       className={cn(
-                        "size-16 shrink-0 overflow-hidden rounded-sm border p-0.5 transition-colors",
+                        "size-16 shrink-0 overflow-hidden rounded-2xl border p-0 transition-colors",
                         isActive
                           ? "border-border/60"
                           : "border-transparent hover:border-border-subtle",
@@ -210,7 +210,7 @@ export function ProductMedia(props: ProductMediaProps) {
                       <Image
                         data={getMediaImage(med, fallbackAlt)}
                         loading={i === 0 ? "eager" : "lazy"}
-                        className="h-full w-full rounded-sm object-cover"
+                        className="h-full w-full rounded-[15px] object-cover"
                         aspectRatio={imageAspectRatio}
                         sizes="64px"
                       />
@@ -223,7 +223,7 @@ export function ProductMedia(props: ProductMediaProps) {
               className={clsx(
                 "hidden min-w-0 sm:block",
                 direction === "vertical" &&
-                  "w-[calc(var(--thumbs-width,0px)-1rem)] md:h-[550px] lg:h-[770px]",
+                  "relative self-stretch w-[calc(var(--thumbs-width,0px)-1rem)]",
               )}
             >
               <Swiper
@@ -237,20 +237,23 @@ export function ProductMedia(props: ProductMediaProps) {
                 modules={[FreeMode, Thumbs]}
                 watchSlidesProgress={true}
                 data-motion="fade-up"
-                className="w-full h-full overflow-hidden"
+                className={cn(
+                  "h-full w-full overflow-hidden",
+                  direction === "vertical" && "absolute! inset-0",
+                )}
               >
                 {media.map((med, i) => (
                   <SwiperSlide
                     key={med.id}
                     className={cn(
-                      "h-fit! w-fit! cursor-pointer rounded-sm border border-transparent p-0.5 transition-colors",
+                      "h-fit! w-fit! cursor-pointer rounded-2xl border border-transparent p-0 transition-colors",
                       "[&.swiper-slide-thumb-active]:border-border/60",
                     )}
                   >
                     <Image
                       data={getMediaImage(med, fallbackAlt)}
                       loading={i === 0 ? "eager" : "lazy"}
-                      className="fadeIn h-[100px]! rounded-sm object-cover shadow-md"
+                      className="fadeIn size-[100px]! rounded-[15px] object-cover shadow-md"
                       aspectRatio={imageAspectRatio}
                       sizes="auto"
                     />

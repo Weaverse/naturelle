@@ -13,11 +13,12 @@ import { Section, type SectionProps } from "~/components/section";
 let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
   variants: {
     layout: {
-      col: "flex flex-col gap-(--countdown-gap)",
+      col: "flex flex-col gap-(--countdown-gap) [&_.heading]:w-fit [&_.paragraph]:w-fit",
       row: [
         "flex flex-col gap-(--countdown-gap)",
-        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center",
-        "lg:[&_.countdown-content]:!items-start lg:[&_.heading]:!text-left lg:[&_.paragraph]:!text-left",
+        "max-lg:[&_.heading]:w-fit max-lg:[&_.paragraph]:w-fit",
+        "lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:[&_.heading]:w-full",
+        "lg:[&_.countdown-content]:items-start lg:[&_.heading]:text-left lg:[&_.paragraph]:text-left",
       ],
     },
     alignment: {
@@ -45,6 +46,8 @@ let Countdown = ({
     layout = "row",
     gap = 40,
     verticalPadding = "medium",
+    backgroundFor = "section",
+    borderRadius = 0,
     style,
     ...rest
   } = props;
@@ -75,6 +78,8 @@ let Countdown = ({
     <Section
       ref={ref}
       {...rest}
+      backgroundFor={backgroundFor}
+      borderRadius={borderRadius}
       gap={0}
       verticalPadding={verticalPadding}
       containerClassName={variants({ alignment, layout })}
@@ -91,14 +96,14 @@ let Countdown = ({
             {timerChildren}
             <div className="h-px w-28 border-t border-current opacity-30 lg:h-auto lg:w-auto lg:self-stretch lg:border-t-0 lg:border-r lg:pl-10" />
           </div>
-          <div className="countdown-content w-full flex flex-col items-start gap-2">
+          <div className="countdown-content w-full flex flex-col items-start gap-4 [&_.paragraph]:opacity-80">
             {contentChildren}
           </div>
           {buttonChildren}
         </>
       ) : (
         <>
-          <div className="countdown-content flex flex-col gap-2">
+          <div className="countdown-content flex flex-col gap-4 [&_.paragraph]:opacity-80">
             {contentChildren}
           </div>
           {timerChildren}

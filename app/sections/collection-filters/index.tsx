@@ -109,7 +109,7 @@ let CollectionFilters = ({
           filterItemsLimit={filterItemsLimit}
           checkboxShape={checkboxShape}
           sectionClassName={cn(
-            "mx-auto flex w-full max-w-page items-start gap-5 px-5 py-8 lg:flex-row md:px-6 lg:px-0",
+            "mx-auto flex w-full max-w-page items-start gap-10 px-5 py-8 lg:flex-row md:px-6 lg:px-0",
             width === "full" && "max-w-none",
             width === "stretch" && "max-w-none lg:px-16",
           )}

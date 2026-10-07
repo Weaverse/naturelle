@@ -39,14 +39,14 @@ export function FreeShippingProgressBar({
       : t("cart.freeShippingRemaining", { amount: "{{amount}}" }));
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-border-subtle">
+    <div className={cn("flex flex-col gap-2", className)}>
+      <div className="relative h-1 w-full overflow-hidden rounded-lg bg-background-subtle-2">
         <div
-          className="absolute inset-y-0 left-0 bg-text-primary transition-all duration-300"
+          className="absolute inset-y-0 left-0 rounded-lg bg-border transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <p className="text-sm text-text-subtle">
+      <p className="font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text-subtle">
         {hasReachedFreeShipping ? (
           message
         ) : (

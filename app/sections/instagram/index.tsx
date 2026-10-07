@@ -97,17 +97,17 @@ const Instagram = ({
     >
       <div
         className={clsx(
-          "flex w-full min-w-0 max-w-page flex-col gap-12 px-5 py-20 md:px-6",
+          "flex w-full min-w-0 max-w-page flex-col gap-16 px-5 py-20 md:px-6 lg:px-0",
           widthClasses[width],
         )}
       >
         {legacyContent.length > 0 ? (
-          <div className="flex w-full flex-col items-center justify-center gap-4 text-center">
+          <div className="flex w-full flex-col items-center justify-center gap-2 text-center">
             {legacyContent}
           </div>
         ) : (
           (heading || handle) && (
-            <div className="flex w-full flex-col items-center justify-center gap-4 text-center">
+            <div className="flex w-full flex-col items-center justify-center gap-2 text-center">
               {heading && <h2>{heading}</h2>}
               {handle &&
                 (profileUrl ? (
@@ -146,7 +146,7 @@ const Instagram = ({
             spaceBetween={16}
             breakpoints={{
               786: { slidesPerView: tabletImagesPerRow, spaceBetween: 16 },
-              1440: { slidesPerView: desktopImagesPerRow, spaceBetween: 16 },
+              1440: { slidesPerView: desktopImagesPerRow, spaceBetween: 20 },
             }}
             modules={[Autoplay]}
             className="min-w-0 w-full"

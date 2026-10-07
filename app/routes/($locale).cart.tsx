@@ -283,7 +283,7 @@ export default function Cart() {
               sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/10" />
-            <h1 className="relative z-10 text-center font-heading text-[44px] leading-[110%] font-normal text-text-inverse">
+            <h1 className="relative z-10 text-center font-heading text-[64px] leading-[110%] font-normal text-text-inverse">
               {t("cart.title")}
             </h1>
           </div>
@@ -344,48 +344,48 @@ function CartNewsletter() {
 
   return (
     <section className="flex w-full items-center justify-center bg-background-subtle-1 px-5 py-12 lg:py-20">
-      <div className="flex w-full max-w-xl flex-col items-center gap-4">
+      <div className="flex w-full max-w-[447px] flex-col items-center gap-4">
         <IconNewsletter
           viewBox="0 0 65 64"
           className="size-16 text-text"
           aria-hidden="true"
         />
-        <div className="flex flex-col items-center gap-2">
-          {cartNewsletterHeading && (
-            <h2 className="max-w-72 text-center font-heading text-[44px] leading-[110%] font-normal text-text md:max-w-none">
-              {cartNewsletterHeading}
-            </h2>
-          )}
+        {cartNewsletterHeading && (
+          <h2 className="max-w-72 text-center font-heading text-[53px] leading-[110%] font-normal text-text md:max-w-none">
+            {cartNewsletterHeading}
+          </h2>
+        )}
+        <div className="flex w-full flex-col items-center gap-4">
           {cartNewsletterDescription && (
             <p className="text-center font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text">
               {cartNewsletterDescription}
             </p>
           )}
-        </div>
-        <fetcher.Form
-          ref={formRef}
-          method="POST"
-          action={newsletterAction}
-          className="flex w-full items-stretch gap-3"
-        >
-          <Input
-            variant="custom"
-            type="email"
-            name="email"
-            placeholder={cartNewsletterPlaceholder}
-            required
-            className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
-          />
-          <Button
-            type="submit"
-            loading={isSubmitting}
-            disabled={isSubmitting}
-            className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
+          <fetcher.Form
+            ref={formRef}
+            method="POST"
+            action={newsletterAction}
+            className="flex w-full items-stretch gap-3"
           >
-            {cartNewsletterButtonText}
-          </Button>
-        </fetcher.Form>
-        <div aria-live="polite" className="min-h-5 text-center text-sm">
+            <Input
+              variant="custom"
+              type="email"
+              name="email"
+              placeholder={cartNewsletterPlaceholder}
+              required
+              className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
+            />
+            <Button
+              type="submit"
+              loading={isSubmitting}
+              disabled={isSubmitting}
+              className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
+            >
+              {cartNewsletterButtonText}
+            </Button>
+          </fetcher.Form>
+        </div>
+        <div aria-live="polite" className="text-center text-sm">
           {isSuccess && (
             <p className="text-green-700">{cartNewsletterSuccessMessage}</p>
           )}

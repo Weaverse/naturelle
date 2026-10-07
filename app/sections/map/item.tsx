@@ -46,9 +46,7 @@ export default function MapItem({
         </p>
       )}
       {paragraph && (
-        <div className="whitespace-pre-line text-sm leading-relaxed text-text">
-          {paragraph}
-        </div>
+        <div className="whitespace-pre-line text-text">{paragraph}</div>
       )}
     </div>
   );

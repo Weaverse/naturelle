@@ -1,7 +1,12 @@
 import { Disclosure } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
-import { createSchema, useTranslation } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  useThemeSettings,
+  useTranslation,
+} from "@weaverse/hydrogen";
 import clsx from "clsx";
+import { Truck, Undo2 } from "lucide-react";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
@@ -9,6 +14,7 @@ import { IconAnnouncementChevron } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
+import { LowStockIndicator } from "~/components/product/low-stock-indicator";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
@@ -56,6 +62,7 @@ let ProductInformation = ({
   ...props
 }: ProductInformationProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   const { t } = useTranslation();
+  const theme = useThemeSettings();
   const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   let {
     product,
@@ -194,22 +201,23 @@ let ProductInformation = ({
                   {((showVendor && vendor) || product.productType) && (
                     <Text
                       data-motion="fade-up"
-                      className="text-sm font-normal text-text-subtle"
+                      className="flex flex-wrap items-center gap-3 text-base font-semibold leading-[1.6] tracking-[-0.01em] text-text-subtle"
                     >
                       {showVendor && vendor && (
-                        <>
-                          {t("product.vendor")}{" "}
-                          <span className="text-text-primary">{vendor}</span>
-                        </>
+                        <span>
+                          {t("product.vendor")} {vendor}
+                        </span>
                       )}
                       {product.productType && (
                         <>
                           {showVendor && vendor && (
-                            <span className="px-2">|</span>
+                            <span
+                              aria-hidden="true"
+                              className="h-4 w-px bg-border-subtle"
+                            />
                           )}
-                          {t("product.type")}{" "}
-                          <span className="text-text-primary">
-                            {product.productType}
+                          <span>
+                            {t("product.type")} {product.productType}
                           </span>
                         </>
                       )}
@@ -218,10 +226,13 @@ let ProductInformation = ({
                   {judgemeReviews.reviewNumber > 0 && (
                     <div
                       data-motion="fade-up"
-                      className="flex items-center gap-0.5"
+                      className="flex items-center gap-3 text-base leading-none"
                     >
-                      <StarRating rating={judgemeReviews.rating} />
-                      <span className="ml-1">
+                      <StarRating
+                        rating={judgemeReviews.rating}
+                        className="h-5 [&>svg]:size-5"
+                      />
+                      <span>
                         {judgemeReviews.rating.toFixed(1)}/5.0 (
                         {judgemeReviews.reviewNumber === 1
                           ? t("reviews.count", {
@@ -243,13 +254,13 @@ let ProductInformation = ({
                   {children}
                   <div
                     data-motion="fade-up"
-                    className="text-xl/[1.1] md:text-2xl/[1.1] lg:text-3xl/[1.1] font-heading font-medium flex gap-3"
+                    className="flex gap-3 font-heading text-xl/[1.1] font-medium md:text-2xl/[1.1] lg:text-3xl/[1.1]"
                   >
                     {showSalePrice && selectedVariant?.compareAtPrice && (
                       <Money
                         withoutTrailingZeros
                         data={selectedVariant.compareAtPrice}
-                        className="text-label-save-background line-through"
+                        className="text-text-subtle line-through"
                       />
                     )}
 
@@ -260,6 +271,12 @@ let ProductInformation = ({
                       />
                     ) : null}
                   </div>
+                  <LowStockIndicator
+                    availableForSale={selectedVariant.availableForSale}
+                    stock={selectedVariant.quantityAvailable}
+                    threshold={theme.lowStockThreshold}
+                    progressColor={theme.lowStockProgressColor}
+                  />
                 </div>
                 <ProductVariants
                   product={product}
@@ -277,7 +294,7 @@ let ProductInformation = ({
                 requiresSellingPlan={product.requiresSellingPlan}
                 disabled={isLoading}
               />
-              <div className="grid grid-cols-[auto_1fr] gap-2 sm:w-(--width-button)">
+              <div className="grid grid-cols-[auto_1fr] gap-2.5 sm:w-(--width-button)">
                 <ProductQuantityInput
                   value={quantity}
                   disabled={isLoading}
@@ -326,13 +343,13 @@ let ProductInformation = ({
                 enabled={showBackInStockForm}
               />
               {(showShippingPolicy || showRefundPolicy) && (
-                <div className="flex flex-col gap-3 py-2 text-sm text-text-subtle">
+                <div className="flex flex-col gap-3 py-2 text-base leading-[1.6] text-text-primary">
                   {showShippingPolicy && shippingPolicy?.handle && (
                     <Link
                       to={`/policies/${shippingPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <span aria-hidden="true">▱</span>{" "}
+                      <Truck aria-hidden="true" className="size-6 shrink-0" />
                       {t("product.viewShippingPolicy")}
                     </Link>
                   )}
@@ -341,19 +358,17 @@ let ProductInformation = ({
                       to={`/policies/${refundPolicy.handle}`}
                       className="flex items-center gap-2 hover:text-text-primary"
                     >
-                      <span aria-hidden="true">↩</span>{" "}
+                      <Undo2 aria-hidden="true" className="size-6 shrink-0" />
                       {t("product.viewReturnsPolicy")}
                     </Link>
                   )}
                 </div>
               )}
-              <Link
-                to={`/products/${product.handle}`}
-                className="w-fit text-sm text-text-primary underline underline-offset-4"
-              >
-                {t("product.viewDetails")}
-              </Link>
-              <ProductShareLinks productUrl={productUrl} title={title} />
+              <ProductShareLinks
+                productUrl={productUrl}
+                title={title}
+                className="gap-2 pt-2 text-base [&>span]:mr-2"
+              />
             </div>
             {product?.metafield && <MetaFieldTable data={product?.metafield} />}
           </div>

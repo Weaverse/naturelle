@@ -36,7 +36,7 @@ export const MapContext = createContext<MapContextValue>({
 function MapFrame({ address }: { address: string }) {
   const { t } = useTranslation();
   return (
-    <div className="map-media relative min-h-90 min-w-0 overflow-hidden bg-background-subtle-1 md:min-h-140 md:flex-[1_1_var(--container-xl)]">
+    <div className="map-media relative min-h-90 min-w-0 overflow-hidden bg-background-subtle-1 md:min-h-140 md:flex-[1_1_var(--container-xl)] lg:min-h-180">
       <iframe
         key={address}
         title={t("map.storeLocation")}
@@ -95,12 +95,12 @@ export default function MapSection({
       >
         <div
           className={cn(
-            "flex min-h-140 flex-col md:flex-row",
+            "flex min-h-140 flex-col md:flex-row lg:min-h-180",
             mapPosition === "right" && "flex-col-reverse md:flex-row-reverse",
           )}
         >
           <MapFrame address={activeAddress} />
-          <div className="flex w-full min-w-0 bg-background-subtle-1 p-12 md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
+          <div className="flex w-full min-w-0 bg-background-subtle-1 p-12 shadow-[0_20px_20px_rgba(0,0,0,0.25)] md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
             <div className="flex w-full flex-col items-start gap-6">
               {heading && (
                 <Heading
@@ -114,7 +114,7 @@ export default function MapSection({
                 />
               )}
               {children && (
-                <div className="flex w-full max-w-page flex-col gap-5">
+                <div className="flex w-full max-w-page flex-col gap-6">
                   {children}
                 </div>
               )}
@@ -124,7 +124,7 @@ export default function MapSection({
                   target={buttonTarget}
                   variant="primary"
                   data-motion="fade-up"
-                  className="rounded-2xl"
+                  className="h-auto rounded-2xl px-5 py-4 text-sm font-medium"
                 >
                   {buttonText}
                 </Button>

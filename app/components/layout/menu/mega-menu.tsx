@@ -71,7 +71,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   <Menubar.Content
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
-                      "bg-header-bg shadow-md border-t border-border-subtle mt-1.5",
+                      "border-border-subtle border-t bg-header-bg shadow-md",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >
@@ -140,9 +140,11 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                 <Link
                   to={to}
                   prefetch="intent"
-                  className="line-clamp-1 w-fit border-foreground border-b pb-2 font-heading text-base uppercase"
+                  className="inline-block max-w-full border-foreground border-b pb-2 font-heading text-base uppercase"
                 >
-                  {resource?.title || title}
+                  <span className="line-clamp-1">
+                    {resource?.title || title}
+                  </span>
                 </Link>
                 <div className="mt-3 flex flex-col gap-2">
                   {products.map((product) => (

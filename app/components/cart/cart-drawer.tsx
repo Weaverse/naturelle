@@ -66,14 +66,11 @@ export function CartDrawer() {
       heading={t("cart.title")}
       isForm="cart"
     >
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col gap-4">
         {cart && cart.totalQuantity > 0 && (
-          <FreeShippingProgressBar
-            cost={cart.cost as CartCost}
-            className="px-5 pb-4"
-          />
+          <FreeShippingProgressBar cost={cart.cost as CartCost} />
         )}
-        <div className="flex min-h-0 flex-1 flex-col px-5">
+        <div className="flex min-h-0 flex-1 flex-col">
           {cartReady ? (
             <CartMain layout="aside" onClose={closeCart} />
           ) : (

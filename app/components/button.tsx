@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         primary: "btn-primary",
         secondary: "btn-secondary",
-        outline: "btn-outline !font-heading",
+        outline: "btn-outline",
         link: "text-text-primary underline-offset-4 hover:underline",
         decor: "relative",
         custom: "",

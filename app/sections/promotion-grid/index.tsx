@@ -111,7 +111,7 @@ export default function PromotionGrid({
     <Section
       ref={ref}
       {...rest}
-      containerClassName="grid grid-cols-1 gap-6 px-5 py-10 md:grid-cols-2 md:px-6 lg:px-10 lg:py-20"
+      containerClassName="grid grid-cols-1 gap-6 px-5 py-10 md:grid-cols-2 md:px-6 lg:gap-5 lg:px-10 lg:py-20"
     >
       {collections.map((collection, index) => (
         <Link
@@ -120,7 +120,7 @@ export default function PromotionGrid({
           aria-label={t("navigation.viewCollection", {
             collection: collection.title,
           })}
-          className="group relative aspect-video min-w-0 overflow-hidden rounded-xl bg-background-subtle-2 text-text-inverse"
+          className="group relative aspect-video min-w-0 overflow-hidden rounded-2xl bg-background-subtle-2 text-text-inverse"
           data-motion="fade-up"
         >
           {collection.image && (
@@ -143,7 +143,7 @@ export default function PromotionGrid({
                   size: "sm",
                   shape: "default",
                 }),
-                "mt-5 px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",
+                "mt-5 rounded-xl px-6 py-3 font-semibold",
               )}
             >
               {buttonText ?? "Explore Now"}

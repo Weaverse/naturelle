@@ -34,7 +34,7 @@ export default function FaqItem({
             prefetch="intent"
             className="group flex min-h-16 w-full items-center justify-between gap-6 py-2 text-left text-base text-text transition-opacity hover:opacity-70 md:min-h-20 md:text-lg"
           >
-            <span className="text-xl leading-[160%] tracking-[-0.2px]">
+            <span className="font-heading text-xl leading-[160%] tracking-[-0.2px]">
               {question}
             </span>
             <ArrowRight
@@ -44,7 +44,7 @@ export default function FaqItem({
             />
           </Link>
         ) : (
-          <p className="py-2 text-xl leading-[160%] tracking-[-0.2px] text-text">
+          <p className="py-2 font-heading text-xl leading-[160%] tracking-[-0.2px] text-text">
             {question}
           </p>
         ))}

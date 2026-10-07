@@ -77,7 +77,7 @@ export function VariantOption(props: VariantOptionProps) {
               aria-label={`${name}: ${value.value}`}
               aria-pressed={selectedOptionValue === value.value}
               className={clsx(
-                "size-12 cursor-pointer overflow-hidden rounded-lg border p-0.5 transition-colors",
+                "size-[60px] cursor-pointer overflow-hidden rounded-xl border p-0.5 transition-colors",
                 selectedOptionValue === value.value
                   ? "border-border"
                   : value.isAvailable
@@ -89,8 +89,8 @@ export function VariantOption(props: VariantOptionProps) {
               {value.image ? (
                 <Image
                   data={value.image}
-                  sizes="48px"
-                  className="h-full w-full rounded-md object-cover"
+                  sizes="60px"
+                  className="h-full w-full rounded-[10px] object-cover"
                 />
               ) : (
                 value.value
