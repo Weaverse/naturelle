@@ -4,6 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouteError } from "react-router";
 import { Logo } from "~/components/layout/logo";
 import { Link } from "~/components/link";
+import { useLockBodyScroll } from "~/hooks/use-lock-body-scroll";
 import { useShopMenu } from "~/hooks/use-menu-shop";
 import { cn } from "~/utils/cn";
 import { useIsHomePath } from "~/utils/locale";
@@ -74,6 +75,8 @@ export function Header() {
   const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
 
+  useLockBodyScroll(isUtilitySearchOpen);
+
   let scrolled = y >= 50;
 
   let enableTransparent = enableTransparentHeader && isHome && !routeError;
@@ -122,14 +125,14 @@ export function Header() {
       >
         <div
           className={cn(
-            "hidden w-full items-center justify-center px-6 py-4 md:flex",
+            "hidden w-full items-center justify-center px-6 py-4 desktop:flex lg:px-10",
             showTransparentHeader
               ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",
           )}
         >
-          <div className="mx-auto flex w-full max-w-page items-center justify-between px-6">
-            <div className="flex w-77.75 shrink-0 items-center gap-5 text-[13px] font-medium leading-normal">
+          <div className="mx-auto flex w-full max-w-page items-center justify-between">
+            <div className="flex min-w-0 flex-1 items-center gap-5 text-[13px] font-medium leading-normal">
               {storeLocatorText && (
                 <Link to={storeLocatorLink}>{storeLocatorText}</Link>
               )}
@@ -143,14 +146,24 @@ export function Header() {
               className="z-30 flex w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px]"
             />
 
-            <div className="flex w-77.75 shrink-0 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal">
+            <div
+              className={cn(
+                "flex min-w-0 flex-1 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal",
+                isUtilitySearchOpen && "pl-4.5",
+              )}
+            >
               {!isUtilitySearchOpen && (
                 <>
                   <HeaderCountrySelector />
                   <AccountLink variant="label" className="whitespace-nowrap" />
                 </>
               )}
-              <div className="flex items-center justify-end gap-3">
+              <div
+                className={cn(
+                  "flex min-w-0 items-center justify-end",
+                  isUtilitySearchOpen ? "flex-1 gap-4.5" : "gap-3",
+                )}
+              >
                 <SearchToggle
                   inline
                   compact
@@ -164,24 +177,26 @@ export function Header() {
         <div
           data-header-menu-row
           className={cn(
-            "z-40 flex items-center justify-center gap-2.5 md:h-18",
+            "z-40 flex h-nav items-center justify-center gap-2.5",
             showTransparentHeader
               ? "bg-transparent"
-              : "bg-header-bg md:bg-transparent",
+              : "bg-header-bg desktop:bg-transparent",
             variants({ width: headerWidth, padding: headerWidth }),
           )}
         >
           {typeMenuHeader === "drawer" ? (
             <HeaderMenuDrawer menu={headerMenu} />
           ) : (
-            <HeaderMenuDrawer menu={headerMenu} className="block md:hidden" />
+            <HeaderMenuDrawer
+              menu={headerMenu}
+              className="block desktop:hidden"
+            />
           )}
           <div className="shrink-0">
-            <Logo className="z-30 flex py-1 sm:py-2.5 justify-start md:hidden" />
+            <Logo className="z-30 flex py-1 sm:py-2.5 justify-start desktop:hidden" />
           </div>
           {typeMenuHeader === "mega" && <MegaMenu menu={headerMenu} />}
-          <div className="z-30 flex min-w-0 flex-1 items-center justify-end gap-2 md:hidden">
-            <SearchToggle inline />
+          <div className="z-30 flex min-w-0 flex-1 items-center justify-end gap-2 desktop:hidden">
             <AccountLink />
             <CartDrawerTrigger />
           </div>

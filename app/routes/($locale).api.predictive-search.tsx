@@ -11,9 +11,10 @@ import type {
 } from "storefront-api.generated";
 import { PRODUCT_CARD_FRAGMENT } from "~/graphql/fragments";
 import { NO_PREDICTIVE_SEARCH_RESULTS } from "~/hooks/use-predictive-search";
-import type {
-  NormalizedPredictiveSearch,
-  NormalizedPredictiveSearchResults,
+import {
+  type NormalizedPredictiveSearch,
+  type NormalizedPredictiveSearchResults,
+  POPULAR_PRODUCTS_LIMIT,
 } from "~/types/search-types";
 
 type PredictiveSearchResultItem =
@@ -95,7 +96,7 @@ async function fetchPredictiveSearchResults({
         {
           variables: {
             country: context.storefront.i18n.country,
-            first: 4,
+            first: POPULAR_PRODUCTS_LIMIT,
             language: context.storefront.i18n.language,
           },
         },

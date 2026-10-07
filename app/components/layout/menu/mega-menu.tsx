@@ -27,7 +27,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
         onValueChange={setValue}
         onMouseLeave={() => setValue(null)}
       >
-        <nav className="z-30 hidden h-full grow items-center justify-center gap-9 md:flex">
+        <nav className="z-30 hidden h-full grow items-center justify-center gap-9 desktop:flex">
           {menuItems.map((menuItem) => {
             let { id, items = [], title, to } = menuItem;
             let level = getMaxDepth(menuItem);
