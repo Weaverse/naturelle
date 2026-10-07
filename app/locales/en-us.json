@@ -8,6 +8,7 @@
     "openSearch": "Open search",
     "closeSearch": "Close search",
     "clearSearch": "Clear search",
+    "backToMenu": "Back to menu",
     "close": "Close"
   },
   "actions": {
@@ -37,7 +38,6 @@
     "pages": "Pages",
     "articles": "Articles",
     "viewAll": "View all results",
-    "noResults": "No results for “{{term}}”",
     "resultsFor": "Results for “{{term}}”",
     "loadPrevious": "Load previous products",
     "loadMore": "Load more",

@@ -1,5 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 import { useTranslation } from "@weaverse/hydrogen";
+import { AnimatePresence, motion } from "framer-motion";
+import { type ReactNode, useState } from "react";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import {
@@ -12,18 +14,62 @@ import { Drawer, useDrawer } from "../../drawer";
 import { IconCaret, IconListMenu } from "../../icon";
 import { SearchToggle } from "../search-toggle";
 
-const menuHeadingClass =
+const headingClass =
   "font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-subtle uppercase hover:text-text-primary";
+const layoutClass =
+  "overflow-auto border-t border-border-subtle px-6 pt-8 pb-16";
+type MenuType = "brand" | "collection" | "multi" | "single" | "link";
+
+const mobileContentVariants = {
+  enter: (direction: number) => ({ opacity: 0, x: direction > 0 ? 24 : -24 }),
+  center: { opacity: 1, x: 0 },
+  exit: (direction: number) => ({ opacity: 0, x: direction > 0 ? -24 : 24 }),
+};
+
+function menuType(item: SingleMenuItem): MenuType {
+  const level = getMaxDepth(item);
+  if (item.items.some((child) => child.resource?.__typename === "Collection")) {
+    return "collection";
+  }
+  if (
+    item.items.length &&
+    item.items.every(
+      (child) =>
+        child.resource?.image && child.resource.__typename !== "Collection",
+    )
+  ) {
+    return "brand";
+  }
+  if (level > 2) {
+    return "multi";
+  }
+  if (level === 2) {
+    return "single";
+  }
+  return "link";
+}
 
 export function HeaderMenuDrawer({
   menu,
   className,
 }: {
-  menu?: EnhancedMenu | null | undefined;
+  menu?: EnhancedMenu | null;
   className?: string;
 }) {
   const { t } = useTranslation();
-  let { isOpen: showMenu, openDrawer, closeDrawer } = useDrawer();
+  const { isOpen, openDrawer, closeDrawer } = useDrawer();
+  const [active, setActive] = useState<SingleMenuItem | null>(null);
+  const [direction, setDirection] = useState(1);
+
+  const close = () => {
+    setActive(null);
+    closeDrawer();
+  };
+  const back = () => {
+    setDirection(-1);
+    setActive(null);
+  };
+
   return (
     <nav
       className={cn(
@@ -36,423 +82,356 @@ export function HeaderMenuDrawer({
           type="button"
           aria-label={t("accessibility.openMenu")}
           className="flex size-6 shrink-0 items-center justify-center text-left"
-          onClick={openDrawer}
+          onClick={() => {
+            setActive(null);
+            setDirection(1);
+            openDrawer();
+          }}
         >
           <IconListMenu className="size-6" />
         </button>
-        <SearchToggle isOpenDrawerHearder={true} className="md:hidden" />
+        <SearchToggle isOpenDrawerHeader className="desktop:hidden" />
         <Drawer
-          open={showMenu}
-          onClose={closeDrawer}
+          open={isOpen}
+          onClose={close}
+          onBack={back}
           openFrom="left"
-          heading={t("navigation.menu")}
+          heading={active ? active.title : t("navigation.menu")}
           isForm="menu"
+          isBackMenu={Boolean(active)}
         >
-          <DrawerMenu menu={menu} closeDrawer={closeDrawer} />
+          <MobileMenu
+            menu={menu}
+            active={active}
+            direction={direction}
+            closeDrawer={close}
+            openMenu={(item) => {
+              setDirection(1);
+              setActive(item);
+            }}
+          />
         </Drawer>
       </div>
     </nav>
   );
 }
 
-function DrawerMenu({
+function MobileMenu({
   menu,
+  active,
+  direction,
   closeDrawer,
+  openMenu,
 }: {
-  menu: EnhancedMenu | null | undefined;
+  menu?: EnhancedMenu | null;
+  active: SingleMenuItem | null;
+  direction: number;
   closeDrawer: () => void;
+  openMenu: (item: SingleMenuItem) => void;
 }) {
-  let items = menu?.items as unknown as SingleMenuItem[];
+  const items = (menu?.items as unknown as SingleMenuItem[]) ?? [];
   return (
-    <nav className="flex flex-col gap-5 text-text-subtle overflow-auto border-t border-border-subtle px-6 pb-16 pt-8">
-      {items.map((item, id) => {
-        let { title, ...rest } = item;
-        let level = getMaxDepth(item);
-        let isCollectionMenu = item.items.some(
-          (childItem) => childItem.resource?.__typename === "Collection",
-        );
-        let isBrandMenu =
-          item.items.length > 0 &&
-          item.items.every(
-            (childItem) =>
-              childItem.resource?.image &&
-              childItem.resource.__typename !== "Collection",
-          );
-        let Comp: React.FC<SingleMenuItem & { closeDrawer: () => void }> =
-          isCollectionMenu
-            ? CollectionMenu
-            : isBrandMenu
-              ? BrandMenu
-              : level > 2
-                ? MultiMenu
-                : level === 2
-                  ? SingleMenu
-                  : ItemHeader;
-        return (
-          <Comp key={id} title={title} closeDrawer={closeDrawer} {...rest} />
-        );
-      })}
+    <nav className={layoutClass}>
+      <AnimatePresence custom={direction} initial={false} mode="wait">
+        <motion.div
+          key={active?.id ?? "main-menu"}
+          custom={direction}
+          variants={mobileContentVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.2, ease: "easeOut" }}
+        >
+          {active ? (
+            <MenuContent item={active} onNavigate={closeDrawer} />
+          ) : (
+            <div className="flex flex-col gap-5 text-text-subtle">
+              {items.map((item) =>
+                menuType(item) === "link" ? (
+                  <MenuLink
+                    key={item.id}
+                    item={item}
+                    closeDrawer={closeDrawer}
+                  />
+                ) : (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="flex w-full items-center justify-between text-left"
+                    onClick={() => openMenu(item)}
+                  >
+                    <span className={headingClass}>{item.title}</span>
+                    <IconCaret direction="right" className="size-4" />
+                  </button>
+                ),
+              )}
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </nav>
   );
 }
 
-function ItemHeader({
-  title,
-  to,
+function MenuLink({
+  item,
   closeDrawer,
 }: {
-  title: string;
-  to: string;
+  item: SingleMenuItem;
   closeDrawer: () => void;
 }) {
   return (
     <Link
-      to={to}
+      to={item.to}
       onClick={closeDrawer}
       className={({ isActive }) =>
         cn(
-          "flex items-center justify-between ",
-          menuHeadingClass,
+          "flex items-center justify-between",
+          headingClass,
           isActive && "text-text-primary",
-          isActive && to !== "/" && "underline",
+          isActive && item.to !== "/" && "underline",
         )
       }
     >
-      {title}
+      {item.title}
     </Link>
   );
 }
 
-function MultiMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
-  const {
-    isOpen: isMenuOpen,
-    openDrawer: openMenu,
-    closeDrawer: closeMenu,
-  } = useDrawer();
-  let { title, items, to, closeDrawer } = props;
-  const handleCloseAll = () => {
-    closeMenu();
-    closeDrawer();
-  };
-  let content = (
-    <Drawer
-      open={isMenuOpen}
-      onClose={closeMenu}
-      openFrom="left"
-      heading={title}
-      isForm="menu"
-      isBackMenu
-      // bordered
+function MenuContent({
+  item,
+  onNavigate,
+}: {
+  item: SingleMenuItem;
+  onNavigate: () => void;
+}) {
+  const type = menuType(item);
+  if (type === "collection") {
+    return <CollectionContent items={item.items} onNavigate={onNavigate} />;
+  }
+  if (type === "brand") {
+    return <BrandContent items={item.items} onNavigate={onNavigate} />;
+  }
+  if (type === "multi") {
+    return <MultiContent items={item.items} onNavigate={onNavigate} />;
+  }
+  return <SingleContent items={item.items} onNavigate={onNavigate} />;
+}
+
+function AccordionPanel({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      inert={!open}
+      className={cn(
+        "grid transition-[grid-template-rows] duration-300",
+        open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+      )}
     >
-      <div className="flex flex-col gap-5 overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
-        {items.map((item, id) => (
-          <div key={id}>
-            <Disclosure>
-              {({ open }) => (
-                <div className="contents">
-                  <Disclosure.Button className="w-full text-left">
-                    <div className="flex w-full justify-between">
-                      {item.items.length > 0 ? (
-                        <span className={menuHeadingClass}>{item.title}</span>
-                      ) : (
+      <div className="min-h-0 overflow-hidden">
+        <Disclosure.Panel static>{children}</Disclosure.Panel>
+      </div>
+    </div>
+  );
+}
+
+function MultiContent({
+  items,
+  onNavigate,
+}: {
+  items: SingleMenuItem[];
+  onNavigate: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-5">
+      {items.map((item) =>
+        item.items.length ? (
+          <Disclosure key={item.id}>
+            {({ open }) => (
+              <div>
+                <Disclosure.Button className="flex w-full justify-between text-left">
+                  <span className={headingClass}>{item.title}</span>
+                  <IconCaret
+                    className="size-4"
+                    direction={open ? "down" : "right"}
+                  />
+                </Disclosure.Button>
+                <AccordionPanel open={open}>
+                  <ul className="flex flex-col gap-4 pt-5 desktop:max-h-48 desktop:overflow-y-auto">
+                    {item.items.map((subItem) => (
+                      <li key={subItem.id} className="leading-6">
                         <Link
-                          to={item.to}
+                          to={subItem.to}
+                          onClick={onNavigate}
                           prefetch="intent"
-                          onClick={handleCloseAll}
                           className={({ isActive }) =>
-                            cn(
-                              "font-heading text-base uppercase text-text-subtle hover:text-text-primary",
-                              isActive && "text-text-primary underline",
-                            )
+                            isActive
+                              ? "text-text-primary underline"
+                              : "text-text-subtle"
                           }
                         >
-                          {item.title}
+                          <span className="font-body hover:text-text-primary text-base font-normal">
+                            {subItem.title}
+                          </span>
                         </Link>
-                      )}
-                      {item.items.length > 0 && (
-                        <span className="">
-                          <IconCaret
-                            className="h-4 w-4"
-                            direction={open ? "down" : "right"}
-                          />
-                        </span>
-                      )}
-                    </div>
-                  </Disclosure.Button>
-                  {item?.items?.length > 0 ? (
-                    <div
-                      className={`${
-                        open
-                          ? "max-h-48 overflow-y-auto"
-                          : "max-h-0 overflow-hidden"
-                      } transition-[max-height] duration-300`}
-                    >
-                      <Disclosure.Panel static>
-                        <ul className="flex flex-col gap-4 pt-5">
-                          {item.items.map((subItem, ind) => (
-                            <li key={ind} className="leading-6">
-                              <Link
-                                key={ind}
-                                to={subItem.to}
-                                onClick={handleCloseAll}
-                                prefetch="intent"
-                                className={({ isActive }) =>
-                                  isActive
-                                    ? "text-text-primary underline"
-                                    : "text-text-subtle"
-                                }
-                              >
-                                <span className="font-body hover:text-text-primary text-base font-normal">
-                                  {subItem.title}
-                                </span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </Disclosure.Panel>
-                    </div>
-                  ) : null}
-                </div>
-              )}
-            </Disclosure>
-          </div>
-        ))}
-      </div>
-    </Drawer>
-  );
-  return (
-    <div className="">
-      <button
-        type="button"
-        className="flex w-full items-center justify-between text-left"
-        onClick={openMenu}
-      >
-        <span className={menuHeadingClass}>{title}</span>
-        <IconCaret direction="right" className="h-4 w-4" />
-      </button>
-      {content}
-    </div>
-  );
-}
-
-function CollectionMenu({
-  title,
-  items,
-  closeDrawer,
-}: SingleMenuItem & { closeDrawer: () => void }) {
-  const {
-    isOpen: isMenuOpen,
-    openDrawer: openMenu,
-    closeDrawer: closeMenu,
-  } = useDrawer();
-  const handleCloseAll = () => {
-    closeMenu();
-    closeDrawer();
-  };
-  const collectionItems = items.filter(
-    (item) => item.resource?.__typename === "Collection",
-  );
-  let content = (
-    <Drawer
-      open={isMenuOpen}
-      onClose={closeMenu}
-      openFrom="left"
-      heading={title}
-      isForm="menu"
-      isBackMenu
-      // bordered
-    >
-      <div className="flex flex-col gap-5 overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
-        {collectionItems.map((item) => (
-          <Disclosure key={item.id}>
-            {({ open }) => {
-              const products = item.items;
-              return (
-                <div>
-                  {products.length > 0 ? (
-                    <Disclosure.Button className="flex w-full items-center justify-between text-left">
-                      <span className={menuHeadingClass}>
-                        {item.resource?.title || item.title}
-                      </span>
-                      <IconCaret
-                        className="size-4 shrink-0"
-                        direction={open ? "down" : "right"}
-                      />
-                    </Disclosure.Button>
-                  ) : (
-                    <Link
-                      to={item.to}
-                      prefetch="intent"
-                      onClick={handleCloseAll}
-                      className="block font-heading text-base uppercase text-text-subtle hover:text-text-primary"
-                    >
-                      {item.resource?.title || item.title}
-                    </Link>
-                  )}
-                  {products.length > 0 && (
-                    <Disclosure.Panel>
-                      <ul className="flex flex-col gap-4 pt-5">
-                        {products.map((product) => (
-                          <li key={product.id}>
-                            <Link
-                              to={product.to}
-                              prefetch="intent"
-                              onClick={handleCloseAll}
-                              className="block text-base text-text-subtle hover:text-text-primary"
-                            >
-                              {product.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Disclosure.Panel>
-                  )}
-                </div>
-              );
-            }}
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionPanel>
+              </div>
+            )}
           </Disclosure>
-        ))}
-      </div>
-    </Drawer>
-  );
-  return (
-    <div className="">
-      <button
-        type="button"
-        className="flex w-full items-center justify-between text-left"
-        onClick={openMenu}
-      >
-        <span className={menuHeadingClass}>{title}</span>
-        <IconCaret direction="right" className="h-4 w-4" />
-      </button>
-      {content}
-    </div>
-  );
-}
-
-function BrandMenu({
-  title,
-  items,
-  closeDrawer,
-}: SingleMenuItem & { closeDrawer: () => void }) {
-  const {
-    isOpen: isMenuOpen,
-    openDrawer: openMenu,
-    closeDrawer: closeMenu,
-  } = useDrawer();
-  const handleCloseAll = () => {
-    closeMenu();
-    closeDrawer();
-  };
-  const uniqueItems = items.filter(
-    (item, index, allItems) =>
-      allItems.findIndex(
-        (candidate) => candidate.to === item.to || candidate.id === item.id,
-      ) === index,
-  );
-  const content = (
-    <Drawer
-      open={isMenuOpen}
-      onClose={closeMenu}
-      openFrom="left"
-      heading={title}
-      isForm="menu"
-      isBackMenu
-    >
-      <div className="grid grid-cols-1 overflow-auto border-t border-border-subtle px-6 pt-5 pb-16">
-        {uniqueItems.map((item) => (
+        ) : (
           <Link
             key={item.id}
             to={item.to}
             prefetch="intent"
-            onClick={handleCloseAll}
-            className="group/brand relative mb-3 block h-[188px] max-h-[188px] w-full shrink-0 overflow-hidden rounded-xl bg-background-subtle-1 last:mb-0"
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              cn(
+                "font-heading text-base uppercase text-text-subtle hover:text-text-primary",
+                isActive && "text-text-primary underline",
+              )
+            }
           >
-            <Image
-              data={item.resource?.image}
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="h-full w-full object-cover transition-transform duration-300 group-hover/brand:scale-[1.03]"
-              width={600}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-            <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse">
-              {item.resource?.title || item.title}
-            </span>
+            {item.title}
           </Link>
-        ))}
-      </div>
-    </Drawer>
-  );
-
-  return (
-    <div>
-      <button
-        type="button"
-        className="flex w-full items-center justify-between  text-left"
-        onClick={openMenu}
-      >
-        <span className={menuHeadingClass}>{title}</span>
-        <IconCaret direction="right" className="size-4" />
-      </button>
-      {content}
+        ),
+      )}
     </div>
   );
 }
 
-function SingleMenu(props: SingleMenuItem & { closeDrawer: () => void }) {
-  const {
-    isOpen: isMenuOpen,
-    openDrawer: openMenu,
-    closeDrawer: closeMenu,
-  } = useDrawer();
-  let { title, items, to, closeDrawer } = props;
-  const handleCloseAll = () => {
-    closeMenu();
-    closeDrawer();
-  };
-  let content = (
-    <Drawer
-      open={isMenuOpen}
-      onClose={closeMenu}
-      openFrom="left"
-      heading={title}
-      isForm="menu"
-      isBackMenu
-      // bordered
-    >
-      <div className="grid overflow-auto px-6 pb-16 pt-8 border-t border-border-subtle">
-        <ul className="space-y-3 pb-3 pt-2">
-          {items.map((subItem, ind) => (
-            <li key={ind} className="leading-6" onClick={handleCloseAll}>
-              <Link
-                key={ind}
-                to={subItem.to}
-                prefetch="intent"
-                className={({ isActive }) =>
-                  isActive ? "text-text-primary underline" : "text-text-subtle"
-                }
-              >
-                <span className="font-body hover:text-text-primary text-base font-normal">
-                  {subItem.title}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </Drawer>
+function CollectionContent({
+  items,
+  onNavigate,
+}: {
+  items: SingleMenuItem[];
+  onNavigate: () => void;
+}) {
+  const collections = items.filter(
+    (item) => item.resource?.__typename === "Collection",
   );
   return (
-    <div className="">
-      <button
-        type="button"
-        className="flex w-full items-center justify-between  text-left"
-        onClick={openMenu}
-      >
-        <span className={menuHeadingClass}>{title}</span>
-        <IconCaret direction="right" className="h-4 w-4" />
-      </button>
-      {content}
+    <div className="flex flex-col gap-5">
+      {collections.map((item) =>
+        item.items.length ? (
+          <Disclosure key={item.id}>
+            {({ open }) => (
+              <div>
+                <Disclosure.Button className="flex w-full items-center justify-between text-left">
+                  <span className={headingClass}>
+                    {item.resource?.title || item.title}
+                  </span>
+                  <IconCaret
+                    className="size-4 shrink-0"
+                    direction={open ? "down" : "right"}
+                  />
+                </Disclosure.Button>
+                <AccordionPanel open={open}>
+                  <ul className="flex flex-col gap-4 pt-5">
+                    {item.items.map((product) => (
+                      <li key={product.id}>
+                        <Link
+                          to={product.to}
+                          prefetch="intent"
+                          onClick={onNavigate}
+                          className="block text-base text-text-subtle hover:text-text-primary"
+                        >
+                          {product.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionPanel>
+              </div>
+            )}
+          </Disclosure>
+        ) : (
+          <Link
+            key={item.id}
+            to={item.to}
+            prefetch="intent"
+            onClick={onNavigate}
+            className="block font-heading text-base uppercase text-text-subtle hover:text-text-primary"
+          >
+            {item.resource?.title || item.title}
+          </Link>
+        ),
+      )}
     </div>
+  );
+}
+
+function BrandContent({
+  items,
+  onNavigate,
+}: {
+  items: SingleMenuItem[];
+  onNavigate: () => void;
+}) {
+  const uniqueItems = items.filter(
+    (item, index, all) =>
+      all.findIndex(
+        (candidate) => candidate.to === item.to || candidate.id === item.id,
+      ) === index,
+  );
+  return (
+    <div className="grid grid-cols-1">
+      {uniqueItems.map((item) => (
+        <Link
+          key={item.id}
+          to={item.to}
+          prefetch="intent"
+          onClick={onNavigate}
+          className="group/brand relative mb-3 block h-[188px] max-h-[188px] w-full shrink-0 overflow-hidden rounded-xl bg-background-subtle-1 last:mb-0"
+        >
+          <Image
+            data={item.resource?.image}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover/brand:scale-[1.03]"
+            width={600}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+          <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse">
+            {item.resource?.title || item.title}
+          </span>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function SingleContent({
+  items,
+  onNavigate,
+}: {
+  items: SingleMenuItem[];
+  onNavigate: () => void;
+}) {
+  return (
+    <ul className="space-y-3">
+      {items.map((item) => (
+        <li key={item.id} className="leading-6">
+          <Link
+            to={item.to}
+            prefetch="intent"
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              isActive ? "text-text-primary underline" : "text-text-subtle"
+            }
+          >
+            <span className="font-body hover:text-text-primary text-base font-normal">
+              {item.title}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

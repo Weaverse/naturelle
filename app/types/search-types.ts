@@ -7,6 +7,8 @@ import type {
 } from "storefront-api.generated";
 
 export const PREDICTIVE_SEARCH_FETCHER_KEY = "predictive-search";
+export const PREDICTIVE_SEARCH_LIMIT = 8;
+export const POPULAR_PRODUCTS_LIMIT = 4;
 
 export type PredictiveSearchResponse = {
   searchResults?: NormalizedPredictiveSearch;
@@ -15,6 +17,7 @@ export type PredictiveSearchResponse = {
 };
 
 export type UseSearchReturn = NormalizedPredictiveSearch & {
+  isLoading: boolean;
   searchInputRef: React.MutableRefObject<HTMLInputElement | null>;
   searchTerm: React.MutableRefObject<string>;
 };

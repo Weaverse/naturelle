@@ -12,6 +12,7 @@
   --breakpoint-*: initial;
   --breakpoint-sm: 26.875rem;
   --breakpoint-md: 48rem;
+  --breakpoint-desktop: 60rem;
   --breakpoint-lg: 90rem;
 
   /* Container */
