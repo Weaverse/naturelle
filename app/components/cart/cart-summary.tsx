@@ -648,12 +648,12 @@ function PageDiscountForm({
           value={code}
           onChange={(event) => onCodeChange(event.target.value)}
           placeholder={t("cart.enterCode")}
-          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-3 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
+          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-3 py-2 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
         />
         <button
           type="submit"
           disabled={!code.trim() || isSubmitting}
-          className="rounded-xl bg-text-primary px-6 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:opacity-50"
+          className="rounded-xl bg-text-primary px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:cursor-not-allowed disabled:opacity-50"
         >
           {t("cart.apply")}
         </button>

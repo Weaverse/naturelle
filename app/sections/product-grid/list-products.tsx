@@ -179,9 +179,8 @@ export default function ProductGridList({
                 <span
                   className={buttonVariants({
                     variant: "secondary",
-                    size: "sm",
                     className:
-                      "mt-6 gap-3 rounded-xl px-5 group-hover:translate-y-[-2px]",
+                      "gap-3 rounded-xl group-hover:translate-y-[-2px]",
                   })}
                 >
                   {collectionButtonText}

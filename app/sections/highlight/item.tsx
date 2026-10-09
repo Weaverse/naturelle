@@ -47,7 +47,13 @@ const HighlightItem = ({
       />
       {React.Children.map(children, (child, index) => (
         <React.Fragment key={child?.key ?? index}>
-          <div className="flex w-full items-center justify-center text-center">
+          <div
+            className={clsx(
+              "flex w-full items-center justify-center text-center",
+              index === 0 &&
+                "md:[&_.heading]:grid md:[&_.heading]:min-h-[2lh] md:[&_.heading]:content-center",
+            )}
+          >
             {child}
           </div>
           {index < (children?.length ?? 0) - 1 && (

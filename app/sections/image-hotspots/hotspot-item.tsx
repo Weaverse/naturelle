@@ -12,7 +12,7 @@ import {
   useTranslation,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { type CSSProperties, type RefObject, useContext } from "react";
+import { type RefObject, useContext } from "react";
 import { createPortal } from "react-dom";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
@@ -100,26 +100,20 @@ let HotspotsItem = ({
           product: loaderData?.product?.title ?? t("product.exampleTitle"),
         })}
         aria-pressed={isActive}
-        className={clsx(
-          "absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full",
-          isActive && "ring-2 ring-background-basic ring-offset-2",
-        )}
-        style={
-          {
-            top: `${offsetY}%`,
-            left: `${offsetX}%`,
-            "--translate-x-ratio": offsetX > 50 ? 1 : -1,
-            "--translate-y-ratio": offsetY > 50 ? 1 : -1,
-            "--spot-size": `${iconSize + 16}px`,
-          } as CSSProperties
-        }
+        className="absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full"
+        style={{ top: `${offsetY}%`, left: `${offsetX}%` }}
         onClick={() => selectItem(itemIndex)}
       >
         <span
           className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-700 opacity-75"
           style={{ animationDuration: "1500ms" }}
         />
-        <span className="relative inline-flex rounded-full bg-background-basic p-2">
+        <span
+          className={clsx(
+            "relative inline-flex rounded-full border border-background-basic p-3.5 text-background-basic",
+            isActive && "bg-background-basic/20",
+          )}
+        >
           <Icon style={{ width: iconSize, height: iconSize }} />
         </span>
       </button>
@@ -161,7 +155,7 @@ let HotspotsItem = ({
             )}
             {paragraph && (
               <div
-                className="relative z-10 mt-6 max-w-[626px] text-center text-sm leading-relaxed text-text-inverse lg:mt-10 lg:text-base"
+                className="relative z-10 mt-6 max-w-100 text-center text-sm leading-relaxed text-text-inverse lg:mt-10 lg:text-base"
                 dangerouslySetInnerHTML={{ __html: paragraph }}
               />
             )}
@@ -238,7 +232,7 @@ export const schema = createSchema({
           name: "iconSize",
           label: "Icon size",
           configs: {
-            min: 16,
+            min: 6,
             max: 32,
             step: 2,
             unit: "px",

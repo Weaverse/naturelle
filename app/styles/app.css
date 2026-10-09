@@ -184,6 +184,11 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  button,
+  a {
+    @apply cursor-pointer;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }

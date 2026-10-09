@@ -142,7 +142,7 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        "flex min-w-0 w-full flex-col gap-5 rounded-[var(--pcard-border-radius)] bg-background px-3 pt-3 pb-5 transition-[border-radius] duration-300 hover:rounded-none",
+        "flex min-w-0 w-full flex-col gap-5 rounded-(--pcard-border-radius) bg-background px-3 pt-3 pb-5",
         className,
       )}
       style={
