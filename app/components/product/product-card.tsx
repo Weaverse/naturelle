@@ -221,7 +221,7 @@ export function ProductCard({
           to={`/products/${product.handle}`}
           onClick={onClick}
           prefetch="intent"
-          className="line-clamp-2 text-base font-semibold leading-[160%] tracking-[-0.16px]"
+          className="line-clamp-1 text-base font-semibold leading-[160%] tracking-[-0.16px]"
         >
           {product.title}
         </Link>

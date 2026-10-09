@@ -38,7 +38,8 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
       <PredictiveSearchForm
         className={cn(
           "predictive-search-form",
-          inline && "predictive-search-form--inline",
+          inline &&
+            "predictive-search-form--inline animate-search-reveal motion-reduce:animate-none",
         )}
       >
         {({ fetchResults, inputRef }) => (

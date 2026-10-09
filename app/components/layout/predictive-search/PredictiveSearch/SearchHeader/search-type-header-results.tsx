@@ -67,11 +67,11 @@ export function SearchTypeHeaderResults({
       <div
         data-predictive-search-results
         className={cn(
-          "z-50 animate-fade-in bg-background-basic text-text shadow-header [--fade-in-duration:150ms]",
+          "z-50 bg-background-basic text-text shadow-header motion-reduce:animate-none",
           inline && panelTop === 0 && "invisible",
           inline
-            ? "fixed inset-x-0 w-screen border-y border-border-subtle"
-            : "absolute left-1/2 top-24 w-[min(900px,calc(100vw-48px))] -translate-x-1/2",
+            ? "fixed inset-x-0 w-screen animate-search-dropdown border-y border-border-subtle"
+            : "absolute left-1/2 top-24 w-[min(900px,calc(100vw-48px))] -translate-x-1/2 animate-fade-in [--fade-in-duration:150ms]",
         )}
         style={inline ? { top: panelTop } : undefined}
       >
@@ -192,7 +192,7 @@ function SearchProductCard({
       <ProductCard
         product={item.product}
         className="h-full"
-        enableQuickView
+        enableQuickView={false}
         showBadge
         showPrice
         showStar

@@ -15,7 +15,7 @@ query BlogSingle(
     $blogHandle: String!
   ) @inContext(language: $language) {
     blog(handle: $blogHandle) {
-      articles(first: 8) {
+      articles(first: 4) {
         nodes {
           ...Article
         }

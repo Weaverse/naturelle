@@ -5,7 +5,7 @@ import {
   useTranslation,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import React, { type RefObject, useState } from "react";
+import React, { type CSSProperties, type RefObject, useState } from "react";
 import { Autoplay } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
@@ -19,6 +19,9 @@ type InstagramData = {
   handle: string;
   profileUrl?: string;
   imagesPerRow?: number;
+  imageBorderColor?: string;
+  hoverOverlayColor?: string;
+  hoverOverlayOpacity?: number;
   speed: number;
   autoScroll: boolean;
   visibleOnMobile: boolean;
@@ -42,6 +45,9 @@ const Instagram = ({
     handle,
     profileUrl,
     imagesPerRow = 6,
+    imageBorderColor = "#443E400D",
+    hoverOverlayColor = "#554612",
+    hoverOverlayOpacity = 50,
     speed,
     autoScroll,
     visibleOnMobile,
@@ -85,11 +91,16 @@ const Instagram = ({
       {handle}
     </span>
   );
+  const sectionStyle = {
+    "--instagram-image-border-color": imageBorderColor,
+    "--instagram-hover-overlay-background": `color-mix(in srgb, ${hoverOverlayColor} ${hoverOverlayOpacity}%, transparent)`,
+  } as CSSProperties;
 
   return (
     <section
       ref={scope}
       {...rest}
+      style={sectionStyle}
       className={clsx(
         "flex h-full w-full items-center justify-center bg-background-basic",
         !visibleOnMobile && "hidden sm:flex",
@@ -102,7 +113,7 @@ const Instagram = ({
         )}
       >
         {legacyContent.length > 0 ? (
-          <div className="flex w-full flex-col items-center justify-center gap-2 text-center">
+          <div className="flex w-full flex-col items-center justify-center gap-2 text-center [&_.paragraph]:max-w-240!">
             {legacyContent}
           </div>
         ) : (
@@ -136,11 +147,8 @@ const Instagram = ({
             onSlidesUpdated={(swiper) => setShowArrows(!swiper.isLocked)}
             onLock={() => setShowArrows(false)}
             onUnlock={() => setShowArrows(true)}
-            loop={false}
-            rewind={showArrows}
-            autoplay={
-              autoScroll && showArrows ? { delay: speed * 1000 } : false
-            }
+            loop={true}
+            autoplay={autoScroll ? { delay: speed * 1000 } : false}
             watchOverflow={true}
             slidesPerView={mobileImagesPerRow}
             spaceBetween={16}
@@ -149,7 +157,7 @@ const Instagram = ({
               1440: { slidesPerView: desktopImagesPerRow, spaceBetween: 20 },
             }}
             modules={[Autoplay]}
-            className="min-w-0 w-full"
+            className="min-w-0 w-full [&_.swiper-wrapper]:items-center [&_.swiper-wrapper]:justify-center-safe [&_.swiper-wrapper]:self-stretch"
           >
             {instagramItems.map((child, index) => (
               <SwiperSlide key={index} className="min-w-0">
@@ -231,11 +239,30 @@ export const schema = createSchema({
           configs: { min: 1, max: 8, step: 1 },
         },
         {
+          type: "color",
+          name: "imageBorderColor",
+          label: "Image border color",
+          defaultValue: "#443E400D",
+        },
+        {
+          type: "color",
+          name: "hoverOverlayColor",
+          label: "Hover overlay color",
+          defaultValue: "#554612",
+        },
+        {
+          type: "range",
+          name: "hoverOverlayOpacity",
+          label: "Hover overlay opacity",
+          defaultValue: 50,
+          configs: { min: 0, max: 100, step: 1, unit: "%" },
+        },
+        {
           type: "range",
           name: "speed",
           label: "Scrolling speed",
           defaultValue: 70,
-          configs: { min: 10, max: 100, step: 5, unit: "s" },
+          configs: { min: 1, max: 100, step: 1, unit: "s" },
           condition: "autoScroll.eq.true",
         },
         {
@@ -258,6 +285,9 @@ export const schema = createSchema({
     heading: "Instagram",
     handle: "@naturelle",
     profileUrl: "https://www.instagram.com/",
+    imageBorderColor: "#443E400D",
+    hoverOverlayColor: "#554612",
+    hoverOverlayOpacity: 50,
     children: Array.from({ length: 6 }, () => ({ type: "instagram--item" })),
   },
 });

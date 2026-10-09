@@ -3345,7 +3345,7 @@ export type SwatchesQuery = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\nquery BlogSingle(\n    $language: LanguageCode\n    $blogHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      articles(first: 8) {\n        nodes {\n          ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    tags\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
+  '#graphql\nquery BlogSingle(\n    $language: LanguageCode\n    $blogHandle: String!\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      articles(first: 4) {\n        nodes {\n          ...Article\n        }\n      }\n    }\n  }\n  #graphql\n  fragment Article on Article {\n    id\n    title\n    handle\n    tags\n    publishedAt\n    excerpt\n    excerptHtml\n    contentHtml\n    author: authorV2 {\n      name\n    }\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    blog {\n      handle\n      title\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n': {
     return: BlogSingleQuery;
     variables: BlogSingleQueryVariables;
   };

@@ -27,7 +27,7 @@ const Review = ({
     <div
       data-motion="fade-up"
       ref={ref}
-      className="relative flex flex-col rounded-2xl border border-(--border-color) bg-black/20 px-6 py-4 gap-3"
+      className="relative flex flex-col gap-3 rounded-2xl border border-(--border-color) bg-(--review-background-color) px-6 py-4"
     >
       <div className="flex items-center gap-4">
         <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-button-primary-background font-medium text-text-inverse">

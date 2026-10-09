@@ -120,7 +120,7 @@ const Blogs = ({
     "--blog-card-gap": `${gap}px`,
   } as CSSProperties;
 
-  const defaultArticles = Array.from({ length: 3 }).map((_, i) => ({
+  const defaultArticles = Array.from({ length: 4 }).map((_, i) => ({
     id: i,
     title: "Trendy items for this Winter Fall 2025 season",
     tags: [],
@@ -139,7 +139,7 @@ const Blogs = ({
     >
       <div className="container flex flex-col gap-10 px-5 py-20 md:px-6 lg:gap-16 lg:px-0">
         {children}
-        <div className="grid grid-cols-1 gap-(--blog-card-gap) sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-(--blog-card-gap) desktop:grid-cols-4">
           {res?.map((idx) => (
             <Link
               key={idx.id}
@@ -171,13 +171,17 @@ const Blogs = ({
                   </div>
                 )}
                 <div className="flex w-full flex-col gap-4 px-5 py-6">
-                  {idx.tags[0] && (
-                    <span className="w-fit rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
-                      {idx.tags[0]}
-                    </span>
-                  )}
+                  <div className="flex min-h-5 items-center">
+                    {idx.tags[0] && (
+                      <span className="line-clamp-1 w-fit max-w-full rounded-full bg-background-subtle-2 px-3 py-1 text-xs leading-none text-text-subtle">
+                        {idx.tags[0]}
+                      </span>
+                    )}
+                  </div>
+
                   <Tag
                     className={cn(
+                      "line-clamp-2 min-h-[2lh]",
                       size === "custom" &&
                         fontSizeVariants({ mobileSize, desktopSize }),
                       variants({ size, weight }),

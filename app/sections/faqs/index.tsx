@@ -98,9 +98,11 @@ export default function Faqs({
         </div>
       </div>
 
-      <div className="flex w-full max-w-page flex-col gap-6 lg:gap-10 justify-center py-20 lg:pl-16 lg:pr-10">
+      <div className="flex max-h-150 w-full max-w-page flex-col justify-center gap-6 overflow-hidden py-20 lg:gap-10 lg:pl-16 lg:pr-10">
         {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
-        <div className="flex flex-col gap-4">{children}</div>
+        <div className="hiddenScroll flex min-h-0 flex-col gap-4 overflow-y-auto">
+          {children}
+        </div>
       </div>
     </Section>
   );

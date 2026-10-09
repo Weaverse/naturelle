@@ -31,6 +31,7 @@ interface TestimonialsData {
   ratingLink?: string;
   ratingButtonText?: string;
   ratingOverlayColor?: string;
+  reviewBackgroundColor?: string;
   desktopContentPadding?: number;
   reviewsToShow?: number;
 }
@@ -95,6 +96,7 @@ const Testimonials = ({
     ratingLink,
     ratingButtonText = "See what buyers think about this product",
     ratingOverlayColor,
+    reviewBackgroundColor = "#000000",
     desktopContentPadding = 80,
     reviewsToShow = 3,
     loaderData,
@@ -126,6 +128,7 @@ const Testimonials = ({
     "--text-color": textColor,
     "--border-color": borderColor,
     "--rating-overlay-background": `color-mix(in srgb, ${ratingOverlayColor} 40%, transparent)`,
+    "--review-background-color": `color-mix(in srgb, ${reviewBackgroundColor} 20%, transparent)`,
     "--desktop-content-padding": `${desktopContentPadding}px`,
   } as CSSProperties;
 
@@ -376,6 +379,12 @@ export const schema = createSchema({
           label: "Rating overlay color",
           defaultValue: "#000000",
           condition: "reviewsPosition.eq.right",
+        },
+        {
+          type: "color",
+          name: "reviewBackgroundColor",
+          label: "Review background color",
+          defaultValue: "#000000",
         },
         {
           type: "range",

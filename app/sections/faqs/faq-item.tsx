@@ -1,6 +1,6 @@
 import { createSchema, type HydrogenComponentProps } from "@weaverse/hydrogen";
-import { ArrowRight } from "lucide-react";
 import type { RefObject } from "react";
+import { IconCaret } from "~/components/icon";
 import { Link } from "~/components/link";
 
 interface FaqItemProps extends HydrogenComponentProps {
@@ -32,15 +32,15 @@ export default function FaqItem({
           <Link
             to={href as string}
             prefetch="intent"
-            className="group flex min-h-16 w-full items-center justify-between gap-6 py-2 text-left text-base text-text transition-opacity hover:opacity-70 md:min-h-20 md:text-lg"
+            className="group flex w-full items-center justify-between gap-6 py-2 text-left text-base text-text transition-opacity hover:opacity-70 md:text-lg"
           >
             <span className="font-heading text-xl leading-[160%] tracking-[-0.2px]">
               {question}
             </span>
-            <ArrowRight
+            <IconCaret
               aria-hidden="true"
               className="size-4 shrink-0 text-text transition-transform duration-300 group-hover:translate-x-1"
-              strokeWidth={1.5}
+              direction="right"
             />
           </Link>
         ) : (
