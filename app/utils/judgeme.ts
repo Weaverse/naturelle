@@ -54,6 +54,14 @@ export function emptyJudgemeReviews(perPage = 5): JudgemeReviewsData {
   };
 }
 
+function emptyJudgemeReviewSummary(): JudgemeWidgetData {
+  return {
+    averageRating: 0,
+    totalReviews: 0,
+    ratingDistribution: [],
+  };
+}
+
 type JsonFetcher = <T>(url: string, options?: RequestInit) => Promise<T>;
 type JudgemeFetchContext = { fetchWithCache: JsonFetcher };
 type JudgemeRequestOptions = {
@@ -139,6 +147,39 @@ export async function getJudgemeProduct(
     // Do not log the request URL because Judge.me authenticates via query string.
     console.error("Unable to resolve Judge.me product");
     return { status: "unavailable" };
+  }
+}
+
+export async function getJudgemeReviewSummary(
+  apiToken: string | undefined,
+  shopDomain: string | undefined,
+  handle: string,
+  context?: JudgemeFetchContext,
+): Promise<JudgemeWidgetData> {
+  if (!(apiToken && shopDomain && handle)) {
+    return emptyJudgemeReviewSummary();
+  }
+
+  try {
+    const widgetData = await (context?.fetchWithCache || fetchJson)<{
+      widget?: string;
+    }>(
+      buildJudgemeUrl(JUDGEME_WIDGET_API, {
+        api_token: apiToken,
+        shop_domain: shopDomain,
+        handle,
+        page: 1,
+        per_page: 1,
+      }),
+      { signal: AbortSignal.timeout(JUDGEME_REQUEST_TIMEOUT_MS) },
+    );
+    return widgetData.widget
+      ? parseJudgemeWidgetHTML(widgetData.widget)
+      : emptyJudgemeReviewSummary();
+  } catch {
+    // Do not log the request URL because Judge.me authenticates via query string.
+    console.error("Unable to load Judge.me review summary");
+    return emptyJudgemeReviewSummary();
   }
 }
 

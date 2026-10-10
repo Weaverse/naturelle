@@ -6,7 +6,12 @@ import type {
 } from "@weaverse/hydrogen";
 import { createSchema, useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import type { CSSProperties, RefObject } from "react";
+import {
+  Children,
+  type CSSProperties,
+  isValidElement,
+  type RefObject,
+} from "react";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCaret, IconImageBlank } from "~/components/icon";
 import { Link } from "~/components/link";
@@ -17,9 +22,9 @@ import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { useRootLoaderData } from "~/root";
 import { cn } from "~/utils/cn";
 import { DEFAULT_LOCALE } from "~/utils/const";
-import { getJudgemeReviews } from "~/utils/judgeme";
+import { getJudgemeReviewSummary } from "~/utils/judgeme";
 import { formatNumber } from "~/utils/locale";
-import Review from "./review";
+import { isCompleteReview, type ReviewData } from "./review";
 
 interface TestimonialsData {
   backgroundImage?: WeaverseImage;
@@ -33,7 +38,6 @@ interface TestimonialsData {
   ratingOverlayColor?: string;
   reviewBackgroundColor?: string;
   desktopContentPadding?: number;
-  reviewsToShow?: number;
 }
 
 export const loader = async ({
@@ -57,15 +61,18 @@ export const loader = async ({
         country: weaverse.storefront.i18n.country,
       },
     }),
-    getJudgemeReviews(
+    getJudgemeReviewSummary(
       weaverse.env.JUDGEME_PRIVATE_API_TOKEN,
       weaverse.env.PUBLIC_STORE_DOMAIN,
       data.product.handle,
-      { weaverseContext: weaverse, perPage: 5 },
+      weaverse,
     ),
   ]);
 
-  return { product: productData.product, judgemeReviews };
+  return {
+    product: productData.product,
+    judgemeReviews,
+  };
 };
 
 type TestimonialsLoaderData = Awaited<ReturnType<typeof loader>>;
@@ -98,8 +105,8 @@ const Testimonials = ({
     ratingOverlayColor,
     reviewBackgroundColor = "#000000",
     desktopContentPadding = 80,
-    reviewsToShow = 3,
     loaderData,
+    children,
     ...rest
   } = props;
   let selectedProduct = loaderData?.product;
@@ -118,11 +125,17 @@ const Testimonials = ({
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
     : ratingLink || "#";
-  const reviews =
-    loaderData?.judgemeReviews.reviews.slice(0, reviewsToShow) || [];
   const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
   const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
-  const hasReviews = reviews.length > 0 && displayedRatingCount > 0;
+  const reviewItems = Children.toArray(children);
+  const hasReviewItems = reviewItems.some(isValidElement);
+  const hasCompleteReview = reviewItems.some(
+    (item) =>
+      isValidElement(item) && isCompleteReview(item.props as ReviewData),
+  );
+  const hasReviews = isDesignMode
+    ? hasReviewItems
+    : displayedRatingCount > 0 && hasCompleteReview;
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
@@ -154,8 +167,8 @@ const Testimonials = ({
       ref={ref}
       {...rest}
       verticalPadding="none"
-      className="relative overflow-hidden px-0 md:h-screen-no-nav"
-      containerClassName="max-w-none p-0 md:h-full"
+      className="relative overflow-hidden px-0"
+      containerClassName="max-w-none p-0"
       style={sectionStyle}
     >
       <div className="absolute inset-0 hidden md:block">
@@ -182,7 +195,7 @@ const Testimonials = ({
         ) : null}
       </div>
       {(displayImage || isDesignMode) && (
-        <div className="relative h-[420px] w-full md:hidden">
+        <div className="relative h-[834px] w-full md:hidden">
           {displayImage ? (
             <Image
               data={displayImage}
@@ -248,13 +261,13 @@ const Testimonials = ({
       )}
       <div
         className={clsx(
-          "relative z-10 mt-0 flex w-full items-stretch md:h-full",
+          "relative z-10 mt-0 flex w-full items-stretch",
           reviewsPositionContent[reviewsPosition],
         )}
       >
         <div
           className={clsx(
-            "relative w-full bg-black/20 backdrop-blur-2xl md:h-full md:overflow-y-auto",
+            "relative w-full bg-black/20 backdrop-blur-2xl",
             reviewsPosition === "full" ? "md:w-full" : "md:w-1/2",
           )}
         >
@@ -270,18 +283,18 @@ const Testimonials = ({
             ) : null}
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
-          <div className="relative z-10 flex min-h-full flex-col gap-10 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
+          <div className="relative z-10 flex flex-col gap-10 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
             <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
               {selectedProduct?.title || "Product name"}
             </h2>
             <div className="flex flex-col gap-5">
-              {reviews.map((review) => (
-                <Review
-                  key={review.id}
-                  review={review}
-                  verifiedLabel="Verified Buyer"
-                />
-              ))}
+              {reviewItems.length > 0 ? (
+                children
+              ) : (
+                <p className="font-body text-base text-(--text-color)">
+                  {t("reviews.noneYet")}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -306,17 +319,6 @@ export const schema = createSchema({
     {
       group: "Testimonials",
       inputs: [
-        {
-          type: "range",
-          name: "reviewsToShow",
-          label: "Reviews to show",
-          defaultValue: 3,
-          configs: {
-            min: 2,
-            max: 5,
-            step: 1,
-          },
-        },
         {
           label: "Choose product",
           type: "product",
@@ -401,4 +403,43 @@ export const schema = createSchema({
       ],
     },
   ],
+  childTypes: ["testimonials--review"],
+  presets: {
+    reviewsPosition: "right",
+    children: [
+      {
+        type: "testimonials--review",
+        reviewerName: "Olivia Bennett",
+        reviewDate: Date.UTC(2026, 0, 18),
+        rating: 4.9,
+        title: "A new daily favorite",
+        description:
+          "The texture feels beautiful and my skin looks noticeably calmer and more radiant.",
+        showVerifiedBuyer: true,
+        verifiedBuyerText: "Verified Buyer",
+      },
+      {
+        type: "testimonials--review",
+        reviewerName: "Sophia Martinez",
+        reviewDate: Date.UTC(2026, 1, 3),
+        rating: 5,
+        title: "Exactly what my routine needed",
+        description:
+          "Gentle, effective, and easy to use. I noticed a real difference after only a few weeks.",
+        showVerifiedBuyer: true,
+        verifiedBuyerText: "Verified Buyer",
+      },
+      {
+        type: "testimonials--review",
+        reviewerName: "Emily Chen",
+        reviewDate: Date.UTC(2026, 1, 21),
+        rating: 4.8,
+        title: "Beautiful results",
+        description:
+          "It layers perfectly with the rest of my skincare and leaves my skin feeling soft all day.",
+        showVerifiedBuyer: true,
+        verifiedBuyerText: "Verified Buyer",
+      },
+    ],
+  },
 });

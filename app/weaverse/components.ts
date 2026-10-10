@@ -70,6 +70,7 @@ import * as SlideShowBannerItem from "~/sections/slideshow-banner/slide-items";
 import * as Spacer from "~/sections/spacer";
 import * as StyleGuide from "~/sections/style-guide";
 import * as Testimonials from "~/sections/testimonials/index";
+import * as TestimonialReview from "~/sections/testimonials/review";
 import * as VideoBanner from "~/sections/video-banner";
 
 export const components: HydrogenComponent[] = [
@@ -91,6 +92,7 @@ export const components: HydrogenComponent[] = [
   ImageWithTextContent,
   ScrollingText,
   Testimonials,
+  TestimonialReview,
   Slides,
   Slide,
   SlideHeading,

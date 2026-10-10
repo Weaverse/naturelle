@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   createJudgemeReview,
   getJudgemeProduct,
+  getJudgemeReviewSummary,
   getJudgemeReviews,
 } from "../app/utils/judgeme.ts";
 
@@ -189,4 +190,75 @@ test("creates a review with the server-resolved product id", async (t) => {
   assert.equal(result.status, 201);
   assert.equal(requestBody.id, 456);
   assert.equal(requestBody.url, "serum");
+});
+
+test("returns the review summary with a single widget request", async () => {
+  const apiToken = "private-test-token";
+  const requestedUrls: string[] = [];
+  const fetchWithCache = async <T>(url: string): Promise<T> => {
+    requestedUrls.push(url);
+    return { widget: widgetHtml({ rating: 4, count: 12 }) } as T;
+  };
+
+  const result = await getJudgemeReviewSummary(
+    apiToken,
+    "shop.example",
+    "serum",
+    { fetchWithCache },
+  );
+
+  assert.equal(result.averageRating, 4);
+  assert.equal(result.totalReviews, 12);
+  assert.equal(requestedUrls.length, 1);
+  assert.match(requestedUrls[0], /\/widgets\/product_review/);
+  assert.equal(JSON.stringify(result).includes(apiToken), false);
+});
+
+test("returns an empty summary without making a request when unconfigured", async () => {
+  let requestCount = 0;
+  const fetchWithCache = async <T>(): Promise<T> => {
+    requestCount += 1;
+    throw new Error("unexpected request");
+  };
+
+  const result = await getJudgemeReviewSummary(
+    undefined,
+    "shop.example",
+    "serum",
+    { fetchWithCache },
+  );
+
+  assert.equal(requestCount, 0);
+  assert.equal(result.averageRating, 0);
+  assert.equal(result.totalReviews, 0);
+});
+
+test("returns an empty summary when Judge.me fails or the widget is missing", async (t) => {
+  t.mock.method(console, "error", () => undefined);
+
+  const failing = await getJudgemeReviewSummary(
+    "private-test-token",
+    "shop.example",
+    "serum",
+    {
+      fetchWithCache: async <T>(): Promise<T> => {
+        throw new DOMException("The operation timed out", "TimeoutError");
+      },
+    },
+  );
+  assert.equal(failing.totalReviews, 0);
+  assert.equal(failing.averageRating, 0);
+
+  const missingWidget = await getJudgemeReviewSummary(
+    "private-test-token",
+    "shop.example",
+    "serum",
+    {
+      fetchWithCache: async <T>(): Promise<T> => {
+        return {} as T;
+      },
+    },
+  );
+  assert.equal(missingWidget.totalReviews, 0);
+  assert.equal(missingWidget.averageRating, 0);
 });
