@@ -100,7 +100,7 @@ let HotspotsItem = ({
           product: loaderData?.product?.title ?? t("product.exampleTitle"),
         })}
         aria-pressed={isActive}
-        className="absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full"
+        className="absolute z-[1] flex -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{ top: `${offsetY}%`, left: `${offsetX}%` }}
         onClick={() => selectItem(itemIndex)}
       >

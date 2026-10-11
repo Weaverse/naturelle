@@ -68,11 +68,7 @@ export default function SearchResults() {
               className="w-full rounded-xl border border-border-subtle bg-background-basic p-3! md:w-[560px]"
               type="search"
               prefixElement={
-                <button
-                  type="submit"
-                  aria-label={t("search.title")}
-                  className="cursor-pointer"
-                >
+                <button type="submit" aria-label={t("search.title")}>
                   <IconSearch
                     aria-hidden="true"
                     className="size-6"

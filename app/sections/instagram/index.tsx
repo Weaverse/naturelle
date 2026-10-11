@@ -171,7 +171,7 @@ const Instagram = ({
               <button
                 type="button"
                 aria-label={t("carousel.previousInstagram")}
-                className="absolute left-0 top-1/2 z-50 flex size-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
+                className="absolute left-0 top-1/2 z-50 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
                 onClick={() => swiperInstance?.slidePrev()}
               >
                 <IconArrowLeft className="size-5" />
@@ -179,7 +179,7 @@ const Instagram = ({
               <button
                 type="button"
                 aria-label={t("carousel.nextInstagram")}
-                className="absolute right-0 top-1/2 z-50 flex size-10 translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
+                className="absolute right-0 top-1/2 z-50 flex size-10 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
                 onClick={() => swiperInstance?.slideNext()}
               >
                 <IconArrowRight className="size-5" />

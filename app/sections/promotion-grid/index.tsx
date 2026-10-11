@@ -140,7 +140,6 @@ export default function PromotionGrid({
               className={cn(
                 buttonVariants({
                   variant: "secondary",
-                  size: "sm",
                   shape: "default",
                 }),
                 "mt-5 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",

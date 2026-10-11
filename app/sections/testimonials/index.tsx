@@ -287,15 +287,7 @@ const Testimonials = ({
             <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
               {selectedProduct?.title || "Product name"}
             </h2>
-            <div className="flex flex-col gap-5">
-              {reviewItems.length > 0 ? (
-                children
-              ) : (
-                <p className="font-body text-base text-(--text-color)">
-                  {t("reviews.noneYet")}
-                </p>
-              )}
-            </div>
+            <div className="flex flex-col gap-5">{children}</div>
           </div>
         </div>
       </div>

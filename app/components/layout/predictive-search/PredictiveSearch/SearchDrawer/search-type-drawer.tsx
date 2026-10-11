@@ -41,7 +41,7 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
               className="rounded-md border-2"
               type="search"
               prefixElement={
-                <button type="submit" className="cursor-pointer">
+                <button type="submit">
                   <IconSearch
                     className="h-6 w-6 opacity-55"
                     viewBox="0 0 24 24"

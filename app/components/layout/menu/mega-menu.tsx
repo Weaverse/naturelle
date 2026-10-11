@@ -47,7 +47,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 <Menubar.Trigger
                   asChild={!hasSubmenu}
                   className={clsx([
-                    "flex h-full cursor-pointer items-center gap-1 px-0 py-2",
+                    "flex h-full items-center gap-1 px-0 py-2",
                     "text-base font-semibold leading-[1.6] tracking-[-0.16px] focus:outline-none",
                   ])}
                   onMouseEnter={() => {

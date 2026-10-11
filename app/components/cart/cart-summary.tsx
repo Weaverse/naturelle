@@ -422,10 +422,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           {enableCartNote && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <button
-                  type="button"
-                  className="cursor-pointer underline underline-offset-2"
-                >
+                <button type="button" className="underline underline-offset-2">
                   {cartNoteButtonText || t("cart.noteTitle")}
                 </button>
               </Dialog.Trigger>
@@ -438,10 +435,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           {enableDiscountCode && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <button
-                  type="button"
-                  className="cursor-pointer underline underline-offset-2"
-                >
+                <button type="button" className="underline underline-offset-2">
                   {discountCodeButtonText || t("cart.discountCode")}
                 </button>
               </Dialog.Trigger>
@@ -454,10 +448,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           {enableGiftCard && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <button
-                  type="button"
-                  className="cursor-pointer underline underline-offset-2"
-                >
+                <button type="button" className="underline underline-offset-2">
                   {giftCardButtonText || t("cart.giftCard")}
                 </button>
               </Dialog.Trigger>

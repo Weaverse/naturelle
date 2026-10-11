@@ -31,7 +31,7 @@ export function LocaleSelect({
         aria-label={ariaLabel}
         className={
           placement === "header"
-            ? "group flex cursor-pointer items-center gap-1.5 outline-none"
+            ? "group flex items-center gap-1.5 outline-none"
             : "group flex max-w-full min-w-0 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3.5 py-2 outline-none"
         }
       >
@@ -74,7 +74,7 @@ export function LocaleSelect({
               <button
                 type="submit"
                 aria-label={t("locale.selectOption", { option: optionLabel })}
-                className="block w-full cursor-pointer whitespace-normal px-3.5 py-2 text-left font-body leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) hover:bg-black/5"
+                className="block w-full whitespace-normal px-3.5 py-2 text-left font-body leading-none font-normal tracking-[-0.12px] text-(--color-footer-text) hover:bg-black/5"
               >
                 <span
                   className={placement === "footer" ? "text-xs" : "text-[13px]"}
