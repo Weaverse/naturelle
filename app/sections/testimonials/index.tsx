@@ -4,14 +4,13 @@ import type {
   WeaverseImage,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
-import { createSchema, useTranslation } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import {
-  Children,
-  type CSSProperties,
-  isValidElement,
-  type RefObject,
-} from "react";
+  createSchema,
+  useChildInstances,
+  useTranslation,
+} from "@weaverse/hydrogen";
+import clsx from "clsx";
+import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCaret, IconImageBlank } from "~/components/icon";
 import { Link } from "~/components/link";
@@ -22,9 +21,8 @@ import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { useRootLoaderData } from "~/root";
 import { cn } from "~/utils/cn";
 import { DEFAULT_LOCALE } from "~/utils/const";
-import { getJudgemeReviewSummary } from "~/utils/judgeme";
 import { formatNumber } from "~/utils/locale";
-import { isCompleteReview, type ReviewData } from "./review";
+import { isCompleteReview } from "./review";
 
 interface TestimonialsData {
   backgroundImage?: WeaverseImage;
@@ -33,7 +31,8 @@ interface TestimonialsData {
   textColor?: string;
   borderColor?: string;
   ratingText?: string;
-  ratingLink?: string;
+  rating?: number;
+  reviewCount?: number;
   ratingButtonText?: string;
   ratingOverlayColor?: string;
   reviewBackgroundColor?: string;
@@ -50,8 +49,9 @@ export const loader = async ({
 
   let metafield =
     weaverse.env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
-  const [productData, judgemeReviews] = await Promise.all([
-    weaverse.storefront.query<ProductQuery>(PRODUCT_QUERY, {
+  const productData = await weaverse.storefront.query<ProductQuery>(
+    PRODUCT_QUERY,
+    {
       variables: {
         handle: data.product.handle,
         selectedOptions: [],
@@ -60,18 +60,11 @@ export const loader = async ({
         language: weaverse.storefront.i18n.language,
         country: weaverse.storefront.i18n.country,
       },
-    }),
-    getJudgemeReviewSummary(
-      weaverse.env.JUDGEME_PRIVATE_API_TOKEN,
-      weaverse.env.PUBLIC_STORE_DOMAIN,
-      data.product.handle,
-      weaverse,
-    ),
-  ]);
+    },
+  );
 
   return {
     product: productData.product,
-    judgemeReviews,
   };
 };
 
@@ -100,8 +93,9 @@ const Testimonials = ({
     textColor,
     borderColor,
     ratingText = "Overall rating",
-    ratingLink,
-    ratingButtonText = "See what buyers think about this product",
+    rating = 4.9,
+    reviewCount = 3,
+    ratingButtonText = "Explore this product",
     ratingOverlayColor,
     reviewBackgroundColor = "#000000",
     desktopContentPadding = 80,
@@ -115,8 +109,11 @@ const Testimonials = ({
   )?.image;
   const displayImage = productImage || backgroundImage;
   const isDesignMode = useWeaverseStudioCheck();
+  const reviewInstances = useChildInstances().filter(
+    ({ data }) => data.type === "testimonials--review",
+  );
 
-  const canRenderTestimonials = Boolean(selectedProduct || backgroundImage);
+  const canRenderTestimonials = Boolean(selectedProduct);
 
   if (!canRenderTestimonials && !isDesignMode) {
     return null;
@@ -124,18 +121,28 @@ const Testimonials = ({
 
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
-    : ratingLink || "#";
-  const displayedRating = loaderData?.judgemeReviews.averageRating || 0;
-  const displayedRatingCount = loaderData?.judgemeReviews.totalReviews || 0;
-  const reviewItems = Children.toArray(children);
-  const hasReviewItems = reviewItems.some(isValidElement);
-  const hasCompleteReview = reviewItems.some(
-    (item) =>
-      isValidElement(item) && isCompleteReview(item.props as ReviewData),
+    : "#";
+  const numericRating = Number(rating);
+  const displayedRating = Number.isFinite(numericRating)
+    ? Math.min(5, Math.max(1, numericRating))
+    : 0;
+  const numericReviewCount = Number(reviewCount);
+  const displayedRatingCount = Number.isFinite(numericReviewCount)
+    ? Math.max(3, Math.round(numericReviewCount))
+    : 3;
+  const hasReviewItems = reviewInstances.length > 0;
+  const hasCompleteReview = reviewInstances.some(({ data }) =>
+    isCompleteReview({
+      reviewerName: data.reviewerName,
+      reviewDate: data.reviewDate,
+      rating: data.rating,
+      title: data.title,
+      description: data.description,
+      showVerifiedBuyer: data.showVerifiedBuyer,
+      verifiedBuyerText: data.verifiedBuyerText,
+    }),
   );
-  const hasReviews = isDesignMode
-    ? hasReviewItems
-    : displayedRatingCount > 0 && hasCompleteReview;
+  const hasReviews = isDesignMode ? hasReviewItems : hasCompleteReview;
 
   let sectionStyle: CSSProperties = {
     "--text-color": textColor,
@@ -155,7 +162,7 @@ const Testimonials = ({
         <div className="rounded-lg border border-border-subtle border-dashed bg-background-basic px-6 py-12 text-center text-text">
           <p className="font-heading text-xl uppercase">Testimonials</p>
           <p className="mt-2 text-text-subtle text-sm">
-            Choose a product with Judge.me reviews
+            Add at least one complete testimonial
           </p>
         </div>
       </Section>
@@ -167,7 +174,7 @@ const Testimonials = ({
       ref={ref}
       {...rest}
       verticalPadding="none"
-      className="relative overflow-hidden px-0"
+      className="relative overflow-hidden bg-background-basic px-0"
       containerClassName="max-w-none p-0"
       style={sectionStyle}
     >
@@ -343,6 +350,30 @@ export const schema = createSchema({
           condition: "reviewsPosition.eq.right",
         },
         {
+          type: "range",
+          name: "rating",
+          label: "Overall rating",
+          defaultValue: 4.9,
+          configs: {
+            min: 1,
+            max: 5,
+            step: 0.1,
+          },
+          condition: "reviewsPosition.eq.right",
+        },
+        {
+          type: "range",
+          name: "reviewCount",
+          label: "Review count",
+          defaultValue: 3,
+          configs: {
+            min: 3,
+            max: 1000,
+            step: 1,
+          },
+          condition: "reviewsPosition.eq.right",
+        },
+        {
           type: "text",
           name: "ratingButtonText",
           label: "Rating button text",
@@ -350,16 +381,10 @@ export const schema = createSchema({
           condition: "reviewsPosition.eq.right",
         },
         {
-          type: "url",
-          name: "ratingLink",
-          label: "Rating link",
-          defaultValue: "#",
-          condition: "reviewsPosition.eq.right",
-        },
-        {
           type: "color",
           name: "textColor",
           label: "Text color",
+          defaultValue: "#FFFFFF",
         },
         {
           type: "color",
@@ -398,6 +423,8 @@ export const schema = createSchema({
   childTypes: ["testimonials--review"],
   presets: {
     reviewsPosition: "right",
+    rating: 4.9,
+    reviewCount: 3,
     children: [
       {
         type: "testimonials--review",
