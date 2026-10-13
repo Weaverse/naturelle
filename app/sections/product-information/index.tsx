@@ -10,7 +10,7 @@ import { Truck, Undo2 } from "lucide-react";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
-import { IconAnnouncementChevron } from "~/components/icon";
+import { IconCaret } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
@@ -148,7 +148,7 @@ let ProductInformation = ({
             "md:grid-cols-[1fr_clamp(360px,45%,480px)]",
           )}
         >
-          <div className="min-w-0">
+          <div className="min-w-0 flex flex-col gap-10">
             <ProductMedia
               media={product?.media.nodes}
               selectedVariant={selectedVariant}
@@ -158,33 +158,33 @@ let ProductInformation = ({
               showSlideCounter={showSlideCounter}
               direction={mediaDirection}
             />
-            {showDetails && descriptionHtml && (
-              <ProductDescription
-                title={t("product.description")}
-                content={descriptionHtml}
-              />
-            )}
-            {showShippingPolicy && shippingPolicy?.body && (
-              <ProductDescription
-                title={t("product.shipping")}
-                content={getExcerpt(shippingPolicy.body)}
-                learnMore={`/policies/${shippingPolicy.handle}`}
-              />
-            )}
-            {showRefundPolicy && refundPolicy?.body && (
-              <ProductDescription
-                title={t("product.returns")}
-                content={getExcerpt(refundPolicy.body)}
-                learnMore={`/policies/${refundPolicy.handle}`}
-              />
-            )}
+            <div className="empty:hidden border-t border-border-subtle">
+              {showDetails && descriptionHtml && (
+                <ProductDescription
+                  title={t("product.description")}
+                  content={descriptionHtml}
+                />
+              )}
+              {showShippingPolicy && shippingPolicy?.body && (
+                <ProductDescription
+                  title={t("product.shipping")}
+                  content={getExcerpt(shippingPolicy.body)}
+                  learnMore={`/policies/${shippingPolicy.handle}`}
+                />
+              )}
+              {showRefundPolicy && refundPolicy?.body && (
+                <ProductDescription
+                  title={t("product.returns")}
+                  content={getExcerpt(refundPolicy.body)}
+                  learnMore={`/policies/${refundPolicy.handle}`}
+                />
+              )}
+            </div>
           </div>
           <div
             className="min-w-0"
             style={
               {
-                "--shop-pay-button-border-radius": "9999px",
-                "--shop-pay-button-height": "56px",
                 "--width-button": widthButton,
               } as React.CSSProperties
             }
@@ -319,7 +319,7 @@ let ProductInformation = ({
                     }
                     variant="primary"
                     data-test="add-to-cart"
-                    className="h-12 w-full rounded-lg"
+                    className="h-12 w-full rounded-xl"
                   >
                     <span> {atcText}</span>
                   </AddToCartButton>
@@ -390,18 +390,17 @@ function ProductDescription({
 }) {
   const { t } = useTranslation();
   return (
-    <Disclosure as="div" className="mt-6 border-t border-border-subtle">
+    <Disclosure as="div" className="border-b border-border-subtle">
       {({ open }) => (
         <>
-          <Disclosure.Button className="flex w-full items-center justify-between py-5 text-left">
-            <Text as="span" className="text-base font-normal">
+          <Disclosure.Button className="flex w-full items-center justify-between pt-5 pb-6 text-left">
+            <span className="font-heading text-xl leading-[160%] font-normal tracking-[-0.2px] text-text">
               {title}
-            </Text>
-            <IconAnnouncementChevron
-              className={cn(
-                "h-3 w-2 transition-transform duration-300",
-                open ? "rotate-90" : "rotate-0",
-              )}
+            </span>
+            <IconCaret
+              aria-hidden="true"
+              className="size-5 shrink-0 text-text transition-transform duration-300"
+              direction={open ? "down" : "right"}
             />
           </Disclosure.Button>
           <Disclosure.Panel className="pb-5">

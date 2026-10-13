@@ -155,7 +155,8 @@ export function Drawer({
                     className={cn(
                       headerVariants({ isForm }),
                       heading ? "justify-between" : "justify-items-end",
-                      openFrom === "left" ||
+                      openFrom === "left" && isForm === "search" && "px-6",
+                      (openFrom === "left" && isForm !== "search") ||
                         isForm === "cart" ||
                         (openFrom === "top" && !isBackMenu)
                         ? "flex-row-reverse"

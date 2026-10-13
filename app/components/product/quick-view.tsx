@@ -31,10 +31,10 @@ import { ProductCardRating } from "./product-card-rating";
 
 export function QuickView({
   data,
-  onAdded,
+  onClose,
 }: {
   data: ProductData;
-  onAdded?: () => void;
+  onClose?: () => void;
 }) {
   const { t } = useTranslation();
   const theme = useThemeSettings();
@@ -121,15 +121,7 @@ export function QuickView({
           )}
         </div>
 
-        <div
-          className="min-w-0 py-1 md:pr-1"
-          style={
-            {
-              "--shop-pay-button-border-radius": "8px",
-              "--shop-pay-button-height": "48px",
-            } as React.CSSProperties
-          }
-        >
+        <div className="min-w-0 py-1 md:pr-1">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
@@ -216,44 +208,21 @@ export function QuickView({
                 onFetchingStateChange={(state) =>
                   setIsLoading(state !== "idle")
                 }
-                onAdded={onAdded}
+                onAdded={onClose}
                 data-test="add-to-cart"
-                className="h-12 w-full rounded-lg"
+                className="h-12 w-full rounded-xl"
               >
                 <span>{atcText}</span>
               </AddToCartButton>
             </div>
 
             {selectedVariant.availableForSale && !selectedSellingPlanId && (
-              <div
-                className="group/shop-pay relative h-12 w-full overflow-hidden rounded-lg border border-(--shop-pay-border) bg-(--shop-pay-bg) transition-colors hover:border-(--shop-pay-hover-border) hover:bg-(--shop-pay-hover) active:border-(--shop-pay-active-border) active:bg-(--shop-pay-active)"
-                style={
-                  {
-                    "--shop-pay-bg": theme.shopPayButtonBgColor,
-                    "--shop-pay-text": theme.buttonTextPrimary,
-                    "--shop-pay-border": theme.buttonBorderColorPrimary,
-                    "--shop-pay-hover": theme.buttonBgHoverPrimary,
-                    "--shop-pay-hover-text": theme.buttonTextHoverPrimary,
-                    "--shop-pay-hover-border": theme.buttonBorderHoverPrimary,
-                    "--shop-pay-active": theme.buttonBgActivePrimary,
-                    "--shop-pay-active-text": theme.buttonTextActivePrimary,
-                    "--shop-pay-active-border": theme.buttonBorderActivePrimary,
-                  } as React.CSSProperties
-                }
-              >
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] font-body font-normal text-(--shop-pay-text) transition-colors group-hover/shop-pay:text-(--shop-pay-hover-text) group-active/shop-pay:text-(--shop-pay-active-text)">
-                  ShopPay
-                </div>
-                <ShopPayButton
-                  key={selectedVariant.id}
-                  className="absolute inset-0 z-10 h-full w-full opacity-0"
-                  width="100%"
-                  variantIdsAndQuantities={[
-                    { id: selectedVariant.id, quantity },
-                  ]}
-                  storeDomain={storeDomain}
-                />
-              </div>
+              <ShopPayButton
+                key={selectedVariant.id}
+                width="100%"
+                variantIdsAndQuantities={[{ id: selectedVariant.id, quantity }]}
+                storeDomain={storeDomain}
+              />
             )}
 
             <BackInStockForm
@@ -286,6 +255,7 @@ export function QuickView({
 
             <Link
               to={`/products/${product.handle}`}
+              onClick={onClose}
               className="w-fit text-sm text-text-primary underline underline-offset-4"
             >
               {t("product.viewDetails")}
@@ -359,7 +329,7 @@ export function QuickViewTrigger({
       {open && productData && (
         <Portal>
           <Modal onClose={() => setOpen(false)}>
-            <QuickView data={productData} onAdded={() => setOpen(false)} />
+            <QuickView data={productData} onClose={() => setOpen(false)} />
           </Modal>
         </Portal>
       )}

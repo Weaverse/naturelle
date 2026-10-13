@@ -143,14 +143,7 @@ let SingleProduct = ({
             direction={mediaDirection}
             enableZoom={enableZoom}
           />
-          <div
-            style={
-              {
-                "--shop-pay-button-border-radius": "9999px",
-                "--shop-pay-button-height": "56px",
-              } as React.CSSProperties
-            }
-          >
+          <div>
             <div className="flex flex-col justify-start gap-4 lg:gap-6">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-4 sm:gap-5">
@@ -243,7 +236,7 @@ let SingleProduct = ({
                       setIsLoading(state === "submitting")
                     }
                     data-test="add-to-cart"
-                    className="w-full"
+                    className="w-full rounded-xl"
                   >
                     <span> {atcText}</span>
                   </AddToCartButton>

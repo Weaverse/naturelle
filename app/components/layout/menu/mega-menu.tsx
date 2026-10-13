@@ -47,20 +47,23 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 <Menubar.Trigger
                   asChild={!hasSubmenu}
                   className={clsx([
-                    "flex h-full items-center gap-1 px-0 py-2",
+                    "flex h-full items-center px-0 py-2",
                     "text-base font-semibold leading-[1.6] tracking-[-0.16px] focus:outline-none",
                   ])}
-                  onMouseEnter={() => {
-                    if (typeOpenMenu === "mouseHover" && value !== id) {
-                      setValue(id);
-                    }
-                  }}
+                  onPointerEnter={(event) => event.preventDefault()}
                 >
                   {hasSubmenu ? (
-                    <>
+                    <span
+                      className="inline-flex items-center gap-1"
+                      onMouseEnter={() => {
+                        if (typeOpenMenu === "mouseHover" && value !== id) {
+                          setValue(id);
+                        }
+                      }}
+                    >
                       <span className="text-animation">{title}</span>
                       <IconCaret direction="down" className="size-4" />
-                    </>
+                    </span>
                   ) : (
                     <Link to={to} className="transition-none">
                       <span className="text-animation">{title}</span>
@@ -71,7 +74,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   <Menubar.Content
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
-                      "border-border-subtle border-t bg-header-bg shadow-md",
+                      "rounded-b-2xl border-border-subtle border-t bg-header-bg shadow-md",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >

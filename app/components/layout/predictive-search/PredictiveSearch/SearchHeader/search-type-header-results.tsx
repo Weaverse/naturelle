@@ -8,6 +8,7 @@ import {
   type NormalizedPredictiveSearchResultItem,
   POPULAR_PRODUCTS_LIMIT,
   PREDICTIVE_SEARCH_LIMIT,
+  PREDICTIVE_SEARCH_SIDE_LIMIT,
 } from "~/types/search-types";
 import { cn } from "~/utils/cn";
 import { PopularKeywords } from "../../popular-keywords";
@@ -115,15 +116,24 @@ export function SearchTypeHeaderResults({
               <>
                 <TextResults
                   title={t("search.suggestions")}
-                  items={items("queries")}
+                  items={items("queries").slice(
+                    0,
+                    PREDICTIVE_SEARCH_SIDE_LIMIT,
+                  )}
                 />
                 <TextResults
                   title={t("search.collections")}
-                  items={items("collections")}
+                  items={items("collections").slice(
+                    0,
+                    PREDICTIVE_SEARCH_SIDE_LIMIT,
+                  )}
                 />
                 <TextResults
                   title={t("search.pages")}
-                  items={items("articles")}
+                  items={items("articles").slice(
+                    0,
+                    PREDICTIVE_SEARCH_SIDE_LIMIT,
+                  )}
                   lineClamp
                 />
               </>

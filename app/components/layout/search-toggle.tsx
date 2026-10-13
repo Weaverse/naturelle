@@ -90,7 +90,10 @@ export function SearchToggle({
               compact ? "size-5" : "size-6",
             )}
           >
-            <IconSearch className={compact ? "size-5" : "size-6"} />
+            <IconSearch
+              className={compact ? "size-5" : "size-6"}
+              strokeWidth={2}
+            />
           </button>
         )}
       </div>
@@ -105,7 +108,7 @@ export function SearchToggle({
         onClick={openDrawer}
         className="relative flex size-6 shrink-0 items-center justify-center focus:ring-primary/5"
       >
-        <IconSearch className="size-6 font-extralight!" />
+        <IconSearch className="size-6 font-extralight!" strokeWidth={2} />
       </button>
       <Drawer
         open={isOpen}
