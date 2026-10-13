@@ -130,7 +130,7 @@ const Slide = ({
 
               <div
                 className={clsx(
-                  "flex w-full flex-col justify-center gap-4 [&_.heading]:text-(--navigation-background-color)! [&_.paragraph]:w-full [&_.paragraph]:text-(--navigation-background-color)!",
+                  "flex w-full flex-col justify-center gap-4 [&_.paragraph]:w-full",
                   alignmentClasses[textAlignment],
                 )}
               >
