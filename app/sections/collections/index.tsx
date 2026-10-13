@@ -57,9 +57,6 @@ export const COLLECTIONS_QUERY = `#graphql
         }
       }
     }
-    allCollections: collections(first: 1) {
-      totalCount
-    }
   }
 ` as const;
 
@@ -73,16 +70,14 @@ export async function loader({
     ) ?? [];
 
   const { country, language } = weaverse.storefront.i18n;
-  const { nodes, allCollections } = await weaverse.storefront.query<{
+  const { nodes } = await weaverse.storefront.query<{
     nodes: Array<CollectionNode | null>;
-    allCollections: { totalCount: number };
   }>(COLLECTIONS_QUERY, {
     variables: { country, language, ids },
   });
 
   return {
     collections: nodes.filter((node): node is CollectionNode => Boolean(node)),
-    totalCount: Number(allCollections.totalCount),
   };
 }
 
@@ -307,7 +302,7 @@ function Collections({
             {Math.min(Number(columns) || 4, collections.length)}
           </span>
           <span aria-hidden="true"> / </span>
-          {loaderData?.totalCount ?? collections.length}
+          {collections.length}
         </p>
       )}
       {children}
@@ -348,7 +343,7 @@ export const schema = createSchema({
           label: "Show collection count",
           defaultValue: true,
           helpText:
-            "Shows visible collections over the total, for example 4 / 8.",
+            "Shows visible collections over the selected total, for example 4 / 8.",
         },
       ],
     },
