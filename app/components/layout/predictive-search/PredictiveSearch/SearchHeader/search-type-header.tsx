@@ -38,7 +38,8 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
       <PredictiveSearchForm
         className={cn(
           "predictive-search-form",
-          inline && "predictive-search-form--inline",
+          inline &&
+            "predictive-search-form--inline animate-search-reveal motion-reduce:animate-none",
         )}
       >
         {({ fetchResults, inputRef }) => (
@@ -81,7 +82,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
                 <button
                   type="submit"
                   aria-label={t("search.title")}
-                  className="flex size-6 shrink-0 cursor-pointer items-center justify-center text-text-primary"
+                  className="flex size-6 shrink-0 items-center justify-center text-text-primary"
                 >
                   <IconSearch
                     className={cn("size-6", !inline && "opacity-55")}

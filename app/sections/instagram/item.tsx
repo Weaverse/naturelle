@@ -36,6 +36,10 @@ const InstagramItem = ({ ref, image, link, ...rest }: InstagramItemProps) => {
         className="h-full w-full object-cover"
         sizes="(min-width: 1440px) 17vw, (min-width: 768px) 25vw, 50vw"
       />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-10 rounded-2xl bg-(--instagram-hover-overlay-background) opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+      />
       <span className="absolute right-2 top-2 z-20 rounded-full bg-background-basic p-2 text-text opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
         <IconFooterInstagram aria-hidden="true" className="size-5" />
       </span>
@@ -49,12 +53,12 @@ const InstagramItem = ({ ref, image, link, ...rest }: InstagramItemProps) => {
           to={link}
           target="_blank"
           aria-label={t("instagram.openPost")}
-          className="group relative block aspect-square w-full overflow-hidden rounded-2xl"
+          className="group relative block aspect-square w-full overflow-hidden rounded-2xl border-2 border-(--instagram-image-border-color)"
         >
           {content}
         </Link>
       ) : (
-        <div className="group relative aspect-square w-full overflow-hidden rounded-2xl">
+        <div className="group relative aspect-square w-full overflow-hidden rounded-2xl border-2 border-(--instagram-image-border-color)">
           {content}
         </div>
       )}

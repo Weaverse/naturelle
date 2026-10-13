@@ -213,7 +213,6 @@ export function ReviewForm({
                         rating: ratingValue,
                       })}
                       aria-pressed={rating === ratingValue}
-                      className="cursor-pointer"
                     >
                       {ratingValue <= (hover || rating) ? (
                         <IconFilledStar className="size-8" />
@@ -339,7 +338,7 @@ export function ReviewForm({
           </p>
           <button
             type="button"
-            className="mt-4 cursor-pointer underline underline-offset-4"
+            className="mt-4 underline underline-offset-4"
             onClick={() => setIsSuccessVisible(false)}
           >
             {t("accessibility.close")}
