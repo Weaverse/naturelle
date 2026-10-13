@@ -123,7 +123,7 @@ const Slide = ({
             <div className="flex flex-[1_0_0] flex-col items-center justify-center gap-6">
               <div
                 data-motion="fade-up"
-                className="slide-icon flex size-16 shrink-0 items-center justify-center rounded-full border border-current lg:size-20"
+                className="slide-icon flex size-16 shrink-0 items-center justify-center rounded-full border border-current text-(--navigation-background-color) lg:size-20"
               >
                 <SlideIcon className="size-8 lg:size-10" weight="regular" />
               </div>

@@ -142,7 +142,7 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        "flex min-w-0 w-full flex-col gap-5 rounded-[var(--pcard-border-radius)] bg-background px-3 pt-3 pb-5 transition-[border-radius] duration-300 hover:rounded-none",
+        "flex min-w-0 w-full flex-col gap-5 rounded-(--pcard-border-radius) bg-background px-3 pt-3 pb-5",
         className,
       )}
       style={
@@ -221,7 +221,7 @@ export function ProductCard({
           to={`/products/${product.handle}`}
           onClick={onClick}
           prefetch="intent"
-          className="line-clamp-2 text-base font-semibold leading-[160%] tracking-[-0.16px]"
+          className="line-clamp-1 text-base font-semibold leading-[160%] tracking-[-0.16px]"
         >
           {product.title}
         </Link>

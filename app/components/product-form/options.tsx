@@ -38,7 +38,7 @@ export function VariantOption(props: VariantOptionProps) {
               aria-label={`${name}: ${value.value}`}
               aria-pressed={selectedOptionValue === value.value}
               className={clsx(
-                "p-0.5 border-2 rounded-full cursor-pointer h-11 w-11",
+                "p-0.5 border-2 rounded-full h-11 w-11",
                 value.isAvailable && selectedOptionValue === value.value
                   ? "border-border/90 bg-[#E5E6D4]"
                   : value.isAvailable
@@ -77,7 +77,7 @@ export function VariantOption(props: VariantOptionProps) {
               aria-label={`${name}: ${value.value}`}
               aria-pressed={selectedOptionValue === value.value}
               className={clsx(
-                "size-[60px] cursor-pointer overflow-hidden rounded-xl border p-0.5 transition-colors",
+                "size-[60px] overflow-hidden rounded-xl border p-0.5 transition-colors",
                 selectedOptionValue === value.value
                   ? "border-border"
                   : value.isAvailable
@@ -137,7 +137,7 @@ export function VariantOption(props: VariantOptionProps) {
           key={value.value}
           disabled={!value.exists}
           className={clsx(
-            "min-h-12 cursor-pointer rounded-xl border px-4 py-3 text-base font-semibold leading-none transition-colors",
+            "min-h-12 rounded-xl border px-4 py-3 text-base font-semibold leading-none transition-colors",
             isMorphology && "min-w-16",
             value.isAvailable && selectedOptionValue === value.value
               ? "border-button-primary-background bg-button-primary-background text-button-primary-text"

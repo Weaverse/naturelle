@@ -47,7 +47,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 <Menubar.Trigger
                   asChild={!hasSubmenu}
                   className={clsx([
-                    "flex h-full cursor-pointer items-center gap-1 px-0 py-2",
+                    "flex h-full items-center gap-1 px-0 py-2",
                     "text-base font-semibold leading-[1.6] tracking-[-0.16px] focus:outline-none",
                   ])}
                   onMouseEnter={() => {
@@ -154,7 +154,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                       prefetch="intent"
                       className="block w-full truncate text-sm transition-none"
                     >
-                      {product.title}
+                      <span className="text-animation">{product.title}</span>
                     </Link>
                   ))}
                 </div>
@@ -208,7 +208,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                   width={300}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-                <p className="absolute line-clamp-1 right-3 bottom-3 left-3 font-heading text-base text-text-inverse">
+                <p className="absolute line-clamp-1 right-3 bottom-3 left-3 font-heading text-base text-text-inverse underline-offset-4 group-hover/item:underline">
                   {resource.title || title}
                 </p>
               </div>

@@ -9,7 +9,7 @@ let variants = cva(
   [
     "hidden md:block z-10",
     "absolute top-1/2 -translate-y-1/2 z-1",
-    "p-2 text-center cursor-pointer",
+    "p-2 text-center",
     "border border-transparent",
     "transition-all duration-200",
   ],

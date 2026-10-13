@@ -222,8 +222,8 @@ export function ScrollingAnnouncement() {
             "flex h-full w-2 shrink-0 items-center justify-center",
             "text-(--color-topbar-text)/80 transition-opacity",
             canNavigate
-              ? "cursor-pointer hover:opacity-100"
-              : "cursor-default opacity-40",
+              ? "hover:opacity-100"
+              : "disabled:cursor-not-allowed opacity-40",
           )}
         >
           <IconAnnouncementChevron
@@ -267,8 +267,8 @@ export function ScrollingAnnouncement() {
             "flex h-full w-2 shrink-0 items-center justify-center",
             "text-(--color-topbar-text)/80 transition-opacity",
             canNavigate
-              ? "cursor-pointer hover:opacity-100"
-              : "cursor-default opacity-40",
+              ? "hover:opacity-100"
+              : "disabled:cursor-not-allowed opacity-40",
           )}
         >
           <IconAnnouncementChevron
