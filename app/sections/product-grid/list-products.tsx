@@ -180,7 +180,7 @@ export default function ProductGridList({
                   className={buttonVariants({
                     variant: "secondary",
                     className:
-                      "gap-3 rounded-xl group-hover:translate-y-[-2px]",
+                      "gap-3 rounded-xl transition-all! duration-300 group-hover:-translate-y-0.5",
                   })}
                 >
                   {collectionButtonText}

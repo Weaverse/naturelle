@@ -7,6 +7,7 @@ import { Button } from "~/components/button";
 import { Grid } from "~/components/grid";
 import { ProductCard } from "~/components/product/product-card";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { cn } from "~/utils/cn";
 import { getImageLoadingPriority } from "~/utils/image";
 
 interface AllProductsProps extends SectionProps {
@@ -16,11 +17,15 @@ interface AllProductsProps extends SectionProps {
 
 export default function AllProducts(props: AllProductsProps) {
   const { t } = useTranslation();
-  const { ref, heading, children, ...rest } = props;
+  const { ref, heading, children, className, ...rest } = props;
   const { products } = useLoaderData<AllProductsQuery>();
 
   return (
-    <Section ref={ref} {...rest}>
+    <Section
+      ref={ref}
+      {...rest}
+      className={cn(className, "bg-background-basic")}
+    >
       {Boolean(Children.count(children)) && <div>{children}</div>}
       <Pagination connection={products}>
         {({ nodes, isLoading, NextLink, PreviousLink }) => {
@@ -30,6 +35,7 @@ export default function AllProducts(props: AllProductsProps) {
               key={product.id}
               product={product}
               loading={getImageLoadingPriority(i)}
+              showVendor
             />
           ));
 
