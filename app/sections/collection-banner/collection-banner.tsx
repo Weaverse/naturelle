@@ -74,11 +74,11 @@ const CollectionBanner = (props: CollectionBannerProps) => {
           "--banner-height-mobile": `${sectionHeightMobile}px`,
         } as React.CSSProperties
       }
-      className="bg-background-basic py-6"
+      className="bg-background-basic px-5 py-6 md:px-6 lg:px-0"
     >
       <div
         className={cn(
-          "mx-auto px-5 md:px-6 lg:px-0 flex h-(--banner-height-mobile) w-full max-w-page flex-col overflow-hidden rounded-2xl md:h-(--banner-height-desktop) md:flex-row",
+          "mx-auto flex h-(--banner-height-mobile) w-full max-w-page flex-col overflow-hidden rounded-2xl md:h-(--banner-height-desktop) md:flex-row",
           imagePosition === "left" && "md:flex-row-reverse",
         )}
       >

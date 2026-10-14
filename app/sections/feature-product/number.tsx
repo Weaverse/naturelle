@@ -5,20 +5,24 @@ import type { SwiperClass } from "swiper/react";
 export interface SlideshowDotsProps {
   className?: string;
   instance: SwiperClass | null;
+  totalSlides: number;
 }
 
 export function SlideNumber(props: SlideshowDotsProps) {
-  let { className, instance } = props;
+  let { className, instance, totalSlides } = props;
   let [currentSlideIndex, setCurrentSlide] = useState(1);
-  let [totalSlides, setTotalSlides] = useState(0);
-  let [isMobile, setIsMobile] = useState(false);
+  let [slidesPerView, setSlidesPerView] = useState(1);
   useEffect(() => {
     const updateScreenSize = () => {
-      if (window.innerWidth < 640) {
-        setIsMobile(true);
-      } else {
-        setIsMobile(false);
-      }
+      setSlidesPerView(
+        window.innerWidth < 430
+          ? 1
+          : window.innerWidth < 768
+            ? 2
+            : window.innerWidth < 960
+              ? 3
+              : 4,
+      );
     };
     updateScreenSize();
     window.addEventListener("resize", updateScreenSize);
@@ -29,7 +33,6 @@ export function SlideNumber(props: SlideshowDotsProps) {
   useEffect(() => {
     if (instance) {
       setCurrentSlide(instance.realIndex + 1);
-      setTotalSlides(instance?.slides?.length);
       const updateCurrentSlide = () => {
         setCurrentSlide(instance.realIndex + 1);
       };
@@ -39,7 +42,10 @@ export function SlideNumber(props: SlideshowDotsProps) {
       };
     }
   }, [instance]);
-  let currentSlide = isMobile ? currentSlideIndex + 1 : currentSlideIndex + 3;
+  let currentSlide = Math.min(
+    currentSlideIndex + slidesPerView - 1,
+    totalSlides,
+  );
   return (
     <div
       className={clsx(
@@ -47,7 +53,7 @@ export function SlideNumber(props: SlideshowDotsProps) {
         "z-10 flex justify-center items-center px-2.5 gap-4",
       )}
     >
-      <span className="font-heading font-normal text-xl">
+      <span className="font-heading font-normal text-xl max-sm:font-body max-sm:text-base max-sm:font-semibold max-sm:leading-[1.6]">
         {currentSlide}/{totalSlides}
       </span>
     </div>

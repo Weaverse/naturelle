@@ -45,7 +45,7 @@ const ContactHighlightItem = ({
         {itemNumber}
       </span>
       {heading && (
-        <h3 className="w-full text-center font-heading text-[31px] leading-[110%] font-normal text-text">
+        <h3 className="w-full text-center font-heading text-[31px] leading-[110%] font-normal text-text md:grid md:min-h-[2lh] md:content-center">
           {heading}
         </h3>
       )}

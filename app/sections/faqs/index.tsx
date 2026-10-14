@@ -1,13 +1,11 @@
+import * as Accordion from "@radix-ui/react-accordion";
 import { Image } from "@shopify/hydrogen";
 import { createSchema, type WeaverseImage } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
+import { backgroundInputs } from "~/components/background-image";
 import { Button } from "~/components/button";
 import { IconImageBlank } from "~/components/icon";
-import {
-  Section,
-  type SectionProps,
-  sectionInspector,
-} from "~/components/section";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 interface FaqsData {
   image?: WeaverseImage;
@@ -98,11 +96,15 @@ export default function Faqs({
         </div>
       </div>
 
-      <div className="flex max-h-150 w-full max-w-page flex-col justify-center gap-6 overflow-hidden py-20 lg:gap-10 lg:pl-16 lg:pr-10">
+      <div className="flex max-h-150 w-full max-w-page flex-col justify-center gap-6 overflow-hidden py-10 md:py-20 lg:gap-10 lg:pl-16 lg:pr-10">
         {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
-        <div className="hiddenScroll flex min-h-0 flex-col gap-4 overflow-y-auto">
+        <Accordion.Root
+          type="single"
+          collapsible
+          className="hiddenScroll flex min-h-0 flex-col gap-4 overflow-y-auto"
+        >
           {children}
-        </div>
+        </Accordion.Root>
       </div>
     </Section>
   );
@@ -160,16 +162,23 @@ export const schema = createSchema({
         },
       ],
     },
-    ...sectionInspector.map((group) => ({
-      ...group,
-      inputs: group.inputs
+    {
+      group: "Layout",
+      inputs: layoutInputs
         .filter(
-          (input) => input.name !== "width" && input.name !== "verticalPadding",
+          ({ name }) =>
+            name !== "width" &&
+            name !== "verticalPadding" &&
+            name !== "borderRadius",
         )
         .map((input) =>
           input.name === "gap" ? { ...input, defaultValue: 24 } : input,
         ),
-    })),
+    },
+    {
+      group: "Background",
+      inputs: backgroundInputs.filter(({ name }) => name === "backgroundColor"),
+    },
   ],
   childTypes: ["faq--item"],
   presets: {
@@ -177,30 +186,32 @@ export const schema = createSchema({
       {
         type: "faq--item",
         question: "How do you protect my personal information?",
-        showParagraph: true,
         paragraph:
           "Products are imported automatically from your Shopify admin. We estimate 2-3 hours for set-up. If you want to change the design of Naturelle, we estimate 3-5 hours for set-up.",
-        href: "/policies/privacy-policy",
       },
       {
         type: "faq--item",
         question: "What information do you collect?",
-        href: "/policies/privacy-policy",
+        paragraph:
+          "We collect only the information needed to process your orders, provide customer service, and improve your shopping experience.",
       },
       {
         type: "faq--item",
         question: "How is my information used?",
-        href: "/policies/privacy-policy",
+        paragraph:
+          "Your information is used to fulfil orders, communicate with you, and provide relevant services and updates.",
       },
       {
         type: "faq--item",
         question: "Do you share my personal information?",
-        href: "/policies/privacy-policy",
+        paragraph:
+          "We only share information with trusted service providers when required to operate our store and fulfil your orders.",
       },
       {
         type: "faq--item",
         question: "What are my privacy rights?",
-        href: "/policies/privacy-policy",
+        paragraph:
+          "You may request access to, correction of, or deletion of your personal information, subject to applicable law.",
       },
     ],
   },

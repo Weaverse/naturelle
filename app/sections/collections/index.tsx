@@ -110,6 +110,7 @@ function Collections({
     backgroundColor,
     showArrow,
     showCount,
+    gap = 60,
     children,
     containerClassName,
     ...rest
@@ -147,7 +148,10 @@ function Collections({
         containerClassName,
       )}
     >
-      <div className="mx-auto flex w-full max-w-page flex-col items-center gap-10 self-stretch lg:gap-6">
+      <div
+        className="mx-auto flex w-full max-w-page flex-col items-center self-stretch"
+        style={{ gap: `${gap}px` }}
+      >
         <div className="flex w-full items-center justify-between">
           {heading && (
             <h3 className="font-normal text-text-primary" data-motion="fade-up">
@@ -293,18 +297,18 @@ function Collections({
             />
           </button>
         </div>
-      </div>
 
-      {showCount && collections.length > 0 && (
-        <p className="text-center text-sm font-medium text-text-subtle">
-          <span className="lg:hidden">{Math.min(4, collections.length)}</span>
-          <span className="hidden lg:inline">
-            {Math.min(Number(columns) || 4, collections.length)}
-          </span>
-          <span aria-hidden="true"> / </span>
-          {collections.length}
-        </p>
-      )}
+        {showCount && collections.length > 0 && (
+          <p className="text-center text-sm font-medium text-text-subtle">
+            <span className="lg:hidden">{Math.min(4, collections.length)}</span>
+            <span className="hidden lg:inline">
+              {Math.min(Number(columns) || 4, collections.length)}
+            </span>
+            <span aria-hidden="true"> / </span>
+            {collections.length}
+          </p>
+        )}
+      </div>
       {children}
     </Section>
   );
@@ -402,7 +406,9 @@ export const schema = createSchema({
     },
     {
       group: "Layout",
-      inputs: layoutInputs,
+      inputs: layoutInputs.map((input) =>
+        input.name === "gap" ? { ...input, defaultValue: 60 } : input,
+      ),
     },
   ],
   presets: {
