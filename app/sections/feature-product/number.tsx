@@ -13,32 +13,19 @@ export function SlideNumber(props: SlideshowDotsProps) {
   let [currentSlideIndex, setCurrentSlide] = useState(1);
   let [slidesPerView, setSlidesPerView] = useState(1);
   useEffect(() => {
-    const updateScreenSize = () => {
-      setSlidesPerView(
-        window.innerWidth < 430
-          ? 1
-          : window.innerWidth < 768
-            ? 2
-            : window.innerWidth < 960
-              ? 3
-              : 4,
-      );
-    };
-    updateScreenSize();
-    window.addEventListener("resize", updateScreenSize);
-    return () => {
-      window.removeEventListener("resize", updateScreenSize);
-    };
-  }, []);
-  useEffect(() => {
     if (instance) {
-      setCurrentSlide(instance.realIndex + 1);
-      const updateCurrentSlide = () => {
+      const updateSlideState = () => {
         setCurrentSlide(instance.realIndex + 1);
+        setSlidesPerView(Number(instance.params.slidesPerView) || 1);
       };
-      instance.on("slideChange", updateCurrentSlide);
+
+      updateSlideState();
+      instance.on("slideChange", updateSlideState);
+      instance.on("breakpoint", updateSlideState);
+
       return () => {
-        instance.off("slideChange", updateCurrentSlide);
+        instance.off("slideChange", updateSlideState);
+        instance.off("breakpoint", updateSlideState);
       };
     }
   }, [instance]);

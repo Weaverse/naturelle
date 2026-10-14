@@ -9,7 +9,7 @@ import React, { type CSSProperties, type RefObject, useState } from "react";
 import { Autoplay } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
-import { IconArrowLeft, IconArrowRight } from "~/components/icon";
+import { IconCaret } from "~/components/icon";
 import { Link } from "~/components/link";
 import { useAnimation } from "~/hooks/use-animation";
 
@@ -174,7 +174,7 @@ const Instagram = ({
                 className="absolute left-0 top-1/2 z-50 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
                 onClick={() => swiperInstance?.slidePrev()}
               >
-                <IconArrowLeft className="size-5" />
+                <IconCaret direction="left" className="size-5" />
               </button>
               <button
                 type="button"
@@ -182,7 +182,7 @@ const Instagram = ({
                 className="absolute right-0 top-1/2 z-50 flex size-10 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border-subtle bg-background text-text shadow-sm"
                 onClick={() => swiperInstance?.slideNext()}
               >
-                <IconArrowRight className="size-5" />
+                <IconCaret direction="right" className="size-5" />
               </button>
             </>
           )}
