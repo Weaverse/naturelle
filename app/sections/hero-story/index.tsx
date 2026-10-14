@@ -48,6 +48,12 @@ export default function HeroStory({
       : configuredImage;
   const isPlaceholder = imageData?.url === IMAGES_PLACEHOLDERS.image;
   const showImage = Boolean(imageData?.url) && (isDesignMode || !isPlaceholder);
+  const showFirstStat = Boolean(
+    firstStatValue?.trim() || firstStatLabel?.trim(),
+  );
+  const showSecondStat = Boolean(
+    secondStatValue?.trim() || secondStatLabel?.trim(),
+  );
   const style = {
     "--hero-story-accent": accentColor,
   } as CSSProperties;
@@ -61,12 +67,14 @@ export default function HeroStory({
     >
       <div className="mx-auto flex w-full max-w-page flex-col items-stretch gap-10 rounded-2xl bg-background-subtle-2 px-6 py-12 md:flex-row md:items-center md:gap-5 md:p-12 lg:gap-16">
         <div className="flex w-full flex-col items-start gap-8 md:min-w-0 md:flex-1">
-          <div className="flex flex-col items-start gap-2">
-            <p className="font-body text-[11px] leading-normal font-semibold text-(--hero-story-accent) uppercase">
-              {eyebrow}
-            </p>
-            <span className="h-[1.5px] w-12 bg-(--hero-story-accent)" />
-          </div>
+          {eyebrow?.trim() && (
+            <div className="flex flex-col items-start gap-2">
+              <p className="font-body text-[11px] leading-normal font-semibold text-(--hero-story-accent) uppercase">
+                {eyebrow}
+              </p>
+              <span className="h-[1.5px] w-12 bg-(--hero-story-accent)" />
+            </div>
+          )}
 
           <h2 className="font-heading text-[40px] leading-[1.1] font-normal text-text md:text-5xl desktop:max-w-120 desktop:text-[56px]">
             {heading}
@@ -76,24 +84,38 @@ export default function HeroStory({
             {description}
           </p>
 
-          <div className="flex flex-wrap items-start gap-8 text-text">
-            <div className="flex flex-col items-start gap-1">
-              <p className="font-heading text-[28px] leading-normal font-normal">
-                {firstStatValue}
-              </p>
-              <p className="font-body text-[11px] leading-normal font-normal uppercase">
-                {firstStatLabel}
-              </p>
+          {(showFirstStat || showSecondStat) && (
+            <div className="flex flex-wrap items-start gap-8 text-text">
+              {showFirstStat && (
+                <div className="flex flex-col items-start gap-1">
+                  {firstStatValue?.trim() && (
+                    <p className="font-heading text-[28px] leading-normal font-normal">
+                      {firstStatValue}
+                    </p>
+                  )}
+                  {firstStatLabel?.trim() && (
+                    <p className="font-body text-[11px] leading-normal font-normal uppercase">
+                      {firstStatLabel}
+                    </p>
+                  )}
+                </div>
+              )}
+              {showSecondStat && (
+                <div className="flex flex-col items-start gap-1">
+                  {secondStatValue?.trim() && (
+                    <p className="font-heading text-[28px] leading-normal font-normal">
+                      {secondStatValue}
+                    </p>
+                  )}
+                  {secondStatLabel?.trim() && (
+                    <p className="font-body text-[11px] leading-normal font-normal uppercase">
+                      {secondStatLabel}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
-            <div className="flex flex-col items-start gap-1">
-              <p className="font-heading text-[28px] leading-normal font-normal">
-                {secondStatValue}
-              </p>
-              <p className="font-body text-[11px] leading-normal font-normal uppercase">
-                {secondStatLabel}
-              </p>
-            </div>
-          </div>
+          )}
 
           {buttonText && (
             <Button
