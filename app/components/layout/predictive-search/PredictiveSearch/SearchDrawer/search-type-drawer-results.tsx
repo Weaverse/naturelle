@@ -1,4 +1,5 @@
 import { useTranslation } from "@weaverse/hydrogen";
+import { Button } from "~/components/button";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { usePredictiveSearch } from "~/hooks/use-predictive-search";
@@ -25,7 +26,7 @@ export function SearchTypeDrawerResults() {
 
   if (!term) {
     return (
-      <div className="hiddenScroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
+      <div className="hiddenScroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic p-6 text-text">
         <PopularKeywords onKeywordClick={setSearchKeyword} />
         <section className="mt-8">
           <ResultHeading>{t("search.mostSearchedProducts")}</ResultHeading>
@@ -44,39 +45,43 @@ export function SearchTypeDrawerResults() {
   }
 
   return (
-    <div className="hiddenScroll w-full flex-1 overflow-y-auto border-t border-border-subtle bg-background-basic px-4 py-6 text-text">
-      {items("queries").length > 0 && (
-        <section>
-          <ResultHeading>{t("search.suggestions")}</ResultHeading>
-          <ul className="space-y-2">
-            {items("queries").map((query) => (
-              <li key={query.id}>
-                <button
-                  type="button"
-                  onClick={() => setSearchKeyword(query.title)}
-                  className="text-left font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text"
-                >
-                  {query.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-      {items("products").length > 0 && (
-        <section className="mt-8">
-          <ResultHeading>{t("search.products")}</ResultHeading>
-          <ProductGrid products={items("products")} />
-          <div className="mt-6 flex justify-center">
-            <Link
-              to={`/search?q=${encodeURIComponent(term)}`}
-              className="rounded-md bg-text px-5 py-2 text-sm text-background-basic"
-            >
-              {t("search.viewAll")} ({totalResults})
-            </Link>
-          </div>
-        </section>
-      )}
+    <div className="flex min-h-0 w-full flex-1 flex-col border-t border-border-subtle bg-background-basic text-text">
+      <div className="hiddenScroll min-h-0 flex-1 overflow-y-auto p-6">
+        {items("queries").length > 0 && (
+          <section>
+            <ResultHeading>{t("search.suggestions")}</ResultHeading>
+            <ul className="space-y-2">
+              {items("queries").map((query) => (
+                <li key={query.id}>
+                  <button
+                    type="button"
+                    onClick={() => setSearchKeyword(query.title)}
+                    className="text-left font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text"
+                  >
+                    {query.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        {items("products").length > 0 && (
+          <section className="mt-8">
+            <ResultHeading>{t("search.products")}</ResultHeading>
+            <ProductGrid products={items("products")} />
+          </section>
+        )}
+      </div>
+      <div className="flex shrink-0 justify-center border-border-subtle border-t bg-background-basic px-4 py-4">
+        <Button
+          to={`/search?q=${encodeURIComponent(term)}`}
+          size="sm"
+          variant="primary"
+          className="px-5 text-sm"
+        >
+          {t("search.viewAll")} ({totalResults})
+        </Button>
+      </div>
     </div>
   );
 }

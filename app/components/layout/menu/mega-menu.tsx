@@ -1,5 +1,4 @@
 import * as Menubar from "@radix-ui/react-menubar";
-import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type React from "react";
 import { useState } from "react";
@@ -15,7 +14,6 @@ import { cn } from "~/utils/cn";
 
 export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let { menu } = props;
-  let { typeOpenMenu } = useThemeSettings();
   let [value, setValue] = useState<string | null>(null);
 
   if (menu?.items?.length) {
@@ -45,30 +43,43 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
             return (
               <Menubar.Menu key={id} value={id}>
                 <Menubar.Trigger
-                  asChild={!hasSubmenu}
+                  asChild
                   className={clsx([
                     "flex h-full items-center px-0 py-2",
                     "text-base font-semibold leading-[1.6] tracking-[-0.16px] focus:outline-none",
                   ])}
                   onPointerEnter={(event) => event.preventDefault()}
                 >
-                  {hasSubmenu ? (
+                  <Link
+                    to={to}
+                    prefetch="intent"
+                    className="transition-none"
+                    onClick={() => setValue(null)}
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === "Enter" &&
+                        !event.metaKey &&
+                        !event.ctrlKey
+                      ) {
+                        event.preventDefault();
+                        event.currentTarget.click();
+                      }
+                    }}
+                  >
                     <span
                       className="inline-flex items-center gap-1"
                       onMouseEnter={() => {
-                        if (typeOpenMenu === "mouseHover" && value !== id) {
+                        if (hasSubmenu && value !== id) {
                           setValue(id);
                         }
                       }}
                     >
                       <span className="text-animation">{title}</span>
-                      <IconCaret direction="down" className="size-4" />
+                      {hasSubmenu && (
+                        <IconCaret direction="down" className="size-4" />
+                      )}
                     </span>
-                  ) : (
-                    <Link to={to} className="transition-none">
-                      <span className="text-animation">{title}</span>
-                    </Link>
-                  )}
+                  </Link>
                 </Menubar.Trigger>
                 {level > 1 && (
                   <Menubar.Content

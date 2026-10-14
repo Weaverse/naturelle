@@ -183,6 +183,10 @@
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
   * {
     border-color: var(--color-border);
   }

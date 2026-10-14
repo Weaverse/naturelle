@@ -1,4 +1,5 @@
 import { useTranslation } from "@weaverse/hydrogen";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { IconClose, IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
@@ -20,6 +21,29 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
   const searchPath = usePrefixPathWithLocale("/search");
   let { isOpen, inline = false, onClose } = props;
   let navigate = useNavigate();
+
+  useEffect(() => {
+    if (!inline) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (
+        !(target instanceof Element) ||
+        target.closest(
+          "[data-predictive-search-form], [data-predictive-search-results]",
+        )
+      ) {
+        return;
+      }
+
+      onClose?.();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [inline, onClose]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -52,20 +76,6 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
             <Input
               name="q"
               onChange={fetchResults}
-              onBlur={(event) => {
-                const nextTarget = event.relatedTarget;
-                const staysInForm =
-                  nextTarget instanceof Node &&
-                  event.currentTarget.closest("form")?.contains(nextTarget);
-                const staysInResults =
-                  nextTarget instanceof Element &&
-                  Boolean(
-                    nextTarget.closest("[data-predictive-search-results]"),
-                  );
-                if (inline && !staysInForm && !staysInResults) {
-                  onClose?.();
-                }
-              }}
               onClear={fetchResults}
               placeholder={t("search.placeholder")}
               onKeyDown={handleKeyDown}
