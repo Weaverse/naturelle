@@ -1,10 +1,7 @@
 import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
-import {
-  Section,
-  type SectionProps,
-  sectionInspector,
-} from "~/components/section";
+import { backgroundInputs } from "~/components/background-image";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 type HighlightsProps = SectionProps;
 
@@ -31,7 +28,21 @@ export default Highlights;
 export const schema = createSchema({
   type: "highlight",
   title: "Highlights",
-  settings: sectionInspector,
+  settings: [
+    {
+      group: "Layout",
+      inputs: layoutInputs.filter((input) => input.name !== "borderRadius"),
+    },
+    {
+      group: "Background",
+      inputs: backgroundInputs.filter(
+        (input) =>
+          input.name !== "backgroundImage" &&
+          input.name !== "backgroundFit" &&
+          input.name !== "backgroundPosition",
+      ),
+    },
+  ],
   childTypes: ["heading", "highlight-content--item"],
   presets: {
     backgroundColor: "#F3F3F3",

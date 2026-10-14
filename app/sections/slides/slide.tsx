@@ -19,22 +19,14 @@ import {
 } from "~/components/icon";
 
 type AlignImage = "left" | "right";
-type Alignment = "left" | "center" | "right";
 interface SlideProps extends HydrogenComponentProps {
   backgroundImage?: WeaverseImage;
   backgroundColor: string;
   navigationBackgroundColor: string;
   imageAlignment?: AlignImage;
-  textAlignment?: Alignment;
   icon?: "leaf" | "flower" | "sparkle" | "drop" | "sun" | "heart";
   enableImageAnimation?: boolean;
 }
-
-let alignmentClasses: Record<Alignment, string> = {
-  left: "text-left",
-  center: "text-center",
-  right: "text-right",
-};
 
 let AlignImageClasses: Record<AlignImage, string> = {
   left: "md:flex-row",
@@ -50,7 +42,6 @@ const Slide = ({
     imageAlignment = "left",
     backgroundColor,
     navigationBackgroundColor,
-    textAlignment = "center",
     icon = "leaf",
     enableImageAnimation,
     children,
@@ -128,12 +119,7 @@ const Slide = ({
                 <SlideIcon className="size-8 lg:size-10" weight="regular" />
               </div>
 
-              <div
-                className={clsx(
-                  "flex w-full flex-col justify-center gap-4 [&_.paragraph]:w-full",
-                  alignmentClasses[textAlignment],
-                )}
-              >
+              <div className="flex w-full flex-col justify-center gap-4 [&_.paragraph]:w-full">
                 {children}
               </div>
             </div>
@@ -190,19 +176,6 @@ export const schema = createSchema({
             ],
           },
           defaultValue: "left",
-        },
-        {
-          type: "toggle-group",
-          label: "Text alignment",
-          name: "textAlignment",
-          configs: {
-            options: [
-              { label: "Left", value: "left" },
-              { label: "Center", value: "center" },
-              { label: "Right", value: "right" },
-            ],
-          },
-          defaultValue: "center",
         },
         {
           type: "color",

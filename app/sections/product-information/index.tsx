@@ -436,7 +436,12 @@ export const schema = createSchema({
   settings: [
     {
       group: "Layout",
-      inputs: layoutInputs.filter(({ name }) => name !== "borderRadius"),
+      inputs: layoutInputs.filter(
+        ({ name }) =>
+          name !== "borderRadius" &&
+          name !== "gap" &&
+          name !== "verticalPadding",
+      ),
     },
     {
       group: "Product form",

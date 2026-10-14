@@ -18,14 +18,7 @@ const JudgemeReviewSection = ({
   }
 
   return (
-    <Section
-      ref={ref}
-      {...rest}
-      width="full"
-      overflow="unset"
-      verticalPadding="none"
-      containerClassName="mx-auto flex flex-col gap-6 px-5 pt-20 pb-30 md:px-6 md:py-20 lg:max-w-[var(--page-width,1440px)] lg:px-0 [&>.heading]:!m-0"
-    >
+    <Section ref={ref} {...rest} overflow="unset">
       {judgeMeConfigured ? (
         children
       ) : (

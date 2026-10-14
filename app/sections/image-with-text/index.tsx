@@ -89,7 +89,15 @@ export const schema = createSchema({
         },
       ],
     },
-    { group: "Background", inputs: backgroundInputs },
+    {
+      group: "Background",
+      inputs: backgroundInputs.filter(
+        ({ name }) =>
+          !["backgroundImage", "backgroundFit", "backgroundPosition"].includes(
+            name as string,
+          ),
+      ),
+    },
   ],
   childTypes: ["image-with-text--content", "image-with-text--image"],
   presets: {
