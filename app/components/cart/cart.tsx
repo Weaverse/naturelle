@@ -481,7 +481,7 @@ function CartLineQuantity({
         aria-label={`${t("product.quantity")}, ${optimisticQuantity}`}
         className={cn(
           "flex w-fit items-center border border-border rounded-2xl h-10",
-          layout === "page" && "gap-2",
+          layout === "page" && "gap-2 bg-background-basic",
         )}
       >
         <button

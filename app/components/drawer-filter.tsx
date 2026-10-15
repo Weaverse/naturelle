@@ -438,7 +438,7 @@ export function AppliedFilters({
             preventScrollReset
           >
             <span>{filter.label}</span>
-            <IconXMark className="size-5 shrink-0" />
+            <IconXMark className="size-3.5 shrink-0" />
           </Link>
         );
       })}
