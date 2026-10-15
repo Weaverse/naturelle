@@ -427,8 +427,8 @@ export function AppliedFilters({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2.5 font-heading text-xl font-normal leading-[1.6] tracking-[-0.2px]">
-      <span>{t("collection.filteredBy")}</span>
+    <div className="flex flex-wrap items-center gap-2.5 font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text-subtle">
+      <span className="font-semibold">{t("collection.filteredBy")}</span>
       {filters.map((filter: AppliedFilter) => {
         return (
           <Link
