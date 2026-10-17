@@ -69,9 +69,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                     <span
                       className="inline-flex items-center gap-1"
                       onMouseEnter={() => {
-                        if (hasSubmenu && value !== id) {
-                          setValue(id);
-                        }
+                        setValue(hasSubmenu ? id : "");
                       }}
                     >
                       <span className="text-animation">{title}</span>

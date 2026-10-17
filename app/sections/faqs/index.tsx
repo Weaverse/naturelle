@@ -96,12 +96,12 @@ export default function Faqs({
         </div>
       </div>
 
-      <div className="flex max-h-150 w-full max-w-page flex-col justify-start gap-6 overflow-hidden py-10 md:py-20 lg:gap-10 lg:pl-16 lg:pr-10">
+      <div className="flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden py-10 md:h-150 md:py-20 lg:gap-10 lg:pl-16 lg:pr-10">
         {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
         <Accordion.Root
           type="single"
           collapsible
-          className="hiddenScroll flex min-h-0 flex-col gap-4 overflow-y-auto"
+          className="hiddenScroll flex min-h-0 flex-col gap-4 md:overflow-y-auto"
         >
           {children}
         </Accordion.Root>
