@@ -49,8 +49,8 @@ export interface VideoBannerProps
   extends Omit<VariantProps<typeof variants>, "padding">,
     HydrogenComponentProps,
     OverlayProps {
-  videoURL: WeaverseVideo;
-  videoURL2: string;
+  videoURL?: WeaverseVideo;
+  videoURL2?: string;
   height: "small" | "medium" | "large" | "full" | "custom";
   heightOnDesktop: number;
   heightOnMobile: number;
@@ -131,6 +131,7 @@ let VideoBanner = ({
     "--desktop-height": desktopHeight,
     "--mobile-height": mobileHeight,
   } as CSSProperties;
+  let videoSource = videoURL2?.trim() || videoURL?.url;
 
   let { ref: inViewRef, inView } = useInView({
     triggerOnce: true,
@@ -177,12 +178,12 @@ let VideoBanner = ({
           "translate-x-[min(0px,calc((var(--mobile-height)/9*16-100vw)/-2))] sm:translate-x-[min(0px,calc((var(--desktop-height)/9*16-100vw)/-2))]",
         )}
       >
-        {inView && (
+        {inView && videoSource && (
           <Suspense
             fallback={<div className="w-full h-full bg-background"></div>}
           >
             <ReactPlayer
-              src={videoURL2 || videoURL.url}
+              src={videoSource}
               loop={true}
               width={size.width}
               height={size.height}

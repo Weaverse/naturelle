@@ -47,22 +47,33 @@ let HeaderImage = ({
   ...props
 }: SlideShowBannerItemProps &
   SectionProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, height, contentPosition, horizontalPadding, ...rest } = props;
+  let {
+    children,
+    height,
+    contentPosition,
+    horizontalPadding,
+    borderRadius,
+    ...rest
+  } = props;
   let style = {
     "--horizontal-padding": `${horizontalPadding}px`,
+    "--image-banner-border-radius": `${borderRadius || 0}px`,
   } as React.CSSProperties;
   return (
     <div
+      ref={ref as RefObject<HTMLDivElement | null>}
       style={style}
-      className="px-[var(--horizontal-padding)] md:px-[calc(var(--horizontal-padding) * 1.5)] lg:px-[calc(var(--horizontal-padding) * 2)]"
+      className="mx-auto w-full max-w-page px-[var(--horizontal-padding)] pt-10 md:px-[calc(var(--horizontal-padding) * 1.5)] lg:px-[calc(var(--horizontal-padding) * 2)]"
     >
-      <Section
-        ref={ref}
-        {...rest}
-        containerClassName={variants({ contentPosition, height })}
-      >
-        {children}
-      </Section>
+      <div className="overflow-hidden rounded-none lg:rounded-(--image-banner-border-radius)">
+        <Section
+          {...rest}
+          borderRadius={0}
+          containerClassName={variants({ contentPosition, height })}
+        >
+          {children}
+        </Section>
+      </div>
     </div>
   );
 };

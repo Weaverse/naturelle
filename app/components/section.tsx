@@ -66,6 +66,7 @@ let variants = cva("relative", {
       52: "space-y-6 lg:space-y-[52px]",
       56: "space-y-7 lg:space-y-14",
       60: "space-y-7 lg:space-y-[60px]",
+      64: "space-y-8 lg:space-y-16",
     },
     overflow: {
       unset: "",

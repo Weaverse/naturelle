@@ -222,7 +222,6 @@ export function GlobalStyle() {
             .btn-outline{
               color: ${buttonTextOutline}!important;
               border: 1px solid ${buttonBorderColorOutline};
-              cursor: pointer;
             }
             .btn-outline:hover{
               color: ${buttonTextHoverOutline}!important;

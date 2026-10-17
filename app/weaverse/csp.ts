@@ -51,6 +51,9 @@ export function getWeaverseCsp(
       "'self'",
       "https://maps.google.com",
       "https://www.google.com",
+      "https://player.vimeo.com",
+      "https://www.youtube.com",
+      "https://www.youtube-nocookie.com",
       ...weaverseHosts,
     ],
   };

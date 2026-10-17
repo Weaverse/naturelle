@@ -3,7 +3,7 @@ import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { Image } from "~/components/image";
 
-let variants = cva("absolute inset-0 w-full h-full z-[-1]", {
+let variants = cva("h-full w-full", {
   variants: {
     backgroundFit: {
       fill: "object-fill",
@@ -41,8 +41,9 @@ export function BackgroundImage(props: BackgroundImageProps) {
         : backgroundImage;
     return (
       <Image
-        className={variants({ backgroundFit, backgroundPosition })}
+        className="absolute inset-0 z-[-1]"
         data={data}
+        imageClassName={variants({ backgroundFit, backgroundPosition })}
         sizes="auto"
       />
     );

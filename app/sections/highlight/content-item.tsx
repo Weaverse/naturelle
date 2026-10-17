@@ -6,7 +6,6 @@ import React, { type CSSProperties } from "react";
 interface ContentProps extends HydrogenComponentProps {
   itemPerRow: number;
   gap: number;
-  borderColor: string;
 }
 
 let itemsPerRowClasses: { [item: number]: string } = {
@@ -20,10 +19,9 @@ const HighlightContent = ({
   ref,
   ...props
 }: ContentProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
-  let { itemPerRow, gap, borderColor, children, ...rest } = props;
+  let { itemPerRow, gap, children, ...rest } = props;
   let style: CSSProperties = {
     "--item-gap": `${gap}px`,
-    "--border-color": borderColor,
   } as CSSProperties;
   let actualItemPerRow = Math.min(itemPerRow, React.Children.count(children));
   return (
@@ -71,12 +69,6 @@ export const schema = createSchema({
             step: 6,
           },
           defaultValue: 24,
-        },
-        {
-          type: "color",
-          label: "Border color",
-          name: "borderColor",
-          defaultValue: "#9AA473",
         },
       ],
     },

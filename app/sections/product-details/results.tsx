@@ -62,11 +62,11 @@ export default function ClinicalResults({
 
   return (
     <section ref={ref} {...rest} data-product-metafield-section>
-      <div className="grid overflow-hidden rounded-3xl bg-text md:grid-cols-3">
+      <div className="flex w-full flex-col overflow-hidden rounded-3xl bg-text md:flex-row">
         {results.map((result) => (
           <article
             key={result.id}
-            className="flex flex-col items-center gap-2 px-6 py-8 text-center md:border-l md:border-background-basic/15 md:first:border-l-0"
+            className="flex w-full flex-[1_0_0] flex-col items-center gap-2 px-6 py-8 text-center md:border-l md:border-background-basic/15 md:first:border-l-0"
           >
             <p className="text-center font-display text-[48px] leading-[normal] font-normal text-background-basic">
               {result.value}

@@ -1,5 +1,4 @@
 import * as Menubar from "@radix-ui/react-menubar";
-import { useThemeSettings } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type React from "react";
 import { useState } from "react";
@@ -15,7 +14,6 @@ import { cn } from "~/utils/cn";
 
 export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
   let { menu } = props;
-  let { typeOpenMenu } = useThemeSettings();
   let [value, setValue] = useState<string | null>(null);
 
   if (menu?.items?.length) {
@@ -45,33 +43,47 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
             return (
               <Menubar.Menu key={id} value={id}>
                 <Menubar.Trigger
-                  asChild={!hasSubmenu}
+                  asChild
                   className={clsx([
-                    "flex h-full items-center gap-1 px-0 py-2",
+                    "flex h-full items-center px-0 py-2",
                     "text-base font-semibold leading-[1.6] tracking-[-0.16px] focus:outline-none",
                   ])}
-                  onMouseEnter={() => {
-                    if (typeOpenMenu === "mouseHover" && value !== id) {
-                      setValue(id);
-                    }
-                  }}
+                  onPointerEnter={(event) => event.preventDefault()}
                 >
-                  {hasSubmenu ? (
-                    <>
+                  <Link
+                    to={to}
+                    prefetch="intent"
+                    className="transition-none"
+                    onClick={() => setValue(null)}
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === "Enter" &&
+                        !event.metaKey &&
+                        !event.ctrlKey
+                      ) {
+                        event.preventDefault();
+                        event.currentTarget.click();
+                      }
+                    }}
+                  >
+                    <span
+                      className="inline-flex items-center gap-1"
+                      onMouseEnter={() => {
+                        setValue(hasSubmenu ? id : "");
+                      }}
+                    >
                       <span className="text-animation">{title}</span>
-                      <IconCaret direction="down" className="size-4" />
-                    </>
-                  ) : (
-                    <Link to={to} className="transition-none">
-                      <span className="text-animation">{title}</span>
-                    </Link>
-                  )}
+                      {hasSubmenu && (
+                        <IconCaret direction="down" className="size-4" />
+                      )}
+                    </span>
+                  </Link>
                 </Menubar.Trigger>
                 {level > 1 && (
                   <Menubar.Content
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
-                      "border-border-subtle border-t bg-header-bg shadow-md",
+                      "rounded-b-2xl border-border-subtle border-t bg-header-bg shadow-md",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >

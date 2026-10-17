@@ -1,5 +1,5 @@
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { Skeleton } from "~/components/skeleton";
@@ -8,6 +8,7 @@ import {
   type NormalizedPredictiveSearchResultItem,
   POPULAR_PRODUCTS_LIMIT,
   PREDICTIVE_SEARCH_LIMIT,
+  PREDICTIVE_SEARCH_SIDE_LIMIT,
 } from "~/types/search-types";
 import { cn } from "~/utils/cn";
 import { PopularKeywords } from "../../popular-keywords";
@@ -26,6 +27,17 @@ export function SearchTypeHeaderResults({
     results.find((result) => result.type === type)?.items || [];
   const term = searchTerm.current.trim();
   const [panelTop, setPanelTop] = useState(0);
+  const initialRequestStarted = useRef(false);
+  const [isWaitingForInitialResults, setIsWaitingForInitialResults] =
+    useState(inline);
+
+  useEffect(() => {
+    if (isLoading) {
+      initialRequestStarted.current = true;
+    } else if (initialRequestStarted.current) {
+      setIsWaitingForInitialResults(false);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     if (!inline) {
@@ -54,6 +66,8 @@ export function SearchTypeHeaderResults({
   const skeletonCount = hasTerm
     ? PREDICTIVE_SEARCH_LIMIT
     : POPULAR_PRODUCTS_LIMIT;
+  const showProductSkeletons =
+    isWaitingForInitialResults || (isLoading && products.length === 0);
 
   return (
     <>
@@ -82,9 +96,9 @@ export function SearchTypeHeaderResults({
             </ResultHeading>
             <div
               className="grid grid-cols-2 gap-3 desktop:grid-cols-3 lg:grid-cols-4"
-              aria-busy={isLoading}
+              aria-busy={isWaitingForInitialResults || isLoading}
             >
-              {isLoading && products.length === 0 ? (
+              {showProductSkeletons ? (
                 <SearchProductCardSkeletons
                   count={skeletonCount}
                   imageRatio={pcardImageRatio}
@@ -115,15 +129,24 @@ export function SearchTypeHeaderResults({
               <>
                 <TextResults
                   title={t("search.suggestions")}
-                  items={items("queries")}
+                  items={items("queries").slice(
+                    0,
+                    PREDICTIVE_SEARCH_SIDE_LIMIT,
+                  )}
                 />
                 <TextResults
                   title={t("search.collections")}
-                  items={items("collections")}
+                  items={items("collections").slice(
+                    0,
+                    PREDICTIVE_SEARCH_SIDE_LIMIT,
+                  )}
                 />
                 <TextResults
                   title={t("search.pages")}
-                  items={items("articles")}
+                  items={items("articles").slice(
+                    0,
+                    PREDICTIVE_SEARCH_SIDE_LIMIT,
+                  )}
                   lineClamp
                 />
               </>

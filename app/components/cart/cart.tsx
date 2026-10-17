@@ -185,9 +185,9 @@ function CartLines({
           </div>
           <div className="hidden grid-cols-[minmax(0,2fr)_0.8fr_1fr_0.8fr_32px] gap-3 border-border-subtle border-b pb-4 font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:grid lg:grid-cols-[298px_repeat(3,minmax(0,1fr))_16px] lg:gap-2.5 lg:pr-5">
             <span>{t("account.product")}</span>
-            <span>{t("product.price")}</span>
-            <span>{t("product.quantity")}</span>
-            <span>{t("cart.total")}</span>
+            <span className="text-center">{t("product.price")}</span>
+            <span className="text-center">{t("product.quantity")}</span>
+            <span className="text-center">{t("cart.total")}</span>
             <span className="sr-only">{t("cart.remove")}</span>
           </div>
         </>
@@ -276,11 +276,11 @@ function CartLineItem({
             )}
           </div>
         </div>
-        <div className="hidden font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text md:block">
+        <div className="hidden font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text md:block md:text-center">
           <CartLineUnitPrice line={line} />
         </div>
         <div className="col-start-2 row-start-2 flex w-fit items-center gap-2 md:contents">
-          <div className="md:col-start-3 md:row-start-1">
+          <div className="md:col-start-3 md:row-start-1 md:flex md:justify-center">
             <CartLineQuantity line={line} layout={layout} />
           </div>
           <CartLineRemoveButton
@@ -288,7 +288,7 @@ function CartLineItem({
             className="shrink-0 md:col-start-5 md:row-start-1"
           />
         </div>
-        <div className="col-start-3 row-start-1 font-semibold md:col-start-4 md:row-start-1">
+        <div className="col-start-3 row-start-1 font-semibold md:col-start-4 md:row-start-1 md:text-center">
           <CartLinePrice line={line} />
         </div>
         <CartLineFeedback
@@ -310,7 +310,7 @@ function CartLineItem({
           to={lineItemUrl}
           prefetch="intent"
           onClick={onClose}
-          className="size-24 shrink-0 overflow-hidden rounded-sm"
+          className="size-26 shrink-0 overflow-hidden rounded-sm"
         >
           <Image
             alt={merchandise.product.title}
@@ -480,10 +480,8 @@ function CartLineQuantity({
       <fieldset
         aria-label={`${t("product.quantity")}, ${optimisticQuantity}`}
         className={cn(
-          "flex w-fit items-center border",
-          layout === "page"
-            ? "h-10 gap-2 rounded-[2px] border-border-subtle"
-            : "h-10 rounded-2xl border-border",
+          "flex w-fit items-center border border-border rounded-2xl h-10",
+          layout === "page" && "gap-2 bg-background-basic",
         )}
       >
         <button

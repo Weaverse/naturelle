@@ -23,14 +23,13 @@ export const HotspotsContext = createContext<HotspotsContextValue>({
 
 interface HotspotsImageProps extends HydrogenComponentProps {
   image: string;
-  aspectRatio: "adapt" | "1/1" | "4/3" | "3/4" | "16/9";
 }
 
 const HotspotsImage = ({
   ref,
   ...props
 }: HotspotsImageProps & { ref?: RefObject<HTMLDivElement | null> }) => {
-  let { image, aspectRatio, children, ...rest } = props;
+  let { image, children, ...rest } = props;
   let imageData: Partial<WeaverseImage> =
     typeof image === "string"
       ? { url: image, altText: "Hotspots image" }
@@ -51,7 +50,6 @@ const HotspotsImage = ({
       <div
         ref={ref}
         {...rest}
-        data-aspect-ratio={aspectRatio}
         style={
           {
             "--hotspot-background-image": imageData.url
@@ -91,29 +89,11 @@ export const schema = createSchema({
           name: "image",
           label: "Image",
         },
-        {
-          type: "select",
-          name: "aspectRatio",
-          label: "Aspect ratio",
-          defaultValue: "adapt",
-          configs: {
-            options: [
-              { value: "adapt", label: "Adapt to image" },
-              { value: "1/1", label: "1/1" },
-              { value: "4/3", label: "4/3" },
-              { value: "3/4", label: "3/4" },
-              { value: "16/9", label: "16/9" },
-            ],
-          },
-          helpText:
-            'Learn more about image <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio" target="_blank" rel="noopener noreferrer">aspect ratio</a> property.',
-        },
       ],
     },
   ],
   presets: {
     image: IMAGES_PLACEHOLDERS.collection_4,
-    aspectRatio: "16/9",
     children: [
       {
         type: "hotspots--item",

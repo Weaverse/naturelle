@@ -1175,12 +1175,6 @@ export const themeSchema: HydrogenThemeSchema = {
           defaultValue: "#4BAE42",
         },
         {
-          type: "color",
-          label: "Shop Pay background",
-          name: "shopPayButtonBgColor",
-          defaultValue: "#5A31F4",
-        },
-        {
           type: "switch",
           label: "Show vendor",
           name: "showVendor",
