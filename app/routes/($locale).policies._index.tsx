@@ -1,5 +1,7 @@
+import { FileTextIcon } from "@phosphor-icons/react";
 import { useTranslation } from "@weaverse/hydrogen";
 import { data, type LoaderFunctionArgs, useLoaderData } from "react-router";
+import { BreadCrumb } from "~/components/breadcrumb";
 import { Link } from "~/components/link";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
@@ -21,21 +23,29 @@ export default function Policies() {
   const { policies } = useLoaderData<typeof loader>();
 
   return (
-    <div className="policies">
-      <h1>{t("system.policies")}</h1>
-      <div>
-        {policies.map((policy: any) => {
-          if (!policy) {
-            return null;
-          }
-          return (
-            <fieldset key={policy.id}>
-              <Link to={`/policies/${policy.handle}`}>{policy.title}</Link>
-            </fieldset>
-          );
-        })}
+    <section className="px-5 md:px-6 lg:px-10">
+      <div className="mx-auto w-full max-w-page py-20">
+        <BreadCrumb page={t("system.policies")} className="mb-4" />
+        <h1 className="h4 mb-8 font-medium lg:mb-20">{t("system.policies")}</h1>
+        <div className="flex flex-col gap-3">
+          {policies.map((policy: any) => {
+            if (!policy) {
+              return null;
+            }
+            return (
+              <Link
+                key={policy.id}
+                className="flex w-fit items-center gap-2 underline underline-offset-4"
+                to={`/policies/${policy.handle}`}
+              >
+                <FileTextIcon className="h-5 w-5" />
+                <span>{policy.title}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 

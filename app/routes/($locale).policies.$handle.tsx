@@ -6,6 +6,7 @@ import {
   type MetaFunction,
   useLoaderData,
 } from "react-router";
+import { BreadCrumb } from "~/components/breadcrumb";
 import { Link } from "~/components/link";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
 
@@ -13,7 +14,11 @@ export const shouldRevalidate = skipRevalidationForCartActions;
 
 type SelectedPolicies = keyof Pick<
   Shop,
-  "privacyPolicy" | "shippingPolicy" | "termsOfService" | "refundPolicy"
+  | "privacyPolicy"
+  | "shippingPolicy"
+  | "termsOfService"
+  | "refundPolicy"
+  | "subscriptionPolicy"
 >;
 
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
@@ -36,6 +41,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
       shippingPolicy: false,
       termsOfService: false,
       refundPolicy: false,
+      subscriptionPolicy: false,
       [policyName]: true,
       language: context.storefront.i18n?.language,
     },
@@ -55,16 +61,22 @@ export default function Policy() {
   const { policy } = useLoaderData<typeof loader>();
 
   return (
-    <div className="policy">
-      <br />
-      <br />
-      <div>
-        <Link to="/policies">← {t("system.backToPolicies")}</Link>
+    <section className="px-5 md:px-6 lg:px-10">
+      <div className="mx-auto w-full max-w-page py-20">
+        <BreadCrumb page={policy.title} className="mb-4" />
+        <h1 className="h4 mb-4 font-medium">{policy.title}</h1>
+        <Link className="underline underline-offset-4" to="/policies">
+          &larr; {t("system.backToPolicies")}
+        </Link>
+        <div className="mt-8 lg:mt-20">
+          <div
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: policy.body }}
+            className="prose"
+          />
+        </div>
       </div>
-      <br />
-      <h1>{policy.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: policy.body }} />
-    </div>
+    </section>
   );
 }
 
@@ -84,6 +96,7 @@ const POLICY_CONTENT_QUERY = `#graphql
     $refundPolicy: Boolean!
     $shippingPolicy: Boolean!
     $termsOfService: Boolean!
+    $subscriptionPolicy: Boolean!
   ) @inContext(language: $language, country: $country) {
     shop {
       privacyPolicy @include(if: $privacyPolicy) {
@@ -97,6 +110,13 @@ const POLICY_CONTENT_QUERY = `#graphql
       }
       refundPolicy @include(if: $refundPolicy) {
         ...Policy
+      }
+      subscriptionPolicy @include(if: $subscriptionPolicy) {
+        body
+        handle
+        id
+        title
+        url
       }
     }
   }

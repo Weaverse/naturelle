@@ -51,7 +51,7 @@ export default function SearchResults() {
     <section className="bg-background-basic">
       <PageHeader variant="search">
         <div className="flex w-full flex-col items-center gap-6 px-6">
-          <h1 className="w-full text-center text-3xl font-medium md:text-4xl lg:text-5xl">
+          <h1 className="h2 w-full text-center font-normal text-text">
             {searchTerm
               ? t("search.resultsFor", { term: searchTerm })
               : t("search.title")}
@@ -81,24 +81,24 @@ export default function SearchResults() {
           </Form>
         </div>
       </PageHeader>
-      <ProductListingFilterToolbar
-        showSearchSort
-        appliedFilters={appliedFilters}
-        productNumber={products.totalCount}
-        filters={storefrontFilters}
-        priceRange={priceRange}
-        expandFilters
-        showFiltersCount
-        enableSwatches
-        displayAsButtonFor="Size, More filters"
-        filterItemsLimit={10}
-        checkboxShape="square"
-        clearFiltersTo={clearFiltersTo}
-        contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
-      >
-        {noResults ? (
-          <NoResults />
-        ) : (
+      {noResults ? (
+        <NoResults />
+      ) : (
+        <ProductListingFilterToolbar
+          showSearchSort
+          appliedFilters={appliedFilters}
+          productNumber={products.totalCount}
+          filters={storefrontFilters}
+          priceRange={priceRange}
+          expandFilters
+          showFiltersCount
+          enableSwatches
+          displayAsButtonFor="Size, More filters"
+          filterItemsLimit={10}
+          checkboxShape="square"
+          clearFiltersTo={clearFiltersTo}
+          contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
+        >
           <ProductListingPagination
             connection={products}
             renderPrevious={({ PreviousLink, isLoading }) => (
@@ -132,8 +132,8 @@ export default function SearchResults() {
               </Grid>
             )}
           />
-        )}
-      </ProductListingFilterToolbar>
+        </ProductListingFilterToolbar>
+      )}
     </section>
   );
 }
@@ -141,7 +141,7 @@ export default function SearchResults() {
 function NoResults() {
   const { t } = useTranslation();
   return (
-    <div className="w-full py-4">
+    <div className="mx-auto flex w-full max-w-page justify-center px-5 py-20 text-center md:px-6">
       <Text className="opacity-50">{t("search.empty")}</Text>
     </div>
   );
