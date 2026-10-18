@@ -367,14 +367,16 @@ function CartNewsletter() {
             action={newsletterAction}
             className="flex w-full items-stretch gap-3"
           >
-            <Input
-              variant="custom"
-              type="email"
-              name="email"
-              placeholder={cartNewsletterPlaceholder}
-              required
-              className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-background-basic px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
-            />
+            <div className="min-w-0 flex-1 rounded-xl bg-background-basic">
+              <Input
+                variant="custom"
+                type="email"
+                name="email"
+                placeholder={cartNewsletterPlaceholder}
+                required
+                className="h-full rounded-xl border border-border-subtle px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
+              />
+            </div>
             <Button
               type="submit"
               loading={isSubmitting}

@@ -68,13 +68,13 @@ export default function ProductStory({
     <section ref={ref} {...rest} data-product-metafield-section>
       <div
         className={cn(
-          "grid items-stretch gap-5 lg:gap-16",
-          showImage && "md:grid-cols-2",
+          "flex flex-col items-stretch gap-5 lg:gap-16",
+          showImage && "md:flex-row",
         )}
       >
         <div
           className={cn(
-            "flex flex-col justify-center gap-8",
+            "flex min-w-0 flex-1 flex-col justify-center gap-8",
             imagePosition === "left" && "md:order-2",
           )}
         >
@@ -100,7 +100,7 @@ export default function ProductStory({
         {showImage ? (
           <div
             className={cn(
-              "overflow-hidden rounded-3xl",
+              "min-w-0 flex-1 overflow-hidden rounded-3xl desktop:h-[600px] desktop:w-[480px] desktop:flex-none",
               imagePosition === "left" && "md:order-1",
             )}
           >

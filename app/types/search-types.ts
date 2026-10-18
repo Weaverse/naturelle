@@ -9,6 +9,7 @@ import type {
 export const PREDICTIVE_SEARCH_FETCHER_KEY = "predictive-search";
 export const PREDICTIVE_SEARCH_LIMIT = 8;
 export const POPULAR_PRODUCTS_LIMIT = 4;
+export const PREDICTIVE_SEARCH_SIDE_LIMIT = 5;
 
 export type PredictiveSearchResponse = {
   searchResults?: NormalizedPredictiveSearch;

@@ -35,6 +35,7 @@ export function CartDrawerTrigger({ compact = false }: { compact?: boolean }) {
         aria-hidden="true"
         className={compact ? "size-5" : "size-6"}
         viewBox="0 0 24 24"
+        strokeWidth={2}
       />
       <div
         className={cn(

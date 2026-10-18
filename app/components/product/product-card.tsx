@@ -88,6 +88,7 @@ export interface ProductCardProps {
   showBadge?: boolean;
   showPrice?: boolean;
   showStar?: boolean;
+  showVendor?: boolean;
   showViewDetailsLink?: boolean;
   viewDetailsLinkText?: string;
 }
@@ -104,6 +105,7 @@ export function ProductCard({
   showBadge = true,
   showPrice = true,
   showStar = true,
+  showVendor,
   showViewDetailsLink = false,
   viewDetailsLinkText = "View full details",
 }: ProductCardProps) {
@@ -212,7 +214,7 @@ export function ProductCard({
           pcardAlignment === "left" && "items-start text-left",
         )}
       >
-        {pcardShowVendor && product.vendor && (
+        {(showVendor ?? pcardShowVendor) && product.vendor && (
           <span className="w-fit rounded-lg bg-background-subtle-2 px-2 py-1 text-xs leading-none">
             {product.vendor}
           </span>

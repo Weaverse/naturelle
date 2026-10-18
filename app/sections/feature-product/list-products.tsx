@@ -47,7 +47,6 @@ const ListProducts = ({
     showArrows,
     arrowsIcon,
     iconSize,
-    showArrowsOnHover,
     arrowsColor,
     arrowsShape,
     showNumber,
@@ -127,6 +126,10 @@ const ListProducts = ({
               spaceBetween: 20,
             },
             768: {
+              slidesPerView: 3,
+              spaceBetween: 20,
+            },
+            960: {
               slidesPerView: 4,
               spaceBetween: 20,
             },
@@ -137,7 +140,12 @@ const ListProducts = ({
         </Swiper>
         {showArrows && <Arrows {...props} instance={swiperInstance} />}
       </div>
-      {showNumber && <SlideNumber {...props} instance={swiperInstance} />}
+      {showNumber && (
+        <SlideNumber
+          instance={swiperInstance}
+          totalSlides={displayedProducts?.length ?? 4}
+        />
+      )}
     </div>
   );
 };
@@ -255,13 +263,6 @@ export const schema = createSchema({
             step: 2,
           },
           defaultValue: 20,
-          condition: "showArrows.eq.true",
-        },
-        {
-          type: "switch",
-          label: "Show arrows on hover",
-          name: "showArrowsOnHover",
-          defaultValue: false,
           condition: "showArrows.eq.true",
         },
         {

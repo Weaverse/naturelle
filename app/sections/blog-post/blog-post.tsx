@@ -7,6 +7,7 @@ import { IconArrowLeft, IconArrowRight } from "~/components/icon";
 import { Link } from "~/components/link";
 import { ProductShareLinks } from "~/components/product-form/pdp-form";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { cn } from "~/utils/cn";
 import { usePrefixClassNames } from "~/utils/misc";
 
 type BlogPostProps = SectionProps;
@@ -15,7 +16,7 @@ let BlogPost = ({
   ref,
   ...props
 }: BlogPostProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { ...rest } = props;
+  let { width = "fixed", className, ...rest } = props;
   const { t } = useTranslation();
   let {
     article,
@@ -41,8 +42,13 @@ let BlogPost = ({
       <Section
         ref={ref}
         {...rest}
+        width={width}
         verticalPadding="none"
-        className="h-fit max-w-230 py-10 px-4 md:px-6 lg:px-0"
+        className={cn(
+          className,
+          "h-fit py-10",
+          width === "fixed" && "max-w-230",
+        )}
       >
         <div className="flex flex-col h-fit gap-6">
           <div className="h-full flex flex-col">
@@ -147,6 +153,7 @@ export const schema = createSchema({
         ({ name }) =>
           name !== "divider" &&
           name !== "borderRadius" &&
+          name !== "gap" &&
           name !== "verticalPadding",
       ),
     },

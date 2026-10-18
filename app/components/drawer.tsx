@@ -155,6 +155,7 @@ export function Drawer({
                     className={cn(
                       headerVariants({ isForm }),
                       heading ? "justify-between" : "justify-items-end",
+                      openFrom === "left" && isForm === "search" && "px-6",
                       openFrom === "left" ||
                         isForm === "cart" ||
                         (openFrom === "top" && !isBackMenu)
@@ -170,9 +171,11 @@ export function Drawer({
                     >
                       <IconClose
                         className={
-                          isForm === "cart" || isForm === "filter"
-                            ? "size-5"
-                            : undefined
+                          isForm === "search"
+                            ? "size-6"
+                            : isForm === "cart" || isForm === "filter"
+                              ? "size-5"
+                              : undefined
                         }
                         aria-label={t("accessibility.close")}
                       />

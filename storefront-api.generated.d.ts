@@ -2411,7 +2411,6 @@ export type CollectionsByIdsQuery = {
       }
     >
   >;
-  allCollections: Pick<StorefrontAPI.CollectionConnection, 'totalCount'>;
 };
 
 export type ProductDetailMetafieldQueryVariables = StorefrontAPI.Exact<{
@@ -3429,7 +3428,7 @@ interface GeneratedQueryTypes {
     return: StoreRobotsQuery;
     variables: StoreRobotsQueryVariables;
   };
-  '#graphql\n  query collectionsByIds(\n    $country: CountryCode\n    $language: LanguageCode\n    $ids: [ID!]!\n  ) @inContext(country: $country, language: $language) {\n    nodes(ids: $ids) {\n      ... on Collection {\n        id\n        title\n        handle\n        image {\n          id\n          altText\n          width\n          height\n          url\n        }\n      }\n    }\n    allCollections: collections(first: 1) {\n      totalCount\n    }\n  }\n': {
+  '#graphql\n  query collectionsByIds(\n    $country: CountryCode\n    $language: LanguageCode\n    $ids: [ID!]!\n  ) @inContext(country: $country, language: $language) {\n    nodes(ids: $ids) {\n      ... on Collection {\n        id\n        title\n        handle\n        image {\n          id\n          altText\n          width\n          height\n          url\n        }\n      }\n    }\n  }\n': {
     return: CollectionsByIdsQuery;
     variables: CollectionsByIdsQueryVariables;
   };

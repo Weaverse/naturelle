@@ -1,10 +1,7 @@
 import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
-import {
-  Section,
-  type SectionProps,
-  sectionInspector,
-} from "~/components/section";
+import { backgroundInputs } from "~/components/background-image";
+import { layoutInputs, Section, type SectionProps } from "~/components/section";
 
 type ProductGridData = SectionProps;
 
@@ -37,10 +34,21 @@ export default function ProductGrid({
 export const schema = createSchema({
   type: "product-grid",
   title: "Product grid",
-  settings: sectionInspector.map((group) => ({
-    ...group,
-    inputs: group.inputs.filter((input) => input.name !== "verticalPadding"),
-  })),
+  settings: [
+    {
+      group: "Layout",
+      inputs: layoutInputs.filter(
+        (input) =>
+          input.name !== "verticalPadding" && input.name !== "borderRadius",
+      ),
+    },
+    {
+      group: "Background",
+      inputs: backgroundInputs.filter(
+        (input) => input.name === "backgroundColor",
+      ),
+    },
+  ],
   childTypes: ["heading", "product-grid--list"],
   presets: {
     children: [

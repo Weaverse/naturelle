@@ -28,9 +28,12 @@ export interface HotspotsItemData {
   heading: string;
   icon: "circle" | "plus" | "bag" | "tag";
   iconSize: number;
+  hotspotOverlayColor: string;
+  hotspotOverlayOpacity: number;
   offsetX: number;
   offsetY: number;
   overlayColor: string;
+  overlayOpacity: number;
   paragraph: string;
   product: WeaverseProduct;
   showBadge: boolean;
@@ -61,9 +64,12 @@ let HotspotsItem = ({
     heading,
     icon,
     iconSize,
+    hotspotOverlayColor = "#374151",
+    hotspotOverlayOpacity = 75,
     offsetX,
     offsetY,
     overlayColor = "#EEEFEA",
+    overlayOpacity = 10,
     paragraph,
     product,
     showBadge,
@@ -105,8 +111,12 @@ let HotspotsItem = ({
         onClick={() => selectItem(itemIndex)}
       >
         <span
-          className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-700 opacity-75"
-          style={{ animationDuration: "1500ms" }}
+          className="animate-ping absolute inline-flex h-full w-full rounded-full"
+          style={{
+            animationDuration: "1500ms",
+            backgroundColor: hotspotOverlayColor,
+            opacity: hotspotOverlayOpacity / 100,
+          }}
         />
         <span
           className={clsx(
@@ -128,7 +138,7 @@ let HotspotsItem = ({
               aria-hidden="true"
               className="absolute inset-0 backdrop-blur-[45px]"
               style={{
-                backgroundColor: `color-mix(in srgb, ${overlayColor} 10%, transparent)`,
+                backgroundColor: `color-mix(in srgb, ${overlayColor} ${overlayOpacity}%, transparent)`,
               }}
             />
             {showBadge && productBadge && (
@@ -240,6 +250,24 @@ export const schema = createSchema({
           defaultValue: 20,
         },
         {
+          type: "color",
+          name: "hotspotOverlayColor",
+          label: "Hotspot overlay color",
+          defaultValue: "#374151",
+        },
+        {
+          type: "range",
+          name: "hotspotOverlayOpacity",
+          label: "Hotspot overlay opacity",
+          configs: {
+            min: 0,
+            max: 100,
+            step: 5,
+            unit: "%",
+          },
+          defaultValue: 75,
+        },
+        {
           type: "range",
           name: "offsetX",
           label: "Offset X",
@@ -332,8 +360,20 @@ export const schema = createSchema({
         {
           type: "color",
           name: "overlayColor",
-          label: "Overlay color",
+          label: "Panel overlay color",
           defaultValue: "#EEEFEA",
+        },
+        {
+          type: "range",
+          name: "overlayOpacity",
+          label: "Panel overlay opacity",
+          configs: {
+            min: 0,
+            max: 100,
+            step: 5,
+            unit: "%",
+          },
+          defaultValue: 10,
         },
       ],
     },

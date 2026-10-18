@@ -288,7 +288,7 @@ function MenuLink(props: SingleMenuItem) {
           {({ open }) => (
             <div className="contents">
               <Disclosure.Button className="w-full text-left">
-                <h6
+                <span
                   className={cn("flex justify-between", footerMenuHeadingClass)}
                 >
                   {title}
@@ -300,7 +300,7 @@ function MenuLink(props: SingleMenuItem) {
                       }`}
                     />
                   </span>
-                </h6>
+                </span>
               </Disclosure.Button>
               <div
                 className={`${

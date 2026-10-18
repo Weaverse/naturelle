@@ -70,14 +70,20 @@ export function DrawerFilter({
             onClick={openDrawer}
             shape="default"
             variant="outline"
-            className="rounded-lg px-5 py-3.5"
+            className="h-auto rounded-xl px-5 py-3.5 lg:hidden"
             classNameContainer="flex items-center justify-center gap-2"
           >
             <IconFilters className="size-5" viewBox="0 0 16 16" />
-            <span className="font-heading text-xl font-normal">
+            <span className="font-heading text-xl tracking-[-0.2px]">
               {t("collection.filter")}
             </span>
           </Button>
+          <div className="btn-outline hidden h-auto items-center justify-center gap-2 whitespace-nowrap rounded-xl px-5 py-3.5 font-body font-normal transition-colors lg:inline-flex">
+            <IconFilters className="size-5" viewBox="0 0 16 16" />
+            <span className="font-heading text-xl tracking-[-0.2px]">
+              {t("collection.filter")}
+            </span>
+          </div>
           <span className="hidden font-body text-base font-normal leading-none tracking-[-0.16px] lg:inline">
             {productNumber} {t("collection.products")}
           </span>
@@ -421,25 +427,24 @@ export function AppliedFilters({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <div className="flex flex-wrap items-center gap-2">
-        {filters.map((filter: AppliedFilter) => {
-          return (
-            <Link
-              to={getAppliedFilterLink(filter, params, location)}
-              className="flex min-h-10 items-center gap-2 rounded-full border border-border-subtle px-4 py-2 font-heading text-sm hover:border-foreground"
-              key={`${filter.label}-${JSON.stringify(filter.filter)}`}
-              preventScrollReset
-            >
-              <span>{filter.label}</span>
-              <IconXMark className="size-4" />
-            </Link>
-          );
-        })}
-      </div>
+    <div className="flex flex-wrap items-center gap-2.5 font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text-subtle">
+      <span className="font-semibold">{t("collection.filteredBy")}</span>
+      {filters.map((filter: AppliedFilter) => {
+        return (
+          <Link
+            to={getAppliedFilterLink(filter, params, location)}
+            className="flex items-center gap-2 rounded-xl border border-border-subtle px-2 py-1.5 hover:border-foreground"
+            key={`${filter.label}-${JSON.stringify(filter.filter)}`}
+            preventScrollReset
+          >
+            <span>{filter.label}</span>
+            <IconXMark className="size-3.5 shrink-0" />
+          </Link>
+        );
+      })}
       <Link
         to={clearTo ?? location.pathname}
-        className="font-heading text-sm underline underline-offset-4"
+        className="font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text-subtle underline decoration-solid [text-decoration-skip-ink:none] [text-decoration-thickness:auto] [text-underline-position:from-font]"
         preventScrollReset
       >
         {t("collection.clearAll")}
@@ -738,24 +743,21 @@ export function SortMenu({
       as="div"
       className="relative z-30 flex items-center justify-end gap-3"
     >
-      <span className="hidden shrink-0 font-heading text-xl font-normal leading-[1.6] tracking-[-0.2px] md:inline">
+      <span className="hidden shrink-0 font-heading text-xl font-normal tracking-[-0.2px] md:inline">
         {t("collection.sortBy")}
       </span>
       <Menu.Button
         aria-label={t("collection.sortProducts", { sort: activeItem.label })}
-        className="flex h-12 items-center justify-between gap-2 rounded-sm border border-border px-3 py-2.5 text-left md:h-15 md:min-w-48 md:gap-3 md:px-4 md:py-3.5"
+        className="flex h-auto items-center gap-2.5 rounded-xl border border-border px-4 py-3.5 text-left"
       >
-        <span className="font-heading max-w-[7.5rem] text-ellipsis overflow-hidden whitespace-nowrap text-sm font-normal md:hidden">
-          {activeItem.label}
-        </span>
-        <span className="hidden font-heading text-xl font-normal leading-[1.6] tracking-[-0.2px] md:inline">
+        <span className="max-w-[7.5rem] overflow-hidden text-ellipsis whitespace-nowrap font-heading text-xl font-normal tracking-[-0.2px] md:max-w-none">
           {activeItem.label}
         </span>
         <IconCaret className="size-4 shrink-0" />
       </Menu.Button>
       <Menu.Items
         as="nav"
-        className="absolute top-full right-0 flex h-fit w-56 flex-col gap-3 border border-border bg-background px-4 py-4 shadow-sm"
+        className="absolute top-full right-0 mt-2 flex h-fit w-56 flex-col gap-3 rounded-xl border border-border bg-background px-4 py-4 shadow-sm"
       >
         {items.map((item) => (
           <Menu.Item key={item.label}>

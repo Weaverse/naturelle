@@ -110,7 +110,6 @@ export function Header() {
           "border-border-subtle bg-header-bg text-(--color-header-text)",
           "hover:bg-header-bg",
           "hover:text-(--color-header-text)",
-          "hover:border-(--color-header-text)",
           enableTransparent ? "fixed w-full group/header" : "sticky",
           scrolled ? "shadow-header" : "shadow-none",
           showTransparentHeader
@@ -125,7 +124,7 @@ export function Header() {
       >
         <div
           className={cn(
-            "hidden w-full items-center justify-center px-6 py-4 desktop:flex lg:px-10",
+            "hidden h-[82px] w-full items-center justify-center px-6 py-4 desktop:flex lg:px-10",
             showTransparentHeader
               ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",
@@ -146,12 +145,7 @@ export function Header() {
               className="z-30 flex w-21.75! shrink-0 flex-col items-center justify-center gap-[0.305px]"
             />
 
-            <div
-              className={cn(
-                "flex min-w-0 flex-1 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal",
-                isUtilitySearchOpen && "pl-4.5",
-              )}
-            >
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-4.5 text-[13px] font-semibold leading-normal">
               {!isUtilitySearchOpen && (
                 <>
                   <HeaderCountrySelector />

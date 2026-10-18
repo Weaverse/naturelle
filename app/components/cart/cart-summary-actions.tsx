@@ -12,6 +12,11 @@ import { usePrefixPathWithLocale } from "~/utils/locale";
 
 type CartLayout = "page" | "aside";
 
+const dialogTitleClass = "mb-4 font-semibold tracking-[-0.16px] text-text";
+const dialogFieldClass =
+  "w-full rounded-lg border border-border-subtle p-3 font-normal tracking-[-0.16px] text-text placeholder:text-text";
+const dialogButtonClass = "w-full rounded-lg font-semibold tracking-[-0.16px]";
+
 export function CartActionBanner({
   variant,
   children,
@@ -34,10 +39,10 @@ export function CartActionBanner({
 
 function dialogContentClass(layout: CartLayout) {
   return cn(
-    "fixed z-[60] w-full overflow-hidden bg-(--color-drawer-bg) p-6 shadow-xl",
+    "fixed z-[60] w-full overflow-hidden bg-(--color-drawer-bg) px-5 py-4 shadow-xl",
     "data-[state=open]:animate-slide-up data-[state=closed]:animate-slide-down",
     layout === "aside"
-      ? "bottom-0 right-0 max-w-[420px] [--slide-down-to:100%] [--slide-up-from:100%]"
+      ? "right-0 bottom-0 max-w-[460px] [--slide-down-to:100%] [--slide-up-from:100%]"
       : "top-1/2 left-1/2 max-w-[400px] -translate-x-1/2 -translate-y-1/2 md:max-w-[420px] [--slide-down-to:40px] [--slide-up-from:40px]",
   );
 }
@@ -127,9 +132,7 @@ export function NoteDialog({
           </button>
         </Dialog.Close>
         <Dialog.Title asChild>
-          <p className="mb-4 font-body text-sm font-medium">
-            {t("cart.noteTitle")}
-          </p>
+          <p className={dialogTitleClass}>{t("cart.noteTitle")}</p>
         </Dialog.Title>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <label htmlFor={noteId} className="sr-only">
@@ -137,7 +140,7 @@ export function NoteDialog({
           </label>
           <textarea
             id={noteId}
-            className="min-h-[92px] w-full resize-none rounded-lg border border-border-subtle p-3"
+            className={cn(dialogFieldClass, "min-h-[92px] resize-none")}
             placeholder={t("cart.notePlaceholder")}
             rows={3}
             name="cartNote"
@@ -160,7 +163,7 @@ export function NoteDialog({
             type="submit"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
-            className="w-full rounded-lg"
+            className={dialogButtonClass}
           >
             {t("cart.addNote")}
           </Button>
@@ -229,9 +232,7 @@ export function DiscountDialog({
           </button>
         </Dialog.Close>
         <Dialog.Title asChild>
-          <p className="mb-4 font-body text-sm font-medium">
-            {t("cart.discountTitle")}
-          </p>
+          <p className={dialogTitleClass}>{t("cart.discountTitle")}</p>
         </Dialog.Title>
         <form onSubmit={handleSubmit} className="space-y-4">
           <label htmlFor={discountCodeId} className="sr-only">
@@ -244,7 +245,7 @@ export function DiscountDialog({
               setCode(e.target.value);
               fetcher.data = null;
             }}
-            className="w-full rounded-lg border border-border-subtle p-3"
+            className={dialogFieldClass}
             type="text"
             name="discountCode"
             placeholder={t("cart.discountCode")}
@@ -262,7 +263,7 @@ export function DiscountDialog({
           )}
           <Button
             type="submit"
-            className="w-full rounded-lg"
+            className={dialogButtonClass}
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
           >
@@ -336,9 +337,7 @@ export function GiftCardDialog({
           </button>
         </Dialog.Close>
         <Dialog.Title asChild>
-          <p className="mb-4 font-body text-sm font-medium">
-            {t("cart.giftCardTitle")}
-          </p>
+          <p className={dialogTitleClass}>{t("cart.giftCardTitle")}</p>
         </Dialog.Title>
         <form onSubmit={handleSubmit} className="space-y-4">
           <label htmlFor={giftCardCodeId} className="sr-only">
@@ -346,7 +345,7 @@ export function GiftCardDialog({
           </label>
           <input
             id={giftCardCodeId}
-            className="w-full rounded-lg border border-border-subtle p-3"
+            className={dialogFieldClass}
             type="text"
             name="giftCardCode"
             placeholder={t("cart.giftCardCode")}
@@ -369,7 +368,7 @@ export function GiftCardDialog({
           )}
           <Button
             type="submit"
-            className="w-full rounded-lg"
+            className={dialogButtonClass}
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
           >
