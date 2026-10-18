@@ -23,6 +23,7 @@ import * as FaqItem from "~/sections/faqs/faq-item";
 import * as Faqs from "~/sections/faqs/index";
 import * as FeaturedProducts from "~/sections/feature-product/index";
 import * as FeaturedProductsList from "~/sections/feature-product/list-products";
+import * as HeroStory from "~/sections/hero-story";
 import * as HighlightContent from "~/sections/highlight/content-item";
 import * as Highlights from "~/sections/highlight/index";
 import * as HightlightItem from "~/sections/highlight/item";
@@ -86,6 +87,7 @@ export const components: HydrogenComponent[] = [
   Highlights,
   HightlightItem,
   HighlightContent,
+  HeroStory,
   ImageWithTextList,
   ImageWithText,
   ImageWithTextImage,

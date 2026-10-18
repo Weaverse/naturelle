@@ -115,7 +115,7 @@ export function ProductPlaceholder(_props: any) {
           </div>
           <div>
             <button
-              className="inline-block w-full rounded-md border-2 border-btn bg-btn px-4 py-3 text-center font-medium text-btn-content text-sm hover:bg-inv-btn hover:text-inv-btn-content"
+              className="inline-block w-full rounded-xl border-2 border-btn bg-btn px-4 py-3 text-center font-medium text-btn-content text-sm hover:bg-inv-btn hover:text-inv-btn-content"
               type="submit"
               data-test="add-to-cart"
             >

@@ -66,7 +66,13 @@ export function ProductListingFilterToolbar({
       />
       <div className={cn(sectionClassName)}>
         <div className="hidden w-[320px] shrink-0 lg:block">
-          <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col overflow-x-hidden overflow-y-auto">
+          <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col gap-5 overflow-x-hidden overflow-y-auto">
+            {appliedFilters.length > 0 && (
+              <AppliedFilters
+                filters={appliedFilters}
+                clearTo={clearFiltersTo}
+              />
+            )}
             <FiltersDrawer
               desktop
               filters={filters}
@@ -81,9 +87,16 @@ export function ProductListingFilterToolbar({
             />
           </div>
         </div>
-        <div className={cn(contentClassName)}>
-          <AppliedFilters filters={appliedFilters} clearTo={clearFiltersTo} />
-          {children}
+        <div className="min-w-0 flex-1">
+          {appliedFilters.length > 0 && (
+            <div className="mb-10 lg:hidden">
+              <AppliedFilters
+                filters={appliedFilters}
+                clearTo={clearFiltersTo}
+              />
+            </div>
+          )}
+          <div className={cn(contentClassName)}>{children}</div>
         </div>
       </div>
     </>

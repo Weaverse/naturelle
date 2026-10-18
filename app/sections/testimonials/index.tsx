@@ -12,6 +12,7 @@ import {
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
+import { buttonVariants } from "~/components/button";
 import { IconCaret, IconImageBlank } from "~/components/icon";
 import { Link } from "~/components/link";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
@@ -253,7 +254,11 @@ const Testimonials = ({
               <Link
                 to={productUrl}
                 prefetch="intent"
-                className="pointer-events-auto flex min-h-9 w-fit max-w-[320px] items-center justify-between gap-3 rounded-xl border border-(--border-color) bg-(--color-button-primary-background) px-[18px] py-3 text-sm font-bold text-(--text-color) shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
+                className={buttonVariants({
+                  variant: "primary",
+                  className:
+                    "pointer-events-auto flex h-auto min-h-9 w-fit max-w-[320px] items-center justify-between gap-3 rounded-xl px-[18px] py-3 text-sm font-bold shadow-[0_10px_24px_rgba(0,0,0,0.2)]",
+                })}
               >
                 <span>{ratingButtonText}</span>
                 <IconCaret
@@ -312,7 +317,10 @@ export const schema = createSchema({
       group: "Layout",
       inputs: layoutInputs.filter(
         ({ name }) =>
-          name !== "divider" && name !== "borderRadius" && name !== "gap",
+          name !== "divider" &&
+          name !== "borderRadius" &&
+          name !== "gap" &&
+          name !== "verticalPadding",
       ),
     },
     {

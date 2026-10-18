@@ -38,7 +38,7 @@ export function SearchTypeDrawer(props: PredictiveSearchProps) {
               onKeyDown={handleKeyDown}
               placeholder={t("search.placeholder")}
               ref={inputRef}
-              className="rounded-md border-2"
+              className="rounded-xl border-2"
               type="search"
               prefixElement={
                 <button type="submit">
