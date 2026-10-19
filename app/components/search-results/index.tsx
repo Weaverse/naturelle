@@ -11,6 +11,8 @@ import { ProductListingFilterToolbar } from "~/components/product-listing/filter
 import { ProductListingPagination } from "~/components/product-listing/pagination";
 import { PageHeader, Text } from "~/components/text";
 import type { loader as searchLoader } from "~/routes/($locale).search";
+import { FILTER_URL_PREFIX } from "~/utils/const";
+import { clearPaginationParams } from "~/utils/filter";
 import { getImageLoadingPriority } from "~/utils/image";
 
 export default function SearchResults() {
@@ -23,14 +25,36 @@ export default function SearchResults() {
     lowestPriceProduct,
     highestPriceProduct,
   } = useLoaderData<typeof searchLoader>();
-  const noResults = Boolean(searchTerm && products?.nodes?.length === 0);
   const location = useLocation();
   const navigate = useNavigate();
-  const clearFiltersParams = new URLSearchParams();
-  if (searchTerm) {
-    clearFiltersParams.set("q", searchTerm);
+  const searchFormParams = new URLSearchParams(location.search);
+  searchFormParams.delete("q");
+  clearPaginationParams(searchFormParams);
+  const hasAppliedFilterParams = [...searchFormParams.keys()].some((key) =>
+    key.startsWith(FILTER_URL_PREFIX),
+  );
+  const noResults =
+    products?.totalCount === 0 && Boolean(searchTerm || hasAppliedFilterParams);
+
+  const clearFiltersParams = new URLSearchParams(location.search);
+  for (const key of [...clearFiltersParams.keys()]) {
+    if (key.startsWith(FILTER_URL_PREFIX)) {
+      clearFiltersParams.delete(key);
+    }
   }
-  const clearFiltersTo = `${location.pathname}?${clearFiltersParams.toString()}`;
+  clearPaginationParams(clearFiltersParams);
+  const clearFiltersQuery = clearFiltersParams.toString();
+  const clearFiltersTo = `${location.pathname}${clearFiltersQuery ? `?${clearFiltersQuery}` : ""}`;
+
+  const clearSearch = () => {
+    const nextParams = new URLSearchParams(location.search);
+    nextParams.delete("q");
+    clearPaginationParams(nextParams);
+    const query = nextParams.toString();
+    navigate(`${location.pathname}${query ? `?${query}` : ""}`, {
+      preventScrollReset: true,
+    });
+  };
   const lowestPrice = Number(
     lowestPriceProduct?.nodes[0]?.priceRange.minVariantPrice.amount,
   );
@@ -60,9 +84,17 @@ export default function SearchResults() {
             method="get"
             className="relative flex w-full items-center justify-center"
           >
+            {[...searchFormParams.entries()].map(([name, value], index) => (
+              <input
+                key={`${name}-${value}-${index}`}
+                type="hidden"
+                name={name}
+                value={value}
+              />
+            ))}
             <Input
               defaultValue={searchTerm}
-              onClear={() => navigate(location.pathname)}
+              onClear={clearSearch}
               name="q"
               placeholder={t("search.placeholder")}
               className="w-full rounded-xl border border-border-subtle bg-background-basic p-3! md:w-[560px]"
@@ -81,24 +113,24 @@ export default function SearchResults() {
           </Form>
         </div>
       </PageHeader>
-      {noResults ? (
-        <NoResults />
-      ) : (
-        <ProductListingFilterToolbar
-          showSearchSort
-          appliedFilters={appliedFilters}
-          productNumber={products.totalCount}
-          filters={storefrontFilters}
-          priceRange={priceRange}
-          expandFilters
-          showFiltersCount
-          enableSwatches
-          displayAsButtonFor="Size, More filters"
-          filterItemsLimit={10}
-          checkboxShape="square"
-          clearFiltersTo={clearFiltersTo}
-          contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
-        >
+      <ProductListingFilterToolbar
+        showSearchSort
+        appliedFilters={appliedFilters}
+        productNumber={products.totalCount}
+        filters={storefrontFilters}
+        priceRange={priceRange}
+        expandFilters
+        showFiltersCount
+        enableSwatches
+        displayAsButtonFor="Size, More filters"
+        filterItemsLimit={10}
+        checkboxShape="square"
+        clearFiltersTo={clearFiltersTo}
+        contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
+      >
+        {noResults ? (
+          <NoResults />
+        ) : (
           <ProductListingPagination
             connection={products}
             renderPrevious={({ PreviousLink, isLoading }) => (
@@ -132,8 +164,8 @@ export default function SearchResults() {
               </Grid>
             )}
           />
-        </ProductListingFilterToolbar>
-      )}
+        )}
+      </ProductListingFilterToolbar>
     </section>
   );
 }
