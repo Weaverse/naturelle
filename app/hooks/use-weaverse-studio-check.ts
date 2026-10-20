@@ -2,10 +2,10 @@ import { isIframe, useWeaverse } from "@weaverse/hydrogen";
 
 export function useWeaverseStudioCheck() {
   const { isDesignMode } = useWeaverse();
+  const isStudioPreview =
+    isIframe &&
+    typeof window !== "undefined" &&
+    window.location.search.includes("isDesignMode=true");
 
-  if (isDesignMode === undefined && isIframe) {
-    return window.location.search.includes("isDesignMode=true");
-  }
-
-  return isDesignMode;
+  return Boolean(isDesignMode || isStudioPreview);
 }
