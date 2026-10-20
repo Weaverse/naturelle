@@ -176,7 +176,10 @@ function CartLines({
   return (
     <section
       aria-label={t("cart.items")}
-      className={cn(layout === "aside" && "min-h-0 flex-1 overflow-y-auto")}
+      className={cn(
+        layout === "aside" &&
+          "hiddenScroll min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto",
+      )}
     >
       {layout === "page" && (
         <>
