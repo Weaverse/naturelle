@@ -1,23 +1,47 @@
 import { Image } from "@shopify/hydrogen";
-import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
-import clsx from "clsx";
-import React, { type CSSProperties, useEffect, useRef } from "react";
 import {
-  IconArrowSlideLeft,
-  IconArrowSlideRight,
-  IconImageBlank,
-} from "~/components/icon";
+  createSchema,
+  type HydrogenComponentProps,
+  IMAGES_PLACEHOLDERS,
+  type WeaverseImage,
+} from "@weaverse/hydrogen";
+import React, { type CSSProperties, useRef } from "react";
+import { IconArrowSlideLeft, IconArrowSlideRight } from "~/components/icon";
+import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 
 interface BeforeAndAfterProps extends HydrogenComponentProps {
-  beforeImage: WeaverseImage;
-  afterImage: WeaverseImage;
+  beforeImage?: WeaverseImage | string;
+  afterImage?: WeaverseImage | string;
   separatorColor: string;
   showArrows: boolean;
   arrowColor: string;
+  showLabels?: boolean;
+  beforeLabel?: string;
+  afterLabel?: string;
   separatorWidth: number;
   sliderHeightDesktop: number;
   sliderHeightMobile: number;
+}
+
+function getImageData(
+  image: WeaverseImage | string | undefined,
+  label: string,
+  isDesignMode: boolean,
+) {
+  const configuredImage =
+    typeof image === "string" ? { url: image, altText: label } : image;
+  if (
+    configuredImage?.url?.trim() &&
+    configuredImage.url.trim() !== IMAGES_PLACEHOLDERS.image
+  ) {
+    return configuredImage;
+  }
+  return isDesignMode
+    ? {
+        url: IMAGES_PLACEHOLDERS.image,
+        altText: `${label} placeholder`,
+      }
+    : undefined;
 }
 
 const BeforeAndAfter = ({
@@ -30,167 +54,104 @@ const BeforeAndAfter = ({
     separatorColor,
     showArrows,
     arrowColor,
+    showLabels = true,
+    beforeLabel = "Before",
+    afterLabel = "After",
     separatorWidth,
-    sliderHeightDesktop,
-    sliderHeightMobile,
+    sliderHeightDesktop = 614,
+    sliderHeightMobile = 480,
     ...rest
   } = props;
+  const isDesignMode = useWeaverseStudioCheck();
+  const beforeImageData = getImageData(
+    beforeImage,
+    beforeLabel || "Before",
+    isDesignMode,
+  );
+  const afterImageData = getImageData(
+    afterImage,
+    afterLabel || "After",
+    isDesignMode,
+  );
+  const staticImageData = beforeImageData ?? afterImageData;
+  const canCompare = Boolean(beforeImageData && afterImageData);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const firstHalfRef = useRef<HTMLDivElement>(null);
-  const secondHalfRef = useRef<HTMLDivElement>(null);
-  const resizerRef = useRef<HTMLDivElement>(null);
+  const [sliderPosition, setSliderPosition] = React.useState(50);
+  const dragState = useRef<{
+    pointerId: number;
+    startX: number;
+    startPosition: number;
+  } | null>(null);
 
-  const updateWidth = React.useCallback(
-    (currentLeftWidth: number, dx: number) => {
+  const clampPosition = React.useCallback(
+    (position: number) => Math.min(Math.max(position, 0), 100),
+    [],
+  );
+
+  const handlePointerDown = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      dragState.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startPosition: sliderPosition,
+      };
+      event.currentTarget.setPointerCapture(event.pointerId);
+    },
+    [sliderPosition],
+  );
+
+  const handlePointerMove = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
       const container = containerRef.current;
-      const firstHalfEle = firstHalfRef.current;
-      const resizerEle = resizerRef.current;
-
-      if (!container || !firstHalfEle || !resizerEle) {
+      const drag = dragState.current;
+      if (!container || !drag || drag.pointerId !== event.pointerId) {
         return;
       }
-
       const containerWidth = container.getBoundingClientRect().width;
-      const delta = currentLeftWidth + dx;
-      const newFirstHalfWidth = (delta * 100) / containerWidth;
-      const normalizedWidth = Math.min(Math.max(0, newFirstHalfWidth), 100);
+      if (containerWidth <= 0) {
+        return;
+      }
+      const delta = ((event.clientX - drag.startX) * 100) / containerWidth;
+      setSliderPosition(clampPosition(drag.startPosition + delta));
+    },
+    [clampPosition],
+  );
 
-      firstHalfEle.style.clipPath = `inset(0 0 0 ${normalizedWidth}%)`;
-      resizerEle.style.left = `${normalizedWidth}%`;
+  const handlePointerEnd = React.useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (dragState.current?.pointerId !== event.pointerId) {
+        return;
+      }
+      dragState.current = null;
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
     },
     [],
   );
 
-  const updateCursor = React.useCallback(() => {
-    const container = containerRef.current;
-    const firstHalfEle = firstHalfRef.current;
-    const resizerEle = resizerRef.current;
-    const secondHalfEle = secondHalfRef.current;
-
-    if (!container || !firstHalfEle || !resizerEle || !secondHalfEle) {
-      return;
-    }
-
-    resizerEle.style.cursor = "ew-resize";
-    document.body.style.cursor = "ew-resize";
-    firstHalfEle.style.userSelect = "none";
-    firstHalfEle.style.pointerEvents = "none";
-    secondHalfEle.style.userSelect = "none";
-    secondHalfEle.style.pointerEvents = "none";
-  }, []);
-
-  const resetCursor = React.useCallback(() => {
-    const container = containerRef.current;
-    const firstHalfEle = firstHalfRef.current;
-    const resizerEle = resizerRef.current;
-    const secondHalfEle = secondHalfRef.current;
-
-    if (!container || !firstHalfEle || !resizerEle || !secondHalfEle) {
-      return;
-    }
-
-    resizerEle.style.removeProperty("cursor");
-    document.body.style.removeProperty("cursor");
-    firstHalfEle.style.removeProperty("user-select");
-    firstHalfEle.style.removeProperty("pointer-events");
-    secondHalfEle.style.removeProperty("user-select");
-    secondHalfEle.style.removeProperty("pointer-events");
-  }, []);
-
-  const handleMouseDown = React.useCallback(
-    (e: React.MouseEvent) => {
-      const startPos = {
-        x: e.clientX,
-        y: e.clientY,
-      };
-
-      const resizerEle = resizerRef.current;
-      if (!resizerEle) {
-        return;
+  const handleKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      const step = event.shiftKey ? 10 : 1;
+      let nextPosition: number | undefined;
+      if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+        nextPosition = sliderPosition - step;
+      } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+        nextPosition = sliderPosition + step;
+      } else if (event.key === "Home") {
+        nextPosition = 0;
+      } else if (event.key === "End") {
+        nextPosition = 100;
       }
-
-      const currentLeftWidth = Number.parseFloat(
-        window.getComputedStyle(resizerEle).left,
-      );
-
-      const handleMouseMove = (event: MouseEvent) => {
-        const dx = event.clientX - startPos.x;
-        updateWidth(currentLeftWidth, dx);
-        updateCursor();
-      };
-
-      const handleMouseUp = () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-        resetCursor();
-      };
-
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-
-      return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-      };
-    },
-    [resetCursor, updateCursor, updateWidth],
-  );
-
-  const handleTouchStart = React.useCallback(
-    (e: React.TouchEvent) => {
-      const touch = e.touches[0];
-      const startPos = {
-        x: touch.clientX,
-        y: touch.clientY,
-      };
-
-      const resizerEle = resizerRef.current;
-      if (!resizerEle) {
-        return;
+      if (nextPosition !== undefined) {
+        event.preventDefault();
+        setSliderPosition(clampPosition(nextPosition));
       }
-
-      const currentLeftWidth = Number.parseFloat(
-        window.getComputedStyle(resizerEle).left,
-      );
-
-      const handleTouchMove = (event: TouchEvent) => {
-        const touchInput = event.touches[0];
-        const dx = touchInput.clientX - startPos.x;
-        updateWidth(currentLeftWidth, dx);
-        updateCursor();
-      };
-
-      const handleTouchEnd = () => {
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-        resetCursor();
-      };
-
-      document.addEventListener("touchmove", handleTouchMove);
-      document.addEventListener("touchend", handleTouchEnd);
-
-      return () => {
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-      };
     },
-    [resetCursor, updateCursor, updateWidth],
+    [clampPosition, sliderPosition],
   );
-
-  useEffect(() => {
-    const resizerEle = resizerRef.current;
-    const containerEle = containerRef.current;
-    if (!resizerEle || !containerEle) {
-      return;
-    }
-    const defaultWidth = 50;
-    resizerEle.style.left = `${defaultWidth}%`;
-    updateWidth(
-      (defaultWidth * containerRef.current.getBoundingClientRect().width) / 100,
-      0,
-    );
-  }, [updateWidth]);
 
   let sliderStyle: CSSProperties = {
     "--separator-color": separatorColor,
@@ -200,74 +161,83 @@ const BeforeAndAfter = ({
     "--slider-height-mobile": `${sliderHeightMobile}px`,
   } as CSSProperties;
 
+  if (!staticImageData) {
+    return null;
+  }
+
   return (
     <div
       data-motion="slide-in"
       ref={containerRef}
       {...rest}
-      className="w-full relative h-[var(--slider-height-mobile)] sm:h-[var(--slider-height-desktop)] select-none"
+      className="before-after-slider relative h-[var(--slider-height-mobile)] w-full select-none overflow-hidden desktop:h-[var(--slider-height-desktop)]"
       style={sliderStyle}
     >
-      <div className="left-0 absolute top-0 h-full w-full" ref={firstHalfRef}>
-        {afterImage ? (
-          <Image
-            data={afterImage}
-            sizes="auto"
-            className="h-full w-full box-border object-cover object-center"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
-            <IconImageBlank
-              className="w-96 h-96 opacity-80"
-              viewBox="0 0 526 526"
+      {canCompare && (
+        <>
+          <div
+            className="absolute top-0 left-0 h-full w-full"
+            style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
+          >
+            <Image
+              data={afterImageData}
+              sizes="auto"
+              className="h-full w-full object-cover object-center"
             />
           </div>
-        )}
-      </div>
-      <div
-        ref={resizerRef}
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
-        className={clsx(
-          "select-none touch-none left-1/2 absolute flex items-center top-0 h-full transform z-10",
-          {
-            "-translate-x-full": !showArrows,
-            "-translate-x-5": showArrows,
-          },
-        )}
-      >
-        {showArrows && (
-          <IconArrowSlideLeft
-            viewBox="0 0 32 32"
-            fill="var(--arrow-color)"
-            stroke="var(--arrow-color)"
-          />
-        )}
-        <div className="h-full bg-[var(--separator-color)] cursor-ew-resize w-[var(--separator-width)]" />
-        {showArrows && (
-          <IconArrowSlideRight
-            viewBox="0 0 32 32"
-            fill="var(--arrow-color)"
-            stroke="var(--arrow-color)"
-          />
-        )}
-      </div>
-      <div ref={secondHalfRef} className="h-full w-full">
-        {beforeImage ? (
-          <Image
-            data={beforeImage}
-            sizes="auto"
-            className="h-full w-full box-border object-cover object-center"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
-            <IconImageBlank
-              className="w-96 h-96 opacity-80"
-              viewBox="0 0 526 526"
-            />
+          <div
+            role="slider"
+            tabIndex={0}
+            aria-label={`${beforeLabel || "Before"} / ${afterLabel || "After"}`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(sliderPosition)}
+            aria-orientation="horizontal"
+            onKeyDown={handleKeyDown}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerEnd}
+            onPointerCancel={handlePointerEnd}
+            className="absolute top-0 z-10 flex h-full -translate-x-1/2 touch-none select-none items-center focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ left: `${sliderPosition}%` }}
+          >
+            <div className="absolute inset-y-0 left-1/2 w-[var(--separator-width)] -translate-x-1/2 cursor-ew-resize bg-[var(--separator-color)]" />
+            {showArrows && (
+              <div className="relative z-10 flex items-center rounded-2xl bg-background-basic">
+                <IconArrowSlideLeft
+                  className="size-8"
+                  viewBox="0 0 32 32"
+                  fill="var(--arrow-color)"
+                  stroke="var(--arrow-color)"
+                />
+                <IconArrowSlideRight
+                  className="size-8"
+                  viewBox="0 0 32 32"
+                  fill="var(--arrow-color)"
+                  stroke="var(--arrow-color)"
+                />
+              </div>
+            )}
           </div>
-        )}
+        </>
+      )}
+      <div className="h-full w-full">
+        <Image
+          data={staticImageData}
+          sizes="auto"
+          className="h-full w-full object-cover object-center"
+        />
       </div>
+      {showLabels && beforeImageData && beforeLabel?.trim() && (
+        <span className="absolute bottom-5.5 left-4.5 z-20 rounded-full bg-background-basic px-4 py-2.5 text-center font-heading text-[26px] leading-[110%] font-normal text-text">
+          {beforeLabel}
+        </span>
+      )}
+      {showLabels && afterImageData && afterLabel?.trim() && (
+        <span className="absolute right-4.5 bottom-5.5 z-20 rounded-full bg-background-basic px-4 py-2.5 text-center font-heading text-[26px] leading-[110%] font-normal text-text">
+          {afterLabel}
+        </span>
+      )}
     </div>
   );
 };
@@ -296,7 +266,7 @@ export const schema = createSchema({
           type: "color",
           label: "Separator color",
           name: "separatorColor",
-          defaultValue: "#8B926D",
+          defaultValue: "#FFFFFF",
         },
         {
           type: "switch",
@@ -308,7 +278,27 @@ export const schema = createSchema({
           type: "color",
           label: "Arrows color",
           name: "arrowColor",
-          defaultValue: "#8B926D",
+          defaultValue: "#DCD8D6",
+        },
+        {
+          type: "switch",
+          name: "showLabels",
+          label: "Show labels",
+          defaultValue: true,
+        },
+        {
+          type: "text",
+          name: "beforeLabel",
+          label: "Before label",
+          defaultValue: "Before",
+          condition: (data: BeforeAndAfterProps) => data.showLabels !== false,
+        },
+        {
+          type: "text",
+          name: "afterLabel",
+          label: "After label",
+          defaultValue: "After",
+          condition: (data: BeforeAndAfterProps) => data.showLabels !== false,
         },
         {
           type: "range",
@@ -326,7 +316,7 @@ export const schema = createSchema({
           type: "range",
           name: "sliderHeightDesktop",
           label: "Slider height desktop",
-          defaultValue: 600,
+          defaultValue: 614,
           configs: {
             min: 300,
             max: 1000,
@@ -338,7 +328,7 @@ export const schema = createSchema({
           type: "range",
           name: "sliderHeightMobile",
           label: "Slider height mobile",
-          defaultValue: 400,
+          defaultValue: 480,
           configs: {
             min: 300,
             max: 1000,
@@ -349,4 +339,15 @@ export const schema = createSchema({
       ],
     },
   ],
+  presets: {
+    separatorColor: "#FFFFFF",
+    showArrows: true,
+    arrowColor: "#DCD8D6",
+    showLabels: true,
+    beforeLabel: "Before",
+    afterLabel: "After",
+    separatorWidth: 6,
+    sliderHeightDesktop: 614,
+    sliderHeightMobile: 480,
+  },
 });
