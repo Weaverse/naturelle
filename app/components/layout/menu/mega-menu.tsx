@@ -81,9 +81,13 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 </Menubar.Trigger>
                 {level > 1 && (
                   <Menubar.Content
+                    data-header-menu-content=""
                     className={cn([
                       "px-3 md:px-4 lg:px-6",
                       "rounded-b-2xl border-border-subtle border-t bg-header-bg shadow-md",
+                      "data-[state=closed]:pointer-events-none motion-reduce:animate-none",
+                      !value &&
+                        "data-[state=closed]:animate-fade-out data-[state=closed]:[--fade-out-duration:300ms]",
                       isDropdown ? "py-6" : "w-screen py-8",
                     ])}
                   >

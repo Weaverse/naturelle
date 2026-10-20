@@ -89,13 +89,13 @@ export function SearchTypeHeaderResults({
         )}
         style={inline ? { top: panelTop } : undefined}
       >
-        <div className="mx-auto grid max-h-[85vh] w-full max-w-page grid-cols-[minmax(0,3fr)_minmax(240px,1fr)] overflow-y-auto px-6">
-          <section className="border-r border-border-subtle p-6">
+        <div className="mx-auto grid max-h-[85vh] w-full max-w-page grid-cols-[minmax(0,3fr)_minmax(240px,1fr)] overflow-hidden px-6">
+          <section className="flex max-h-[85vh] min-h-0 flex-col border-r border-border-subtle p-6">
             <ResultHeading>
               {t(hasTerm ? "search.products" : "search.mostSearchedProducts")}
             </ResultHeading>
             <div
-              className="grid grid-cols-2 gap-3 desktop:grid-cols-3 lg:grid-cols-4"
+              className="hiddenScroll grid min-h-0 flex-1 grid-cols-2 gap-3 overflow-y-auto overscroll-contain desktop:grid-cols-3 lg:grid-cols-4"
               aria-busy={isWaitingForInitialResults || isLoading}
             >
               {showProductSkeletons ? (
@@ -124,7 +124,12 @@ export function SearchTypeHeaderResults({
               </div>
             )}
           </section>
-          <div className={cn("p-6", hasTerm && "space-y-6")}>
+          <div
+            className={cn(
+              "hiddenScroll max-h-[85vh] overflow-y-auto overscroll-contain p-6",
+              hasTerm && "space-y-6",
+            )}
+          >
             {hasTerm ? (
               <>
                 <TextResults

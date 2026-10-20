@@ -83,7 +83,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               className={cn(
                 "w-full rounded-xl border-2",
                 inline
-                  ? "h-[50px] max-w-[436px] border border-border bg-background-basic px-3 py-0 text-base text-text-subtle"
+                  ? "max-w-[436px] border border-border bg-background-basic px-3 py-3.5 text-base text-text-subtle"
                   : "md:w-96 lg:w-[560px]",
               )}
               type="search"
