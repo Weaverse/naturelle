@@ -29,7 +29,7 @@ export function Quantity(props: QuantityProps) {
       </legend>
       <div
         className={clsx(
-          "w-fit flex h-12 gap-2",
+          "flex h-13.5 w-fit gap-2",
           isDisabled && "opacity-50 cursor-not-allowed",
         )}
       >
@@ -38,7 +38,7 @@ export function Quantity(props: QuantityProps) {
           name="decrease-quantity"
           aria-label={t("product.decreaseQuantity")}
           className={clsx(
-            "h-12 rounded-md border-2 border-border-subtle px-5 py-3 text-base transition",
+            "h-13.5 rounded-md border-2 border-border-subtle px-5 py-3.5 text-base transition",
             value <= 1 && "opacity-50 cursor-not-allowed",
           )}
           disabled={isDisabled || value <= 1}
@@ -47,7 +47,7 @@ export function Quantity(props: QuantityProps) {
           <span>&#8722;</span>
         </button>
         <Input
-          className="w-24 h-12 rounded-md border-2 bg-background py-3 text-center text-base"
+          className="h-13.5 w-24 rounded-md border-2 bg-background py-3.5 text-center text-base"
           value={value}
           onKeyDown={handleKeyDown}
           onChange={(e) => onChange(Number(e.currentTarget.value))}
@@ -55,7 +55,7 @@ export function Quantity(props: QuantityProps) {
         />
         <button
           type="button"
-          className="h-12 rounded-md border-2 border-border-subtle px-5 py-3 text-base transition"
+          className="h-13.5 rounded-md border-2 border-border-subtle px-5 py-3.5 text-base transition"
           name="increase-quantity"
           aria-label={t("product.increaseQuantity")}
           onClick={() => onChange(value + 1)}

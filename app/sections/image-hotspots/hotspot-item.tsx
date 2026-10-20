@@ -11,7 +11,6 @@ import {
   useThemeSettings,
   useTranslation,
 } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import { type RefObject, useContext } from "react";
 import { createPortal } from "react-dom";
 import type { ProductQuery } from "storefront-api.generated";
@@ -28,6 +27,7 @@ export interface HotspotsItemData {
   heading: string;
   icon: "circle" | "plus" | "bag" | "tag";
   iconSize: number;
+  hotspotColor?: string;
   hotspotOverlayColor: string;
   hotspotOverlayOpacity: number;
   offsetX: number;
@@ -64,6 +64,7 @@ let HotspotsItem = ({
     heading,
     icon,
     iconSize,
+    hotspotColor,
     hotspotOverlayColor = "#374151",
     hotspotOverlayOpacity = 75,
     offsetX,
@@ -119,10 +120,8 @@ let HotspotsItem = ({
           }}
         />
         <span
-          className={clsx(
-            "relative inline-flex rounded-full border border-background-basic p-3.5 text-background-basic",
-            isActive && "bg-background-basic/20",
-          )}
+          className="relative inline-flex rounded-full border border-current p-3.5"
+          style={{ color: hotspotColor || "var(--color-background-basic)" }}
         >
           <Icon style={{ width: iconSize, height: iconSize }} />
         </span>
@@ -248,6 +247,13 @@ export const schema = createSchema({
             unit: "px",
           },
           defaultValue: 20,
+        },
+        {
+          type: "color",
+          name: "hotspotColor",
+          label: "Hotspot color",
+          helpText:
+            "Applies to the icon and border. Leave empty to use the theme color.",
         },
         {
           type: "color",

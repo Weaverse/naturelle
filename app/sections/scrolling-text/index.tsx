@@ -71,10 +71,7 @@ const ScrollingText = ({
         !visibleOnMobile && "hidden md:flex",
       )}
     >
-      <div className="block text-center font-heading text-base md:hidden">
-        {content}
-      </div>
-      <ul className="hidden list-none md:inline-flex">
+      <ul className="inline-flex list-none">
         {Array.from({ length: 50 }).map((_, i) => (
           <li
             key={i}

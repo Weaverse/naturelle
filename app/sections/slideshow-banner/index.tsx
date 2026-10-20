@@ -116,7 +116,7 @@ let Slideshow = ({
 export default Slideshow;
 
 export const schema = createSchema({
-  title: "Slide show banner",
+  title: "Slideshow",
   type: "slide-show-banner",
   childTypes: ["slideshowbanner--slide"],
   settings: [

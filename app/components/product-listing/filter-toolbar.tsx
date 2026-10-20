@@ -66,7 +66,7 @@ export function ProductListingFilterToolbar({
       />
       <div className={cn(sectionClassName)}>
         <div className="hidden w-[320px] shrink-0 lg:block">
-          <div className="sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col gap-5 overflow-x-hidden overflow-y-auto">
+          <div className="hiddenScroll sticky top-(--height-nav) flex max-h-[calc(100vh-var(--height-nav)-20px)] flex-col gap-5 overflow-x-hidden overflow-y-auto">
             {appliedFilters.length > 0 && (
               <AppliedFilters
                 filters={appliedFilters}
