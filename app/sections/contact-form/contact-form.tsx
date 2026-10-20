@@ -71,8 +71,8 @@ let ContactForm = ({
     ...rest
   } = props;
   const isSubmitting = fetcher.state === "submitting";
-  const resolvedTopPadding = verticalPadding ?? topPadding ?? 80;
-  const resolvedBottomPadding = verticalPadding ?? bottomPadding ?? 80;
+  const resolvedTopPadding = verticalPadding ?? topPadding ?? 64;
+  const resolvedBottomPadding = verticalPadding ?? bottomPadding ?? 64;
   const configuredImageUrl =
     typeof contactImage === "string"
       ? contactImage.trim()
