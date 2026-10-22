@@ -179,9 +179,7 @@ export function Drawer({
             </button>
             {heading !== null && (
               <Dialog.Title asChild>
-                <span className={titleVariants({ isForm })} id="cart-contents">
-                  {heading}
-                </span>
+                <span className={titleVariants({ isForm })}>{heading}</span>
               </Dialog.Title>
             )}
             {isBackMenu && (

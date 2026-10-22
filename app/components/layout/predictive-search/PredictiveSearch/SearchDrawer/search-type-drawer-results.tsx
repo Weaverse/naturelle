@@ -107,7 +107,7 @@ function ProductGrid({
             key={item.id}
             product={item.product}
             className="h-full"
-            enableQuickView
+            enableQuickView={false}
             showBadge
             showPrice
             showStar

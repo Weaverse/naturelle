@@ -1,5 +1,5 @@
+import * as Dialog from "@radix-ui/react-dialog";
 import { useTranslation } from "@weaverse/hydrogen";
-import { useEffect } from "react";
 import { Button } from "~/components/button";
 import { IconClose } from "./icon";
 
@@ -13,41 +13,43 @@ export function Modal({
   ariaLabel?: string;
 }) {
   const { t } = useTranslation();
-  useEffect(() => {
-    document.body.classList.add("overflow-hidden");
-    return () => {
-      document.body.classList.remove("overflow-hidden");
-    };
-  }, []);
 
   return (
-    <div
-      className="relative z-50 block"
-      aria-label={ariaLabel ?? t("product.quickView")}
-      role="dialog"
-      aria-modal="true"
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose?.();
+        }
+      }}
     >
-      <div className="fixed inset-0 bg-black/60 bg-opacity-75 transition-opacity" />
-      <div className="fixed inset-0 z-50 overflow-y-hidden">
-        <div className="relative flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-          <div className="absolute inset-0 z-10" onClick={onClose} />
-          <div className="relative z-20 flex-1 transform overflow-visible rounded-xl text-left transition-all sm:flex-none">
-            <div className="absolute -right-[10px] -top-[8px] z-50 md:right-0 md:top-0">
-              <Button
-                type="button"
-                variant="custom"
-                size="icon"
-                aria-label={t("accessibility.close")}
-                className="text-body hover:text-body/50"
-                onClick={onClose}
-              >
-                <IconClose aria-hidden="true" />
-              </Button>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 transition-opacity" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 overflow-visible rounded-xl text-left focus:outline-none"
+        >
+          <Dialog.Title className="sr-only">
+            {ariaLabel ?? t("product.quickView")}
+          </Dialog.Title>
+          <div className="relative transform overflow-visible rounded-xl transition-all">
+            <div className="absolute -top-2 -right-2.5 z-50 md:top-0 md:right-0">
+              <Dialog.Close asChild>
+                <Button
+                  type="button"
+                  variant="custom"
+                  size="icon"
+                  aria-label={t("accessibility.close")}
+                  className="text-body hover:text-body/50"
+                >
+                  <IconClose aria-hidden="true" />
+                </Button>
+              </Dialog.Close>
             </div>
             {children}
           </div>
-        </div>
-      </div>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

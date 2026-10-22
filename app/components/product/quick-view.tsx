@@ -1,4 +1,3 @@
-import { Portal } from "@headlessui/react";
 import { Money, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
@@ -327,32 +326,28 @@ export function QuickViewTrigger({
         </Button>
       </div>
       {open && productData && (
-        <Portal>
-          <Modal onClose={() => setOpen(false)}>
-            <QuickView data={productData} onClose={() => setOpen(false)} />
-          </Modal>
-        </Portal>
+        <Modal onClose={() => setOpen(false)}>
+          <QuickView data={productData} onClose={() => setOpen(false)} />
+        </Modal>
       )}
       {open && hasError && (
-        <Portal>
-          <Modal onClose={() => setOpen(false)}>
-            <div className="flex min-h-48 w-[min(90vw,28rem)] flex-col items-center justify-center gap-4 rounded-xl bg-background p-6 text-center">
-              <p>{t("system.loadError")}</p>
-              <Button
-                type="button"
-                variant="primary"
-                loading={state === "loading"}
-                onClick={() =>
-                  load(
-                    `${productQueryPath}?handle=${encodeURIComponent(productHandle)}`,
-                  )
-                }
-              >
-                {t("system.tryAgain")}
-              </Button>
-            </div>
-          </Modal>
-        </Portal>
+        <Modal onClose={() => setOpen(false)}>
+          <div className="flex min-h-48 w-[min(90vw,28rem)] flex-col items-center justify-center gap-4 rounded-xl bg-background p-6 text-center">
+            <p>{t("system.loadError")}</p>
+            <Button
+              type="button"
+              variant="primary"
+              loading={state === "loading"}
+              onClick={() =>
+                load(
+                  `${productQueryPath}?handle=${encodeURIComponent(productHandle)}`,
+                )
+              }
+            >
+              {t("system.tryAgain")}
+            </Button>
+          </div>
+        </Modal>
       )}
     </>
   );
