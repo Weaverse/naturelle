@@ -37,6 +37,13 @@ export function CartActionBanner({
   );
 }
 
+function dialogOverlayClass(layout: CartLayout) {
+  return cn(
+    "fixed z-[60] bg-black/50 data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in",
+    layout === "aside" ? "inset-y-0 right-0 w-full max-w-[460px]" : "inset-0",
+  );
+}
+
 function dialogContentClass(layout: CartLayout) {
   return cn(
     "fixed z-[60] w-full overflow-hidden bg-(--color-drawer-bg) px-5 py-4 shadow-xl",
@@ -111,7 +118,7 @@ export function NoteDialog({
 
   return (
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 z-[60] bg-black/50 data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
+      <Dialog.Overlay className={dialogOverlayClass(layout)} />
       <Dialog.Content
         onCloseAutoFocus={(e) => {
           e.preventDefault();
@@ -212,7 +219,7 @@ export function DiscountDialog({
 
   return (
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 z-[60] bg-black/50 data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
+      <Dialog.Overlay className={dialogOverlayClass(layout)} />
       <Dialog.Content
         onCloseAutoFocus={(e) => {
           e.preventDefault();
@@ -317,7 +324,7 @@ export function GiftCardDialog({
 
   return (
     <Dialog.Portal>
-      <Dialog.Overlay className="fixed inset-0 z-[60] bg-black/50 data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in" />
+      <Dialog.Overlay className={dialogOverlayClass(layout)} />
       <Dialog.Content
         onCloseAutoFocus={(e) => {
           e.preventDefault();

@@ -100,7 +100,7 @@ export default function MapSection({
           )}
         >
           <MapFrame address={activeAddress} />
-          <div className="flex w-full min-w-0 bg-background-subtle-1 p-12 shadow-[0_20px_20px_rgba(0,0,0,0.25)] md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
+          <div className="flex w-full min-w-0 bg-background-subtle-1 p-12 md:max-w-xl md:flex-[0_1_var(--container-xl)] lg:py-20">
             <div className="flex w-full flex-col items-start gap-6">
               {heading && (
                 <Heading

@@ -70,7 +70,7 @@ export function DrawerFilter({
             onClick={openDrawer}
             shape="default"
             variant="outline"
-            className="h-auto rounded-xl px-5 py-3.5 lg:hidden"
+            className="h-14 rounded-xl px-5 py-[11px] lg:hidden"
             classNameContainer="flex items-center justify-center gap-2"
           >
             <IconFilters className="size-5" viewBox="0 0 16 16" />
@@ -78,7 +78,7 @@ export function DrawerFilter({
               {t("collection.filter")}
             </span>
           </Button>
-          <div className="btn-outline hidden h-auto items-center justify-center gap-2 whitespace-nowrap rounded-xl px-5 py-3.5 font-body font-normal transition-colors lg:inline-flex">
+          <div className="btn-outline hidden items-center justify-center gap-2 whitespace-nowrap rounded-xl px-5 py-[11px] font-body font-normal transition-colors lg:inline-flex">
             <IconFilters className="size-5" viewBox="0 0 16 16" />
             <span className="font-heading text-xl tracking-[-0.2px]">
               {t("collection.filter")}
@@ -279,7 +279,7 @@ export function FiltersDrawer({
   return (
     <nav
       aria-label={t("collection.filterProducts")}
-      className={cn("min-w-0 overflow-x-hidden", desktop && "w-full")}
+      className={cn("min-w-0 shrink-0 overflow-x-clip", desktop && "w-full")}
     >
       <div className="flex flex-col gap-5">
         {filters.map((filter: Filter) => {
@@ -622,7 +622,7 @@ function PriceRangeFilter({
       <div className="flex w-full min-w-0 items-center gap-6 overflow-hidden">
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic p-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5">
             <input
               aria-label={t("collection.minimumPrice")}
               name="minPrice"
@@ -646,7 +646,7 @@ function PriceRangeFilter({
         </div>
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic p-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5">
             <input
               aria-label={t("collection.maximumPrice")}
               name="maxPrice"
@@ -748,7 +748,7 @@ export function SortMenu({
       </span>
       <Menu.Button
         aria-label={t("collection.sortProducts", { sort: activeItem.label })}
-        className="flex h-auto items-center gap-2.5 rounded-xl border border-border px-4 py-3.5 text-left"
+        className="flex items-center gap-2.5 rounded-xl border border-border px-4 py-[11px] text-left"
       >
         <span className="max-w-[7.5rem] overflow-hidden text-ellipsis whitespace-nowrap font-heading text-xl font-normal tracking-[-0.2px] md:max-w-none">
           {activeItem.label}

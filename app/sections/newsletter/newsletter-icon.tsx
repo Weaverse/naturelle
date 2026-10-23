@@ -1,7 +1,7 @@
 import { Image } from "@shopify/hydrogen";
 import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
 import { createSchema } from "@weaverse/hydrogen";
-import type { CSSProperties, RefObject } from "react";
+import type { RefObject } from "react";
 import { IconNewsletter } from "~/components/icon";
 
 interface NewsletterIconProps extends HydrogenComponentProps {
@@ -14,25 +14,24 @@ const NewsletterIcon = ({
   ...props
 }: NewsletterIconProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { iconImage, iconImageSize, ...rest } = props;
-  let style: CSSProperties = {
-    "--image-size": `${iconImageSize}px`,
-  } as CSSProperties;
+  const imageSize = iconImageSize || 50;
+  const imageStyle = { width: "auto", height: imageSize };
 
   return (
     <div
       data-motion="fade-up"
       ref={ref}
       {...rest}
-      style={style}
       className="flex items-center justify-center"
     >
       {iconImage ? (
         <Image
           data={iconImage}
-          className="!aspect-square !w-[var(--image-size)] object-cover"
+          className="max-w-full shrink-0 object-contain"
+          style={imageStyle}
         />
       ) : (
-        <IconNewsletter viewBox="0 0 65 64" className="!h-16 !w-16" />
+        <IconNewsletter viewBox="0 0 65 64" style={imageStyle} />
       )}
     </div>
   );
@@ -55,7 +54,7 @@ export const schema = createSchema({
         {
           type: "range",
           name: "iconImageSize",
-          label: "Icon image size",
+          label: "Icon height",
           defaultValue: 50,
           configs: {
             min: 20,

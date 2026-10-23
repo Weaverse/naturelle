@@ -284,10 +284,16 @@
     "openPost": "Open Instagram post"
   },
   "contact": {
-    "name": "Name",
-    "email": "Email",
-    "subject": "Subject",
-    "message": "Message"
+    "name": "Full Name",
+    "namePlaceholder": "Jane Doe",
+    "email": "Email Address",
+    "emailPlaceholder": "hello@example.com",
+    "message": "Message",
+    "messagePlaceholder": "How can we help you today?",
+    "submitSuccess": "Thank you! Your message has been sent.",
+    "submitError": "Your message could not be sent. Please try again.",
+    "imageAlt": "Contact us",
+    "imagePlaceholderAlt": "Contact us placeholder"
   },
   "map": {
     "storeLocation": "Store location map"
