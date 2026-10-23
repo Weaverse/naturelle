@@ -1,20 +1,19 @@
-import { Dialog, Transition } from "@headlessui/react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { useTranslation } from "@weaverse/hydrogen";
 import { cva } from "class-variance-authority";
-import { Fragment, useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "~/utils/cn";
 import { IconArrowLeft, IconClose } from "./icon";
 
 type DrawerForm = "cart" | "search" | "menu" | "filter";
 
 const panelVariants = cva(
-  "flex transform flex-col bg-(--color-drawer-bg) text-left align-middle shadow-xl transition-all",
+  "flex transform flex-col bg-(--color-drawer-bg) text-left align-middle shadow-xl",
   {
     variants: {
       isForm: {
         cart: "gap-3 overflow-hidden px-6 pt-3 pb-6",
-        filter: "gap-4 overflow-y-auto px-6 pt-3 pb-6",
+        filter: "hiddenScroll gap-4 overflow-y-auto px-6 pt-3 pb-6",
         menu: "",
         search: "",
       },
@@ -91,10 +90,11 @@ export function Drawer({
   isBackMenu?: boolean;
 }) {
   const { t } = useTranslation();
-  const offScreen = {
-    right: "translate-x-full",
-    left: "-translate-x-full",
-    top: "-translate-y-full",
+  const returnFocus = useRef<HTMLElement | null>(null);
+  const slideOffset = {
+    right: "100%",
+    left: "-100%",
+    top: "-100%",
   };
 
   const maxWidth =
@@ -111,118 +111,104 @@ export function Drawer({
             : "max-w-96";
 
   return (
-    <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0 left-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+    <Dialog.Root
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
+          onClose();
+        }
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out [--fade-in-duration:300ms] [--fade-out-duration:300ms] motion-reduce:animate-none" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          onOpenAutoFocus={() => {
+            returnFocus.current = document.activeElement as HTMLElement;
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            if (returnFocus.current?.isConnected) {
+              returnFocus.current.focus();
+            }
+          }}
+          style={
+            {
+              "--drawer-slide-x":
+                openFrom === "top" ? "0px" : slideOffset[openFrom],
+              "--drawer-slide-y": openFrom === "top" ? slideOffset.top : "0px",
+            } as React.CSSProperties
+          }
+          className={cn(
+            panelVariants({ isForm }),
+            "fixed z-50 w-screen data-[state=open]:animate-[drawer-enter_300ms_ease-in-out] data-[state=closed]:animate-[drawer-exit_300ms_ease-in-out] motion-reduce:animate-none",
+            openFrom === "top"
+              ? "inset-x-0 top-0 h-fit"
+              : `inset-y-0 h-screen-dynamic ${maxWidth}`,
+            openFrom === "right" ? "right-0" : "left-0",
+          )}
         >
-          <div className="text-body fixed inset-0 bg-opacity-25" />
-        </Transition.Child>
-
-        <div className="fixed inset-0">
-          <div className="absolute inset-0 overflow-hidden bg-black/60">
-            <div
-              className={`fixed inset-y-0 flex max-w-full ${
-                openFrom === "right" ? "right-0" : ""
-              }`}
+          <header
+            className={cn(
+              headerVariants({ isForm }),
+              heading ? "justify-between" : "justify-items-end",
+              openFrom === "left" && isForm === "search" && "px-6",
+              openFrom === "left" ||
+                isForm === "cart" ||
+                (openFrom === "top" && !isBackMenu)
+                ? "flex-row-reverse"
+                : "",
+            )}
+          >
+            <button
+              type="button"
+              className={closeButtonVariants({ isForm })}
+              onClick={onClose}
+              data-test="close-cart"
             >
-              <Transition.Child
-                as={Fragment}
-                enter="transform transition ease-in-out duration-500"
-                enterFrom={offScreen[openFrom]}
-                enterTo="translate-x-0"
-                leave="transform transition ease-in-out duration-500"
-                leaveFrom="translate-x-0"
-                leaveTo={offScreen[openFrom]}
+              <IconClose
+                className={
+                  isForm === "search"
+                    ? "size-6"
+                    : isForm === "cart" || isForm === "filter"
+                      ? "size-5"
+                      : undefined
+                }
+                aria-label={t("accessibility.close")}
+              />
+            </button>
+            {heading !== null && (
+              <Dialog.Title asChild>
+                <span className={titleVariants({ isForm })}>{heading}</span>
+              </Dialog.Title>
+            )}
+            {isBackMenu && (
+              <button
+                type="button"
+                className="text-text-primary hover:text-text-primary/50 -m-4 p-2 transition"
+                onClick={onBack ?? onClose}
+                aria-label={t("accessibility.backToMenu")}
+                data-test="close-cart"
               >
-                <Dialog.Panel
-                  className={cn(
-                    panelVariants({ isForm }),
-                    openFrom === "left"
-                      ? `h-screen-dynamic w-screen ${maxWidth}`
-                      : openFrom === "top"
-                        ? "h-fit w-screen"
-                        : `h-screen-dynamic w-screen ${maxWidth}`,
-                  )}
-                >
-                  <header
-                    className={cn(
-                      headerVariants({ isForm }),
-                      heading ? "justify-between" : "justify-items-end",
-                      openFrom === "left" && isForm === "search" && "px-6",
-                      openFrom === "left" ||
-                        isForm === "cart" ||
-                        (openFrom === "top" && !isBackMenu)
-                        ? "flex-row-reverse"
-                        : "",
-                    )}
-                  >
-                    <button
-                      type="button"
-                      className={closeButtonVariants({ isForm })}
-                      onClick={onClose}
-                      data-test="close-cart"
-                    >
-                      <IconClose
-                        className={
-                          isForm === "search"
-                            ? "size-6"
-                            : isForm === "cart" || isForm === "filter"
-                              ? "size-5"
-                              : undefined
-                        }
-                        aria-label={t("accessibility.close")}
-                      />
-                    </button>
-                    {heading !== null && (
-                      <Dialog.Title as="span">
-                        <span
-                          className={titleVariants({ isForm })}
-                          id="cart-contents"
-                        >
-                          {heading}
-                        </span>
-                      </Dialog.Title>
-                    )}
-                    {isBackMenu && (
-                      <button
-                        type="button"
-                        className="text-text-primary hover:text-text-primary/50 -m-4 p-2 transition"
-                        onClick={onBack ?? onClose}
-                        aria-label={t("accessibility.backToMenu")}
-                        data-test="close-cart"
-                      >
-                        <IconArrowLeft
-                          viewBox="0 0 32 32"
-                          className="h-8 w-8 opacity-50"
-                          aria-hidden="true"
-                        />
-                      </button>
-                    )}
-                    {isForm !== "cart" &&
-                      isForm !== "filter" &&
-                      !isBackMenu && <div className="p-0" />}
-                  </header>
-                  {isForm === "cart" ? (
-                    <div className="flex min-h-0 flex-1 flex-col">
-                      {children}
-                    </div>
-                  ) : (
-                    children
-                  )}
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+                <IconArrowLeft
+                  viewBox="0 0 32 32"
+                  className="h-8 w-8 opacity-50"
+                  aria-hidden="true"
+                />
+              </button>
+            )}
+            {isForm !== "cart" && isForm !== "filter" && !isBackMenu && (
+              <div className="p-0" />
+            )}
+          </header>
+          {isForm === "cart" ? (
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          ) : (
+            children
+          )}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
@@ -231,7 +217,6 @@ Drawer.Title = Dialog.Title;
 
 export function useDrawer(openDefault = false) {
   const [isOpen, setIsOpen] = useState(openDefault);
-  const location = useLocation();
   useEffect(() => {
     setIsOpen(false);
   }, []);

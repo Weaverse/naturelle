@@ -64,6 +64,7 @@ const HotspotsImage = ({
             data={imageData}
             sizes="auto"
             className="z-0 h-full w-full object-cover"
+            imageClassName="rounded-none"
           />
           {children}
         </div>

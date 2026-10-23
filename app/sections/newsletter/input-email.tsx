@@ -98,6 +98,7 @@ const NewsletterInput = ({
           required
         />
         <Button
+          className="h-auto py-3.5"
           loading={fetcher.state === "submitting"}
           variant={buttonStyle}
           type="submit"

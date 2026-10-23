@@ -374,14 +374,14 @@ function CartNewsletter() {
                 name="email"
                 placeholder={cartNewsletterPlaceholder}
                 required
-                className="h-full rounded-xl border border-border-subtle px-4 py-3 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
+                className="h-full rounded-xl border border-border-subtle px-4 py-3.5 text-left font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text placeholder:text-text"
               />
             </div>
             <Button
               type="submit"
               loading={isSubmitting}
               disabled={isSubmitting}
-              className="h-auto shrink-0 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
+              className="h-auto shrink-0 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
             >
               {cartNewsletterButtonText}
             </Button>

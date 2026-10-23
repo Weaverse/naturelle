@@ -115,8 +115,11 @@ export function Header() {
           showTransparentHeader
             ? [
                 "border-transparent bg-transparent text-(--color-transparent-header)",
+                "has-[[data-header-menu-content]]:bg-header-bg has-[[data-header-menu-content]]:text-(--color-header-text)",
                 "[&_.main-logo]:opacity-0 [&:hover_.main-logo]:opacity-100",
                 "[&_.transparent-logo]:opacity-100 [&:hover_.transparent-logo]:opacity-0",
+                "[&:has([data-header-menu-content])_.main-logo]:opacity-100",
+                "[&:has([data-header-menu-content])_.transparent-logo]:opacity-0",
               ]
             : ["[&_.main-logo]:opacity-100", "[&_.transparent-logo]:opacity-0"],
         )}
@@ -126,11 +129,11 @@ export function Header() {
           className={cn(
             "hidden h-[82px] w-full items-center justify-center px-6 py-4 desktop:flex lg:px-10",
             showTransparentHeader
-              ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text)"
+              ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text) group-has-[[data-header-menu-content]]/header:bg-background-subtle-1 group-has-[[data-header-menu-content]]/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",
           )}
         >
-          <div className="mx-auto flex w-full max-w-page items-center justify-between">
+          <div className="mx-auto flex w-full max-w-page items-center justify-between gap-4">
             <div className="flex min-w-0 flex-1 items-center gap-5 text-[13px] font-medium leading-normal">
               {storeLocatorText && (
                 <Link to={storeLocatorLink}>{storeLocatorText}</Link>

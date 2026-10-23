@@ -1,4 +1,5 @@
-import type { HydrogenComponentProps } from "@weaverse/hydrogen";
+import { Image } from "@shopify/hydrogen";
+import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
 import { createSchema, useParentInstance } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import React from "react";
@@ -10,6 +11,7 @@ import {
 
 interface HightlightProps extends HydrogenComponentProps {
   visibleOnMobile: boolean;
+  iconImage?: WeaverseImage;
   iconColor: string;
 }
 
@@ -17,7 +19,7 @@ const HighlightItem = ({
   ref,
   ...props
 }: HightlightProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
-  let { visibleOnMobile, iconColor, children, ...rest } = props;
+  let { visibleOnMobile, iconImage, iconColor, children, ...rest } = props;
 
   let parentInstance = useParentInstance();
   let firstChild = React.Children.toArray(children)[0] as
@@ -29,6 +31,8 @@ const HighlightItem = ({
   let safeIndex = itemIndex !== undefined && itemIndex >= 0 ? itemIndex : 0;
   let icons = [IconHighlightPaw, IconHighlightLeaf, IconHighlightSparkle];
   let Icon = icons[safeIndex % icons.length];
+  const iconImageUrl = iconImage?.url?.trim();
+  const content = React.Children.toArray(children);
 
   return (
     <div
@@ -36,31 +40,38 @@ const HighlightItem = ({
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex w-full flex-col items-center rounded-2xl bg-background-basic px-6 py-10",
-        !visibleOnMobile && "hidden md:flex",
+        "row-span-3 grid w-full grid-rows-subgrid justify-items-center gap-y-0 rounded-2xl bg-background-basic px-6 py-10",
+        !visibleOnMobile && "hidden md:grid",
       )}
     >
-      <Icon
-        aria-hidden="true"
-        className="mb-6 size-12 shrink-0"
-        style={{ color: iconColor }}
-      />
-      {React.Children.map(children, (child, index) => (
-        <React.Fragment key={child?.key ?? index}>
+      <div className="mb-6 flex size-12 shrink-0 items-center justify-center">
+        {iconImageUrl ? (
+          <Image
+            data={iconImage}
+            className="size-full object-contain"
+            sizes="48px"
+          />
+        ) : (
+          <Icon
+            aria-hidden="true"
+            className="size-full"
+            style={{ color: iconColor }}
+          />
+        )}
+      </div>
+      <div className="flex w-full items-center justify-center text-center">
+        {content[0]}
+      </div>
+      <div className="w-full">
+        {content.slice(1).map((child) => (
           <div
-            className={clsx(
-              "flex w-full items-center justify-center text-center",
-              index === 0 &&
-                "md:[&_.heading]:grid md:[&_.heading]:min-h-[2lh] md:[&_.heading]:content-center",
-            )}
+            key={(child as React.ReactElement).key}
+            className="mt-6 border-t border-border-subtle pt-6 text-center"
           >
             {child}
           </div>
-          {index < (children?.length ?? 0) - 1 && (
-            <div className="my-6 w-full border-t border-border-subtle" />
-          )}
-        </React.Fragment>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
@@ -82,10 +93,16 @@ export const schema = createSchema({
           defaultValue: true,
         },
         {
+          type: "image",
+          label: "Icon image",
+          name: "iconImage",
+        },
+        {
           type: "color",
           label: "Icon color",
           name: "iconColor",
           defaultValue: "#4BAE42",
+          condition: (data: HightlightProps) => !data.iconImage?.url?.trim(),
         },
       ],
     },

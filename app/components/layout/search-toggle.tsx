@@ -108,7 +108,7 @@ export function SearchToggle({
         onClick={openDrawer}
         className="relative flex size-6 shrink-0 items-center justify-center focus:ring-primary/5"
       >
-        <IconSearch className="size-6 font-extralight!" strokeWidth={2} />
+        <IconSearch className="size-6" strokeWidth={1} />
       </button>
       <Drawer
         open={isOpen}

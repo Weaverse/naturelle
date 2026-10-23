@@ -97,7 +97,7 @@ export default function SearchResults() {
               onClear={clearSearch}
               name="q"
               placeholder={t("search.placeholder")}
-              className="w-full rounded-xl border border-border-subtle bg-background-basic p-3! md:w-[560px]"
+              className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 md:w-[560px]"
               type="search"
               prefixElement={
                 <button type="submit" aria-label={t("search.title")}>

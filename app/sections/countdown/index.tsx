@@ -99,7 +99,7 @@ let Countdown = ({
           <div className="countdown-content w-full flex flex-col items-start gap-4 [&_.paragraph]:opacity-80">
             {contentChildren}
           </div>
-          {buttonChildren}
+          <div className="contents *:font-semibold">{buttonChildren}</div>
         </>
       ) : (
         <>
@@ -107,7 +107,7 @@ let Countdown = ({
             {contentChildren}
           </div>
           {timerChildren}
-          {buttonChildren}
+          <div className="contents *:font-semibold">{buttonChildren}</div>
         </>
       )}
     </Section>

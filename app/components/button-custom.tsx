@@ -71,17 +71,23 @@ export default function ButtonCustom(props: WeaverseButtonProps) {
       fontFamily={fontFamily}
       ref={ref as any}
       {...rest}
-      className={cn("w-fit", className, variant === "custom" && styleButton)}
+      className={cn(
+        "w-fit",
+        variant === "decor" &&
+          "group/decor h-auto min-h-0 rounded-full px-4 py-3 font-body text-base leading-none font-normal tracking-[-0.16px]",
+        className,
+        variant === "custom" && styleButton,
+      )}
       style={style}
     >
       {variant === "decor" ? (
         <>
           <IconEllipse
-            className="absolute inset-0 h-[61px]! w-[148px]! transform transition-transform duration-500 hover:rotate-[-11deg]"
+            className="pointer-events-none absolute top-1/2 left-1/2 h-[61px]! w-[148px]! -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 group-hover/decor:rotate-[-11deg]"
             stroke={textColorDecor ? textColorDecor : "var(--color-foreground)"}
             viewBox="0 0 148 61"
           />
-          <div className="flex pl-4 pt-2">{value}</div>
+          <span className="relative z-10 whitespace-nowrap">{value}</span>
         </>
       ) : (
         value

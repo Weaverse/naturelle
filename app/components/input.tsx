@@ -49,7 +49,7 @@ const Input = ({
 }: InputProps) => {
   let [focused, setFocused] = useState(false);
   let commonClasses = cn(
-    "w-full rounded-md border px-3 py-3",
+    "w-full rounded-md border px-3 py-3.5",
     focused ? "border-border" : "border-border-subtle",
     className,
   );
@@ -96,7 +96,7 @@ const Input = ({
     <div
       className={clsx(
         commonClasses,
-        "flex items-center gap-2 overflow-hidden border p-2.5",
+        "flex items-center gap-2 overflow-hidden border",
       )}
     >
       {prefixElement}
