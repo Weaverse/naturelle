@@ -1,11 +1,13 @@
 import { CircleNotchIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { Image, Money } from "@shopify/hydrogen";
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
+import { useEffect, useRef, useState } from "react";
 import { PaymentMethods } from "~/components/layout/footer/payment-methods";
 import { Link } from "~/components/link";
 import {
   getCartMutationError,
   getCartMutationWarning,
+  getCartQuantityWarning,
 } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
 import { useVariantUrl } from "~/utils/variants";
@@ -283,7 +285,7 @@ function CartLineItem({
           <CartLineUnitPrice line={line} />
         </div>
         <div className="col-start-2 row-start-2 flex w-fit items-center gap-2 md:contents">
-          <div className="md:col-start-3 md:row-start-1 md:flex md:justify-center">
+          <div className="md:col-start-3 md:row-start-1 md:flex md:self-stretch md:justify-center">
             <CartLineQuantity line={line} layout={layout} />
           </div>
           <CartLineRemoveButton
@@ -432,6 +434,9 @@ function CartLineRemoveButton({
   );
 }
 
+const quantityMessageClass =
+  "flex items-center gap-2 font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-red-600";
+
 function CartLineQuantity({
   line,
   layout,
@@ -458,33 +463,83 @@ function CartLineQuantity({
     state.lineUpdateWarnings.get(lineId),
   );
   const errorMessage = getCartMutationError(updateError);
-  const warningMessage = getCartMutationWarning(updateWarning);
-
-  if (typeof quantity === "undefined") {
-    return null;
-  }
+  const warningMessage = getCartQuantityWarning(
+    updateWarning,
+    t("cart.outOfPurchaseLimit"),
+  );
+  const quantityMessage = errorMessage || warningMessage;
 
   const optimisticQuantity = pendingQuantity ?? inFlightQuantity ?? quantity;
-  const prevQuantity = Number(Math.max(1, optimisticQuantity - 1).toFixed(0));
-  const nextQuantity = Number((optimisticQuantity + 1).toFixed(0));
+  const [quantityInput, setQuantityInput] = useState(
+    String(optimisticQuantity),
+  );
+  const isEditingInputRef = useRef(false);
   const isQuantityUpdating = Boolean(
     pendingQuantity || inFlightQuantity || isLineRemoving,
   );
 
+  useEffect(() => {
+    if (!isEditingInputRef.current) {
+      setQuantityInput(String(optimisticQuantity));
+    }
+  }, [optimisticQuantity]);
+
+  useEffect(() => {
+    if (!updateWarning) {
+      return;
+    }
+    const timeout = window.setTimeout(() => {
+      useCartStore.getState().clearLineUpdateWarning(lineId);
+    }, 3000);
+    return () => window.clearTimeout(timeout);
+  }, [lineId, updateWarning]);
+
   function updateQuantity(targetQuantity: number) {
-    if (isOptimistic || isQuantityUpdating || targetQuantity <= 0) {
+    if (
+      isOptimistic ||
+      isQuantityUpdating ||
+      targetQuantity <= 0 ||
+      targetQuantity === optimisticQuantity
+    ) {
       return;
     }
     useCartStore.getState().stageLineUpdate(lineId, targetQuantity);
   }
 
+  function getValidInputQuantity() {
+    const parsedQuantity = Number(quantityInput);
+    return Number.isInteger(parsedQuantity) && parsedQuantity > 0
+      ? parsedQuantity
+      : optimisticQuantity;
+  }
+
+  function commitInputQuantity() {
+    isEditingInputRef.current = false;
+    const nextQuantity = getValidInputQuantity();
+    setQuantityInput(String(nextQuantity));
+    updateQuantity(nextQuantity);
+  }
+
+  function stepQuantity(change: number) {
+    isEditingInputRef.current = false;
+    const nextQuantity = Math.max(1, getValidInputQuantity() + change);
+    setQuantityInput(String(nextQuantity));
+    updateQuantity(nextQuantity);
+  }
+
   return (
-    <div className="flex flex-col items-start gap-2">
+    <div
+      className={cn(
+        "flex flex-col items-start gap-2",
+        layout === "page" &&
+          "md:grid md:h-full md:w-full md:min-w-0 md:grid-cols-[minmax(0,1fr)] md:grid-rows-[1fr_auto_1fr] md:justify-items-center md:gap-0.5",
+      )}
+    >
       <fieldset
         aria-label={`${t("product.quantity")}, ${optimisticQuantity}`}
         className={cn(
           "flex w-fit items-center border border-border rounded-2xl h-10",
-          layout === "page" && "gap-2 bg-background-basic",
+          layout === "page" && "gap-2 bg-background-basic md:row-start-2",
         )}
       >
         <button
@@ -495,23 +550,41 @@ function CartLineQuantity({
           )}
           aria-label={t("product.decreaseQuantity")}
           disabled={
-            optimisticQuantity <= 1 || isOptimistic || isQuantityUpdating
+            getValidInputQuantity() <= 1 || isOptimistic || isQuantityUpdating
           }
           name="decrease-quantity"
-          value={prevQuantity}
-          onClick={() => updateQuantity(prevQuantity)}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => stepQuantity(-1)}
         >
-          <span>&#8722;</span>
+          <span className="translate-y-px">&#8722;</span>
         </button>
-        <div
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          aria-label={t("product.quantity")}
           className={cn(
-            "text-center font-body text-sm leading-none font-normal tracking-[-0.14px]",
-            layout === "aside" ? "min-w-8" : "min-w-[26px]",
+            "translate-y-px appearance-none border-0 bg-transparent p-0 text-center font-body text-sm leading-none font-normal tracking-[-0.14px] text-text outline-none focus:ring-0 disabled:cursor-not-allowed",
+            layout === "aside" ? "w-8 min-w-8" : "w-[26px] min-w-[26px]",
           )}
+          value={quantityInput}
+          disabled={isOptimistic || isQuantityUpdating}
+          onChange={(event) => {
+            const nextValue = event.target.value;
+            if (nextValue === "" || /^\d+$/.test(nextValue)) {
+              isEditingInputRef.current = true;
+              setQuantityInput(nextValue);
+            }
+          }}
+          onBlur={commitInputQuantity}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              event.currentTarget.blur();
+            }
+          }}
           data-test="item-quantity"
-        >
-          {optimisticQuantity}
-        </div>
+        />
         <button
           type="button"
           className={cn(
@@ -521,27 +594,24 @@ function CartLineQuantity({
           aria-label={t("product.increaseQuantity")}
           disabled={isOptimistic || isQuantityUpdating}
           name="increase-quantity"
-          value={nextQuantity}
-          onClick={() => updateQuantity(nextQuantity)}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => stepQuantity(1)}
         >
-          <span>&#43;</span>
+          <span className="translate-y-px">&#43;</span>
         </button>
       </fieldset>
-      {errorMessage && (
+      {quantityMessage && (
         <p
           role="alert"
-          className="flex items-center gap-2 font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-red-600"
+          className={cn(
+            quantityMessageClass,
+            "min-w-0 max-w-full",
+            layout === "page" &&
+              "md:row-start-3 md:self-start md:justify-center md:text-center",
+          )}
         >
           <WarningCircleIcon className="size-5 shrink-0" aria-hidden="true" />
-          <span>{errorMessage}</span>
-        </p>
-      )}
-      {warningMessage && (
-        <p
-          role="status"
-          className="font-body text-sm leading-[160%] font-normal text-text-subtle"
-        >
-          {warningMessage}
+          <span className="min-w-0 wrap-anywhere">{quantityMessage}</span>
         </p>
       )}
     </div>

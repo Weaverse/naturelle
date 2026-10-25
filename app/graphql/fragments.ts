@@ -302,6 +302,11 @@ export const CART_QUERY_FRAGMENT = `#graphql
         ...Money
       }
     }
+    discountAllocations {
+      discountedAmount {
+        ...Money
+      }
+    }
     sellingPlanAllocation {
       sellingPlan {
         id
@@ -386,6 +391,12 @@ export const CART_QUERY_FRAGMENT = `#graphql
       code
       applicable
     }
+    discountAllocations {
+      targetType
+      discountedAmount {
+        ...Money
+      }
+    }
     appliedGiftCards {
       id
       amountUsed {
@@ -400,7 +411,9 @@ export const CART_QUERY_FRAGMENT = `#graphql
 // 1. Renames the fragment so Hydrogen uses it for mutation responses
 // 2. Replaces the $numCartLines variable with a hardcoded value because
 // mutation operations don't declare that variable (only CART_QUERY does).
+export const CART_LINES_LIMIT = 250;
+
 export const CART_MUTATION_FRAGMENT = CART_QUERY_FRAGMENT.replace(
   "fragment CartApiQuery on Cart",
   "fragment CartApiMutation on Cart",
-).replaceAll("$numCartLines", "250");
+).replaceAll("$numCartLines", String(CART_LINES_LIMIT));

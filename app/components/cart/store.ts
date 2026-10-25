@@ -42,6 +42,7 @@ export type CartStore = {
     submittedQuantity: number,
     response?: CartMutationResponse,
   ) => void;
+  clearLineUpdateWarning: (lineId: string) => void;
   stageLineRemoval: (lineId: string) => void;
   settleLineRemoval: (lineId: string, response?: CartMutationResponse) => void;
 };
@@ -154,6 +155,15 @@ export const useCartStore = create<CartStore>()((set) => ({
         lineUpdateErrors,
         lineUpdateWarnings,
       };
+    }),
+  clearLineUpdateWarning: (lineId) =>
+    set((state) => {
+      if (!state.lineUpdateWarnings.has(lineId)) {
+        return {};
+      }
+      const lineUpdateWarnings = new Map(state.lineUpdateWarnings);
+      lineUpdateWarnings.delete(lineId);
+      return { lineUpdateWarnings };
     }),
   stageLineRemoval: (lineId) =>
     set((state) => {

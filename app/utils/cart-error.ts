@@ -1,4 +1,5 @@
 type CartError = { message?: string };
+type CartWarning = CartError & { code?: string };
 
 export function getCartMutationError(
   data:
@@ -17,7 +18,20 @@ export function getCartMutationError(
 }
 
 export function getCartMutationWarning(
-  data: { warnings?: CartError[] } | null | undefined,
+  data: { warnings?: CartWarning[] } | null | undefined,
 ) {
   return data?.warnings?.find((warning) => warning.message)?.message ?? null;
+}
+
+export function getCartQuantityWarning(
+  data: { warnings?: CartWarning[] } | null | undefined,
+  purchaseLimitMessage: string,
+) {
+  const warning = data?.warnings?.find((item) => item.message);
+  if (!warning) {
+    return null;
+  }
+  return warning.code === "MERCHANDISE_NOT_ENOUGH_STOCK"
+    ? purchaseLimitMessage
+    : warning.message;
 }
