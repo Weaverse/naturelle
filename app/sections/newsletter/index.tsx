@@ -47,7 +47,7 @@ export default Newsletter;
 
 export const schema = createSchema({
   type: "newsletter",
-  title: "Newsletter",
+  title: "Subscription",
   settings: [
     {
       group: "Layout",

@@ -22,11 +22,11 @@ let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
       ],
     },
     alignment: {
-      left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
+      left: "items-center justify-items-center md:items-start md:justify-items-start [&_.countdown-content]:items-center md:[&_.countdown-content]:items-start md:max-lg:[&_.countdown-divider]:self-start [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:left]",
       center:
         "items-center justify-items-center [&_.countdown-content]:items-center [&_.paragraph]:[text-align:center]",
       right:
-        "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
+        "items-center justify-items-center md:items-end md:justify-items-end [&_.countdown-content]:items-center md:[&_.countdown-content]:items-end md:max-lg:[&_.countdown-divider]:self-end [&_.paragraph]:[text-align:center] md:[&_.paragraph]:[text-align:right]",
     },
   },
   defaultVariants: {
@@ -94,7 +94,7 @@ let Countdown = ({
         <>
           <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-0">
             {timerChildren}
-            <div className="h-px w-28 border-t border-current opacity-30 lg:h-auto lg:w-auto lg:self-stretch lg:border-t-0 lg:border-r lg:pl-10" />
+            <div className="countdown-divider h-px w-28 border-t border-current opacity-30 lg:h-auto lg:w-auto lg:self-stretch lg:border-t-0 lg:border-r lg:pl-10" />
           </div>
           <div className="countdown-content w-full flex flex-col items-start gap-4 [&_.paragraph]:opacity-80">
             {contentChildren}
@@ -152,7 +152,6 @@ export const schema = createSchema({
           type: "toggle-group",
           name: "alignment",
           label: "Alignment",
-          condition: "layout.ne.col",
           configs: {
             options: [
               { value: "left", label: "Left", icon: "align-start-vertical" },
