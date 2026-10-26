@@ -125,9 +125,11 @@ function Collections({
   const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
     null,
   );
+  const [activeCollectionIndex, setActiveCollectionIndex] = useState(0);
   const [canSlidePrev, setCanSlidePrev] = useState(false);
   const [canSlideNext, setCanSlideNext] = useState(false);
   const updateNavigation = (swiper: SwiperClass) => {
+    setActiveCollectionIndex(swiper.activeIndex);
     setCanSlidePrev(!swiper.isBeginning);
     setCanSlideNext(!swiper.isEnd);
   };
@@ -208,7 +210,7 @@ function Collections({
           modules={[Grid]}
           watchOverflow={true}
           slidesPerView={2}
-          slidesPerGroup={4}
+          slidesPerGroup={2}
           spaceBetween={cardGap ?? 24}
           grid={{ rows: 2, fill: "row" }}
           breakpoints={{
@@ -300,9 +302,14 @@ function Collections({
 
         {showCount && collections.length > 0 && (
           <p className="text-center text-sm font-medium text-text-subtle">
-            <span className="lg:hidden">{Math.min(4, collections.length)}</span>
+            <span className="lg:hidden">
+              {Math.min((activeCollectionIndex + 2) * 2, collections.length)}
+            </span>
             <span className="hidden lg:inline">
-              {Math.min(Number(columns) || 4, collections.length)}
+              {Math.min(
+                activeCollectionIndex + desktopCollectionsPerView,
+                collections.length,
+              )}
             </span>
             <span aria-hidden="true"> / </span>
             {collections.length}

@@ -18,8 +18,11 @@ import { Button } from "~/components/button";
 import { CartMain } from "~/components/cart/cart";
 import { IconNewsletter } from "~/components/icon";
 import { Input } from "~/components/input";
+import { CART_LINES_LIMIT } from "~/graphql/fragments";
 import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { useRootLoaderData } from "~/root";
+import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
+import { applyCartCode } from "~/utils/cart-codes.server";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 import { safeRedirectPath } from "~/utils/misc";
 import { skipRevalidationForCartActions } from "~/utils/revalidation";
@@ -33,7 +36,7 @@ export const headers: HeadersFunction = ({ actionHeaders }) => actionHeaders;
 export const shouldRevalidate = skipRevalidationForCartActions;
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  return { cart: await context.cart.get() };
+  return { cart: await context.cart.get({ numCartLines: CART_LINES_LIMIT }) };
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
@@ -50,8 +53,29 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   let result: CartQueryDataReturn;
+  let codeType: "discount" | "gift-card" | undefined;
+  let codeApplied: boolean | undefined;
 
   switch (formAction) {
+    case CART_CODE_APPLY_ACTION as typeof formAction: {
+      const code = typeof inputs.code === "string" ? inputs.code.trim() : "";
+      const allowDiscountCode = inputs.allowDiscountCode === true;
+      const allowGiftCard = inputs.allowGiftCard === true;
+      if (!code || !(allowDiscountCode || allowGiftCard)) {
+        return data(
+          { userErrors: [{ message: "Invalid discount code or gift card." }] },
+          { status: 400 },
+        );
+      }
+      const codeResult = await applyCartCode(cart, code, {
+        allowDiscountCode,
+        allowGiftCard,
+      });
+      result = codeResult;
+      codeType = codeResult.codeType;
+      codeApplied = codeResult.codeApplied;
+      break;
+    }
     case CartForm.ACTIONS.LinesAdd: {
       const lines = getCartLineInputs(
         (inputs.lines as CartLineInput[] | undefined) ?? [],
@@ -205,6 +229,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       errors,
       userErrors,
       warnings,
+      ...(codeType && { codeType, codeApplied }),
       analytics: {
         cartId: result.cart?.id,
       },
@@ -258,7 +283,7 @@ function getErrorMessages(error: unknown): string[] {
 
 async function getCartOrNull(cart: AppLoadContext["cart"]) {
   try {
-    return await cart.get();
+    return await cart.get({ numCartLines: CART_LINES_LIMIT });
   } catch (error) {
     if (isMissingCartLineError(error)) {
       return null;

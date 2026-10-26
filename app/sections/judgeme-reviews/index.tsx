@@ -38,6 +38,7 @@ export default JudgemeReviewSection;
 export const schema = createSchema({
   type: "judgeme-reviews",
   title: "Judgeme Reviews",
+  limit: 1,
   enabledOn: {
     pages: ["PRODUCT"],
   },

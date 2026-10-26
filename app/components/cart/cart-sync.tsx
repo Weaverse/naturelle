@@ -184,8 +184,14 @@ function CartLineQuantityMutation({
   );
   useCartFetcherSync(fetcher);
 
+  const observedSubmission = useRef(false);
   useEffect(() => {
-    if (fetcher.state === "idle" && submittedQuantity !== undefined) {
+    if (fetcher.state !== "idle") {
+      observedSubmission.current = true;
+      return;
+    }
+    if (observedSubmission.current && submittedQuantity !== undefined) {
+      observedSubmission.current = false;
       useCartStore
         .getState()
         .settleLineUpdate(lineId, submittedQuantity, fetcher.data);
@@ -204,6 +210,7 @@ function CartLineQuantityMutation({
     if (quantity === null) {
       return;
     }
+    observedSubmission.current = false;
     const formData = new FormData();
     formData.set(
       CartForm.INPUT_NAME,

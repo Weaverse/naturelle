@@ -184,17 +184,16 @@ export function Footer() {
             )}
           </div>
 
-          <hr className="w-full border-0 border-border-subtle border-t md:border-border" />
-
-          <div className="mx-auto w-full max-w-page self-stretch">
+          <div className="mx-auto flex w-full max-w-page flex-col self-stretch md:gap-10 lg:gap-16">
+            <hr className="hidden w-full border-0 border-border border-t md:block" />
             {footerMenu && <FooterMenu menu={footerMenu} />}
           </div>
         </div>
 
         {/* Trust badges and payment methods */}
-        <div className="w-full flex flex-col md:gap-5 justify-between items-center self-stretch lg:px-20 lg:h-43 lg:py-12">
+        <div className="w-full flex flex-col gap-4 md:gap-5 justify-between items-start md:items-center self-stretch lg:px-20 lg:h-43 lg:py-12">
           <div className="w-full border-border-subtle border-t" />
-          <div className="mx-auto flex w-full max-w-page flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+          <div className="contents md:mx-auto md:flex md:w-full md:max-w-page md:flex-col md:items-start md:justify-between md:gap-4 lg:flex-row lg:items-center">
             <TrustBadges
               veganLabel={trustBadgeVeganLabel}
               crueltyFreeLabel={trustBadgeCrueltyFreeLabel}
@@ -239,7 +238,8 @@ function FooterMenu({ menu }: { menu: EnhancedMenu | undefined | null }) {
   }
   return (
     <nav className="flex w-full flex-col items-start justify-center md:gap-10 lg:flex-row lg:flex-nowrap">
-      <div className="flex w-full flex-col gap-2 md:flex-row md:flex-wrap md:gap-x-10 md:gap-y-10 lg:contents">
+      <div className="flex w-full flex-col gap-4 md:flex-row md:flex-wrap md:gap-x-10 md:gap-y-10 lg:contents">
+        <hr className="w-full border-0 border-border-subtle border-t md:hidden" />
         {items.map((item, id) => {
           let { title, ...rest } = item;
           let level = getMaxDepth(item);
@@ -253,14 +253,14 @@ function FooterMenu({ menu }: { menu: EnhancedMenu | undefined | null }) {
           }
           return <Comp key={id} {...rest} title={title} />;
         })}
+        <SocialLinks
+          socialInstagram={socialInstagram}
+          socialFacebook={socialFacebook}
+          socialPinterest={socialPinterest}
+          socialTikTok={socialTikTok}
+          socialYouTube={socialYouTube}
+        />
       </div>
-      <SocialLinks
-        socialInstagram={socialInstagram}
-        socialFacebook={socialFacebook}
-        socialPinterest={socialPinterest}
-        socialTikTok={socialTikTok}
-        socialYouTube={socialYouTube}
-      />
     </nav>
   );
 }
@@ -283,7 +283,7 @@ function MenuLink(props: SingleMenuItem) {
           ))}
         </ul>
       </div>
-      <div className="block w-full border-border-subtle border-b pt-2 pb-4 md:hidden">
+      <div className="block w-full md:hidden">
         <Disclosure>
           {({ open }) => (
             <div className="contents">
@@ -323,6 +323,7 @@ function MenuLink(props: SingleMenuItem) {
           )}
         </Disclosure>
       </div>
+      <hr className="w-full border-0 border-border-subtle border-t md:hidden" />
     </>
   );
 }
@@ -330,5 +331,10 @@ function MenuLink(props: SingleMenuItem) {
 function HeaderText({ title }: { title: string; to: string }) {
   const settings = useThemeSettings();
   let { tagNameTitle: Tag = "h6" } = settings || {};
-  return <Tag className={footerMenuHeadingClass}>{title}</Tag>;
+  return (
+    <>
+      <Tag className={footerMenuHeadingClass}>{title}</Tag>
+      <hr className="w-full border-0 border-border-subtle border-t md:hidden" />
+    </>
+  );
 }

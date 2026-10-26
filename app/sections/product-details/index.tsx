@@ -50,6 +50,7 @@ export default function ProductDetails({
 export const schema = createSchema({
   type: "product-details",
   title: "Product details",
+  limit: 1,
   enabledOn: {
     pages: ["PRODUCT"],
   },

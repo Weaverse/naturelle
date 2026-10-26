@@ -12,6 +12,7 @@ import { useFetcher } from "react-router";
 import { buttonVariants } from "~/components/button";
 import { Link } from "~/components/link";
 import { Skeleton } from "~/components/skeleton";
+import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
 import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 import {
@@ -20,7 +21,11 @@ import {
   GiftCardDialog,
   NoteDialog,
 } from "./cart-summary-actions";
-import type { CartLayout, CartWithOptimistic } from "./cart-types";
+import type {
+  CartLayout,
+  CartMutationResponse,
+  CartWithOptimistic,
+} from "./cart-types";
 import { useCartStore } from "./store";
 
 export function CartSummary({
@@ -99,6 +104,39 @@ function getApplicableCodes(
   return discountCodes?.filter((discount) => discount.applicable) || [];
 }
 
+function getCartDiscountSummary(cart: CartWithOptimistic) {
+  const { cost, lines, discountAllocations } = cart;
+  const cartDiscountAmount = discountAllocations
+    .filter((allocation) => allocation.targetType === "LINE_ITEM")
+    .reduce(
+      (total, allocation) => total + Number(allocation.discountedAmount.amount),
+      0,
+    );
+  const lineDiscountAmount = lines.nodes.reduce(
+    (total, line) =>
+      total +
+      line.discountAllocations.reduce(
+        (lineTotal, allocation) =>
+          lineTotal + Number(allocation.discountedAmount.amount),
+        0,
+      ),
+    0,
+  );
+  const discountAmount = cartDiscountAmount + lineDiscountAmount;
+
+  return {
+    discountAmount,
+    subtotalBeforeDiscounts: {
+      amount: String(Number(cost.subtotalAmount.amount) + lineDiscountAmount),
+      currencyCode: cost.subtotalAmount.currencyCode,
+    },
+    discountMoney: {
+      amount: String(-discountAmount),
+      currencyCode: cost.subtotalAmount.currencyCode,
+    },
+  };
+}
+
 function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
   const { t } = useTranslation();
   const {
@@ -109,11 +147,16 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
     enableGiftCard,
     giftCardButtonText,
   } = useCartActionSettings();
-  const [discountCode, setDiscountCode] = useState("");
-  const [submittedDiscountCode, setSubmittedDiscountCode] = useState<
-    string | null
-  >(null);
-  const dcApplyFetcher = useFetcher({ key: "discount-code-apply" });
+  const [cartCode, setCartCode] = useState("");
+  const [submittedCartCode, setSubmittedCartCode] = useState<string | null>(
+    null,
+  );
+  const codeApplyFetcher = useFetcher<
+    CartMutationResponse & {
+      codeType?: "discount" | "gift-card";
+      codeApplied?: boolean;
+    }
+  >({ key: "cart-code-apply" });
   const {
     removingDiscountCode,
     setRemovingDiscountCode,
@@ -136,40 +179,35 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
   const isCartUpdating =
     isOptimistic ||
     dcRemoveFetcher.state !== "idle" ||
-    dcApplyFetcher.state !== "idle" ||
+    codeApplyFetcher.state !== "idle" ||
     gcRemoveFetcher.state !== "idle" ||
     hasPendingLines;
-  const applicableCodes = getApplicableCodes(discountCodes);
-  const discountSubmissionComplete = Boolean(
-    submittedDiscountCode &&
-      dcApplyFetcher.state === "idle" &&
-      dcApplyFetcher.data,
+  const { discountAmount, subtotalBeforeDiscounts, discountMoney } =
+    getCartDiscountSummary(cart);
+  const codeSubmissionComplete = Boolean(
+    submittedCartCode &&
+      codeApplyFetcher.state === "idle" &&
+      codeApplyFetcher.data,
   );
-  const discountApplied = Boolean(
-    discountSubmissionComplete &&
-      applicableCodes.some(
-        ({ code }) =>
-          code.toLowerCase() === submittedDiscountCode?.toLowerCase(),
-      ),
+  const codeApplied = Boolean(
+    codeSubmissionComplete && codeApplyFetcher.data?.codeApplied,
   );
 
-  function applyDiscountCode(event: SyntheticEvent<HTMLFormElement>) {
+  function submitCartCode(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    const code = discountCode.trim();
+    const code = cartCode.trim();
     if (!code) {
       return;
     }
-    setSubmittedDiscountCode(code);
-    dcApplyFetcher.submit(
+    setSubmittedCartCode(code);
+    codeApplyFetcher.submit(
       {
         [CartForm.INPUT_NAME]: JSON.stringify({
-          action: CartForm.ACTIONS.DiscountCodesUpdate,
+          action: CART_CODE_APPLY_ACTION,
           inputs: {
-            discountCodes: [
-              ...(discountCodes?.map(({ code: appliedCode }) => appliedCode) ||
-                []),
-              code,
-            ],
+            code,
+            allowDiscountCode: Boolean(enableDiscountCode),
+            allowGiftCard: Boolean(enableGiftCard),
           },
         }),
       },
@@ -193,71 +231,64 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
           <Skeleton className="h-4 w-20 rounded" />
         ) : (
           <Money
-            data={cost.subtotalAmount}
+            data={subtotalBeforeDiscounts}
             className="font-body text-base leading-none font-normal tracking-[-0.16px] text-text"
           />
         )}
       </div>
 
-      <PageDiscountForm
-        enabled={enableDiscountCode}
-        label={discountCodeButtonText}
-        code={discountCode}
+      <PageCartCodeForm
+        enabled={enableDiscountCode || enableGiftCard}
+        label={
+          enableDiscountCode && enableGiftCard
+            ? t("cart.code")
+            : enableDiscountCode
+              ? discountCodeButtonText || t("cart.discountCode")
+              : giftCardButtonText || t("cart.giftCardCode")
+        }
+        code={cartCode}
         onCodeChange={(value) => {
-          setDiscountCode(value);
-          setSubmittedDiscountCode(null);
+          setCartCode(value);
+          setSubmittedCartCode(null);
         }}
-        onSubmit={applyDiscountCode}
-        isSubmitting={dcApplyFetcher.state !== "idle"}
-        submissionComplete={discountSubmissionComplete}
-        applied={discountApplied}
+        onSubmit={submitCartCode}
+        isSubmitting={codeApplyFetcher.state !== "idle"}
+        submissionComplete={codeSubmissionComplete}
+        applied={codeApplied}
+        appliedCodeType={codeApplyFetcher.data?.codeType}
       />
 
-      {enableGiftCard && (
-        <Dialog.Root>
-          <Dialog.Trigger asChild>
-            <button
-              type="button"
-              className="self-start font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle underline underline-offset-2"
-            >
-              {giftCardButtonText || t("cart.giftCard")}
-            </button>
-          </Dialog.Trigger>
-          <GiftCardDialog appliedGiftCards={appliedGiftCards} layout="page" />
-        </Dialog.Root>
-      )}
-
       <AppliedCartCodes
+        className="justify-end gap-3"
         appliedGiftCards={appliedGiftCards}
         discountCodes={discountCodes}
         cartRoute={cartRoute}
         removingGiftCard={removingGiftCard}
-        onRemovingGiftCard={setRemovingGiftCard}
+        onRemovingGiftCard={(code) => {
+          setRemovingGiftCard(code);
+          setSubmittedCartCode(null);
+        }}
         gcRemoveFetcher={gcRemoveFetcher}
         removingDiscountCode={removingDiscountCode}
         onRemovingDiscountCode={(code) => {
           setRemovingDiscountCode(code);
-          setSubmittedDiscountCode(null);
+          setSubmittedCartCode(null);
         }}
         dcRemoveFetcher={dcRemoveFetcher}
       />
-
-      <div className="flex flex-col gap-4 font-body text-base leading-none font-normal tracking-[-0.16px] text-text">
-        <div className="flex justify-between gap-4">
-          <span>{t("account.shipping")}</span>
-          <span>{t("cart.calculatedAtCheckout")}</span>
-        </div>
-        <div className="flex justify-between gap-4">
-          <span>{t("cart.estimatedTax")}</span>
-          <span>
-            {cost.totalTaxAmount ? (
-              <Money data={cost.totalTaxAmount} />
-            ) : (
-              t("cart.calculatedAtCheckout")
-            )}
+      <div className="flex items-center justify-between gap-4 font-body text-base leading-none font-normal tracking-[-0.16px] text-text">
+        <span>{t("cart.discount")}</span>
+        {isCartUpdating ? (
+          <Skeleton className="h-4 w-20 rounded" />
+        ) : discountAmount > 0 ? (
+          <Money data={discountMoney} />
+        ) : (
+          <span className="text-text-subtle">
+            {t("cart.noDiscountApplied")}
           </span>
-        </div>
+        )}
       </div>
+
       <div
         aria-hidden="true"
         className="h-px w-full bg-text-subtle opacity-20"
@@ -333,6 +364,7 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
 
 function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
   const { t } = useTranslation();
+  const closeCart = useCartStore((state) => state.close);
   const {
     enableCartNote,
     cartNoteButtonText,
@@ -364,9 +396,11 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
     dcRemoveFetcher.state !== "idle" ||
     gcRemoveFetcher.state !== "idle" ||
     hasPendingLines;
-  const subtotal = Number(cost?.subtotalAmount?.amount || 0);
+  const { discountAmount, subtotalBeforeDiscounts } =
+    getCartDiscountSummary(cart);
+  const subtotal = Number(subtotalBeforeDiscounts.amount);
   const total = Number(cost?.totalAmount?.amount || 0);
-  const hasDiscount = subtotal > total && total > 0;
+  const hasDiscount = discountAmount > 0 && subtotal !== total;
   const { publish } = useAnalytics();
 
   return (
@@ -379,7 +413,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       </h2>
 
       <AppliedCartCodes
-        className="justify-end"
+        className="justify-end gap-3"
         appliedGiftCards={appliedGiftCards}
         discountCodes={discountCodes}
         cartRoute={cartRoute}
@@ -392,14 +426,14 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       />
 
       <div className="flex items-center justify-between font-body text-base leading-[160%] tracking-[-0.16px] text-text">
-        <span className="font-semibold">{t("cart.subtotal")}</span>
+        <span className="font-semibold">{t("cart.total")}</span>
         {isCartUpdating ? (
           <Skeleton className="h-4 w-20 rounded" />
         ) : (
           <div className="flex items-center gap-2">
             {hasDiscount && (
-              <span className="font-normal text-text-subtle line-through">
-                <Money data={cost.subtotalAmount} />
+              <span className="font-normal line-through">
+                <Money data={subtotalBeforeDiscounts} />
               </span>
             )}
             <span className="font-semibold">
@@ -462,32 +496,46 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
       )}
 
       {checkoutUrl && (
-        <a
-          href={checkoutUrl}
-          target="_self"
-          className={buttonVariants({
-            shape: "default",
-            className: cn(
-              "h-auto w-full rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",
-              isCartUpdating && "pointer-events-none opacity-50",
-            ),
-          })}
-          aria-disabled={isCartUpdating || undefined}
-          aria-busy={isCartUpdating || undefined}
-          tabIndex={isCartUpdating ? -1 : undefined}
-          onClick={(event) => {
-            if (isCartUpdating) {
-              event.preventDefault();
-              return;
-            }
+        <div className="flex w-full gap-2.5">
+          <Link
+            to="/cart"
+            onClick={closeCart}
+            className={buttonVariants({
+              variant: "secondary",
+              shape: "default",
+              className:
+                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",
+            })}
+          >
+            {t("cart.viewCart")}
+          </Link>
+          <a
+            href={checkoutUrl}
+            target="_self"
+            className={buttonVariants({
+              shape: "default",
+              className: cn(
+                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]",
+                isCartUpdating && "pointer-events-none opacity-50",
+              ),
+            })}
+            aria-disabled={isCartUpdating || undefined}
+            aria-busy={isCartUpdating || undefined}
+            tabIndex={isCartUpdating ? -1 : undefined}
+            onClick={(event) => {
+              if (isCartUpdating) {
+                event.preventDefault();
+                return;
+              }
 
-            publish(AnalyticsEvent.CUSTOM_EVENT, {
-              eventName: "checkout_started",
-            });
-          }}
-        >
-          {t("cart.continueToCheckout")}
-        </a>
+              publish(AnalyticsEvent.CUSTOM_EVENT, {
+                eventName: "checkout_started",
+              });
+            }}
+          >
+            {t("cart.continueToCheckout")}
+          </a>
+        </div>
       )}
     </section>
   );
@@ -600,7 +648,7 @@ function AppliedCartCodes({
   );
 }
 
-function PageDiscountForm({
+function PageCartCodeForm({
   enabled,
   label,
   code,
@@ -609,6 +657,7 @@ function PageDiscountForm({
   isSubmitting,
   submissionComplete,
   applied,
+  appliedCodeType,
 }: {
   enabled?: boolean;
   label?: string;
@@ -618,6 +667,7 @@ function PageDiscountForm({
   isSubmitting: boolean;
   submissionComplete: boolean;
   applied: boolean;
+  appliedCodeType?: "discount" | "gift-card";
 }) {
   const { t } = useTranslation();
   if (!enabled) {
@@ -627,15 +677,15 @@ function PageDiscountForm({
   return (
     <form className="flex flex-col gap-2" onSubmit={onSubmit}>
       <label
-        htmlFor="cart-discount-code"
+        htmlFor="cart-code"
         className="font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle"
       >
-        {label || t("cart.discountCode")}
+        {label || t("cart.code")}
       </label>
       <div className="flex gap-2">
         <input
-          id="cart-discount-code"
-          name="discountCode"
+          id="cart-code"
+          name="code"
           value={code}
           onChange={(event) => onCodeChange(event.target.value)}
           placeholder={t("cart.enterCode")}
@@ -652,11 +702,13 @@ function PageDiscountForm({
       {submissionComplete &&
         (applied ? (
           <CartActionBanner variant="success">
-            {t("cart.discountApplied")}
+            {appliedCodeType === "gift-card"
+              ? t("cart.giftCardApplied")
+              : t("cart.discountApplied")}
           </CartActionBanner>
         ) : (
           <CartActionBanner variant="error">
-            {t("cart.invalidDiscount")}
+            {t("cart.invalidCode")}
           </CartActionBanner>
         ))}
     </form>

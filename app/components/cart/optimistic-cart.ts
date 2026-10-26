@@ -64,6 +64,7 @@ function applyAddLines(nodes: CartLine[], lines: OptimisticCartLineInput[]) {
         amountPerQuantity: zeroMoney,
         compareAtAmountPerQuantity: null,
       },
+      discountAllocations: [],
     } as CartLine);
   }
 
