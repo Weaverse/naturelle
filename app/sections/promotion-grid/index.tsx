@@ -142,7 +142,7 @@ export default function PromotionGrid({
                   variant: "secondary",
                   shape: "default",
                 }),
-                "mt-5 rounded-xl px-6 py-3 font-body text-base leading-[160%] tracking-[-0.16px]",
+                "mt-5 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
               )}
             >
               {buttonText ?? "Explore Now"}

@@ -120,7 +120,7 @@ export default function HeroStory({
           {buttonText && (
             <Button
               to={buttonLink}
-              className="h-auto rounded-xl px-6 py-3 font-body text-base leading-[1.6] tracking-[-0.16px]"
+              className="h-auto rounded-xl px-6 py-3.5 font-body text-base leading-[1.6] tracking-[-0.16px]"
             >
               {buttonText}
             </Button>

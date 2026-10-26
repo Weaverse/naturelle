@@ -504,7 +504,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
               variant: "secondary",
               shape: "default",
               className:
-                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3 font-body text-base leading-[160%] tracking-[-0.16px]",
+                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
             })}
           >
             {t("cart.viewCart")}
@@ -515,7 +515,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
             className={buttonVariants({
               shape: "default",
               className: cn(
-                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3 font-body text-base leading-[160%] tracking-[-0.16px]",
+                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
                 isCartUpdating && "pointer-events-none opacity-50",
               ),
             })}
