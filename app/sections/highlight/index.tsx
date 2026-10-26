@@ -2,20 +2,23 @@ import { createSchema } from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { backgroundInputs } from "~/components/background-image";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { cn } from "~/utils/cn";
 
-type HighlightsProps = SectionProps;
+interface HighlightsProps extends SectionProps {
+  visibleOnMobile?: boolean;
+}
 
 const Highlights = ({
   ref,
   ...props
 }: HighlightsProps & { ref?: RefObject<HTMLElement | null> }) => {
-  let { children, className, ...rest } = props;
+  let { children, className, visibleOnMobile = true, ...rest } = props;
 
   return (
     <Section
       ref={ref}
       {...rest}
-      className={className}
+      className={cn(className, !visibleOnMobile && "hidden md:block")}
       containerClassName="py-20 lg:max-w-[1440px] lg:py-[120px]"
     >
       {children}
@@ -31,7 +34,15 @@ export const schema = createSchema({
   settings: [
     {
       group: "Layout",
-      inputs: layoutInputs.filter((input) => input.name !== "borderRadius"),
+      inputs: [
+        {
+          type: "switch",
+          label: "Visible on mobile",
+          name: "visibleOnMobile",
+          defaultValue: true,
+        },
+        ...layoutInputs.filter((input) => input.name !== "borderRadius"),
+      ],
     },
     {
       group: "Background",
@@ -45,6 +56,7 @@ export const schema = createSchema({
   ],
   childTypes: ["heading", "highlight-content--item"],
   presets: {
+    visibleOnMobile: true,
     backgroundColor: "#F3F3F3",
     children: [
       {

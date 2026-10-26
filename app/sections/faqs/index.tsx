@@ -6,8 +6,10 @@ import { backgroundInputs } from "~/components/background-image";
 import { Button } from "~/components/button";
 import { IconImageBlank } from "~/components/icon";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { cn } from "~/utils/cn";
 
 interface FaqsData {
+  showImage?: boolean;
   image?: WeaverseImage;
   imageAlt?: string;
   imageBackgroundColor?: string;
@@ -22,6 +24,7 @@ type FaqsProps = SectionProps & FaqsData;
 
 export default function Faqs({
   ref,
+  showImage = true,
   image,
   imageAlt,
   imageBackgroundColor,
@@ -43,7 +46,10 @@ export default function Faqs({
       gap={0}
       verticalPadding="none"
       className="py-20 px-5 md:px-6 lg:px-40"
-      containerClassName="mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) md:grid-cols-2"
+      containerClassName={cn(
+        "mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap)",
+        showImage && "md:grid-cols-2",
+      )}
       style={
         {
           ...style,
@@ -51,52 +57,61 @@ export default function Faqs({
         } as CSSProperties
       }
     >
-      <div
-        className="relative overflow-hidden rounded-2xl bg-(--faq-image-background)"
-        style={
-          {
-            "--faq-image-background": imageBackgroundColor,
-          } as CSSProperties
-        }
-      >
-        {image ? (
-          <Image
-            data={image}
-            alt={imageAlt || image.altText || "Customer service"}
-            className="absolute inset-0 h-full w-full object-cover"
-            sizes="(min-width: 1024px) 42vw, 100vw"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-background-subtle-2">
-            <IconImageBlank className="size-48 opacity-60" />
+      {showImage && (
+        <div
+          className="relative overflow-hidden rounded-2xl bg-(--faq-image-background)"
+          style={
+            {
+              "--faq-image-background": imageBackgroundColor,
+            } as CSSProperties
+          }
+        >
+          {image ? (
+            <Image
+              data={image}
+              alt={imageAlt || image.altText || "Customer service"}
+              className="absolute inset-0 h-full w-full object-cover"
+              sizes="(min-width: 1024px) 42vw, 100vw"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-background-subtle-2">
+              <IconImageBlank className="size-48 opacity-60" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-(--faq-image-background) opacity-30" />
+          <div className="relative z-10 flex h-full min-h-[440px] flex-col items-center justify-center px-8 text-center text-text-inverse md:min-h-[560px] lg:min-h-[600px]">
+            {cardEyebrow && (
+              <p className="mb-4 text-center text-xl font-normal tracking-[-0.2px]">
+                {cardEyebrow}
+              </p>
+            )}
+            {cardHeading && (
+              <p className="text-center font-heading text-[37px] leading-[110%]">
+                {cardHeading}
+              </p>
+            )}
+            {buttonText && (
+              <Button
+                as="a"
+                to={buttonLink || "/pages/contact"}
+                variant="secondary"
+                className="mt-7 rounded-xl font-semibold"
+              >
+                {buttonText}
+              </Button>
+            )}
           </div>
-        )}
-        <div className="absolute inset-0 bg-(--faq-image-background) opacity-30" />
-        <div className="relative z-10 flex h-full min-h-[440px] flex-col items-center justify-center px-8 text-center text-text-inverse md:min-h-[560px] lg:min-h-[600px]">
-          {cardEyebrow && (
-            <p className="mb-4 text-center text-xl font-normal tracking-[-0.2px]">
-              {cardEyebrow}
-            </p>
-          )}
-          {cardHeading && (
-            <p className="text-center font-heading text-[37px] leading-[110%]">
-              {cardHeading}
-            </p>
-          )}
-          {buttonText && (
-            <Button
-              as="a"
-              to={buttonLink || "/pages/contact"}
-              variant="secondary"
-              className="mt-7 rounded-xl font-semibold"
-            >
-              {buttonText}
-            </Button>
-          )}
         </div>
-      </div>
+      )}
 
-      <div className="flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden py-10 md:h-150 md:py-20 lg:gap-10 lg:pl-16 lg:pr-10">
+      <div
+        className={cn(
+          "flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden lg:gap-10",
+          showImage
+            ? "py-10 md:h-150 md:py-20 lg:pl-16 lg:pr-10"
+            : "mx-auto md:w-1/2",
+        )}
+      >
         {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
         <Accordion.Root
           type="single"
@@ -117,6 +132,12 @@ export const schema = createSchema({
     {
       group: "Content",
       inputs: [
+        {
+          type: "switch",
+          name: "showImage",
+          label: "Show image",
+          defaultValue: true,
+        },
         { type: "image", name: "image", label: "Card image" },
         {
           type: "text",

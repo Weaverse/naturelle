@@ -260,7 +260,7 @@ const Testimonials = ({
                     "pointer-events-auto flex h-auto min-h-9 w-fit max-w-[320px] items-center justify-between gap-3 rounded-xl px-[18px] py-3 font-body text-base leading-[1.6] font-semibold tracking-[-0.16px] shadow-[0_10px_24px_rgba(0,0,0,0.2)]",
                 })}
               >
-                <span className="text-text-inverse">{ratingButtonText}</span>
+                <span>{ratingButtonText}</span>
                 <IconCaret
                   direction="right"
                   className="size-4.5 shrink-0"

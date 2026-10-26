@@ -14,5 +14,5 @@ export type CartMutationResponse = {
   cart?: CartApiQueryFragment | null;
   errors?: Array<{ message?: string }>;
   userErrors?: Array<{ message?: string }>;
-  warnings?: Array<{ message?: string }>;
+  warnings?: Array<{ code?: string; message?: string; target?: string }>;
 };

@@ -1,7 +1,6 @@
 import { Image } from "@shopify/hydrogen";
 import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
 import { createSchema, useParentInstance } from "@weaverse/hydrogen";
-import clsx from "clsx";
 import React from "react";
 import {
   IconHighlightLeaf,
@@ -10,7 +9,6 @@ import {
 } from "~/components/icon";
 
 interface HightlightProps extends HydrogenComponentProps {
-  visibleOnMobile: boolean;
   iconImage?: WeaverseImage;
   iconColor: string;
 }
@@ -19,7 +17,7 @@ const HighlightItem = ({
   ref,
   ...props
 }: HightlightProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
-  let { visibleOnMobile, iconImage, iconColor, children, ...rest } = props;
+  let { iconImage, iconColor, children, ...rest } = props;
 
   let parentInstance = useParentInstance();
   let firstChild = React.Children.toArray(children)[0] as
@@ -39,10 +37,7 @@ const HighlightItem = ({
       ref={ref}
       {...rest}
       data-motion="slide-in"
-      className={clsx(
-        "row-span-3 grid w-full grid-rows-subgrid justify-items-center gap-y-0 rounded-2xl bg-background-basic px-6 py-10",
-        !visibleOnMobile && "hidden md:grid",
-      )}
+      className="row-span-3 grid w-full grid-rows-subgrid justify-items-center gap-y-0 rounded-2xl bg-background-basic px-6 py-10"
     >
       <div className="mb-6 flex size-12 shrink-0 items-center justify-center">
         {iconImageUrl ? (
@@ -86,12 +81,6 @@ export const schema = createSchema({
     {
       group: "Highlight",
       inputs: [
-        {
-          type: "switch",
-          label: "Visible on Mobile",
-          name: "visibleOnMobile",
-          defaultValue: true,
-        },
         {
           type: "image",
           label: "Icon image",
