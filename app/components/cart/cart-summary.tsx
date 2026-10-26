@@ -122,7 +122,7 @@ function getCartDiscountSummary(cart: CartWithOptimistic) {
       ),
     0,
   );
-  const discountAmount = cartDiscountAmount;
+  const discountAmount = cartDiscountAmount + lineDiscountAmount;
 
   return {
     discountAmount,

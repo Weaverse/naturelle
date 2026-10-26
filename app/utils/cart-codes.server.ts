@@ -9,14 +9,14 @@ type CartCodeResult = {
   userErrors?: unknown[];
   cart?: {
     discountCodes?: Array<{ code: string; applicable: boolean }>;
-    appliedGiftCards?: Array<{ id: string }>;
+    appliedGiftCards?: Array<{ id: string; lastCharacters?: string }>;
   } | null;
 };
 
 type CartCodeCart<Result extends CartCodeResult> = {
   get(): Promise<{
     discountCodes?: Array<{ code: string }>;
-    appliedGiftCards?: Array<{ id: string }>;
+    appliedGiftCards?: Array<{ id: string; lastCharacters?: string }>;
   } | null>;
   updateDiscountCodes(codes: string[]): Promise<Result>;
   addGiftCardCodes(codes: string[]): Promise<Result>;
@@ -44,16 +44,29 @@ export async function applyCartCode<Result extends CartCodeResult>(
   const previousDiscountCodes = previousCart?.discountCodes ?? [];
 
   if (options.allowGiftCard) {
+    const giftCardCode = normalizeGiftCardCode(rawCode);
+    const previousGiftCards = previousCart?.appliedGiftCards ?? [];
     const previousGiftCardIds = new Set(
-      (previousCart?.appliedGiftCards ?? []).map((card) => card.id),
+      previousGiftCards.map((card) => card.id),
     );
-    const giftCardResult = await cart.addGiftCardCodes([
-      normalizeGiftCardCode(rawCode),
-    ]);
+    const matchingPreviousGiftCardIds = new Set(
+      previousGiftCards
+        .filter(
+          (card) =>
+            card.lastCharacters &&
+            giftCardCode
+              .toLowerCase()
+              .endsWith(card.lastCharacters.toLowerCase()),
+        )
+        .map((card) => card.id),
+    );
+    const giftCardResult = await cart.addGiftCardCodes([giftCardCode]);
     const codeApplied = Boolean(
       !hasCartCodeErrors(giftCardResult) &&
         giftCardResult.cart?.appliedGiftCards?.some(
-          (card) => !previousGiftCardIds.has(card.id),
+          (card) =>
+            !previousGiftCardIds.has(card.id) ||
+            matchingPreviousGiftCardIds.has(card.id),
         ),
     );
 
@@ -84,31 +97,6 @@ export async function applyCartCode<Result extends CartCodeResult>(
           discount.code.toLowerCase() === discountCode.toLowerCase(),
       ),
   );
-  const isNewProbe = !previousDiscountCodes.some(
-    (discount) => discount.code.toLowerCase() === discountCode.toLowerCase(),
-  );
-
-  if (
-    options.allowGiftCard &&
-    !hasCartCodeErrors(discountResult) &&
-    !codeApplied &&
-    isNewProbe &&
-    discountResult.cart?.discountCodes?.some(
-      (discount) => discount.code.toLowerCase() === discountCode.toLowerCase(),
-    )
-  ) {
-    const remainingCodes = discountResult.cart.discountCodes
-      .filter(
-        (discount) =>
-          discount.code.toLowerCase() !== discountCode.toLowerCase(),
-      )
-      .map((discount) => discount.code);
-    return {
-      ...(await cart.updateDiscountCodes(remainingCodes)),
-      codeType: "discount",
-      codeApplied: false,
-    };
-  }
 
   return { ...discountResult, codeType: "discount", codeApplied };
 }

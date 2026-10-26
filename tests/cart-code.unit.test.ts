@@ -9,7 +9,7 @@ import { applyCartCode } from "../app/utils/cart-codes.server.ts";
 type TestResult = {
   cart: {
     discountCodes: Array<{ code: string; applicable: boolean }>;
-    appliedGiftCards: Array<{ id: string }>;
+    appliedGiftCards: Array<{ id: string; lastCharacters?: string }>;
   };
   errors: Array<{ message: string }>;
   userErrors: Array<{ message: string }>;
@@ -102,7 +102,40 @@ test("accepts a gift card without trying it as a discount code", async () => {
   ]);
 });
 
-test("returns a shared invalid result after both code types are rejected", async () => {
+test("accepts an already-applied gift card without trying it as a discount code", async () => {
+  const calls: string[] = [];
+  const existingGiftCard = {
+    id: "existing-card",
+    lastCharacters: "1234",
+  };
+  const cart = {
+    async get() {
+      return { discountCodes: [], appliedGiftCards: [existingGiftCard] };
+    },
+    async updateDiscountCodes(codes: string[]) {
+      calls.push(`discount:${codes.join(",")}`);
+      return result({
+        discountCodes: codes.map((code) => ({ code, applicable: true })),
+        appliedGiftCards: [existingGiftCard],
+      });
+    },
+    async addGiftCardCodes(codes: string[]) {
+      calls.push(`gift-card:${codes.join(",")}`);
+      return result({ appliedGiftCards: [existingGiftCard] });
+    },
+  };
+
+  const response = await applyCartCode(cart, "gift 1234", {
+    allowDiscountCode: true,
+    allowGiftCard: true,
+  });
+
+  assert.equal(response.codeType, "gift-card");
+  assert.equal(response.codeApplied, true);
+  assert.deepEqual(calls, ["gift-card:GIFT1234"]);
+});
+
+test("preserves an inapplicable discount for Shopify to reevaluate", async () => {
   const calls: string[] = [];
   const cart = {
     async get() {
@@ -129,9 +162,8 @@ test("returns a shared invalid result after both code types are rejected", async
 
   assert.equal(response.codeType, "discount");
   assert.equal(response.codeApplied, false);
-  assert.deepEqual(calls, [
-    "gift-card:INVALID",
-    "discount:INVALID",
-    "discount:",
+  assert.deepEqual(calls, ["gift-card:INVALID", "discount:INVALID"]);
+  assert.deepEqual(response.cart.discountCodes, [
+    { code: "INVALID", applicable: false },
   ]);
 });
