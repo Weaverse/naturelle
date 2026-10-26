@@ -319,7 +319,7 @@ export function QuickViewTrigger({
             setOpen(true);
           }}
           loading={state === "loading"}
-          className="hidden h-12 w-full min-w-0 overflow-hidden rounded-xl px-6 text-sm font-medium shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background desktop:inline-flex"
+          className="hidden h-12 w-full min-w-0 overflow-hidden rounded-xl px-6 text-sm shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-primary-background desktop:inline-flex"
           classNameContainer="min-w-0 truncate"
         >
           {resolvedButtonText}
@@ -337,6 +337,7 @@ export function QuickViewTrigger({
             <Button
               type="button"
               variant="primary"
+              className="font-normal"
               loading={state === "loading"}
               onClick={() =>
                 load(

@@ -37,7 +37,11 @@ let CollectionListItem = ({
         }) => (
           <>
             <div className="mb-6 flex items-center justify-center">
-              <Button as={PreviousLink} variant="outline">
+              <Button
+                as={PreviousLink}
+                variant="outline"
+                className="font-normal"
+              >
                 {isLoading ? t("system.loading") : t("collection.previousPage")}
               </Button>
             </div>
@@ -53,7 +57,7 @@ let CollectionListItem = ({
               state={state}
             />
             <div className="mt-6 flex items-center justify-center">
-              <Button as={NextLink} variant="outline">
+              <Button as={NextLink} variant="outline" className="font-normal">
                 {isLoading ? t("system.loading") : t("collection.nextPage")}
               </Button>
             </div>

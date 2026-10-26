@@ -23,7 +23,7 @@ export function GenericError({
           {description}
         </span>
         <Button variant="primary" to="/">
-          <span className="font-heading text-xl font-medium">
+          <span className="font-heading text-xl">
             {t("system.backToHomepage")}
           </span>
         </Button>

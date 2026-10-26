@@ -144,7 +144,7 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        "flex min-w-0 w-full flex-col gap-5 rounded-(--pcard-border-radius) bg-background px-3 pt-3 pb-5",
+        "flex h-full min-w-0 w-full flex-col gap-5 rounded-(--pcard-border-radius) bg-background px-3 pt-3 pb-5",
         className,
       )}
       style={
@@ -208,7 +208,7 @@ export function ProductCard({
 
       <div
         className={clsx(
-          "flex flex-col gap-2 font-sans",
+          "flex flex-1 flex-col gap-2 font-sans",
           pcardAlignment === "center" && "items-center text-center",
           pcardAlignment === "right" && "items-end text-right",
           pcardAlignment === "left" && "items-start text-left",
@@ -223,7 +223,7 @@ export function ProductCard({
           to={`/products/${product.handle}`}
           onClick={onClick}
           prefetch="intent"
-          className="line-clamp-1 text-base font-semibold leading-[160%] tracking-[-0.16px]"
+          className="flex-1 text-base font-semibold leading-[160%] tracking-[-0.16px]"
         >
           {product.title}
         </Link>

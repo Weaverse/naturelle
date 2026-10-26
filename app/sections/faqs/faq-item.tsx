@@ -30,13 +30,13 @@ export default function FaqItem({
       {question &&
         (hasParagraph ? (
           <Accordion.Header className="contents">
-            <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-2 text-left text-base text-text transition-opacity hover:opacity-70 md:text-lg">
-              <span className="font-heading text-xl leading-[160%] tracking-[-0.2px]">
+            <Accordion.Trigger className="group flex w-full items-center gap-[11px] py-4 text-left text-base text-text transition-opacity hover:opacity-70 md:text-lg">
+              <span className="min-w-0 flex-1 font-heading text-xl leading-[160%] tracking-[-0.2px]">
                 {question}
               </span>
               <IconCaret
                 aria-hidden="true"
-                className="size-4 shrink-0 text-text transition-transform duration-300 group-data-[state=open]:rotate-90"
+                className="size-5 shrink-0 text-text transition-transform duration-300 group-data-[state=open]:rotate-90"
                 direction="right"
               />
             </Accordion.Trigger>
@@ -45,25 +45,25 @@ export default function FaqItem({
           <Link
             to={href as string}
             prefetch="intent"
-            className="group flex w-full items-center justify-between gap-6 py-2 text-left text-base text-text transition-opacity hover:opacity-70 md:text-lg"
+            className="group flex w-full items-center gap-[11px] py-4 text-left text-base text-text transition-opacity hover:opacity-70 md:text-lg"
           >
-            <span className="font-heading text-xl leading-[160%] tracking-[-0.2px]">
+            <span className="min-w-0 flex-1 font-heading text-xl leading-[160%] tracking-[-0.2px]">
               {question}
             </span>
             <IconCaret
               aria-hidden="true"
-              className="size-4 shrink-0 text-text transition-transform duration-300 group-hover:translate-x-1"
+              className="size-5 shrink-0 text-text transition-transform duration-300 group-hover:translate-x-1"
               direction="right"
             />
           </Link>
         ) : (
-          <p className="py-2 font-heading text-xl leading-[160%] tracking-[-0.2px] text-text">
+          <p className="py-4 font-heading text-xl leading-[160%] tracking-[-0.2px] text-text">
             {question}
           </p>
         ))}
       {hasParagraph && (
         <Accordion.Content className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-          <p className="py-2 font-body text-sm leading-[160%] font-normal tracking-[-0.14px] text-text">
+          <p className="py-4 font-body text-sm leading-[160%] font-normal tracking-[0.14px] text-text">
             {paragraph}
           </p>
         </Accordion.Content>
