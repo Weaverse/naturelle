@@ -12,6 +12,7 @@ import type {
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import type { JudgemeReviewsData } from "~/types/judgeme";
+import { cn } from "~/utils/cn";
 import {
   getSavingsPercentage,
   isDiscounted,
@@ -143,7 +144,7 @@ export function ProductCard({
 
   return (
     <article
-      className={clsx(
+      className={cn(
         "flex h-full min-w-0 w-full flex-col gap-5 rounded-(--pcard-border-radius) bg-background px-3 pt-3 pb-5",
         className,
       )}
@@ -223,7 +224,7 @@ export function ProductCard({
           to={`/products/${product.handle}`}
           onClick={onClick}
           prefetch="intent"
-          className="flex-1 text-base font-semibold leading-[160%] tracking-[-0.16px]"
+          className="line-clamp-2 flex-1 text-base font-semibold leading-[160%] tracking-[-0.16px]"
         >
           {product.title}
         </Link>

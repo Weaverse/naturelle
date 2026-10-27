@@ -159,7 +159,7 @@ let HotspotsItem = ({
                 showStar={showStar}
                 showViewDetailsLink={showViewDetailsLink}
                 viewDetailsLinkText={viewDetailsLinkText}
-                className="relative z-10 mt-4 max-w-[326px] lg:mt-10"
+                className="relative z-10 mt-4 h-auto max-w-[326px] lg:mt-10"
               />
             )}
             {paragraph && (
