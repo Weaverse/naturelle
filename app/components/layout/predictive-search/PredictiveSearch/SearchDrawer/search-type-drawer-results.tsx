@@ -77,7 +77,7 @@ export function SearchTypeDrawerResults() {
           to={`/search?q=${encodeURIComponent(term)}`}
           size="sm"
           variant="primary"
-          className="px-5 text-sm"
+          className="h-13.5 px-5 text-sm"
         >
           {t("search.viewAll")} ({totalResults})
         </Button>
