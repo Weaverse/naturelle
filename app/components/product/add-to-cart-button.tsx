@@ -140,7 +140,7 @@ function AddToCartContent({
         as="button"
         type="submit"
         size="lg"
-        className={cn("h-12 px-6 py-3 text-base", className)}
+        className={cn("h-14 px-6 py-3.5 text-base", className)}
         disabled={Boolean(disabled || isAdding || !hasValidLines)}
         loading={fetcher.state === "submitting"}
         variant={variant}

@@ -127,7 +127,7 @@ export default function BeforeAndAfter(props: BeforeAndAfterProps) {
                 <Button
                   to={buttonLink || "/products"}
                   variant="primary"
-                  className="h-auto min-h-13.5 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] font-semibold tracking-[-0.16px]"
+                  className="h-auto min-h-13.5 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]"
                 >
                   {buttonText}
                 </Button>

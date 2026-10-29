@@ -85,7 +85,7 @@ export function BackInStockForm({
         />
         <Button
           type="submit"
-          className="h-12 shrink-0 px-5 py-0"
+          className="h-14 shrink-0 px-5 py-3.5 font-normal"
           loading={fetcher.state === "submitting"}
           disabled={fetcher.state !== "idle"}
         >

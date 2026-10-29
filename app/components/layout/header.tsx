@@ -71,7 +71,6 @@ export function Header() {
     getScrollSnapshot,
     getServerScrollSnapshot,
   );
-  const [top, setCalculatedTop] = useState(0);
   const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
 
@@ -92,14 +91,25 @@ export function Header() {
       announcementMessage5,
       announcementMessage6,
     ].some((message) => message?.trim());
+  const resolvedAnnouncementBarHeight = announcementBarHeight || 48;
+  const visibleAnnouncementBarHeight = hasAnnouncement
+    ? stickyAnnouncementBar
+      ? resolvedAnnouncementBarHeight
+      : Math.max(resolvedAnnouncementBarHeight - y, 0)
+    : 0;
+
   useEffect(() => {
-    let calculatedTop = hasAnnouncement
-      ? stickyAnnouncementBar
-        ? announcementBarHeight
-        : Math.max(announcementBarHeight - y, 0)
-      : 0;
-    setCalculatedTop(calculatedTop);
-  }, [y, hasAnnouncement, stickyAnnouncementBar, announcementBarHeight]);
+    document.documentElement.style.setProperty(
+      "--announcement-bar-height",
+      `${visibleAnnouncementBarHeight}px`,
+    );
+
+    return () => {
+      document.documentElement.style.removeProperty(
+        "--announcement-bar-height",
+      );
+    };
+  }, [visibleAnnouncementBarHeight]);
 
   return (
     <>
@@ -123,7 +133,6 @@ export function Header() {
               ]
             : ["[&_.main-logo]:opacity-100", "[&_.transparent-logo]:opacity-0"],
         )}
-        style={{ ["--announcement-bar-height" as string]: `${top}px` }}
       >
         <div
           className={cn(

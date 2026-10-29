@@ -70,7 +70,7 @@ export function DrawerFilter({
             onClick={openDrawer}
             shape="default"
             variant="outline"
-            className="h-14 rounded-xl px-5 py-[11px] lg:hidden"
+            className="h-14 rounded-xl px-5 py-[11px] font-normal lg:hidden"
             classNameContainer="flex items-center justify-center gap-2"
           >
             <IconFilters className="size-5" viewBox="0 0 16 16" />

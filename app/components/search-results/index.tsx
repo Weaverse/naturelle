@@ -135,14 +135,18 @@ export default function SearchResults() {
             connection={products}
             renderPrevious={({ PreviousLink, isLoading }) => (
               <div className="mb-11 flex w-full items-center justify-center">
-                <Button as={PreviousLink} variant="outline">
+                <Button
+                  as={PreviousLink}
+                  variant="outline"
+                  className="font-normal"
+                >
                   {isLoading ? t("system.loading") : t("search.loadPrevious")}
                 </Button>
               </div>
             )}
             renderNext={({ NextLink, isLoading }) => (
               <div className="my-11 flex w-full items-center justify-center">
-                <Button as={NextLink} variant="outline">
+                <Button as={NextLink} variant="outline" className="font-normal">
                   {isLoading ? t("system.loading") : t("search.loadMore")}
                 </Button>
               </div>
