@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
+import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
 import { getCartMutationError } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
@@ -203,13 +204,15 @@ export function DiscountDialog({
     const formData = new FormData(event.currentTarget);
     const discountCode = formData.get("discountCode") as string;
     if (discountCode) {
-      const existingCodes = discountCodes.map((d) => d.code);
-      const updatedCodes = [...existingCodes, discountCode];
       fetcher.submit(
         {
           [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.DiscountCodesUpdate,
-            inputs: { discountCodes: updatedCodes },
+            action: CART_CODE_APPLY_ACTION,
+            inputs: {
+              code: discountCode,
+              allowDiscountCode: true,
+              allowGiftCard: false,
+            },
           }),
         },
         { method: "POST", action: cartRoute },

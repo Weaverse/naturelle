@@ -563,7 +563,7 @@ function CartLineQuantity({
           inputMode="numeric"
           pattern="[0-9]*"
           aria-label={t("product.quantity")}
-          className="field-sizing-content h-10 min-w-7 max-w-12 appearance-none border-0 bg-transparent p-0 text-center font-body text-[14px] leading-none font-normal tracking-[-0.14px] text-text outline-none focus:ring-0 disabled:cursor-not-allowed"
+          className="field-sizing-content h-10 min-w-7 max-w-12 appearance-none border-0 bg-transparent p-0 text-center font-body !text-[14px] leading-none font-normal tracking-[-0.14px] text-text outline-none focus:ring-0 disabled:cursor-not-allowed"
           value={quantityInput}
           disabled={isOptimistic || isQuantityUpdating}
           onChange={(event) => {

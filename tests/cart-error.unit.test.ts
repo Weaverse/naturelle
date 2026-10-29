@@ -34,6 +34,50 @@ test("shows quantity errors identified by their code", () => {
   );
 });
 
+test("preserves cart-wide failures without a field", () => {
+  assert.equal(
+    getCartQuantityError({
+      userErrors: [
+        {
+          code: "SERVICE_UNAVAILABLE",
+          field: null,
+          message: "An error occurred while saving the cart.",
+        },
+      ],
+    }),
+    "An error occurred while saving the cart.",
+  );
+});
+
+test("preserves unknown field-less failures", () => {
+  assert.equal(
+    getCartQuantityError({
+      userErrors: [
+        {
+          code: "FUTURE_CART_ERROR",
+          message: "The cart could not be updated.",
+        },
+      ],
+    }),
+    "The cart could not be updated.",
+  );
+});
+
+test("preserves errors attached to the cart id", () => {
+  assert.equal(
+    getCartQuantityError({
+      userErrors: [
+        {
+          code: "INVALID",
+          field: ["cartId"],
+          message: "The cart could not be found.",
+        },
+      ],
+    }),
+    "The cart could not be found.",
+  );
+});
+
 test("does not show discount errors as quantity errors", () => {
   assert.equal(
     getCartQuantityError({
@@ -73,6 +117,23 @@ test("uses the short purchase-limit message for insufficient stock", () => {
       "Out of purchase limit",
     ),
     "Out of purchase limit",
+  );
+});
+
+test("does not show discount warnings as quantity warnings", () => {
+  assert.equal(
+    getCartQuantityWarning(
+      {
+        warnings: [
+          {
+            code: "DISCOUNT_NOT_FOUND",
+            message: "Enter a valid discount code",
+          },
+        ],
+      },
+      "Out of purchase limit",
+    ),
+    null,
   );
 });
 

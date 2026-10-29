@@ -5,16 +5,6 @@ type CartUserError = CartError & {
 };
 type CartWarning = CartError & { code?: string };
 
-const CART_QUANTITY_ERROR_CODES = new Set([
-  "INVALID_INCREMENT",
-  "INVALID_MERCHANDISE_LINE",
-  "LESS_THAN",
-  "MAXIMUM_EXCEEDED",
-  "MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR",
-  "MERCHANDISE_NOT_APPLICABLE",
-  "MINIMUM_NOT_MET",
-]);
-
 export function getCartMutationError(
   data:
     | {
@@ -33,13 +23,18 @@ export function getCartMutationError(
 
 function isCartQuantityUserError(error: CartUserError) {
   const field = error.field?.map((segment) => segment.toLowerCase()) ?? [];
-  if (field.length > 0) {
-    return field.some(
-      (segment) =>
-        segment === "lines" || segment === "lineids" || segment === "quantity",
-    );
+  if (field.length === 0) {
+    // Field-less errors describe the whole update (for example,
+    // SERVICE_UNAVAILABLE) or cannot be safely attributed elsewhere.
+    return true;
   }
-  return Boolean(error.code && CART_QUANTITY_ERROR_CODES.has(error.code));
+  return field.some(
+    (segment) =>
+      segment === "cartid" ||
+      segment === "lines" ||
+      segment === "lineids" ||
+      segment === "quantity",
+  );
 }
 
 export function getCartQuantityError(
@@ -70,7 +65,9 @@ export function getCartQuantityWarning(
   data: { warnings?: CartWarning[] } | null | undefined,
   purchaseLimitMessage: string,
 ) {
-  const warning = data?.warnings?.find((item) => item.message);
+  const warning = data?.warnings?.find(
+    (item) => item.message && !item.code?.startsWith("DISCOUNT_"),
+  );
   if (!warning) {
     return null;
   }

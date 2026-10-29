@@ -7,6 +7,7 @@ import {
 type CartCodeResult = {
   errors?: unknown;
   userErrors?: unknown[];
+  warnings?: Array<{ code?: string | null }>;
   cart?: {
     discountCodes?: Array<{ code: string; applicable: boolean }>;
     appliedGiftCards?: Array<{ id: string; lastCharacters?: string }>;
@@ -30,6 +31,10 @@ function hasCartApiErrors(result: CartCodeResult) {
 
 function hasCartCodeErrors(result: CartCodeResult) {
   return hasCartApiErrors(result) || Boolean(result.userErrors?.length);
+}
+
+function hasCartWarning(result: CartCodeResult, code: string) {
+  return result.warnings?.some((warning) => warning.code === code) ?? false;
 }
 
 export async function applyCartCode<Result extends CartCodeResult>(
@@ -83,20 +88,44 @@ export async function applyCartCode<Result extends CartCodeResult>(
     throw new Error("No cart code type is enabled");
   }
 
+  const previousDiscountCodeValues = previousDiscountCodes.map(
+    (discount) => discount.code,
+  );
   const discountResult = await cart.updateDiscountCodes(
-    mergeCartCodes(
-      previousDiscountCodes.map((discount) => discount.code),
-      discountCode,
-    ),
+    mergeCartCodes(previousDiscountCodeValues, discountCode),
+  );
+  const submittedDiscount = discountResult.cart?.discountCodes?.find(
+    (discount) => discount.code.toLowerCase() === discountCode.toLowerCase(),
   );
   const codeApplied = Boolean(
-    !hasCartCodeErrors(discountResult) &&
-      discountResult.cart?.discountCodes?.some(
-        (discount) =>
-          discount.applicable &&
-          discount.code.toLowerCase() === discountCode.toLowerCase(),
-      ),
+    !hasCartCodeErrors(discountResult) && submittedDiscount?.applicable,
   );
+
+  if (
+    !codeApplied &&
+    submittedDiscount &&
+    !submittedDiscount.applicable &&
+    hasCartWarning(discountResult, "DISCOUNT_NOT_FOUND")
+  ) {
+    const cleanupResult = await cart.updateDiscountCodes(
+      previousDiscountCodeValues.filter(
+        (code) => code.toLowerCase() !== discountCode.toLowerCase(),
+      ),
+    );
+    if (hasCartCodeErrors(cleanupResult)) {
+      return {
+        ...cleanupResult,
+        codeType: "discount",
+        codeApplied: false,
+      };
+    }
+    return {
+      ...discountResult,
+      cart: cleanupResult.cart ?? discountResult.cart,
+      codeType: "discount",
+      codeApplied: false,
+    };
+  }
 
   return { ...discountResult, codeType: "discount", codeApplied };
 }
