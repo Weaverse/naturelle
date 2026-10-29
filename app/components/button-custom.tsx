@@ -74,7 +74,7 @@ export default function ButtonCustom(props: WeaverseButtonProps) {
       className={cn(
         "w-fit",
         variant === "decor" &&
-          "group/decor h-auto min-h-0 rounded-full px-4 py-3 font-body text-base leading-none font-normal tracking-[-0.16px]",
+          "group/decor h-auto min-h-0 rounded-full px-4 py-3 font-body text-base leading-none tracking-[-0.16px]",
         className,
         variant === "custom" && styleButton,
       )}

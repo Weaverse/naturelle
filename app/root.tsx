@@ -192,7 +192,7 @@ export function ErrorBoundary() {
           </span>
         )}
         <Button variant={"primary"} to="/">
-          <span className="font-heading font-medium text-xl">
+          <span className="font-heading text-xl">
             {t("system.backToHomepage")}
           </span>
         </Button>

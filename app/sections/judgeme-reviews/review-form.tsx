@@ -309,7 +309,7 @@ export function ReviewForm({
               <Button
                 type="button"
                 variant="custom"
-                className="rounded-xl border-0 bg-transparent font-semibold"
+                className="rounded-xl border-0 bg-transparent"
                 onClick={() => setIsFormVisible(false)}
               >
                 {t("actions.cancel")}
@@ -318,7 +318,7 @@ export function ReviewForm({
                 type="submit"
                 loading={isSubmitting}
                 disabled={rating === 0 || isSubmitting}
-                className="rounded-xl font-semibold"
+                className="rounded-xl"
               >
                 {t("reviews.submitReview")}
               </Button>

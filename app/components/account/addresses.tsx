@@ -49,7 +49,7 @@ function AddressCard(props: {
             variant="link"
             formMethod="DELETE"
             type="submit"
-            className="ml-2.5 p-0"
+            className="ml-2.5 p-0 font-normal"
           >
             {t("account.removeAddress")}
           </Button>
@@ -135,7 +135,7 @@ function NewAddress() {
   let [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <Button className="mb-5 mt-4" onClick={() => setIsOpen(true)}>
+      <Button className="mb-5 mt-4 font-normal" onClick={() => setIsOpen(true)}>
         {t("account.addAddress")}
       </Button>
       <AddressPopup
@@ -155,7 +155,11 @@ function EditAddress({ address }: { address: AddressFragment }) {
   let onClose = () => setIsOpen(false);
   return (
     <>
-      <Button variant="link" onClick={() => setIsOpen(true)} className="p-0">
+      <Button
+        variant="link"
+        onClick={() => setIsOpen(true)}
+        className="p-0 font-normal"
+      >
         {t("account.editAddress")}
       </Button>
       <AddressPopup
@@ -174,6 +178,7 @@ function EditAddress({ address }: { address: AddressFragment }) {
               <Button
                 disabled={stateForMethod("PUT") !== "idle"}
                 variant="secondary"
+                className="font-normal"
                 onClick={onClose}
               >
                 {t("account.cancel")}
@@ -182,6 +187,7 @@ function EditAddress({ address }: { address: AddressFragment }) {
                 disabled={stateForMethod("PUT") !== "idle"}
                 formMethod="PUT"
                 type="submit"
+                className="font-normal"
                 loading={stateForMethod("PUT") !== "idle"}
               >
                 {t("account.save")}
@@ -222,6 +228,7 @@ function NewAddressForm({ onClose }: { onClose: () => void }) {
           <Button
             disabled={stateForMethod("PUT") !== "idle"}
             variant="secondary"
+            className="font-normal"
             onClick={onClose}
           >
             {t("account.cancel")}
@@ -230,6 +237,7 @@ function NewAddressForm({ onClose }: { onClose: () => void }) {
             disabled={stateForMethod("POST") !== "idle"}
             formMethod="POST"
             type="submit"
+            className="font-normal"
             loading={stateForMethod("POST") !== "idle"}
           >
             {t("account.save")}

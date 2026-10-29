@@ -15,7 +15,7 @@ type CartLayout = "page" | "aside";
 const dialogTitleClass = "mb-4 font-semibold tracking-[-0.16px] text-text";
 const dialogFieldClass =
   "w-full rounded-lg border border-border-subtle p-3 font-normal tracking-[-0.16px] text-text placeholder:text-text";
-const dialogButtonClass = "w-full rounded-lg font-semibold tracking-[-0.16px]";
+const dialogButtonClass = "w-full rounded-lg tracking-[-0.16px]";
 
 export function CartActionBanner({
   variant,

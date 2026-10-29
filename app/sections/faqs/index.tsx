@@ -45,15 +45,15 @@ export default function Faqs({
       width="full"
       gap={0}
       verticalPadding="none"
-      className="py-20 px-5 md:px-6 lg:px-40"
       containerClassName={cn(
-        "mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap)",
+        "mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) px-5 py-20 md:px-6 lg:px-40",
         showImage && "md:grid-cols-2",
       )}
       style={
         {
           ...style,
           "--faq-gap": `${gap}px`,
+          "--faq-content-padding": showImage ? "8px" : "16px",
         } as CSSProperties
       }
     >
@@ -95,7 +95,7 @@ export default function Faqs({
                 as="a"
                 to={buttonLink || "/pages/contact"}
                 variant="secondary"
-                className="mt-7 rounded-xl font-semibold"
+                className="mt-7 rounded-xl"
               >
                 {buttonText}
               </Button>
@@ -106,13 +106,22 @@ export default function Faqs({
 
       <div
         className={cn(
-          "flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden lg:gap-10",
+          "flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden",
           showImage
-            ? "py-10 md:h-150 md:py-20 lg:pl-16 lg:pr-10"
-            : "mx-auto md:w-1/2",
+            ? "py-10 md:h-150 md:py-20 lg:gap-10 lg:pl-16 lg:pr-10"
+            : "mx-auto gap-4",
         )}
       >
-        {heading && <h2 className="h3 font-normal text-text">{heading}</h2>}
+        {heading && (
+          <h2
+            className={cn(
+              "h3 font-normal text-text",
+              !showImage && "text-center",
+            )}
+          >
+            {heading}
+          </h2>
+        )}
         <Accordion.Root
           type="single"
           collapsible

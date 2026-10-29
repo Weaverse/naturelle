@@ -143,7 +143,7 @@ export function Footer() {
                   loading={fetcher.state === "submitting"}
                   type="submit"
                   shape="default"
-                  className="h-auto shrink-0 rounded-l-none rounded-r-xl bg-(--color-footer-bg) px-7 py-3.5 font-semibold text-(--color-footer-text)"
+                  className="h-auto shrink-0 rounded-l-none rounded-r-xl bg-(--color-footer-bg) px-7 py-3.5 text-(--color-footer-text)"
                 >
                   {newsletterButtonText}
                 </Button>

@@ -158,7 +158,7 @@ let ContactForm = ({
                     variant: "secondary",
                     shape: "default",
                     className:
-                      "h-auto min-h-13.5 rounded-xl py-3.5 font-semibold tracking-[-0.16px]",
+                      "h-auto min-h-13.5 rounded-xl py-3.5 tracking-[-0.16px]",
                   })}
                 >
                   {imageButtonLabel}
@@ -249,7 +249,7 @@ let ContactForm = ({
             {buttonLabel && (
               <Button
                 data-motion="fade-up"
-                className="h-auto min-h-13.5 w-full rounded-xl py-3.5 font-semibold tracking-[-0.16px]"
+                className="h-auto min-h-13.5 w-full rounded-xl py-3.5 tracking-[-0.16px]"
                 loading={isSubmitting}
                 type="submit"
                 variant="primary"
