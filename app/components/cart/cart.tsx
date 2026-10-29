@@ -7,6 +7,7 @@ import { Link } from "~/components/link";
 import {
   getCartMutationError,
   getCartMutationWarning,
+  getCartQuantityError,
   getCartQuantityWarning,
 } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
@@ -462,7 +463,7 @@ function CartLineQuantity({
   const updateWarning = useCartStore((state) =>
     state.lineUpdateWarnings.get(lineId),
   );
-  const errorMessage = getCartMutationError(updateError);
+  const errorMessage = getCartQuantityError(updateError);
   const warningMessage = getCartQuantityWarning(
     updateWarning,
     t("cart.outOfPurchaseLimit"),
@@ -538,16 +539,13 @@ function CartLineQuantity({
       <fieldset
         aria-label={`${t("product.quantity")}, ${optimisticQuantity}`}
         className={cn(
-          "flex w-fit items-center border border-border rounded-2xl h-10",
-          layout === "page" && "gap-2 bg-background-basic md:row-start-2",
+          "flex h-10 w-fit items-center gap-1 rounded-2xl border border-border bg-background-basic",
+          layout === "page" && "md:row-start-2",
         )}
       >
         <button
           type="button"
-          className={cn(
-            "flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50",
-            layout === "aside" ? "size-10" : "h-10 w-11",
-          )}
+          className="flex h-10 shrink-0 items-center justify-center px-3.5 py-2.5 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label={t("product.decreaseQuantity")}
           disabled={
             getValidInputQuantity() <= 1 || isOptimistic || isQuantityUpdating
@@ -556,17 +554,16 @@ function CartLineQuantity({
           onMouseDown={(event) => event.preventDefault()}
           onClick={() => stepQuantity(-1)}
         >
-          <span className="translate-y-px">&#8722;</span>
+          <span className="flex size-4 items-center justify-center leading-none">
+            &#8722;
+          </span>
         </button>
         <input
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"
           aria-label={t("product.quantity")}
-          className={cn(
-            "translate-y-px appearance-none border-0 bg-transparent p-0 text-center font-body text-sm leading-none font-normal tracking-[-0.14px] text-text outline-none focus:ring-0 disabled:cursor-not-allowed",
-            layout === "aside" ? "w-8 min-w-8" : "w-[26px] min-w-[26px]",
-          )}
+          className="field-sizing-content h-10 min-w-7 max-w-12 appearance-none border-0 bg-transparent p-0 text-center font-body text-[14px] leading-none font-normal tracking-[-0.14px] text-text outline-none focus:ring-0 disabled:cursor-not-allowed"
           value={quantityInput}
           disabled={isOptimistic || isQuantityUpdating}
           onChange={(event) => {
@@ -587,17 +584,16 @@ function CartLineQuantity({
         />
         <button
           type="button"
-          className={cn(
-            "flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50",
-            layout === "aside" ? "size-10" : "h-10 w-11",
-          )}
+          className="flex h-10 shrink-0 items-center justify-center px-3.5 py-2.5 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label={t("product.increaseQuantity")}
           disabled={isOptimistic || isQuantityUpdating}
           name="increase-quantity"
           onMouseDown={(event) => event.preventDefault()}
           onClick={() => stepQuantity(1)}
         >
-          <span className="translate-y-px">&#43;</span>
+          <span className="flex size-4 items-center justify-center leading-none">
+            &#43;
+          </span>
         </button>
       </fieldset>
       {quantityMessage && (
