@@ -7,7 +7,7 @@ import {
 type CartCodeResult = {
   errors?: unknown;
   userErrors?: unknown[];
-  warnings?: Array<{ code?: string | null }>;
+  warnings?: Array<{ code?: string | null; target?: string | null }>;
   cart?: {
     discountCodes?: Array<{ code: string; applicable: boolean }>;
     appliedGiftCards?: Array<{ id: string; lastCharacters?: string }>;
@@ -33,8 +33,20 @@ function hasCartCodeErrors(result: CartCodeResult) {
   return hasCartApiErrors(result) || Boolean(result.userErrors?.length);
 }
 
-function hasCartWarning(result: CartCodeResult, code: string) {
-  return result.warnings?.some((warning) => warning.code === code) ?? false;
+function hasCartWarningForTarget(
+  result: CartCodeResult,
+  code: string,
+  target: string,
+) {
+  const normalizedTarget = normalizeDiscountCode(target);
+  return (
+    result.warnings?.some(
+      (warning) =>
+        warning.code === code &&
+        typeof warning.target === "string" &&
+        normalizeDiscountCode(warning.target) === normalizedTarget,
+    ) ?? false
+  );
 }
 
 export async function applyCartCode<Result extends CartCodeResult>(
@@ -103,9 +115,10 @@ export async function applyCartCode<Result extends CartCodeResult>(
 
   if (
     !codeApplied &&
+    !hasCartCodeErrors(discountResult) &&
     submittedDiscount &&
     !submittedDiscount.applicable &&
-    hasCartWarning(discountResult, "DISCOUNT_NOT_FOUND")
+    hasCartWarningForTarget(discountResult, "DISCOUNT_NOT_FOUND", discountCode)
   ) {
     const cleanupResult = await cart.updateDiscountCodes(
       previousDiscountCodeValues.filter(
