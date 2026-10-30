@@ -37,24 +37,24 @@ const ContactHighlightItem = ({
       {...rest}
       data-motion="slide-in"
       className={clsx(
-        "flex w-full flex-col items-center rounded-(--border-radius-xl,16px) border-2 border-border-subtle bg-transparent px-6 py-9 transition-colors hover:border-border focus-within:border-border",
-        !visibleOnMobile && "hidden md:flex",
+        "flex w-full flex-col items-start justify-center gap-4 overflow-clip rounded-(--border-radius-xl,16px) border-2 border-border-subtle bg-transparent px-6 py-9 transition-colors hover:border-border focus-within:border-border md:row-span-4 md:grid md:grid-rows-subgrid md:justify-normal",
+        !visibleOnMobile && "hidden",
       )}
     >
-      <span className="mb-6 flex size-11 shrink-0 items-center justify-center rounded-full border border-text font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text">
+      <span className="flex size-11 shrink-0 self-center items-center justify-center rounded-full border border-text font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text md:row-start-1 md:justify-self-center">
         {itemNumber}
       </span>
       {heading && (
-        <h3 className="w-full text-center font-heading text-[31px] leading-[110%] font-normal text-text md:grid md:min-h-[2lh] md:content-center">
+        <h3 className="h5 w-full text-center font-heading font-normal text-text md:row-start-2">
           {heading}
         </h3>
       )}
       {heading && description && (
-        <div className="my-4 w-full border-t border-border-subtle" />
+        <div className="w-full border-t border-border-subtle md:row-start-3" />
       )}
       {description && (
         <div
-          className="w-full text-center font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text"
+          className="w-full text-center font-body text-base leading-[160%] font-normal tracking-[-0.16px] text-text md:row-start-4"
           dangerouslySetInnerHTML={{ __html: description }}
           suppressHydrationWarning
         />

@@ -13,21 +13,25 @@ type TestResult = {
   };
   errors: Array<{ message: string }>;
   userErrors: Array<{ message: string }>;
+  warnings: Array<{ code: string; message: string; target?: string }>;
 };
 
 function result({
   discountCodes = [],
   appliedGiftCards = [],
   userErrors = [],
+  warnings = [],
 }: {
   discountCodes?: TestResult["cart"]["discountCodes"];
   appliedGiftCards?: TestResult["cart"]["appliedGiftCards"];
   userErrors?: TestResult["userErrors"];
+  warnings?: TestResult["warnings"];
 } = {}): TestResult {
   return {
     cart: { discountCodes, appliedGiftCards },
     errors: [],
     userErrors,
+    warnings,
   };
 }
 
@@ -135,7 +139,7 @@ test("accepts an already-applied gift card without trying it as a discount code"
   assert.deepEqual(calls, ["gift-card:GIFT1234"]);
 });
 
-test("preserves an inapplicable discount for Shopify to reevaluate", async () => {
+test("preserves a discount that may become applicable", async () => {
   const calls: string[] = [];
   const cart = {
     async get() {
@@ -145,6 +149,12 @@ test("preserves an inapplicable discount for Shopify to reevaluate", async () =>
       calls.push(`discount:${codes.join(",")}`);
       return result({
         discountCodes: codes.map((code) => ({ code, applicable: false })),
+        warnings: [
+          {
+            code: "DISCOUNT_PURCHASE_NOT_IN_RANGE",
+            message: "The purchase amount is not in range.",
+          },
+        ],
       });
     },
     async addGiftCardCodes(codes: string[]) {
@@ -165,5 +175,190 @@ test("preserves an inapplicable discount for Shopify to reevaluate", async () =>
   assert.deepEqual(calls, ["gift-card:INVALID", "discount:INVALID"]);
   assert.deepEqual(response.cart.discountCodes, [
     { code: "INVALID", applicable: false },
+  ]);
+});
+
+test("removes a discount that does not exist", async () => {
+  const calls: string[] = [];
+  const cart = {
+    async get() {
+      return {
+        discountCodes: [{ code: "EXISTING" }],
+        appliedGiftCards: [],
+      };
+    },
+    async updateDiscountCodes(codes: string[]) {
+      calls.push(`discount:${codes.join(",")}`);
+      if (codes.includes("MISSING")) {
+        return result({
+          discountCodes: codes.map((code) => ({
+            code,
+            applicable: code === "EXISTING",
+          })),
+          warnings: [
+            {
+              code: "DISCOUNT_NOT_FOUND",
+              message: "Enter a valid discount code",
+              target: "missing",
+            },
+          ],
+        });
+      }
+      return result({
+        discountCodes: codes.map((code) => ({ code, applicable: true })),
+      });
+    },
+    async addGiftCardCodes(codes: string[]) {
+      calls.push(`gift-card:${codes.join(",")}`);
+      return result({
+        userErrors: [{ message: "Gift card is invalid" }],
+      });
+    },
+  };
+
+  const response = await applyCartCode(cart, "missing", {
+    allowDiscountCode: true,
+    allowGiftCard: true,
+  });
+
+  assert.equal(response.codeType, "discount");
+  assert.equal(response.codeApplied, false);
+  assert.deepEqual(calls, [
+    "gift-card:MISSING",
+    "discount:EXISTING,MISSING",
+    "discount:EXISTING",
+  ]);
+  assert.deepEqual(response.cart.discountCodes, [
+    { code: "EXISTING", applicable: true },
+  ]);
+  assert.equal(response.warnings[0]?.code, "DISCOUNT_NOT_FOUND");
+});
+
+test("preserves the submitted discount when not-found belongs to another code", async () => {
+  const calls: string[] = [];
+  const cart = {
+    async get() {
+      return {
+        discountCodes: [{ code: "OLDMISSING" }],
+        appliedGiftCards: [],
+      };
+    },
+    async updateDiscountCodes(codes: string[]) {
+      calls.push(`discount:${codes.join(",")}`);
+      return result({
+        discountCodes: codes.map((code) => ({
+          code,
+          applicable: false,
+        })),
+        warnings: [
+          {
+            code: "DISCOUNT_NOT_FOUND",
+            message: "Enter a valid discount code",
+            target: "OLDMISSING",
+          },
+          {
+            code: "DISCOUNT_PURCHASE_NOT_IN_RANGE",
+            message: "The purchase amount is not in range.",
+            target: "SAVE100",
+          },
+        ],
+      });
+    },
+    async addGiftCardCodes() {
+      return result();
+    },
+  };
+
+  const response = await applyCartCode(cart, "save100", {
+    allowDiscountCode: true,
+    allowGiftCard: false,
+  });
+
+  assert.equal(response.codeApplied, false);
+  assert.deepEqual(calls, ["discount:OLDMISSING,SAVE100"]);
+  assert.deepEqual(response.cart.discountCodes, [
+    { code: "OLDMISSING", applicable: false },
+    { code: "SAVE100", applicable: false },
+  ]);
+});
+
+test("preserves the submitted discount when not-found attribution is missing", async () => {
+  const calls: string[] = [];
+  const cart = {
+    async get() {
+      return { discountCodes: [], appliedGiftCards: [] };
+    },
+    async updateDiscountCodes(codes: string[]) {
+      calls.push(`discount:${codes.join(",")}`);
+      return result({
+        discountCodes: codes.map((code) => ({
+          code,
+          applicable: false,
+        })),
+        warnings: [
+          {
+            code: "DISCOUNT_NOT_FOUND",
+            message: "Enter a valid discount code",
+          },
+        ],
+      });
+    },
+    async addGiftCardCodes() {
+      return result();
+    },
+  };
+
+  const response = await applyCartCode(cart, "ambiguous", {
+    allowDiscountCode: true,
+    allowGiftCard: false,
+  });
+
+  assert.equal(response.codeApplied, false);
+  assert.deepEqual(calls, ["discount:AMBIGUOUS"]);
+  assert.deepEqual(response.cart.discountCodes, [
+    { code: "AMBIGUOUS", applicable: false },
+  ]);
+});
+
+test("does not clean up a discount after a failed update", async () => {
+  const calls: string[] = [];
+  const cart = {
+    async get() {
+      return { discountCodes: [], appliedGiftCards: [] };
+    },
+    async updateDiscountCodes(codes: string[]) {
+      calls.push(`discount:${codes.join(",")}`);
+      return result({
+        discountCodes: codes.map((code) => ({
+          code,
+          applicable: false,
+        })),
+        userErrors: [{ message: "The cart could not be updated." }],
+        warnings: [
+          {
+            code: "DISCOUNT_NOT_FOUND",
+            message: "Enter a valid discount code",
+            target: "MISSING",
+          },
+        ],
+      });
+    },
+    async addGiftCardCodes() {
+      return result();
+    },
+  };
+
+  const response = await applyCartCode(cart, "missing", {
+    allowDiscountCode: true,
+    allowGiftCard: false,
+  });
+
+  assert.equal(response.codeApplied, false);
+  assert.deepEqual(calls, ["discount:MISSING"]);
+  assert.deepEqual(response.cart.discountCodes, [
+    { code: "MISSING", applicable: false },
+  ]);
+  assert.deepEqual(response.userErrors, [
+    { message: "The cart could not be updated." },
   ]);
 });

@@ -360,7 +360,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 :root {
-  --shop-pay-button-height: 50px;
+  --shop-pay-button-height: 54px;
   --shop-pay-button-border-radius: var(--radius-xl);
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;

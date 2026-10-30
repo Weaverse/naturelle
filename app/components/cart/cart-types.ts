@@ -13,6 +13,10 @@ export type CartWithOptimistic = CartApiQueryFragment & {
 export type CartMutationResponse = {
   cart?: CartApiQueryFragment | null;
   errors?: Array<{ message?: string }>;
-  userErrors?: Array<{ message?: string }>;
+  userErrors?: Array<{
+    code?: string | null;
+    field?: string[] | null;
+    message?: string;
+  }>;
   warnings?: Array<{ code?: string; message?: string; target?: string }>;
 };

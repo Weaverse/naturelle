@@ -473,7 +473,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
                   {discountCodeButtonText || t("cart.discountCode")}
                 </button>
               </Dialog.Trigger>
-              <DiscountDialog discountCodes={discountCodes} layout="aside" />
+              <DiscountDialog layout="aside" />
             </Dialog.Root>
           )}
           {enableDiscountCode && enableGiftCard && (
@@ -694,7 +694,7 @@ function PageCartCodeForm({
         <button
           type="submit"
           disabled={!code.trim() || isSubmitting}
-          className="rounded-xl bg-text-primary px-6 py-3 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-13.5 rounded-xl bg-text-primary px-6 py-3.5 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:cursor-not-allowed disabled:opacity-50"
         >
           {t("cart.apply")}
         </button>
