@@ -473,7 +473,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
                   {discountCodeButtonText || t("cart.discountCode")}
                 </button>
               </Dialog.Trigger>
-              <DiscountDialog discountCodes={discountCodes} layout="aside" />
+              <DiscountDialog layout="aside" />
             </Dialog.Root>
           )}
           {enableDiscountCode && enableGiftCard && (

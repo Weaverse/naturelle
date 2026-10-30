@@ -181,22 +181,14 @@ export function NoteDialog({
   );
 }
 
-export function DiscountDialog({
-  discountCodes = [],
-  layout = "aside",
-}: {
-  discountCodes: CartApiQueryFragment["discountCodes"];
-  layout?: CartLayout;
-}) {
+export function DiscountDialog({ layout = "aside" }: { layout?: CartLayout }) {
   const { t } = useTranslation();
   const [code, setCode] = useState("");
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<{ codeApplied?: boolean }>();
   const discountCodeId = useId();
   const cartRoute = usePrefixPathWithLocale("/cart");
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
-  const success = Boolean(
-    submitted && discountCodes?.find((d) => d.code === code && d.applicable),
-  );
+  const success = Boolean(submitted && fetcher.data?.codeApplied);
   const error = submitted && !success;
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
