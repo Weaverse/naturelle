@@ -319,7 +319,7 @@ let ProductInformation = ({
                     }
                     variant="primary"
                     data-test="add-to-cart"
-                    className="h-12 w-full rounded-xl"
+                    className="w-full rounded-xl"
                   >
                     <span> {atcText}</span>
                   </AddToCartButton>
