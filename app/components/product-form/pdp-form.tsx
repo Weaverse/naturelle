@@ -107,7 +107,7 @@ export function ProductQuantityInput({
   return (
     <div
       className={cn(
-        "flex h-12 items-center overflow-hidden rounded-xl border border-border bg-background-basic",
+        "flex h-13.5 items-center overflow-hidden rounded-xl border border-border bg-background-basic",
         className,
       )}
     >

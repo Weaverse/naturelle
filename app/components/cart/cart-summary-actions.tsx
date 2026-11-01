@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
+import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
 import { getCartMutationError } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
@@ -180,22 +181,14 @@ export function NoteDialog({
   );
 }
 
-export function DiscountDialog({
-  discountCodes = [],
-  layout = "aside",
-}: {
-  discountCodes: CartApiQueryFragment["discountCodes"];
-  layout?: CartLayout;
-}) {
+export function DiscountDialog({ layout = "aside" }: { layout?: CartLayout }) {
   const { t } = useTranslation();
   const [code, setCode] = useState("");
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<{ codeApplied?: boolean }>();
   const discountCodeId = useId();
   const cartRoute = usePrefixPathWithLocale("/cart");
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
-  const success = Boolean(
-    submitted && discountCodes?.find((d) => d.code === code && d.applicable),
-  );
+  const success = Boolean(submitted && fetcher.data?.codeApplied);
   const error = submitted && !success;
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -203,13 +196,15 @@ export function DiscountDialog({
     const formData = new FormData(event.currentTarget);
     const discountCode = formData.get("discountCode") as string;
     if (discountCode) {
-      const existingCodes = discountCodes.map((d) => d.code);
-      const updatedCodes = [...existingCodes, discountCode];
       fetcher.submit(
         {
           [CartForm.INPUT_NAME]: JSON.stringify({
-            action: CartForm.ACTIONS.DiscountCodesUpdate,
-            inputs: { discountCodes: updatedCodes },
+            action: CART_CODE_APPLY_ACTION,
+            inputs: {
+              code: discountCode,
+              allowDiscountCode: true,
+              allowGiftCard: false,
+            },
           }),
         },
         { method: "POST", action: cartRoute },

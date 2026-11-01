@@ -54,9 +54,9 @@ export function CollectionCard({
         </div>
       </div>
       <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md">
-        <h3 className="group-hover:underline text-white font-medium">
+        <h6 className="text-center font-heading text-[26px] leading-[110%] font-normal text-text-inverse group-hover:underline">
           {collection.title}
-        </h3>
+        </h6>
       </div>
       <div className="absolute inset-0 rounded-md bg-[var(--calculate-color)] opacity-30 transition-opacity duration-500 group-hover:opacity-50" />
     </Link>

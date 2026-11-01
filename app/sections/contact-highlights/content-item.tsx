@@ -32,7 +32,7 @@ const ContactHighlightsContent = ({
       ref={ref}
       {...rest}
       className={clsx(
-        "flex flex-col gap-4 md:grid",
+        "flex flex-col gap-4 md:grid md:auto-rows-max md:content-start",
         itemsPerRowClasses[actualItemsPerRow],
       )}
     >
