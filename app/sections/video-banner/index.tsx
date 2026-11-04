@@ -59,7 +59,7 @@ export interface VideoBannerProps
 }
 
 let variants = cva(
-  "video-banner-content absolute inset-0 max-w-[100vw] mx-auto flex flex-col justify-center items-center z-10",
+  "video-banner-content absolute inset-0 z-10 mx-auto flex max-w-[100vw] flex-col items-center justify-center [&_.paragraph]:mx-auto [&_.paragraph]:w-fit [&_.paragraph]:max-w-full",
   {
     variants: {
       gap: {
@@ -331,7 +331,6 @@ export const schema = createSchema({
         type: "paragraph",
         content: "Add a description for this video.",
         color: "#fff",
-        alignment: "center",
       },
     ],
   },
