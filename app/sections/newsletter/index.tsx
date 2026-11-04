@@ -81,7 +81,7 @@ export const schema = createSchema({
       },
       {
         type: "paragraph",
-        content: "Get 15% off your first order",
+        content: "Add a short message about your newsletter.",
       },
       {
         type: "newsletter-input",

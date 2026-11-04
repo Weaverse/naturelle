@@ -1,4 +1,4 @@
-import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
+import type { HydrogenComponentProps } from "@weaverse/hydrogen";
 import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import {
   type CSSProperties,
@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { Image } from "~/components/image";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface HotspotsContextValue {
   activeItem: number;
@@ -30,10 +31,11 @@ const HotspotsImage = ({
   ...props
 }: HotspotsImageProps & { ref?: RefObject<HTMLDivElement | null> }) => {
   let { image, children, ...rest } = props;
-  let imageData: Partial<WeaverseImage> =
-    typeof image === "string"
-      ? { url: image, altText: "Hotspots image" }
-      : image;
+  const imageData = sectionImage(
+    image,
+    IMAGES_PLACEHOLDERS.collection_4,
+    "Hotspots image placeholder",
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [panelTarget, setPanelTarget] = useState<HTMLDivElement | null>(null);
   const contextValue = useMemo(

@@ -7,7 +7,7 @@ import {
 } from "@weaverse/hydrogen";
 import React, { type CSSProperties, useRef } from "react";
 import { IconArrowSlideLeft, IconArrowSlideRight } from "~/components/icon";
-import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface BeforeAndAfterProps extends HydrogenComponentProps {
   beforeImage?: WeaverseImage | string;
@@ -26,22 +26,9 @@ interface BeforeAndAfterProps extends HydrogenComponentProps {
 function getImageData(
   image: WeaverseImage | string | undefined,
   label: string,
-  isDesignMode: boolean,
+  placeholder: string,
 ) {
-  const configuredImage =
-    typeof image === "string" ? { url: image, altText: label } : image;
-  if (
-    configuredImage?.url?.trim() &&
-    configuredImage.url.trim() !== IMAGES_PLACEHOLDERS.image
-  ) {
-    return configuredImage;
-  }
-  return isDesignMode
-    ? {
-        url: IMAGES_PLACEHOLDERS.image,
-        altText: `${label} placeholder`,
-      }
-    : undefined;
+  return sectionImage(image, placeholder, `${label} placeholder`);
 }
 
 const BeforeAndAfter = ({
@@ -62,16 +49,15 @@ const BeforeAndAfter = ({
     sliderHeightMobile = 480,
     ...rest
   } = props;
-  const isDesignMode = useWeaverseStudioCheck();
   const beforeImageData = getImageData(
     beforeImage,
     beforeLabel || "Before",
-    isDesignMode,
+    IMAGES_PLACEHOLDERS.banner_1,
   );
   const afterImageData = getImageData(
     afterImage,
     afterLabel || "After",
-    isDesignMode,
+    IMAGES_PLACEHOLDERS.banner_2,
   );
   const staticImageData = beforeImageData ?? afterImageData;
   const canCompare = Boolean(beforeImageData && afterImageData);
@@ -340,6 +326,8 @@ export const schema = createSchema({
     },
   ],
   presets: {
+    beforeImage: IMAGES_PLACEHOLDERS.banner_1,
+    afterImage: IMAGES_PLACEHOLDERS.banner_2,
     separatorColor: "#FFFFFF",
     showArrows: true,
     arrowColor: "#DCD8D6",

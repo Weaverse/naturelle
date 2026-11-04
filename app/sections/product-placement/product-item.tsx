@@ -4,10 +4,10 @@ import type {
   WeaverseImage,
   WeaverseProduct,
 } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
-import { IconImageBlank } from "~/components/icon";
 import { Link } from "~/components/link";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface ProductPlacementItemProps extends HydrogenComponentProps {
   image: WeaverseImage;
@@ -28,29 +28,24 @@ const ProductPlacementItem = ({
       style={contentStyle}
       className="h-full w-full"
     >
-      {image ? (
-        <div className="relative h-full w-full">
-          <Image
-            data={image}
-            sizes="auto"
-            className="!aspect-[var(--item-thumbs-ratio)] !h-full !w-full cursor-pointer object-cover"
-            loading="lazy"
-          />
-          {product && (
-            <Link
-              to={`/products/${product?.handle}`}
-              className="absolute inset-0 h-full w-full"
-            ></Link>
+      <div className="relative h-full w-full">
+        <Image
+          data={sectionImage(
+            image,
+            IMAGES_PLACEHOLDERS.product_1,
+            "Product image placeholder",
           )}
-        </div>
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
-          <IconImageBlank
-            className="h-full w-full opacity-80 !aspect-[var(--item-thumbs-ratio)]"
-            viewBox="0 0 526 526"
+          sizes="auto"
+          className="!aspect-[var(--item-thumbs-ratio)] !h-full !w-full cursor-pointer object-cover"
+          loading="lazy"
+        />
+        {product?.handle && (
+          <Link
+            to={`/products/${product.handle}`}
+            className="absolute inset-0 h-full w-full"
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
@@ -77,4 +72,7 @@ export const schema = createSchema({
       ],
     },
   ],
+  presets: {
+    image: IMAGES_PLACEHOLDERS.product_1,
+  },
 });

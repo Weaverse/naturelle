@@ -1,6 +1,7 @@
 import {
   createSchema,
   type HydrogenComponentProps,
+  IMAGES_PLACEHOLDERS,
   isBrowser,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
@@ -9,6 +10,7 @@ import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { Image } from "~/components/image";
 import {
   Overlay,
   type OverlayProps,
@@ -178,7 +180,7 @@ let VideoBanner = ({
           "translate-x-[min(0px,calc((var(--mobile-height)/9*16-100vw)/-2))] sm:translate-x-[min(0px,calc((var(--desktop-height)/9*16-100vw)/-2))]",
         )}
       >
-        {inView && videoSource && (
+        {inView && videoSource ? (
           <Suspense
             fallback={<div className="w-full h-full bg-background"></div>}
           >
@@ -194,6 +196,15 @@ let VideoBanner = ({
               playsInline
             />
           </Suspense>
+        ) : (
+          <Image
+            data={{
+              url: IMAGES_PLACEHOLDERS.banner_1,
+              altText: "Video placeholder",
+            }}
+            sizes="100vw"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         )}
         <Overlay
           enableOverlay={enableOverlay}
@@ -229,7 +240,7 @@ export const schema = createSchema({
           type: "text",
           name: "videoURL2",
           label: "Video URL 2",
-          placeholder: "https://www.youtube.com/watch?v=Su-x4Mo5xmU",
+          placeholder: "Enter your video URL",
           helpText:
             "Support YouTube, Vimeo, MP4, WebM, and HLS streams. If you enter the url link in the input text that will take priority",
         },
@@ -302,33 +313,25 @@ export const schema = createSchema({
     enableOverlay: true,
     overlayColor: "#000000",
     overlayOpacity: 40,
-    videoURL: {
-      id: "gbLmku5QACM",
-      url: "https://cdn.shopify.com/videos/c/o/v/f996c8ca1d0144e1b53b813f82d187b0.mp4",
-      previewSrc: "https://img.youtube.com/vi/gbLmku5QACM/maxresdefault.jpg",
-      width: 1920,
-      height: 1080,
-      altText: "Naturelle demo",
-    },
     height: "large",
     gap: 20,
     children: [
       {
         type: "subheading",
-        content: "Seamless hero videos",
+        content: "Video section",
         color: "#fff",
       },
       {
         type: "heading",
-        content: "Bring your brand to life.",
+        content: "Video with text",
         as: "h2",
         color: "#fff",
       },
       {
         type: "paragraph",
-        content:
-          "Pair large video with a compelling message to captivate your audience.",
+        content: "Add a description for this video.",
         color: "#fff",
+        alignment: "center",
       },
     ],
   },

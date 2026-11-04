@@ -1,13 +1,17 @@
+import { Image } from "@shopify/hydrogen";
 import type {
   ComponentLoaderArgs,
   HydrogenComponentProps,
   WeaverseCollection,
 } from "@weaverse/hydrogen";
-import { createSchema, useTranslation } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  IMAGES_PLACEHOLDERS,
+  useTranslation,
+} from "@weaverse/hydrogen";
 import type { RefObject } from "react";
 import { useState } from "react";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
-import { IconImageBlank } from "~/components/icon";
 import { FEATURED_PRODUCTS_QUERY } from "~/graphql/queries";
 import "swiper/swiper-bundle.css";
 import "swiper/css/pagination";
@@ -65,9 +69,12 @@ const ListProducts = ({
     return (
       <div className="flex w-full cursor-pointer flex-col gap-4">
         <div className="flex aspect-square w-full items-center justify-center bg-background-subtle-2">
-          <IconImageBlank
-            viewBox="0 0 526 526"
-            className="h-full w-full opacity-80"
+          <Image
+            data={{
+              url: IMAGES_PLACEHOLDERS.product_1,
+              altText: t("product.exampleTitle"),
+            }}
+            className="h-full w-full object-cover"
           />
         </div>
         <div className="flex flex-col gap-2 px-2">
@@ -81,7 +88,7 @@ const ListProducts = ({
     );
   };
   const renderProducts = () => {
-    if (!loaderData || !displayedProducts) {
+    if (!displayedProducts?.length) {
       return Array.from({ length: 4 }).map((_, i) => (
         <SwiperSlide key={i} className="w-full">
           {productItemBlank()}
@@ -143,7 +150,7 @@ const ListProducts = ({
       {showNumber && (
         <SlideNumber
           instance={swiperInstance}
-          totalSlides={displayedProducts?.length ?? 4}
+          totalSlides={displayedProducts?.length || 4}
         />
       )}
     </div>
@@ -157,7 +164,7 @@ export const loader = async (
 ) => {
   let { weaverse, data } = args;
   let { language, country } = weaverse.storefront.i18n;
-  if (data.products) {
+  if (data.products?.handle?.trim()) {
     const totalProduct = Math.min(16, Math.max(5, data.totalProduct ?? 16));
     return await weaverse.storefront.query(FEATURED_PRODUCTS_QUERY, {
       variables: {

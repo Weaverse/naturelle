@@ -211,7 +211,7 @@ export const schema = createSchema({
           type: "text",
           name: "handle",
           label: "Handle",
-          defaultValue: "@naturelle",
+          defaultValue: "@yourbrand",
         },
         {
           type: "url",
@@ -283,7 +283,7 @@ export const schema = createSchema({
   childTypes: ["instagram--item"],
   presets: {
     heading: "Instagram",
-    handle: "@naturelle",
+    handle: "@yourbrand",
     profileUrl: "https://www.instagram.com/",
     imageBorderColor: "#443E400D",
     hoverOverlayColor: "#554612",
