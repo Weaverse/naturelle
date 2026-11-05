@@ -34,7 +34,7 @@ variables, theme customization, Oxygen deployment, and troubleshooting, see
 the [Naturélle setup and usage guide](docs/setup.md).
 
 **Prerequisites:**
-- Ensure you have Node.js version 22.12.0 or higher installed.
+- Ensure you have Node.js version 22.0.0 or higher installed.
 - Use the npm package manager included with Node.js.
 
 **Setup overview:**
