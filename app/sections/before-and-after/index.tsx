@@ -29,15 +29,15 @@ export default function BeforeAndAfter(props: BeforeAndAfterProps) {
     children,
     gap = 20,
     showContent = true,
-    description = "Discover a radiant complexion that starts at the source. Our expertly crafted formulas combine potent botanical actives with gentle, skin-loving ingredients to reveal your natural glow—soft, luminous, and effortlessly yours.",
-    firstStatValue = "94%",
-    firstStatLabel = "saw brighter skin",
-    secondStatValue = "87%",
-    secondStatLabel = "reduced fine lines",
-    thirdStatValue = "91%",
-    thirdStatLabel = "improved hydration",
-    buttonText = "Shop Now",
-    buttonLink = "/products",
+    description = "Add a description for this comparison.",
+    firstStatValue = "Stat value",
+    firstStatLabel = "Stat label",
+    secondStatValue = "Stat value",
+    secondStatLabel = "Stat label",
+    thirdStatValue = "Stat value",
+    thirdStatLabel = "Stat label",
+    buttonText = "Learn more",
+    buttonLink = "#",
     backgroundColor = "#E2E6F8",
     accentColor = "#6E91CD",
     ...rest
@@ -125,7 +125,7 @@ export default function BeforeAndAfter(props: BeforeAndAfterProps) {
             {buttonText?.trim() && (
               <div data-motion="fade-up" className="w-full pt-4">
                 <Button
-                  to={buttonLink || "/products"}
+                  to={buttonLink || "#"}
                   variant="primary"
                   className="h-auto min-h-13.5 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]"
                 >
@@ -174,22 +174,21 @@ export const schema = createSchema({
           type: "textarea",
           name: "description",
           label: "Description",
-          defaultValue:
-            "Discover a radiant complexion that starts at the source. Our expertly crafted formulas combine potent botanical actives with gentle, skin-loving ingredients to reveal your natural glow—soft, luminous, and effortlessly yours.",
+          defaultValue: "Add a description for this comparison.",
           condition: contentCondition,
         },
         {
           type: "text",
           name: "buttonText",
           label: "Button text",
-          defaultValue: "Shop Now",
+          defaultValue: "Learn more",
           condition: contentCondition,
         },
         {
           type: "url",
           name: "buttonLink",
           label: "Button link",
-          defaultValue: "/products",
+          defaultValue: "#",
           condition: contentCondition,
         },
       ],
@@ -201,42 +200,42 @@ export const schema = createSchema({
           type: "text",
           name: "firstStatValue",
           label: "First stat value",
-          defaultValue: "94%",
+          defaultValue: "Stat value",
           condition: contentCondition,
         },
         {
           type: "text",
           name: "firstStatLabel",
           label: "First stat label",
-          defaultValue: "saw brighter skin",
+          defaultValue: "Stat label",
           condition: contentCondition,
         },
         {
           type: "text",
           name: "secondStatValue",
           label: "Second stat value",
-          defaultValue: "87%",
+          defaultValue: "Stat value",
           condition: contentCondition,
         },
         {
           type: "text",
           name: "secondStatLabel",
           label: "Second stat label",
-          defaultValue: "reduced fine lines",
+          defaultValue: "Stat label",
           condition: contentCondition,
         },
         {
           type: "text",
           name: "thirdStatValue",
           label: "Third stat value",
-          defaultValue: "91%",
+          defaultValue: "Stat value",
           condition: contentCondition,
         },
         {
           type: "text",
           name: "thirdStatLabel",
           label: "Third stat label",
-          defaultValue: "improved hydration",
+          defaultValue: "Stat label",
           condition: contentCondition,
         },
       ],
@@ -262,6 +261,15 @@ export const schema = createSchema({
   ],
   childTypes: ["heading", "before-after-slider"],
   presets: {
+    description: "Add a description for this comparison.",
+    firstStatValue: "Stat value",
+    firstStatLabel: "Stat label",
+    secondStatValue: "Stat value",
+    secondStatLabel: "Stat label",
+    thirdStatValue: "Stat value",
+    thirdStatLabel: "Stat label",
+    buttonText: "Learn more",
+    buttonLink: "#",
     children: [
       {
         type: "heading",

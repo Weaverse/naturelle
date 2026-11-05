@@ -12,8 +12,8 @@ import { Button, buttonVariants } from "~/components/button";
 import Heading from "~/components/heading";
 import { Image } from "~/components/image";
 import { useAnimation } from "~/hooks/use-animation";
-import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { usePrefixPathWithLocale } from "~/utils/locale";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface ContactFormProps extends HydrogenComponentProps {
   backgroundColor?: string;
@@ -52,7 +52,6 @@ let ContactForm = ({
   const fetcher = useFetcher<{ ok: boolean }>();
   const { t } = useTranslation();
   const [scope] = useAnimation(ref);
-  const isDesignMode = useWeaverseStudioCheck();
   let {
     backgroundColor,
     contactImage,
@@ -88,12 +87,11 @@ let ContactForm = ({
     showImage !== false
       ? hasConfiguredImage(contactImage) && !imageLoadFailed
         ? configuredImage
-        : isDesignMode
-          ? {
-              url: IMAGES_PLACEHOLDERS.image,
-              altText: t("contact.imagePlaceholderAlt"),
-            }
-          : undefined
+        : sectionImage(
+            undefined,
+            IMAGES_PLACEHOLDERS.image,
+            t("contact.imagePlaceholderAlt"),
+          )
       : undefined;
   const hasImage = Boolean(imageData?.url);
   let sectionStyle: CSSProperties = {
@@ -373,6 +371,7 @@ export const schema = createSchema({
   ],
   presets: {
     showImage: true,
+    contactImage: IMAGES_PLACEHOLDERS.image,
     imageEyebrow: "Customer Service",
     imageHeading: "How Can We Help?",
     imageButtonLabel: "Contact Us",

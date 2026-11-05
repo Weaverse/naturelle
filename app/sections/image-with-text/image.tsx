@@ -9,6 +9,7 @@ import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
 import { cn } from "~/utils/cn";
+import { sectionImage } from "~/utils/section-placeholder";
 
 let wrapperVariants = cva("h-auto w-full md:shrink-0 md:self-stretch", {
   variants: {
@@ -75,8 +76,11 @@ let ImageWithTextImage = ({
     objectFit,
     ...rest
   } = props;
-  let imageData: Partial<WeaverseImage> =
-    typeof image === "string" ? { url: image, altText: "Placeholder" } : image;
+  const imageData = sectionImage(
+    image,
+    IMAGES_PLACEHOLDERS.image,
+    "Image placeholder",
+  );
   let aspRt: string | undefined;
   if (aspectRatio === "adapt") {
     if (imageData.width && imageData.height) {

@@ -10,7 +10,6 @@ import {
 import type { RefObject } from "react";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { buttonVariants } from "~/components/button";
-import { IconImageBlank } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
@@ -70,7 +69,7 @@ export const loader = async ({
   data,
   weaverse,
 }: ComponentLoaderArgs<ProductGridListData>) => {
-  if (!data.collection?.handle) {
+  if (!data?.collection?.handle?.trim()) {
     return null;
   }
 
@@ -94,9 +93,12 @@ function ProductPlaceholder() {
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <div className="flex aspect-square items-center justify-center overflow-hidden rounded-(--border-radius-lg) bg-background-subtle-2">
-        <IconImageBlank
-          className="h-full w-full opacity-70"
-          viewBox="0 0 526 526"
+        <Image
+          data={{
+            url: IMAGES_PLACEHOLDERS.product_1,
+            altText: t("product.exampleTitle"),
+          }}
+          className="h-full w-full object-cover"
         />
       </div>
       <div className="grid gap-1">
@@ -136,7 +138,7 @@ export default function ProductGridList({
     height: 1400,
   };
   const collectionTitle = collection?.title ?? t("product.newArrivals");
-  const collectionHandle = collection?.handle ?? "all";
+  const collectionHandle = collection?.handle ?? "";
   const visibleCount = collection ? Math.min(4, products.length) : 4;
   const totalCount = collection ? Math.min(productCountProbe.length, 16) : 16;
   const hasMoreProducts = productCountProbe.length > 16;
@@ -149,7 +151,7 @@ export default function ProductGridList({
     >
       <div className="grid w-full items-stretch gap-6 md:grid-cols-2">
         <Link
-          to={`/collections/${collectionHandle}`}
+          to={collectionHandle ? `/collections/${collectionHandle}` : "#"}
           className="group relative min-h-[30rem] overflow-hidden rounded-2xl bg-background-subtle-2 lg:min-h-full"
           aria-label={t("navigation.viewCollection", {
             collection: collectionTitle,
@@ -241,7 +243,7 @@ export const schema = createSchema({
           type: "text",
           name: "collectionEyebrow",
           label: "Collection subheading",
-          defaultValue: "New collection",
+          defaultValue: "Collection label",
         },
         {
           type: "text",

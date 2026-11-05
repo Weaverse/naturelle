@@ -52,7 +52,7 @@ export const schema = createSchema({
   childTypes: ["heading", "product-grid--list"],
   presets: {
     children: [
-      { type: "heading", content: "New collection" },
+      { type: "heading", content: "Featured products" },
       { type: "product-grid--list" },
     ],
   },

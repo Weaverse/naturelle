@@ -3,10 +3,10 @@ import type {
   HydrogenComponentProps,
   WeaverseBlog,
 } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { CSSProperties, RefObject } from "react";
-import { IconCaret, IconImageBlank } from "~/components/icon";
+import { IconCaret } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { BLOG_QUERY } from "~/graphql/queries";
@@ -122,7 +122,7 @@ const Blogs = ({
 
   const defaultArticles = Array.from({ length: 4 }).map((_, i) => ({
     id: i,
-    title: "Trendy items for this Winter Fall 2025 season",
+    title: `Example article ${i + 1}`,
     tags: [],
     image: null,
     handle: null,
@@ -148,28 +148,18 @@ const Blogs = ({
               className="group"
             >
               <div className="flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-background-basic">
-                {idx.image ? (
-                  <div
-                    className="w-full overflow-hidden"
-                    style={{ aspectRatio }}
-                  >
-                    <Image
-                      data={idx.image}
-                      sizes="auto"
-                      className="h-full! w-full! object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className="flex w-full items-center justify-center overflow-hidden bg-background-subtle-2"
-                    style={{ aspectRatio }}
-                  >
-                    <IconImageBlank
-                      viewBox="0 0 526 526"
-                      className="h-full w-full opacity-80"
-                    />
-                  </div>
-                )}
+                <div className="w-full overflow-hidden" style={{ aspectRatio }}>
+                  <Image
+                    data={
+                      idx.image ?? {
+                        url: IMAGES_PLACEHOLDERS.image,
+                        altText: "Article image placeholder",
+                      }
+                    }
+                    sizes="auto"
+                    className="h-full! w-full! object-cover"
+                  />
+                </div>
                 <div className="flex w-full flex-1 flex-col gap-4 px-5 py-6">
                   <div className="flex min-h-5 items-center">
                     {idx.tags[0] && (
@@ -211,7 +201,7 @@ export default Blogs;
 export const loader = async (args: ComponentLoaderArgs<BlogData>) => {
   let { weaverse, data } = args;
   let { storefront } = weaverse;
-  if (data.blogs) {
+  if (data.blogs?.handle?.trim()) {
     const res = await storefront.query(BLOG_QUERY, {
       variables: {
         blogHandle: data.blogs.handle,
@@ -219,6 +209,7 @@ export const loader = async (args: ComponentLoaderArgs<BlogData>) => {
     });
     return res;
   }
+  return null;
 };
 
 export const schema = createSchema({

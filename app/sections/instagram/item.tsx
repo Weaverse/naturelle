@@ -8,6 +8,7 @@ import {
 import { IconFooterInstagram } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface InstagramItemProps extends HydrogenComponentProps {
   image?: WeaverseImage | string;
@@ -15,19 +16,9 @@ interface InstagramItemProps extends HydrogenComponentProps {
   ref?: React.Ref<HTMLDivElement>;
 }
 
-function resolveImage(value?: WeaverseImage | string) {
-  if (!value) {
-    return { url: IMAGES_PLACEHOLDERS.collection_4, altText: "" };
-  }
-  if (typeof value === "string") {
-    return { url: value, altText: "" };
-  }
-  return value;
-}
-
 const InstagramItem = ({ ref, image, link, ...rest }: InstagramItemProps) => {
   const { t } = useTranslation();
-  const imageData = resolveImage(image);
+  const imageData = sectionImage(image, IMAGES_PLACEHOLDERS.collection_4);
   const content = (
     <>
       <Image
@@ -85,4 +76,7 @@ export const schema = createSchema({
       ],
     },
   ],
+  presets: {
+    image: IMAGES_PLACEHOLDERS.collection_4,
+  },
 });

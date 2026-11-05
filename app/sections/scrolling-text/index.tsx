@@ -108,8 +108,7 @@ export const schema = createSchema({
           type: "textarea",
           name: "content",
           label: "Text",
-          defaultValue:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+          defaultValue: "Add scrolling announcement text.",
         },
         {
           type: "toggle-group",
