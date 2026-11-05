@@ -25,11 +25,16 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version: 22.0.0
           cache: npm
 
+      - name: Use the audited npm version
+        run: npm install --global npm@10.9.8 --no-audit --no-fund
+
+      # package-lock.json records >=22.0.0 where published engines exclude it.
+      # --engine-strict fails if those recorded ranges are reverted.
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --engine-strict --no-audit --no-fund
 
       - name: Lint
         run: npm run biome
