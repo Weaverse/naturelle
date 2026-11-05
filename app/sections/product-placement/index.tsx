@@ -36,7 +36,7 @@ export const schema = createSchema({
     children: [
       {
         type: "heading",
-        content: "Shop the look",
+        content: "Product showcase",
       },
       {
         type: "product-placement--items",

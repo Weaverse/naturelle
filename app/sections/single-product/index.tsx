@@ -304,7 +304,7 @@ export default SingleProduct;
 export const loader = async (args: ComponentLoaderArgs<SingleProductData>) => {
   let { weaverse, data } = args;
   let { storefront } = weaverse;
-  if (!data.product) {
+  if (!data?.product?.handle?.trim()) {
     return null;
   }
   let metafield =

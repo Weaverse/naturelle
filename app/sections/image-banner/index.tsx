@@ -5,6 +5,7 @@ import type { RefObject } from "react";
 import { backgroundInputs } from "~/components/background-image";
 import { overlayInputs } from "~/components/overlay";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
+import { sectionImageSource } from "~/utils/section-placeholder";
 
 export interface SlideShowBannerItemProps
   extends VariantProps<typeof variants> {
@@ -53,6 +54,7 @@ let HeaderImage = ({
     contentPosition,
     horizontalPadding,
     borderRadius,
+    backgroundImage,
     ...rest
   } = props;
   let style = {
@@ -68,6 +70,10 @@ let HeaderImage = ({
       <div className="overflow-hidden rounded-none lg:rounded-(--image-banner-border-radius)">
         <Section
           {...rest}
+          backgroundImage={sectionImageSource(
+            backgroundImage,
+            IMAGES_PLACEHOLDERS.image,
+          )}
           borderRadius={0}
           containerClassName={variants({ contentPosition, height })}
         >

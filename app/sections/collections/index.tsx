@@ -65,9 +65,13 @@ export async function loader({
   weaverse,
 }: ComponentLoaderArgs<CollectionsData>) {
   const ids =
-    data.collections?.map(
-      (collection) => `gid://shopify/Collection/${collection.id}`,
-    ) ?? [];
+    data.collections
+      ?.filter((collection) => Boolean(collection?.id))
+      .map((collection) => `gid://shopify/Collection/${collection.id}`) ?? [];
+
+  if (ids.length === 0) {
+    return { collections: [] };
+  }
 
   const { country, language } = weaverse.storefront.i18n;
   const { nodes } = await weaverse.storefront.query<{
@@ -86,7 +90,7 @@ export type CollectionsLoaderData = Awaited<ReturnType<typeof loader>>;
 const PLACEHOLDER_COLLECTION: CollectionNode = {
   id: "gid://shopify/Collection/placeholder",
   title: "Collection title",
-  handle: "all",
+  handle: "",
   image: {
     id: "gid://shopify/CollectionImage/placeholder",
     altText: "Collection image",
@@ -225,7 +229,9 @@ function Collections({
           {collections.map((collection, index) => (
             <SwiperSlide key={`${collection.id}-${index}`} className="min-w-0">
               <Link
-                to={`/collections/${collection.handle}`}
+                to={
+                  collection.handle ? `/collections/${collection.handle}` : "#"
+                }
                 aria-label={t("navigation.viewCollection", {
                   collection: collection.title,
                 })}
@@ -243,17 +249,20 @@ function Collections({
                   )}
                   style={{ aspectRatio: imageAspectRatio ?? "1/1" }}
                 >
-                  {collection.image && (
-                    <Image
-                      data={collection.image}
-                      sizes={
-                        columns === "3"
-                          ? "(min-width: 90em) 33vw, 50vw"
-                          : "(min-width: 90em) 25vw, 50vw"
+                  <Image
+                    data={
+                      collection.image ?? {
+                        url: IMAGES_PLACEHOLDERS.collection_1,
+                        altText: "Collection image placeholder",
                       }
-                      className="object-cover"
-                    />
-                  )}
+                    }
+                    sizes={
+                      columns === "3"
+                        ? "(min-width: 90em) 33vw, 50vw"
+                        : "(min-width: 90em) 25vw, 50vw"
+                    }
+                    className="object-cover"
+                  />
                 </div>
 
                 <div className="flex min-h-20 items-center justify-between gap-2 px-4 py-4 lg:gap-4 lg:px-6">
@@ -334,7 +343,7 @@ export const schema = createSchema({
           type: "text",
           name: "heading",
           label: "Heading",
-          defaultValue: "Trending now",
+          defaultValue: "Featured collections",
         },
         {
           type: "collection-list",
@@ -419,7 +428,7 @@ export const schema = createSchema({
     },
   ],
   presets: {
-    heading: "Trending now",
+    heading: "Featured collections",
     columns: "4",
     cardGap: 24,
     imageAspectRatio: "1/1",

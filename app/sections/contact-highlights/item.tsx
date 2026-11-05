@@ -89,8 +89,7 @@ export const schema = createSchema({
           type: "richtext",
           name: "description",
           label: "Description",
-          defaultValue:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+          defaultValue: "Describe this contact highlight.",
         },
       ],
     },
@@ -98,7 +97,6 @@ export const schema = createSchema({
   presets: {
     visibleOnMobile: true,
     heading: "Heading",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    description: "Describe this contact highlight.",
   },
 });
