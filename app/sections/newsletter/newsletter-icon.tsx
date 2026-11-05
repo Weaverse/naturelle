@@ -16,6 +16,7 @@ const NewsletterIcon = ({
   let { iconImage, iconImageSize, ...rest } = props;
   const imageSize = iconImageSize || 50;
   const imageStyle = { width: "auto", height: imageSize };
+  const iconImageUrl = iconImage?.url?.trim();
 
   return (
     <div
@@ -24,7 +25,7 @@ const NewsletterIcon = ({
       {...rest}
       className="flex items-center justify-center"
     >
-      {iconImage ? (
+      {iconImageUrl ? (
         <Image
           data={iconImage}
           className="max-w-full shrink-0 object-contain"

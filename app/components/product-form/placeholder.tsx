@@ -1,4 +1,4 @@
-import { useTranslation } from "@weaverse/hydrogen";
+import { IMAGES_PLACEHOLDERS, useTranslation } from "@weaverse/hydrogen";
 import { Image } from "~/components/image";
 import { useRootLoaderData } from "~/root";
 import { DEFAULT_LOCALE } from "~/utils/const";
@@ -14,7 +14,7 @@ export function ProductPlaceholder(_props: any) {
           data={{
             altText: "",
             height: 125,
-            url: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png?format=webp&v=1530129292",
+            url: IMAGES_PLACEHOLDERS.product_1,
             width: 125,
           }}
           className="object-cover w-full h-full aspect-square fadeIn"

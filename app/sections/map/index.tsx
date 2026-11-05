@@ -1,6 +1,7 @@
 import {
   createSchema,
   type HydrogenComponentProps,
+  IMAGES_PLACEHOLDERS,
   useChildInstances,
   useTranslation,
 } from "@weaverse/hydrogen";
@@ -13,6 +14,7 @@ import {
 } from "react";
 import { Button } from "~/components/button";
 import Heading from "~/components/heading";
+import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
 
 type MapData = {
@@ -37,14 +39,25 @@ function MapFrame({ address }: { address: string }) {
   const { t } = useTranslation();
   return (
     <div className="map-media relative min-h-90 min-w-0 overflow-hidden bg-background-subtle-1 md:min-h-140 md:flex-[1_1_var(--container-xl)] lg:min-h-180">
-      <iframe
-        key={address}
-        title={t("map.storeLocation")}
-        src={`https://maps.google.com/maps?t=m&q=${encodeURIComponent(address)}&ie=UTF8&output=embed`}
-        className="absolute inset-0 h-full w-full border-0"
-        loading="lazy"
-        allowFullScreen
-      />
+      {address?.trim() ? (
+        <iframe
+          key={address}
+          title={t("map.storeLocation")}
+          src={`https://maps.google.com/maps?t=m&q=${encodeURIComponent(address)}&ie=UTF8&output=embed`}
+          className="absolute inset-0 h-full w-full border-0"
+          loading="lazy"
+          allowFullScreen
+        />
+      ) : (
+        <Image
+          data={{
+            url: IMAGES_PLACEHOLDERS.image,
+            altText: t("map.storeLocation"),
+          }}
+          sizes="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
     </div>
   );
 }
@@ -204,15 +217,15 @@ export const schema = createSchema({
     children: [
       {
         type: "map--item",
-        title: "Our address",
-        address: "123 Naturelle Street, New York, NY 10001",
-        paragraph: "123 Naturelle Street, New York, NY 10001",
+        title: "Store address",
+        address: "",
+        paragraph: "Add your store address.",
       },
       {
         type: "map--item",
         title: "Opening hours",
-        address: "123 Naturelle Street, New York, NY 10001",
-        paragraph: "Mon - Fri: 08:00 - 22:00\nSat - Sun: 08:00 - 20:00",
+        address: "",
+        paragraph: "Add your opening hours.",
       },
     ],
   },

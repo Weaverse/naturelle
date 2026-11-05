@@ -13,6 +13,7 @@ import {
   type OverlayAndBackgroundProps,
 } from "~/components/overlay-and-background";
 import { layoutInputs } from "~/components/section";
+import { sectionImageSource } from "~/utils/section-placeholder";
 
 let variants = cva("w-full h-full flex flex-col [&_.paragraph]:mx-[unset]", {
   variants: {
@@ -97,7 +98,13 @@ let Slide = ({
 
   return (
     <div ref={ref} {...rest} className="h-full w-full">
-      <OverlayAndBackground {...props} />
+      <OverlayAndBackground
+        {...props}
+        backgroundImage={sectionImageSource(
+          backgroundImage,
+          IMAGES_PLACEHOLDERS.banner_1,
+        )}
+      />
       <div
         className={variants({ contentPosition, width, gap, verticalPadding })}
       >

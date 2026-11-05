@@ -7,7 +7,7 @@ import {
 import type { CSSProperties, RefObject } from "react";
 import { Button } from "~/components/button";
 import { Image } from "~/components/image";
-import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface HeroStoryData {
   eyebrow: string;
@@ -40,14 +40,11 @@ export default function HeroStory({
   accentColor,
   ...rest
 }: HeroStoryProps & { ref?: RefObject<HTMLElement | null> }) {
-  const isDesignMode = useWeaverseStudioCheck();
-  const configuredImage = typeof image === "string" ? { url: image } : image;
-  const imageData =
-    isDesignMode && !configuredImage?.url
-      ? { url: IMAGES_PLACEHOLDERS.image, altText: "Hero story placeholder" }
-      : configuredImage;
-  const isPlaceholder = imageData?.url === IMAGES_PLACEHOLDERS.image;
-  const showImage = Boolean(imageData?.url) && (isDesignMode || !isPlaceholder);
+  const imageData = sectionImage(
+    image,
+    IMAGES_PLACEHOLDERS.image,
+    "Hero story placeholder",
+  );
   const showFirstStat = Boolean(
     firstStatValue?.trim() || firstStatLabel?.trim(),
   );
@@ -127,15 +124,13 @@ export default function HeroStory({
           )}
         </div>
 
-        {showImage && (
-          <div className="h-90 min-w-0 flex-1 overflow-hidden rounded-2xl md:h-115 desktop:h-135">
-            <Image
-              data={imageData}
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="rounded-2xl"
-            />
-          </div>
-        )}
+        <div className="h-90 min-w-0 flex-1 overflow-hidden rounded-2xl md:h-115 desktop:h-135">
+          <Image
+            data={imageData}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="rounded-2xl"
+          />
+        </div>
       </div>
     </section>
   );
@@ -152,44 +147,44 @@ export const schema = createSchema({
           type: "text",
           name: "eyebrow",
           label: "Eyebrow",
-          defaultValue: "The Signature Curation",
+          defaultValue: "Story eyebrow",
         },
         {
           type: "text",
           name: "heading",
           label: "Heading",
-          defaultValue: "Rituals for Radiant Clarity",
+          defaultValue: "Story heading",
         },
         {
           type: "textarea",
           name: "description",
           label: "Description",
           defaultValue:
-            "Botanical actives meet clinical precision — formulas designed to renew, hydrate, and balance your skin from the cellular level up.",
+            "Use this space to introduce your store and share your story.",
         },
         {
           type: "text",
           name: "firstStatValue",
           label: "First stat value",
-          defaultValue: "98%",
+          defaultValue: "Stat value",
         },
         {
           type: "text",
           name: "firstStatLabel",
           label: "First stat label",
-          defaultValue: "Organic Actives",
+          defaultValue: "Stat label",
         },
         {
           type: "text",
           name: "secondStatValue",
           label: "Second stat value",
-          defaultValue: "pH 5.5",
+          defaultValue: "Stat value",
         },
         {
           type: "text",
           name: "secondStatLabel",
           label: "Second stat label",
-          defaultValue: "Bio-Compatible",
+          defaultValue: "Stat label",
         },
         {
           type: "text",
@@ -201,7 +196,7 @@ export const schema = createSchema({
           type: "url",
           name: "buttonLink",
           label: "Button link",
-          defaultValue: "/pages/about",
+          defaultValue: "#",
         },
       ],
     },
@@ -229,16 +224,15 @@ export const schema = createSchema({
     },
   ],
   presets: {
-    eyebrow: "The Signature Curation",
-    heading: "Rituals for Radiant Clarity",
-    description:
-      "Botanical actives meet clinical precision — formulas designed to renew, hydrate, and balance your skin from the cellular level up.",
-    firstStatValue: "98%",
-    firstStatLabel: "Organic Actives",
-    secondStatValue: "pH 5.5",
-    secondStatLabel: "Bio-Compatible",
+    eyebrow: "Story eyebrow",
+    heading: "Story heading",
+    description: "Use this space to introduce your store and share your story.",
+    firstStatValue: "Stat value",
+    firstStatLabel: "Stat label",
+    secondStatValue: "Stat value",
+    secondStatLabel: "Stat label",
     buttonText: "Read more",
-    buttonLink: "/pages/about",
+    buttonLink: "#",
     image: IMAGES_PLACEHOLDERS.image,
     accentColor: "#B07D6A",
   },

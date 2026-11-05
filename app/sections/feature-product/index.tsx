@@ -39,7 +39,7 @@ export const schema = createSchema({
     children: [
       {
         type: "heading",
-        content: "Best Sellers",
+        content: "Featured products",
       },
       {
         type: "featured-products--list",

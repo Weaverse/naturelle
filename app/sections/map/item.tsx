@@ -27,7 +27,7 @@ export default function MapItem({
   const isActive = activeItem === itemIndex;
 
   useEffect(() => {
-    if (isActive && address) {
+    if (isActive) {
       selectAddress(itemIndex, address);
     }
   }, [address, isActive, itemIndex, selectAddress]);
@@ -69,7 +69,8 @@ export const schema = createSchema({
           type: "text",
           name: "address",
           label: "Map address",
-          defaultValue: "123 Naturelle Street, New York, NY 10001",
+          defaultValue: "",
+          placeholder: "Enter your store address",
           helpText:
             "Use a complete street address so the embedded map can locate it accurately.",
         },
@@ -77,14 +78,14 @@ export const schema = createSchema({
           type: "textarea",
           name: "paragraph",
           label: "Paragraph",
-          defaultValue: "Mon - Fri: 08:00 - 22:00\nSat - Sun: 08:00 - 20:00",
+          defaultValue: "Add your store information.",
         },
       ],
     },
   ],
   presets: {
     title: "Opening hours",
-    address: "123 Naturelle Street, New York, NY 10001",
-    paragraph: "Mon - Fri: 08:00 - 22:00\nSat - Sun: 08:00 - 20:00",
+    address: "",
+    paragraph: "Add your store information.",
   },
 });

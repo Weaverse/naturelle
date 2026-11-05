@@ -3,7 +3,11 @@ import type {
   MediaImage,
   MoneyV2,
 } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
+import {
+  IMAGES_PLACEHOLDERS,
+  useThemeSettings,
+  useTranslation,
+} from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type {
   ProductCardFragment,
@@ -136,7 +140,11 @@ export function ProductCard({
   const mediaImages = cardProduct.media?.nodes.filter(
     (node) => node.__typename === "MediaImage",
   ) as MediaImage[] | undefined;
-  const image = cardProduct.images?.nodes[0] ?? mediaImages?.[0]?.image;
+  const image = cardProduct.images?.nodes[0] ??
+    mediaImages?.[0]?.image ?? {
+      url: IMAGES_PLACEHOLDERS.product_1,
+      altText: t("product.image"),
+    };
   const secondImage = cardProduct.images?.nodes[1] ?? mediaImages?.[1]?.image;
   const { price, compareAtPrice } = variant;
   const customBadge = label ?? badgeText;
@@ -165,20 +173,18 @@ export function ProductCard({
           className="group block h-full overflow-hidden bg-background-subtle-2"
           style={{ borderRadius: `${Math.max(0, pcardBorderRadius - 4)}px` }}
         >
-          {image && (
-            <Image
-              data={image}
-              alt={image.altText || product.title}
-              loading={loading}
-              sizes="(min-width: 64em) 25vw, 50vw"
-              className={clsx(
-                "h-full w-full object-cover",
-                pcardShowImageOnHover &&
-                  secondImage &&
-                  "transition-opacity duration-300 group-hover:opacity-50",
-              )}
-            />
-          )}
+          <Image
+            data={image}
+            alt={image.altText || product.title}
+            loading={loading}
+            sizes="(min-width: 64em) 25vw, 50vw"
+            className={clsx(
+              "h-full w-full object-cover",
+              pcardShowImageOnHover &&
+                secondImage &&
+                "transition-opacity duration-300 group-hover:opacity-50",
+            )}
+          />
           {pcardShowImageOnHover && secondImage && (
             <Image
               data={secondImage}

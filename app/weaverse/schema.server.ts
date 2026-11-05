@@ -1,4 +1,8 @@
-import type { HydrogenThemeSchema, InspectorGroup } from "@weaverse/hydrogen";
+import {
+  type HydrogenThemeSchema,
+  IMAGES_PLACEHOLDERS,
+  type InspectorGroup,
+} from "@weaverse/hydrogen";
 import { DEFAULT_VARIANT_DISPLAY_SETTINGS } from "~/components/product-form/variants";
 import enUS from "~/locales/en-us.json";
 import type { StoreLocalization } from "~/types/type-locale";
@@ -69,10 +73,9 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "textarea",
           name: "popularSearchKeywords",
           label: "Popular search keywords",
-          defaultValue: "skin, day cream, moisturization, night cream",
-          placeholder: "skin, day cream, moisturization, night cream",
-          helpText:
-            "Enter popular search keywords separated by commas. E.g. <strong>skin, day cream, moisturization</strong>",
+          defaultValue: "",
+          placeholder: "Keyword 1, keyword 2, keyword 3",
+          helpText: "Enter popular search keywords separated by commas.",
         },
       ],
     },
@@ -180,14 +183,9 @@ export const themeSchema: HydrogenThemeSchema = {
     {
       group: "Announcement bar",
       inputs: [
-        ...announcementMessageInputs(1, "FREE SHIPPING OVER $100", "sparkle"),
-        ...announcementMessageInputs(
-          2,
-          "SUMMER SALE - UP TO 40% OFF",
-          "ticket",
-          true,
-        ),
-        ...announcementMessageInputs(3, "NATURÉLLE · BEAUTY RITUALS", "tree"),
+        ...announcementMessageInputs(1, "Announcement message", "sparkle"),
+        ...announcementMessageInputs(2, "", "ticket", true),
+        ...announcementMessageInputs(3, "", "tree"),
         ...announcementMessageInputs(4, "", "sparkle"),
         ...announcementMessageInputs(5, "", "ticket"),
         ...announcementMessageInputs(6, "", "tree"),
@@ -327,10 +325,8 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "logoData",
           label: "logo",
           defaultValue: {
-            altText: "logo",
-            url: "https://cdn.shopify.com/s/files/1/0838/0052/3057/files/naturelle_logo.png?v=1705045487",
-            width: 320,
-            height: 116,
+            altText: "Logo placeholder",
+            url: IMAGES_PLACEHOLDERS.logo_black,
           },
         },
         {
@@ -338,10 +334,8 @@ export const themeSchema: HydrogenThemeSchema = {
           name: "transparentLogoData",
           label: "Transparent Logo",
           defaultValue: {
-            altText: "logo",
-            url: "https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Property_1_White.png?v=1720064102",
-            width: 320,
-            height: 116,
+            altText: "Transparent logo placeholder",
+            url: IMAGES_PLACEHOLDERS.logo_white,
           },
           condition: "enableTransparentHeader.eq.true",
         },
@@ -459,7 +453,7 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "text",
           name: "cartNewsletterDescription",
           label: "Description",
-          defaultValue: "Get 15% off your first order",
+          defaultValue: "Add a short message about your newsletter.",
         },
         {
           type: "text",
@@ -488,15 +482,15 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "text",
           name: "footerBrandName",
           label: "Brand name",
-          defaultValue: "NATURÉLLE",
-          placeholder: "NATURÉLLE",
+          defaultValue: "Your store",
+          placeholder: "Your store",
         },
         {
           type: "text",
           name: "footerTagline",
           label: "Tagline",
-          defaultValue: "Pure Botanical Alchemy",
-          placeholder: "Pure Botanical Alchemy",
+          defaultValue: "Add your store tagline.",
+          placeholder: "Add your store tagline.",
         },
         {
           type: "select",
@@ -515,7 +509,8 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "text",
           label: "Footer text Copyright @",
           name: "footerTextCopyright",
-          defaultValue: "© 2024 Weaverse. All rights reserved.",
+          defaultValue: "",
+          placeholder: "© 2026 Your store. All rights reserved.",
         },
         {
           type: "select",
@@ -541,31 +536,31 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "text",
           name: "socialInstagram",
           label: "Instagram",
-          defaultValue: "https://www.instagram.com/",
+          placeholder: "https://www.instagram.com/your-handle",
         },
         {
           type: "text",
           name: "socialFacebook",
           label: "Facebook",
-          defaultValue: "https://www.facebook.com/",
+          placeholder: "https://www.facebook.com/your-page",
         },
         {
           type: "text",
           name: "socialPinterest",
           label: "Pinterest",
-          defaultValue: "https://www.pinterest.com/",
+          placeholder: "https://www.pinterest.com/your-handle",
         },
         {
           type: "text",
           name: "socialTikTok",
           label: "TikTok",
-          defaultValue: "https://www.tiktok.com/",
+          placeholder: "https://www.tiktok.com/@your-handle",
         },
         {
           type: "text",
           name: "socialYouTube",
           label: "YouTube",
-          defaultValue: "https://www.youtube.com/",
+          placeholder: "https://www.youtube.com/@your-channel",
         },
         {
           type: "heading",
@@ -581,8 +576,7 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "text",
           name: "newsletterDescription",
           label: "Newsletter description",
-          defaultValue:
-            "Sign up for 15% off and updates straight to your inbox.",
+          defaultValue: "Add a short message about your newsletter.",
         },
         {
           type: "text",
@@ -604,19 +598,22 @@ export const themeSchema: HydrogenThemeSchema = {
           type: "text",
           name: "trustBadgeVeganLabel",
           label: "Vegan label",
-          defaultValue: "100% Vegan",
+          defaultValue: "",
+          placeholder: "Add a trust badge label",
         },
         {
           type: "text",
           name: "trustBadgeCrueltyFreeLabel",
           label: "Cruelty-free label",
-          defaultValue: "Certified Cruelty-Free",
+          defaultValue: "",
+          placeholder: "Add a trust badge label",
         },
         {
           type: "text",
           name: "trustBadgeDermatologistTestedLabel",
           label: "Dermatologist-tested label",
-          defaultValue: "Dermatologist Tested",
+          defaultValue: "",
+          placeholder: "Add a trust badge label",
         },
         {
           type: "heading",

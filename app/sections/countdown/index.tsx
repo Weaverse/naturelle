@@ -9,6 +9,7 @@ import React, { type RefObject } from "react";
 import { backgroundInputs } from "~/components/background-image";
 import { overlayInputs } from "~/components/overlay";
 import { Section, type SectionProps } from "~/components/section";
+import { sectionImageSource } from "~/utils/section-placeholder";
 
 let variants = cva("px-0 md:px-10 [&_.paragraph]:mx-[unset]", {
   variants: {
@@ -48,6 +49,7 @@ let Countdown = ({
     verticalPadding = "medium",
     backgroundFor = "section",
     borderRadius = 0,
+    backgroundImage,
     style,
     ...rest
   } = props;
@@ -78,6 +80,10 @@ let Countdown = ({
     <Section
       ref={ref}
       {...rest}
+      backgroundImage={sectionImageSource(
+        backgroundImage,
+        IMAGES_PLACEHOLDERS.banner_1,
+      )}
       backgroundFor={backgroundFor}
       borderRadius={borderRadius}
       gap={0}
@@ -219,11 +225,11 @@ export const schema = createSchema({
     children: [
       {
         type: "heading",
-        content: "Sale ends in",
+        content: "Countdown heading",
       },
       {
         type: "paragraph",
-        content: "Use this timer to create urgency and boost sales.",
+        content: "Add details about your promotion.",
         width: "full",
       },
       {
