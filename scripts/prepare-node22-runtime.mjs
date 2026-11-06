@@ -194,8 +194,10 @@ async function packageDistribution(root, packageName, version) {
   if (locked?.resolved && locked.integrity) {
     return { tarball: locked.resolved, integrity: locked.integrity };
   }
+  const encodedPackageName = encodeURIComponent(packageName);
+  const encodedVersion = encodeURIComponent(version);
   const response = await fetch(
-    `https://registry.npmjs.org/${packageName.replace("/", "%2f")}/${version}`,
+    `https://registry.npmjs.org/${encodedPackageName}/${encodedVersion}`,
   );
   if (!response.ok) {
     throw new Error(
