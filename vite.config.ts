@@ -72,6 +72,11 @@ export default defineConfig(({ isSsrBuild }) => ({
   },
   ssr: {
     optimizeDeps: {
+      // Vite 8's SSR optimizer appends its cache-busting query to Phosphor's
+      // relative icon imports. MiniOxygen then receives paths such as
+      // `XSquare.es.js?v=...` and rejects the otherwise existing file. The
+      // package is native ESM, so it does not need dependency optimization.
+      exclude: ["@phosphor-icons/react"],
       /**
        * Include dependencies here if they throw CJS<>ESM errors.
        * For example, for the following error:
