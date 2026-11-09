@@ -23,7 +23,7 @@ composition and theme-setting values.
 
 Install or obtain:
 
-- Node.js **22.0.0 or newer** (`node --version`)
+- Node.js **22.18.0–22.x or 24.11.0–24.x** (`node --version`)
 - npm, included with Node.js (`npm --version`)
 - Git (`git --version`)
 - access to a Shopify store with the Hydrogen or Headless sales channel
@@ -36,26 +36,44 @@ installs. Do not delete the lockfile or add a second lockfile.
 
 ### Node compatibility
 
-Naturélle supports Node.js >=22.0.0. That includes the 22.0.0 lower boundary, released odd-numbered majors, and Node 26. It does not mean every patch or a future major has been tested.
+Naturélle supports Node.js `^22.18.0 || ^24.11.0`. Use the latest patched
+release in one of those two supported major lines. Earlier Node 22 minors,
+odd-numbered majors, Node 26, and future majors are not part of this support
+claim.
 
-`npm ci` installs the published Shopify CLI 4.6.1 and Vite 8.2.1 recorded in `package-lock.json`. Do not delete that lockfile and do not add a second one. A fresh resolution can pair `framer-motion` with a `motion-dom` release that does not export `activeAnimations`. The npm overrides keep `motion-dom@12.23.23` and `motion-utils@12.23.6`.
+The committed lockfile resolves published Shopify CLI, Vite, GraphQL Codegen,
+and MiniOxygen packages without postinstall source rewrites or local package
+forks. Run `npm ci --engine-strict` when verifying the graph. Do not delete the
+lockfile or add a second lockfile.
 
-Published packages disagree with this Node contract. `scripts/prepare-node22-runtime.mjs` runs on install and before the Shopify CLI scripts:
+The npm overrides keep `motion-dom@12.23.23` and `motion-utils@12.23.6` so a
+fresh resolution cannot recreate the incompatible Motion graph reported in
+the shared installer issue. The published Weaverse CLI must also preserve this
+lockfile during onboarding; that release-level work remains owned by
+`Weaverse/weaverse#565`.
 
-- Shopify CLI 4.6.1 statically imports `enableCompileCache`. Node does not export that function until 22.8.0, so 22.0.0 and 22.7.x crash before codegen. The script changes that import to a dynamic import, which is skipped when the export is absent. The CLI also leaks its development `NODE_ENV` into the detached codegen watcher; on Node 22.0.0 that makes `tsx` fail while loading `vite.config.ts`. The script starts that watcher with the same unset `NODE_ENV` used by the standalone codegen command.
-- Vite 8 uses Rolldown 1.2.4. npm skips its optional native binding when the lockfile engines reject the running Node version, which the published range does below 22.12.0. The binding loads on those versions, so `package-lock.json` records `>=22.0.0` for it and npm installs the binding directly. The script still installs that same binding if it is missing.
-- `@graphql-codegen/cli` 7.4.6 is ESM, but its `require` export points at a CommonJS build that loads ESM-only dependencies. The script points the `require` export at the ESM entry, which loads on 22.0.0. Its newest transitive `@whatwg-node` releases raise their engines to later Node 22 minors; the lockfile pins API-compatible releases that still support the 22.0.0 floor.
-- Published MiniOxygen 4.2.2 declares `^22 || ^24`, which excludes Node 23, 25, and 26. This repository installs `vendor/mini-oxygen` instead. That copy keeps the upstream runtime and declares `>=22.0.0`. See `vendor/mini-oxygen/UPSTREAM.md`.
+Routine pull-request CI uses Node 22.18.0 on Ubuntu. The separate Node
+compatibility workflow is manual and covers the exact 22.18.0 and 24.11.0
+minimums plus current patched releases on Linux, macOS, and Windows. Its dev
+probe checks Hydrogen startup, codegen, the client transform, dependency
+optimization, and Oxygen worker/SSR execution without merchant credentials.
+Catalog rendering and Studio behavior are verified separately with approved
+disposable configuration. See the
+[`node-support-validation.md`](node-support-validation.md) record for completed
+runs and outstanding acceptance.
 
-`npm ci` reads `engines` from `package-lock.json`. Published CLI 4.6.1, Vite 8.2.1, Rolldown 1.2.4, and several of their dependencies declare ranges that exclude Node 22.0.0, and those ranges are what produced the `EBADENGINE` warnings. The lockfile records `>=22.0.0` for those entries. That removes the warnings and stops npm from skipping the optional native packages. Do not regenerate that lockfile from the published manifests.
+On 2026-11-08, a native macOS arm64 host using npm 10.9.8 completed the
+strict clean install, selected dependency-graph check, codegen, typecheck, 53
+application tests, translation check, production build, and credential-free
+dev/optimizer/Oxygen worker probe on exact Node 22.18.0 and 24.11.0. This is
+one-time migration evidence for those runtimes on macOS only. Linux and
+Windows remain pending until the manual compatibility workflow completes;
+catalog and Studio acceptance are not inferred from this probe.
 
-`@weaverse/cli` 5.7.1 deletes `package-lock.json` before `npm install`. `.npmrc` leaves `engine-strict` off so that install can finish on Node 22.0.0; a strict check would reject the published CLI manifest before `postinstall` can patch it. The npm overrides still force `motion-dom@12.23.23`, `motion-utils@12.23.6`, and `rolldown@1.2.4`, which is the graph the committed lockfile already resolves. CI passes `--engine-strict` against that lockfile. This does not stop the published CLI from deleting the lockfile; that deletion remains `weaverse#565`.
-
-`npm ci` can still print deprecation notices for `typographic-arrows`, `boolean`, and `node-domexception`. Those packages are deprecated by their maintainers. The notices are not Node engine failures.
-
-The Node compatibility workflow installs, typechecks, tests, builds, and runs a credential-free dev probe on Linux, macOS, and Windows. Its versions are 22.0.0, the latest Node 22 patch, 23.11.1, 24.22.2, 25.9.0, and 26.13.0, plus macOS checks at 22.7.0, 22.8.0, 22.11.0, and 22.12.0. Only a completed run of that workflow is evidence for those hosts. Other patches, catalog rendering, and the Studio connection stay untested until they are run separately. The dev probe checks the codegen watcher, Hydrogen startup, the client transform, dependency optimization, and worker execution. It does not render the storefront catalog.
-
-On 2026-11-05, one native macOS arm64 machine using Node 22.0.0 and npm 10.9.8 completed `npm ci`, Shopify CLI 4.6.1 startup, a Rolldown import, `npm run build`, 47 application tests, 12 compatibility/security tests, and that dev probe. Linux, Windows, the other workflow versions, catalog rendering, and Studio were not part of that run.
+Published MiniOxygen does not include every hardening change evaluated by the
+earlier local fork. The retained regression tests and
+[`node-upstream-security.md`](node-upstream-security.md) record those upstream
+dev/preview-server gaps; they are not silently treated as fixed.
 
 Oxygen is available through Shopify's Hydrogen sales channel. A Shopify
 development store can be used for development, but its Oxygen URLs may require

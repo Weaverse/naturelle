@@ -1,18 +1,10 @@
 import assert from "node:assert/strict";
-import test, { type TestContext } from "node:test";
+import test from "node:test";
 import {
   createJudgemeReview,
   getJudgemeProduct,
   getJudgemeReviews,
 } from "../app/utils/judgeme.ts";
-
-function mockFetch(t: TestContext, implementation: typeof fetch) {
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = implementation;
-  t.after(() => {
-    globalThis.fetch = originalFetch;
-  });
-}
 
 const review = {
   id: "review-1",
@@ -127,7 +119,7 @@ test("returns an empty state when Judge.me fails or times out", async (t) => {
 
 test("resolves the review product from its handle on the server", async (t) => {
   let requestedUrl = "";
-  mockFetch(t, async (input) => {
+  t.mock.method(globalThis, "fetch", async (input) => {
     requestedUrl = String(input);
     return Response.json({
       product: { id: 123, external_id: 456, handle: "serum" },
@@ -149,7 +141,9 @@ test("resolves the review product from its handle on the server", async (t) => {
 });
 
 test("reports a missing Judge.me product", async (t) => {
-  mockFetch(t, async () => Response.json({}, { status: 404 }));
+  t.mock.method(globalThis, "fetch", async () =>
+    Response.json({}, { status: 404 }),
+  );
 
   const missingProduct = await getJudgemeProduct(
     "private-test-token",
@@ -160,7 +154,9 @@ test("reports a missing Judge.me product", async (t) => {
 });
 
 test("reports an unavailable Judge.me service", async (t) => {
-  mockFetch(t, async () => Response.json({}, { status: 503 }));
+  t.mock.method(globalThis, "fetch", async () =>
+    Response.json({}, { status: 503 }),
+  );
   const unavailableProduct = await getJudgemeProduct(
     "private-test-token",
     "shop.example",
@@ -171,7 +167,7 @@ test("reports an unavailable Judge.me service", async (t) => {
 
 test("creates a review with the server-resolved product id", async (t) => {
   let requestBody: Record<string, unknown> = {};
-  mockFetch(t, async (_input, init) => {
+  t.mock.method(globalThis, "fetch", async (_input, init) => {
     requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>;
     return new Response(null, { status: 201 });
   });

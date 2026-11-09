@@ -1,16 +1,13 @@
 name: Node compatibility
 
 on:
-  pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  node22:
+  compatibility:
     name: Node ${{ matrix.node }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -18,19 +15,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        # Exact pins cover the audited floor, boundary minors and released
-        # majors; 22.x exercises the latest released 22 patch.
-        node: [22.0.0, 22.x, 23.11.1, 24.22.2, 25.9.0, 26.13.0]
-        include:
-          # Exercise both sides of the runtime API and former engine boundaries.
-          - os: macos-latest
-            node: 22.7.0
-          - os: macos-latest
-            node: 22.8.0
-          - os: macos-latest
-            node: 22.11.0
-          - os: macos-latest
-            node: 22.12.0
+        # Required minimums and current patched releases in both supported majors.
+        node: [22.18.0, 22.x, 24.11.0, 24.x]
     env:
       SHOPIFY_CLI_NO_ANALYTICS: "1"
     steps:
@@ -43,8 +29,7 @@ jobs:
       - name: Use the audited npm version
         if: runner.os != 'Windows'
         run: npm install --global npm@10.9.8 --no-audit --no-fund
-      # Node 22.0.0 can pick up a broken preinstalled global npm shim on
-      # hosted Windows runners. Bootstrap with npm bundled beside node.exe.
+      # Bootstrap from the npm bundled beside node.exe on hosted Windows runners.
       - name: Use the audited npm version on Windows
         if: runner.os == 'Windows'
         shell: pwsh
@@ -52,14 +37,12 @@ jobs:
           $nodeDir = Split-Path (Get-Command node).Source
           & node (Join-Path $nodeDir 'node_modules/npm/bin/npm-cli.js') install --global npm@10.9.8 --no-audit --no-fund
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      # The committed lockfile accepts Node >=22.0.0 for packages whose
-      # published engines do not. --engine-strict guards that record.
       - name: Install from the committed lockfile
         run: npm ci --engine-strict --no-audit --no-fund
       - name: Verify the resolved dependency graph
-        run: npm ls @shopify/mini-oxygen body-parser undici vite esbuild framer-motion motion-dom motion-utils --all
-      - name: Verify the published CLI shim and Rolldown binding
-        run: node scripts/prepare-node22-runtime.mjs
+        run: npm ls @shopify/cli @shopify/mini-oxygen @graphql-codegen/cli body-parser undici vite rolldown esbuild framer-motion motion-dom motion-utils --all
+      - name: Verify the pinned local Shopify CLI
+        run: node -e "const assert = require('node:assert/strict'); const pinned = require('./package.json').devDependencies['@shopify/cli']; const resolved = require('./node_modules/@shopify/cli/package.json').version; console.log({pinned, resolved}); assert.equal(resolved, pinned);"
       - name: Generate GraphQL types
         run: npm run codegen
       - name: Check types
@@ -68,8 +51,6 @@ jobs:
         run: npm run i18n:check
       - name: Run unit tests
         run: npm test
-      - name: Check MiniOxygen security regressions
-        run: node --test tests/mini-oxygen-security.unit.test.mjs
       - name: Build storefront
         run: npm run build
       - name: Check dev startup and dependency optimization
@@ -77,11 +58,13 @@ jobs:
         env:
           NATURELLE_RUNTIME_LOG: ${{ runner.temp }}/naturelle-dev-runtime.log
         run: node scripts/check-dev-runtime.mjs
+      - name: Check MiniOxygen security regressions
+        run: node --test tests/mini-oxygen-security.unit.test.mjs
       - name: Preserve dev failure diagnostics
         if: ${{ failure() && steps.dev.outcome == 'failure' }}
         uses: actions/upload-artifact@v4
         with:
-          name: node22-dev-${{ matrix.os }}-${{ matrix.node }}
+          name: node-compat-dev-${{ matrix.os }}-${{ matrix.node }}
           path: ${{ runner.temp }}/naturelle-dev-runtime.log
           if-no-files-found: ignore
           retention-days: 7

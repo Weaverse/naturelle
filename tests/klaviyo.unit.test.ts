@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test, { type TestContext } from "node:test";
+import test from "node:test";
 import {
   getKlaviyoErrorLogContext,
   getKlaviyoUserError,
@@ -10,18 +10,10 @@ import {
   subscribeKlaviyoProfile,
 } from "../app/utils/klaviyo.server.ts";
 
-function mockFetch(t: TestContext, implementation: typeof fetch) {
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = implementation;
-  t.after(() => {
-    globalThis.fetch = originalFetch;
-  });
-}
-
 test("subscribes an email to marketing and the configured list", async (t) => {
   let capturedInput: RequestInfo | URL | undefined;
   let capturedInit: RequestInit | undefined;
-  mockFetch(t, async (input, init) => {
+  t.mock.method(globalThis, "fetch", async (input, init) => {
     capturedInput = input;
     capturedInit = init;
     return new Response(null, { status: 202 });

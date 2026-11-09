@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { createWriteStream } from "node:fs";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
@@ -25,15 +25,6 @@ const STOREFRONT_ENV_KEY =
 const credentialFreeEnv = Object.fromEntries(
   Object.entries(process.env).filter(([key]) => !STOREFRONT_ENV_KEY.test(key)),
 );
-
-const runtimeReady = spawnSync(
-  process.execPath,
-  ["scripts/prepare-node22-runtime.mjs"],
-  { stdio: "inherit" },
-);
-if (runtimeReady.status !== 0) {
-  process.exit(runtimeReady.status ?? 1);
-}
 
 const listener = createServer();
 listener.listen(0, "127.0.0.1");
@@ -138,6 +129,15 @@ async function writeSanitizedDiagnostics(sourceLogPath, outputDiagnosticsPath) {
   await writeFile(outputDiagnosticsPath, diagnostics, { mode: 0o600 });
 }
 
+async function fetchRuntimeStage(stage, url, timeout) {
+  console.log(`Runtime stage: ${stage}`);
+  try {
+    return await fetch(url, { signal: AbortSignal.timeout(timeout) });
+  } catch (cause) {
+    throw new Error(`Runtime stage failed: ${stage}`, { cause });
+  }
+}
+
 try {
   const base = `http://localhost:${port}`;
   const deadline = Date.now() + STARTUP_TIMEOUT_MS;
@@ -167,9 +167,11 @@ try {
   }
   assert.ok(ready, "Hydrogen dev did not serve the Vite client within 120s");
 
-  const entry = await fetch(`${base}/app/entry.client.tsx`, {
-    signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
-  });
+  const entry = await fetchRuntimeStage(
+    "client entry transform",
+    `${base}/app/entry.client.tsx`,
+    HTTP_TIMEOUT_MS,
+  );
   assert.equal(entry.status, 200, "Client entry failed to transform");
   const code = await entry.text();
   assert.match(
@@ -182,16 +184,20 @@ try {
     optimizedImport,
     "Client entry did not reference optimized dependencies",
   );
-  const dependency = await fetch(new URL(optimizedImport[1], base), {
-    signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
-  });
+  const dependency = await fetchRuntimeStage(
+    "optimized client dependency",
+    new URL(optimizedImport[1], base),
+    HTTP_TIMEOUT_MS,
+  );
   assert.equal(dependency.status, 200, "Optimized dependency failed to load");
   await dependency.arrayBuffer();
 
   // The first request compiles the full SSR graph, including on slower hosts.
-  const worker = await fetch(`${base}/__naturelle_runtime_probe`, {
-    signal: AbortSignal.timeout(FIRST_SSR_REQUEST_TIMEOUT_MS),
-  });
+  const worker = await fetchRuntimeStage(
+    "Oxygen worker/SSR entry",
+    `${base}/__naturelle_runtime_probe`,
+    FIRST_SSR_REQUEST_TIMEOUT_MS,
+  );
   assert.equal(worker.status, 200, "Oxygen worker/SSR entry failed to execute");
   assert.deepEqual(await worker.json(), {
     serverConfigurationGuard: true,

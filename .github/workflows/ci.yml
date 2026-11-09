@@ -25,19 +25,20 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.0.0
+          node-version: 22.18.0
           cache: npm
 
       - name: Use the audited npm version
         run: npm install --global npm@10.9.8 --no-audit --no-fund
 
-      # package-lock.json records >=22.0.0 where published engines exclude it.
-      # --engine-strict fails if those recorded ranges are reverted.
       - name: Install dependencies
         run: npm ci --engine-strict --no-audit --no-fund
 
       - name: Lint
         run: npm run biome
+
+      - name: Generate GraphQL types
+        run: npm run codegen
 
       - name: Typecheck
         run: npm run typecheck
@@ -45,9 +46,17 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Check translations
+        run: npm run i18n:check
+
       # Typecheck does not see bundler-level breakage: a bad dynamic import, a
       # client-only module pulled into the worker bundle, or a Vite plugin
       # misconfiguration all typecheck clean and fail at deploy. The build
       # needs no storefront credentials, so it runs unauthenticated here.
       - name: Build
         run: npm run build
+
+      # Keep upstream dev-server security gaps visible until the maintainer or
+      # upstream explicitly resolves them; do not weaken these regressions.
+      - name: Check MiniOxygen security regressions
+        run: node --test tests/mini-oxygen-security.unit.test.mjs
