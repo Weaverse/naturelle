@@ -16,6 +16,7 @@ import {
   type OverlayProps,
   overlayInputs,
 } from "~/components/overlay";
+import { layoutInputs } from "~/components/section";
 import { useAnimation } from "~/hooks/use-animation";
 
 const SECTION_HEIGHTS = {
@@ -59,7 +60,7 @@ export interface VideoBannerProps
 }
 
 let variants = cva(
-  "video-banner-content absolute inset-0 z-10 mx-auto flex max-w-[100vw] flex-col items-center justify-center [&_.paragraph]:mx-auto [&_.paragraph]:w-fit [&_.paragraph]:max-w-full",
+  "video-banner-content absolute inset-0 z-10 mx-auto flex max-w-[100vw] flex-col px-10 md:px-12 lg:px-20 [&_.paragraph]:mx-[unset] [&_.paragraph]:w-fit [&_.paragraph]:max-w-full",
   {
     variants: {
       gap: {
@@ -80,9 +81,37 @@ let variants = cva(
         56: "space-y-7 lg:space-y-14",
         60: "space-y-7 lg:space-y-[60px]",
       },
+      contentPosition: {
+        "top left":
+          "items-start justify-start [&_.paragraph]:[text-align:left]",
+        "top center":
+          "items-center justify-start [&_.paragraph]:[text-align:center]",
+        "top right":
+          "items-end justify-start [&_.paragraph]:[text-align:right]",
+        "center left":
+          "items-start justify-center [&_.paragraph]:[text-align:left]",
+        "center center":
+          "items-center justify-center [&_.paragraph]:[text-align:center]",
+        "center right":
+          "items-end justify-center [&_.paragraph]:[text-align:right]",
+        "bottom left":
+          "items-start justify-end [&_.paragraph]:[text-align:left]",
+        "bottom center":
+          "items-center justify-end [&_.paragraph]:[text-align:center]",
+        "bottom right":
+          "items-end justify-end [&_.paragraph]:[text-align:right]",
+      },
+      verticalPadding: {
+        none: "",
+        small: "py-4 md:py-6 lg:py-8",
+        medium: "py-20",
+        large: "py-12 md:py-24 lg:py-32",
+      },
     },
     defaultVariants: {
       gap: 20,
+      contentPosition: "center center",
+      verticalPadding: "medium",
     },
   },
 );
@@ -112,6 +141,8 @@ let VideoBanner = ({
     videoURL,
     videoURL2,
     gap,
+    contentPosition,
+    verticalPadding,
     height,
     heightOnDesktop,
     heightOnMobile,
@@ -213,7 +244,10 @@ let VideoBanner = ({
           overlayOpacity={overlayOpacity}
           className="z-0"
         />
-        <div ref={scope} className={clsx(variants({ gap }))}>
+        <div
+          ref={scope}
+          className={clsx(variants({ gap, contentPosition, verticalPadding }))}
+        >
           {children}
         </div>
       </div>
@@ -301,6 +335,13 @@ export const schema = createSchema({
           },
           defaultValue: 40,
         },
+        {
+          type: "position",
+          name: "contentPosition",
+          label: "Content position",
+          defaultValue: "center center",
+        },
+        ...layoutInputs.filter((input) => input.name === "verticalPadding"),
       ],
     },
     {
@@ -315,6 +356,8 @@ export const schema = createSchema({
     overlayOpacity: 40,
     height: "large",
     gap: 20,
+    contentPosition: "center center",
+    verticalPadding: "medium",
     children: [
       {
         type: "subheading",
