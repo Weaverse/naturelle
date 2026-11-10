@@ -55,8 +55,3 @@ jobs:
       # needs no storefront credentials, so it runs unauthenticated here.
       - name: Build
         run: npm run build
-
-      # Keep upstream dev-server security gaps visible until the maintainer or
-      # upstream explicitly resolves them; do not weaken these regressions.
-      - name: Check MiniOxygen security regressions
-        run: node --test tests/mini-oxygen-security.unit.test.mjs

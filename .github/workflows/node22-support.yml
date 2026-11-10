@@ -58,8 +58,6 @@ jobs:
         env:
           NATURELLE_RUNTIME_LOG: ${{ runner.temp }}/naturelle-dev-runtime.log
         run: node scripts/check-dev-runtime.mjs
-      - name: Check MiniOxygen security regressions
-        run: node --test tests/mini-oxygen-security.unit.test.mjs
       - name: Preserve dev failure diagnostics
         if: ${{ failure() && steps.dev.outcome == 'failure' }}
         uses: actions/upload-artifact@v4

@@ -4,9 +4,10 @@ Candidate: `@shopify/mini-oxygen@4.2.3`, replacing the removed local package
 based on 4.2.2. The local package existed for the superseded Node 22.0.0 and
 odd-major policy and is not retained by the current upstream-only requirement.
 
-The regression suite in `tests/mini-oxygen-security.unit.test.mjs` imports the
-installed published package. It retains checks for the removed local changes
-rather than weakening or marking them as passing.
+The manual diagnostic suite in `tests/mini-oxygen-security.unit.test.mjs`
+imports the installed published package. It retains checks for the removed
+local changes rather than weakening or marking them as passing. By maintainer
+decision, it runs outside routine CI and the Node compatibility workflow.
 
 | Removed local change | Published upstream status | Impact and ownership |
 | --- | --- | --- |

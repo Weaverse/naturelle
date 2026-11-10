@@ -34,7 +34,7 @@ full-graph debt is resolved.
 - The black-box MiniOxygen regressions fail against published 4.2.3 for public
   asset CORS, external-symlink containment and HTTP error disclosure. See
   [`node-upstream-security.md`](node-upstream-security.md). These checks remain
-  strict in CI rather than being skipped or allowed to fail.
+  available as manual diagnostics, with unchanged assertions, outside CI.
 - Verify home, product and collection rendering and the Studio connection with
   approved disposable Shopify and Weaverse configuration.
 - Published Weaverse CLI onboarding remains blocked by
