@@ -108,7 +108,7 @@ export default function Faqs({
         className={cn(
           "flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden",
           showImage
-            ? "py-10 md:h-150 md:py-20 lg:gap-10 lg:pl-16 lg:pr-10"
+            ? "pt-10 md:pt-20 lg:gap-10 lg:pl-16 lg:pr-10"
             : "mx-auto gap-4",
         )}
       >
@@ -125,7 +125,7 @@ export default function Faqs({
         <Accordion.Root
           type="single"
           collapsible
-          className="hiddenScroll flex min-h-0 flex-col gap-4 md:overflow-y-auto"
+          className="flex min-h-0 flex-col gap-4"
         >
           {children}
         </Accordion.Root>

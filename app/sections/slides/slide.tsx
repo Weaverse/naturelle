@@ -29,8 +29,8 @@ interface SlideProps extends HydrogenComponentProps {
 }
 
 let AlignImageClasses: Record<AlignImage, string> = {
-  left: "md:flex-row",
-  right: "md:flex-row-reverse",
+  left: "lg:flex-row",
+  right: "lg:flex-row-reverse",
 };
 
 const Slide = ({
@@ -65,36 +65,31 @@ const Slide = ({
   } as CSSProperties;
 
   return (
-    <div
-      ref={ref}
-      {...rest}
-      style={sectionStyle}
-      className="group h-auto md:h-full"
-    >
-      <div className="h-full w-full">
+    <div ref={ref} {...rest} style={sectionStyle} className="group">
+      <div className="w-full">
         <div
           className={clsx(
-            "flex h-full w-full flex-col items-center justify-center gap-5 lg:gap-5",
+            "flex w-full flex-col items-center gap-5 md:min-h-[calc(var(--section-height)-5rem)] md:items-stretch lg:gap-5",
             AlignImageClasses[imageAlignment],
           )}
         >
           <div
             data-motion="zoom-in"
-            className="flex aspect-square w-full flex-1 items-center justify-center overflow-hidden rounded-2xl md:h-full md:w-1/2"
+            className="relative flex aspect-[134/117] w-full items-center justify-center overflow-hidden rounded-2xl lg:aspect-auto lg:w-0 lg:min-w-0 lg:flex-1"
           >
             {backgroundImage ? (
               <Image
                 data={backgroundImage}
                 sizes="auto"
                 className={clsx(
-                  "w-full! h-full! object-cover",
+                  "absolute inset-0 w-full! h-full! object-cover",
                   enableImageAnimation
                     ? "group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
                     : "",
                 )}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
+              <div className="absolute inset-0 flex items-center justify-center bg-background-subtle-2">
                 <IconImageBlank
                   className="w-96 h-96 opacity-80"
                   viewBox="0 0 526 526"
@@ -102,7 +97,7 @@ const Slide = ({
               </div>
             )}
           </div>
-          <div className="relative flex aspect-square w-full flex-col items-center justify-center gap-8 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 md:h-full md:w-1/2 lg:px-16 lg:py-20">
+          <div className="relative flex w-full flex-col items-center justify-center gap-8 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 lg:w-0 lg:min-w-0 lg:flex-1 lg:px-16 lg:py-20">
             <span
               aria-hidden="true"
               className="absolute top-6 h-px w-16 bg-background-basic opacity-60"
@@ -111,7 +106,7 @@ const Slide = ({
               aria-hidden="true"
               className="absolute bottom-6 h-px w-16 bg-background-basic opacity-60"
             />
-            <div className="flex flex-[1_0_0] flex-col items-center justify-center gap-6">
+            <div className="flex w-full min-w-0 flex-[1_0_0] flex-col items-center justify-center gap-6">
               <div
                 data-motion="fade-up"
                 className="slide-icon flex size-16 shrink-0 items-center justify-center rounded-full border border-current text-(--navigation-background-color) lg:size-20"

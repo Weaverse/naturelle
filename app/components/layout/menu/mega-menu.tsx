@@ -74,7 +74,10 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                     >
                       <span className="text-animation">{title}</span>
                       {hasSubmenu && (
-                        <IconCaret direction="down" className="size-4" />
+                        <IconCaret
+                          direction="down"
+                          className="size-4 transition-none"
+                        />
                       )}
                     </span>
                   </Link>
