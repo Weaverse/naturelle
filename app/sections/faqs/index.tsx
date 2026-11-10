@@ -1,12 +1,16 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { Image } from "@shopify/hydrogen";
-import { createSchema, type WeaverseImage } from "@weaverse/hydrogen";
+import {
+  createSchema,
+  IMAGES_PLACEHOLDERS,
+  type WeaverseImage,
+} from "@weaverse/hydrogen";
 import type { CSSProperties, RefObject } from "react";
 import { backgroundInputs } from "~/components/background-image";
 import { Button } from "~/components/button";
-import { IconImageBlank } from "~/components/icon";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { cn } from "~/utils/cn";
+import { sectionImage } from "~/utils/section-placeholder";
 
 interface FaqsData {
   showImage?: boolean;
@@ -66,18 +70,16 @@ export default function Faqs({
             } as CSSProperties
           }
         >
-          {image ? (
-            <Image
-              data={image}
-              alt={imageAlt || image.altText || "Customer service"}
-              className="absolute inset-0 h-full w-full object-cover"
-              sizes="(min-width: 1024px) 42vw, 100vw"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-background-subtle-2">
-              <IconImageBlank className="size-48 opacity-60" />
-            </div>
-          )}
+          <Image
+            data={sectionImage(
+              image,
+              IMAGES_PLACEHOLDERS.image,
+              imageAlt || "Customer service",
+            )}
+            alt={imageAlt || image?.altText || "Customer service"}
+            className="absolute inset-0 h-full w-full object-cover"
+            sizes="(min-width: 1024px) 42vw, 100vw"
+          />
           <div className="absolute inset-0 bg-(--faq-image-background) opacity-30" />
           <div className="relative z-10 flex h-full min-h-[440px] flex-col items-center justify-center px-8 text-center text-text-inverse md:min-h-[560px] lg:min-h-[600px]">
             {cardEyebrow && (
@@ -212,36 +214,32 @@ export const schema = createSchema({
   ],
   childTypes: ["faq--item"],
   presets: {
+    image: IMAGES_PLACEHOLDERS.image,
     children: [
       {
         type: "faq--item",
-        question: "How do you protect my personal information?",
-        paragraph:
-          "Products are imported automatically from your Shopify admin. We estimate 2-3 hours for set-up. If you want to change the design of Naturelle, we estimate 3-5 hours for set-up.",
+        question: "Question 1",
+        paragraph: "Add an answer to this frequently asked question.",
       },
       {
         type: "faq--item",
-        question: "What information do you collect?",
-        paragraph:
-          "We collect only the information needed to process your orders, provide customer service, and improve your shopping experience.",
+        question: "Question 2",
+        paragraph: "Add an answer to this frequently asked question.",
       },
       {
         type: "faq--item",
-        question: "How is my information used?",
-        paragraph:
-          "Your information is used to fulfil orders, communicate with you, and provide relevant services and updates.",
+        question: "Question 3",
+        paragraph: "Add an answer to this frequently asked question.",
       },
       {
         type: "faq--item",
-        question: "Do you share my personal information?",
-        paragraph:
-          "We only share information with trusted service providers when required to operate our store and fulfil your orders.",
+        question: "Question 4",
+        paragraph: "Add an answer to this frequently asked question.",
       },
       {
         type: "faq--item",
-        question: "What are my privacy rights?",
-        paragraph:
-          "You may request access to, correction of, or deletion of your personal information, subject to applicable law.",
+        question: "Question 5",
+        paragraph: "Add an answer to this frequently asked question.",
       },
     ],
   },

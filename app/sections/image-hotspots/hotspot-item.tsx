@@ -5,6 +5,7 @@ import type {
 } from "@weaverse/hydrogen";
 import {
   createSchema,
+  IMAGES_PLACEHOLDERS,
   useChildInstances,
   useItemInstance,
   useParentInstance,
@@ -15,6 +16,7 @@ import { type RefObject, useContext } from "react";
 import { createPortal } from "react-dom";
 import type { ProductQuery } from "storefront-api.generated";
 import { IconCircle, IconHandBag, IconPlus, IconTag } from "~/components/icon";
+import { Image } from "~/components/image";
 import {
   getProductCardBadge,
   ProductCard,
@@ -53,6 +55,26 @@ const ICONS = {
   bag: IconHandBag,
   tag: IconTag,
 };
+
+function HotspotProductPlaceholder({ showPrice }: { showPrice: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <div className="relative z-10 mt-4 flex h-auto w-full max-w-[326px] flex-col gap-3 rounded-2xl bg-background p-3 lg:mt-10">
+      <Image
+        data={{
+          url: IMAGES_PLACEHOLDERS.product_1,
+          altText: t("product.exampleTitle"),
+        }}
+        sizes="326px"
+        className="aspect-square w-full rounded-xl object-cover"
+      />
+      <p className="font-heading text-lg text-text">
+        {t("product.exampleTitle")}
+      </p>
+      {showPrice && <p className="text-sm text-text">{t("product.price")}</p>}
+    </div>
+  );
+}
 
 let HotspotsItem = ({
   ref,
@@ -162,6 +184,9 @@ let HotspotsItem = ({
                 className="relative z-10 mt-4 h-auto max-w-[326px] lg:mt-10"
               />
             )}
+            {!loaderData?.product && (
+              <HotspotProductPlaceholder showPrice={showPrice} />
+            )}
             {paragraph && (
               <div
                 className="relative z-10 mt-6 max-w-100 text-center text-sm leading-relaxed text-text-inverse lg:mt-10 lg:text-base"
@@ -181,7 +206,7 @@ export const loader = async (args: ComponentLoaderArgs<HotspotsItemData>) => {
   let { weaverse, data } = args;
   let { storefront, env } = weaverse;
   let metafield = env.PRODUCT_CUSTOM_DATA_METAFIELD || "custom.details";
-  if (!data?.product) {
+  if (!data?.product?.handle?.trim()) {
     return null;
   }
   let productHandle = data.product.handle;
@@ -306,14 +331,13 @@ export const schema = createSchema({
           type: "text",
           name: "heading",
           label: "Heading",
-          defaultValue: "Care made naturally",
+          defaultValue: "Product heading",
         },
         {
           type: "richtext",
           name: "paragraph",
           label: "Paragraph below product",
-          defaultValue:
-            "Introduce the featured product and explain why it belongs in your pet's daily routine.",
+          defaultValue: "Add a description for this product.",
         },
         {
           type: "product",

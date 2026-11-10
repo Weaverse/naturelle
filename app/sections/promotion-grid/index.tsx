@@ -11,7 +11,6 @@ import { buttonVariants } from "~/components/button";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import { Section, type SectionProps } from "~/components/section";
-import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { COLLECTIONS_QUERY, type CollectionNode } from "~/sections/collections";
 import { cn } from "~/utils/cn";
 
@@ -31,14 +30,14 @@ export const loader = async ({
   data,
   weaverse,
 }: ComponentLoaderArgs<PromotionGridData>) => {
-  const ids = [data?.firstCollection, data?.secondCollection]
-    .filter((collection): collection is WeaverseCollection =>
-      Boolean(collection),
-    )
-    .map((collection) => `gid://shopify/Collection/${collection.id}`);
+  const selectedIds = [data?.firstCollection, data?.secondCollection].map(
+    (collection) =>
+      collection?.id ? `gid://shopify/Collection/${collection.id}` : null,
+  );
+  const ids = selectedIds.filter((id): id is string => Boolean(id));
 
   if (ids.length === 0) {
-    return { collections: [] };
+    return { collections: [null, null] };
   }
 
   const { country, language } = weaverse.storefront.i18n;
@@ -48,8 +47,16 @@ export const loader = async ({
     variables: { country, language, ids },
   });
 
+  const collectionsById = new Map(
+    nodes
+      .filter((node): node is CollectionNode => Boolean(node))
+      .map((node) => [node.id, node]),
+  );
+
   return {
-    collections: nodes.filter((node): node is CollectionNode => Boolean(node)),
+    collections: selectedIds.map((id) =>
+      id ? (collectionsById.get(id) ?? null) : null,
+    ),
   };
 };
 
@@ -58,10 +65,10 @@ type PromotionGridLoaderData = Awaited<ReturnType<typeof loader>>;
 const PLACEHOLDERS: CollectionNode[] = [
   {
     id: "gid://shopify/Collection/promotion-placeholder-1",
-    title: "The Ritual Collection",
-    handle: "all",
+    title: "Collection title",
+    handle: "",
     image: {
-      altText: "The Ritual Collection",
+      altText: "Collection image placeholder",
       width: 1600,
       height: 900,
       url: IMAGES_PLACEHOLDERS.collection_1,
@@ -69,10 +76,10 @@ const PLACEHOLDERS: CollectionNode[] = [
   },
   {
     id: "gid://shopify/Collection/promotion-placeholder-2",
-    title: "The Essentials Collection",
-    handle: "all",
+    title: "Collection title",
+    handle: "",
     image: {
-      altText: "The Essentials Collection",
+      altText: "Collection image placeholder",
       width: 1600,
       height: 900,
       url: IMAGES_PLACEHOLDERS.collection_2,
@@ -95,16 +102,13 @@ export default function PromotionGrid({
     children,
     ...rest
   } = props;
-  const isDesignMode = useWeaverseStudioCheck();
   const loadedCollections = loaderData?.collections ?? [];
-  const collections = isDesignMode
-    ? PLACEHOLDERS.map(
-        (placeholder, index) => loadedCollections[index] ?? placeholder,
-      )
-    : loadedCollections;
+  const collections = PLACEHOLDERS.map(
+    (placeholder, index) => loadedCollections[index] ?? placeholder,
+  );
   const headings = [
-    firstHeading ?? "Glow from within",
-    secondHeading ?? "Your best skin awaits",
+    firstHeading ?? "Promotion heading",
+    secondHeading ?? "Promotion heading",
   ];
 
   return (
@@ -116,20 +120,18 @@ export default function PromotionGrid({
       {collections.map((collection, index) => (
         <Link
           key={`${collection.id}-${index}`}
-          to={`/collections/${collection.handle}`}
+          to={collection.handle ? `/collections/${collection.handle}` : "#"}
           aria-label={t("navigation.viewCollection", {
             collection: collection.title,
           })}
           className="group relative aspect-video min-w-0 overflow-hidden rounded-2xl bg-background-subtle-2 text-text-inverse"
           data-motion="fade-up"
         >
-          {collection.image && (
-            <Image
-              data={collection.image}
-              sizes="(min-width: 49.125em) 50vw, 100vw"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          )}
+          <Image
+            data={collection.image ?? PLACEHOLDERS[index].image}
+            sizes="(min-width: 49.125em) 50vw, 100vw"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-9">
             <p className="text-center font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-inverse">
@@ -145,7 +147,7 @@ export default function PromotionGrid({
                 "mt-5 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
               )}
             >
-              {buttonText ?? "Explore Now"}
+              {buttonText ?? "Explore collection"}
             </span>
           </div>
         </Link>
@@ -176,27 +178,27 @@ export const schema = createSchema({
           type: "text",
           name: "firstHeading",
           label: "First heading",
-          defaultValue: "Glow from within",
+          defaultValue: "Promotion heading",
         },
         {
           type: "text",
           name: "secondHeading",
           label: "Second heading",
-          defaultValue: "Your best skin awaits",
+          defaultValue: "Promotion heading",
         },
         {
           type: "text",
           name: "buttonText",
           label: "Button text",
-          defaultValue: "Explore Now",
+          defaultValue: "Explore collection",
         },
       ],
     },
   ],
   presets: {
-    firstHeading: "Glow from within",
-    secondHeading: "Your best skin awaits",
-    buttonText: "Explore Now",
+    firstHeading: "Promotion heading",
+    secondHeading: "Promotion heading",
+    buttonText: "Explore collection",
     width: "full",
     verticalPadding: "none",
   },

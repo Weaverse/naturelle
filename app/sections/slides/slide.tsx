@@ -8,15 +8,12 @@ import {
 } from "@phosphor-icons/react";
 import { Image } from "@shopify/hydrogen";
 import type { HydrogenComponentProps, WeaverseImage } from "@weaverse/hydrogen";
-import { createSchema } from "@weaverse/hydrogen";
+import { createSchema, IMAGES_PLACEHOLDERS } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import { useSwiper } from "swiper/react";
-import {
-  IconArrowLeft,
-  IconArrowRight,
-  IconImageBlank,
-} from "~/components/icon";
+import { IconArrowLeft, IconArrowRight } from "~/components/icon";
+import { sectionImage } from "~/utils/section-placeholder";
 
 type AlignImage = "left" | "right";
 interface SlideProps extends HydrogenComponentProps {
@@ -29,8 +26,8 @@ interface SlideProps extends HydrogenComponentProps {
 }
 
 let AlignImageClasses: Record<AlignImage, string> = {
-  left: "lg:flex-row",
-  right: "lg:flex-row-reverse",
+  left: "md:flex-row",
+  right: "md:flex-row-reverse",
 };
 
 const Slide = ({
@@ -77,25 +74,20 @@ const Slide = ({
             data-motion="zoom-in"
             className="relative flex aspect-[134/117] w-full items-center justify-center overflow-hidden rounded-2xl lg:aspect-auto lg:w-0 lg:min-w-0 lg:flex-1"
           >
-            {backgroundImage ? (
-              <Image
-                data={backgroundImage}
-                sizes="auto"
-                className={clsx(
-                  "absolute inset-0 w-full! h-full! object-cover",
-                  enableImageAnimation
-                    ? "group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
-                    : "",
-                )}
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-background-subtle-2">
-                <IconImageBlank
-                  className="w-96 h-96 opacity-80"
-                  viewBox="0 0 526 526"
-                />
-              </div>
-            )}
+            <Image
+              data={sectionImage(
+                backgroundImage,
+                IMAGES_PLACEHOLDERS.image,
+                "Slide image placeholder",
+              )}
+              sizes="auto"
+              className={clsx(
+                "absolute inset-0 w-full! h-full! object-cover",
+                enableImageAnimation
+                  ? "group-hover:ease-in-out group-hover:scale-125 transition duration-1000"
+                  : "",
+              )}
+            />
           </div>
           <div className="relative flex w-full flex-col items-center justify-center gap-8 rounded-2xl bg-(--background-color) px-5 py-10 md:px-6 md:py-12 lg:w-0 lg:min-w-0 lg:flex-1 lg:px-16 lg:py-20">
             <span
@@ -211,6 +203,7 @@ export const schema = createSchema({
   ],
   childTypes: ["slides-heading", "slides-paragraph"],
   presets: {
+    backgroundImage: IMAGES_PLACEHOLDERS.image,
     children: [
       {
         type: "slides-heading",
@@ -218,8 +211,7 @@ export const schema = createSchema({
       },
       {
         type: "slides-paragraph",
-        content:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+        content: "Add a description for this slide.",
       },
     ],
   },

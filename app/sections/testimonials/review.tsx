@@ -150,7 +150,7 @@ export const schema = createSchema({
           type: "text",
           name: "reviewerName",
           label: "Name",
-          defaultValue: "Jane Doe",
+          defaultValue: "Customer name",
         },
         {
           type: "datepicker",
@@ -169,14 +169,13 @@ export const schema = createSchema({
           type: "text",
           name: "title",
           label: "Title",
-          defaultValue: "Amazing product",
+          defaultValue: "Review title",
         },
         {
           type: "textarea",
           name: "description",
           label: "Description",
-          defaultValue:
-            "This product exceeded my expectations and quickly became part of my daily routine.",
+          defaultValue: "Share a customer testimonial here.",
         },
         {
           type: "switch",
@@ -195,12 +194,11 @@ export const schema = createSchema({
     },
   ],
   presets: {
-    reviewerName: "Jane Doe",
+    reviewerName: "Customer name",
     reviewDate: Date.UTC(2025, 0, 15),
     rating: 5,
-    title: "Amazing product",
-    description:
-      "This product exceeded my expectations and quickly became part of my daily routine.",
+    title: "Review title",
+    description: "Share a customer testimonial here.",
     showVerifiedBuyer: true,
     verifiedBuyerText: "Verified Buyer",
   },

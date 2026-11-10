@@ -292,12 +292,12 @@ export const schema = createSchema({
         children: [
           {
             type: "subheading",
-            content: "Limited time offer",
+            content: "Slideshow subheading",
             color: "#fff",
           },
           {
             type: "heading",
-            content: "Spring / Summer 2024 Sale",
+            content: "Slideshow heading",
             color: "#fff",
             size: "scale",
             minSize: 16,
@@ -305,8 +305,7 @@ export const schema = createSchema({
           },
           {
             type: "paragraph",
-            content:
-              "It's hard to be nice if you don't feel comfortable. All the ready-to-wear and accessories you need for your next summer vacation is now up to 50% off.",
+            content: "Add a description for this slide.",
             color: "#fff",
           },
           {
@@ -334,12 +333,12 @@ export const schema = createSchema({
         children: [
           {
             type: "subheading",
-            content: "Exclusive offer",
+            content: "Slideshow subheading",
             color: "#fff",
           },
           {
             type: "heading",
-            content: "Autumn / Winter 2024 Sale",
+            content: "Slideshow heading",
             color: "#fff",
             size: "scale",
             minSize: 16,
@@ -347,8 +346,7 @@ export const schema = createSchema({
           },
           {
             type: "paragraph",
-            content:
-              "Stay warm and stylish with our winter collection. All the ready-to-wear and accessories you need for your next winter vacation is now up to 60% off.",
+            content: "Add a description for this slide.",
             color: "#fff",
           },
           {

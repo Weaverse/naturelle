@@ -6,7 +6,11 @@ import {
   type SeoConfig,
   useNonce,
 } from "@shopify/hydrogen";
-import { useTranslation, withWeaverse } from "@weaverse/hydrogen";
+import {
+  IMAGES_PLACEHOLDERS,
+  useTranslation,
+  withWeaverse,
+} from "@weaverse/hydrogen";
 import { Fragment } from "react";
 import {
   isRouteErrorResponse,
@@ -178,7 +182,7 @@ export function ErrorBoundary() {
     <div className="relative flex h-screen w-full items-center justify-center">
       <div className="absolute inset-0 h-full w-full">
         <Image
-          src="https://cdn.shopify.com/s/files/1/0652/5888/1081/files/d63681d5f3e2ce453bcac09ffead4d62.jpg?v=1720369103"
+          src={IMAGES_PLACEHOLDERS.banner_1}
           loading="lazy"
           className="h-full object-cover"
           sizes="auto"

@@ -6,6 +6,7 @@ import type {
 } from "@weaverse/hydrogen";
 import {
   createSchema,
+  IMAGES_PLACEHOLDERS,
   useChildInstances,
   useTranslation,
 } from "@weaverse/hydrogen";
@@ -13,7 +14,7 @@ import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
 import type { ProductQuery } from "storefront-api.generated";
 import { buttonVariants } from "~/components/button";
-import { IconCaret, IconImageBlank } from "~/components/icon";
+import { IconCaret } from "~/components/icon";
 import { Link } from "~/components/link";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { StarRating } from "~/components/star-rating";
@@ -23,6 +24,7 @@ import { useRootLoaderData } from "~/root";
 import { cn } from "~/utils/cn";
 import { DEFAULT_LOCALE } from "~/utils/const";
 import { formatNumber } from "~/utils/locale";
+import { sectionImage } from "~/utils/section-placeholder";
 import { isCompleteReview } from "./review";
 
 interface TestimonialsData {
@@ -44,7 +46,7 @@ export const loader = async ({
   weaverse,
   data,
 }: ComponentLoaderArgs<TestimonialsData>) => {
-  if (!data?.product) {
+  if (!data?.product?.handle?.trim()) {
     return null;
   }
 
@@ -90,6 +92,7 @@ const Testimonials = ({
   const locale = useRootLoaderData()?.selectedLocale ?? DEFAULT_LOCALE;
   let {
     backgroundImage,
+    product: _product,
     reviewsPosition,
     textColor,
     borderColor,
@@ -108,17 +111,15 @@ const Testimonials = ({
   let productImage = selectedProduct?.media.nodes.find(
     (media) => media.__typename === "MediaImage",
   )?.image;
-  const displayImage = productImage || backgroundImage;
+  const displayImage = sectionImage(
+    productImage ?? backgroundImage,
+    IMAGES_PLACEHOLDERS.product_1,
+    "Testimonial image placeholder",
+  );
   const isDesignMode = useWeaverseStudioCheck();
   const reviewInstances = useChildInstances().filter(
     ({ data }) => data.type === "testimonials--review",
   );
-
-  const canRenderTestimonials = Boolean(selectedProduct);
-
-  if (!canRenderTestimonials && !isDesignMode) {
-    return null;
-  }
 
   let productUrl = selectedProduct
     ? `/products/${selectedProduct.handle}`
@@ -180,53 +181,30 @@ const Testimonials = ({
       style={sectionStyle}
     >
       <div className="absolute inset-0 hidden md:block">
-        {displayImage ? (
-          <div className="grid h-full grid-cols-2">
-            <Image
-              data={displayImage}
-              className="h-full w-full object-cover"
-              sizes="50vw"
-            />
-            <Image
-              data={displayImage}
-              className="h-full w-full object-cover"
-              sizes="50vw"
-            />
-          </div>
-        ) : isDesignMode ? (
-          <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
-            <IconImageBlank
-              className="w-96 h-96 opacity-80"
-              viewBox="0 0 526 526"
-            />
-          </div>
-        ) : null}
-      </div>
-      {(displayImage || isDesignMode) && (
-        <div className="relative h-[834px] w-full md:hidden">
-          {displayImage ? (
-            <Image
-              data={displayImage}
-              className="h-full w-full object-cover"
-              sizes="100vw"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-background-subtle-2">
-              <IconImageBlank
-                className="h-64 w-64 opacity-80"
-                viewBox="0 0 526 526"
-              />
-            </div>
-          )}
+        <div className="grid h-full grid-cols-2">
+          <Image
+            data={displayImage}
+            className="h-full w-full object-cover"
+            sizes="50vw"
+          />
+          <Image
+            data={displayImage}
+            className="h-full w-full object-cover"
+            sizes="50vw"
+          />
         </div>
-      )}
+      </div>
+      <div className="relative h-[834px] w-full md:hidden">
+        <Image
+          data={displayImage}
+          className="h-full w-full object-cover"
+          sizes="100vw"
+        />
+      </div>
       {reviewsPosition === "right" && (
         <div
           className={cn(
-            "pointer-events-none z-20 grid grid-cols-1 md:grid-cols-2",
-            displayImage || isDesignMode
-              ? "absolute inset-x-0 top-0"
-              : "relative",
+            "pointer-events-none absolute inset-x-0 top-0 z-20 grid grid-cols-1 md:grid-cols-2",
           )}
         >
           <div className="flex flex-col items-start gap-3 p-5 pt-8 md:p-12 lg:p-[72px]">
@@ -284,15 +262,11 @@ const Testimonials = ({
           )}
         >
           <div className="absolute inset-0 md:hidden">
-            {displayImage ? (
-              <Image
-                data={displayImage}
-                className="h-full w-full object-cover"
-                sizes="100vw"
-              />
-            ) : isDesignMode ? (
-              <div className="h-full w-full bg-background-subtle-2" />
-            ) : null}
+            <Image
+              data={displayImage}
+              className="h-full w-full object-cover"
+              sizes="100vw"
+            />
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
           <div className="relative z-10 flex flex-col gap-10 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
@@ -430,40 +404,38 @@ export const schema = createSchema({
   ],
   childTypes: ["testimonials--review"],
   presets: {
+    backgroundImage: IMAGES_PLACEHOLDERS.product_1,
     reviewsPosition: "right",
     rating: 4.9,
     reviewCount: 3,
     children: [
       {
         type: "testimonials--review",
-        reviewerName: "Olivia Bennett",
+        reviewerName: "Customer name",
         reviewDate: Date.UTC(2026, 0, 18),
         rating: 4.9,
-        title: "A new daily favorite",
-        description:
-          "The texture feels beautiful and my skin looks noticeably calmer and more radiant.",
+        title: "Review title",
+        description: "Share a customer testimonial here.",
         showVerifiedBuyer: true,
         verifiedBuyerText: "Verified Buyer",
       },
       {
         type: "testimonials--review",
-        reviewerName: "Sophia Martinez",
+        reviewerName: "Customer name",
         reviewDate: Date.UTC(2026, 1, 3),
         rating: 5,
-        title: "Exactly what my routine needed",
-        description:
-          "Gentle, effective, and easy to use. I noticed a real difference after only a few weeks.",
+        title: "Review title",
+        description: "Share a customer testimonial here.",
         showVerifiedBuyer: true,
         verifiedBuyerText: "Verified Buyer",
       },
       {
         type: "testimonials--review",
-        reviewerName: "Emily Chen",
+        reviewerName: "Customer name",
         reviewDate: Date.UTC(2026, 1, 21),
         rating: 4.8,
-        title: "Beautiful results",
-        description:
-          "It layers perfectly with the rest of my skincare and leaves my skin feeling soft all day.",
+        title: "Review title",
+        description: "Share a customer testimonial here.",
         showVerifiedBuyer: true,
         verifiedBuyerText: "Verified Buyer",
       },
