@@ -23,7 +23,7 @@ composition and theme-setting values.
 
 Install or obtain:
 
-- Node.js **22.12.0 or newer** (`node --version`)
+- Node.js **22.18.0–22.x or 24.11.0–24.x** (`node --version`)
 - npm, included with Node.js (`npm --version`)
 - Git (`git --version`)
 - access to a Shopify store with the Hydrogen or Headless sales channel
@@ -32,7 +32,48 @@ Install or obtain:
   deploying
 
 Naturélle tracks `package-lock.json`; use npm and `npm ci` for reproducible
-installs. Do not add a second lockfile.
+installs. Do not delete the lockfile or add a second lockfile.
+
+### Node compatibility
+
+Naturélle supports Node.js `^22.18.0 || ^24.11.0`. Use the latest patched
+release in one of those two supported major lines. Earlier Node 22 minors,
+odd-numbered majors, Node 26, and future majors are not part of this support
+claim.
+
+The committed lockfile resolves published Shopify CLI, Vite, GraphQL Codegen,
+and MiniOxygen packages without postinstall source rewrites or local package
+forks. Run `npm ci --engine-strict` when verifying the graph. Do not delete the
+lockfile or add a second lockfile.
+
+The npm overrides keep `motion-dom@12.23.23` and `motion-utils@12.23.6` so a
+fresh resolution cannot recreate the incompatible Motion graph reported in
+the shared installer issue. The published Weaverse CLI must also preserve this
+lockfile during onboarding; that release-level work remains owned by
+`Weaverse/weaverse#565`.
+
+Routine pull-request CI uses Node 22.18.0 on Ubuntu. The separate Node
+compatibility workflow is manual and covers the exact 22.18.0 and 24.11.0
+minimums plus current patched releases on Linux, macOS, and Windows. Its dev
+probe checks Hydrogen startup, codegen, the client transform, dependency
+optimization, and Oxygen worker/SSR execution without merchant credentials.
+Catalog rendering and Studio behavior are verified separately with approved
+disposable configuration. See the
+[`node-support-validation.md`](node-support-validation.md) record for completed
+runs and outstanding acceptance.
+
+On 2026-11-08, a native macOS arm64 host using npm 10.9.8 completed the
+strict clean install, selected dependency-graph check, codegen, typecheck, 53
+application tests, translation check, production build, and credential-free
+dev/optimizer/Oxygen worker probe on exact Node 22.18.0 and 24.11.0. This is
+one-time migration evidence for those runtimes on macOS only. Linux and
+Windows remain pending until the manual compatibility workflow completes;
+catalog and Studio acceptance are not inferred from this probe.
+
+Published MiniOxygen does not include every hardening change evaluated by the
+earlier local fork. The retained regression tests and
+[`node-upstream-security.md`](node-upstream-security.md) record those upstream
+dev/preview-server gaps; they are not silently treated as fixed.
 
 Oxygen is available through Shopify's Hydrogen sales channel. A Shopify
 development store can be used for development, but its Oxygen URLs may require
