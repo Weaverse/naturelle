@@ -104,7 +104,7 @@ let variants = cva(
       verticalPadding: {
         none: "",
         small: "py-4 md:py-6 lg:py-8",
-        medium: "py-20",
+        medium: "py-8 md:py-12 lg:py-20",
         large: "py-12 md:py-24 lg:py-32",
       },
     },
