@@ -5,10 +5,10 @@ _Naturelle is a state-of-the-art Shopify theme, crafted specifically for beauty 
 ## Demo
 
 Explore Naturelle in action:
-- [Live store demo](https://naturelle.weaverse.dev)
+- [Live store demo](https://naturelle-shopify-hydrogen.weaverse.dev)
 - Experiment with customizations on the [Weaverse Playground](https://studio.weaverse.io/demo?theme=naturelle)
 
-![Naturelle demo](https://cdn.shopify.com/s/files/1/0838/0052/3057/files/beauty_preview_desktop.png)
+![Naturelle demo](https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Naturelle_demo_desktop.jpg?v=1794303118)
 
 ## Features
 
