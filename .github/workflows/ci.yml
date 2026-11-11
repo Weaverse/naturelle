@@ -25,20 +25,29 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version: 22.18.0
           cache: npm
 
+      - name: Use the audited npm version
+        run: npm install --global npm@10.9.8 --no-audit --no-fund
+
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --engine-strict --no-audit --no-fund
 
       - name: Lint
         run: npm run biome
+
+      - name: Generate GraphQL types
+        run: npm run codegen
 
       - name: Typecheck
         run: npm run typecheck
 
       - name: Unit tests
         run: npm test
+
+      - name: Check translations
+        run: npm run i18n:check
 
       # Typecheck does not see bundler-level breakage: a bad dynamic import, a
       # client-only module pulled into the worker bundle, or a Vite plugin

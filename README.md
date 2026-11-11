@@ -5,10 +5,10 @@ _Naturelle is a state-of-the-art Shopify theme, crafted specifically for beauty 
 ## Demo
 
 Explore Naturelle in action:
-- [Live store demo](https://naturelle.weaverse.dev)
+- [Live store demo](https://naturelle-shopify-hydrogen.weaverse.dev)
 - Experiment with customizations on the [Weaverse Playground](https://studio.weaverse.io/demo?theme=naturelle)
 
-![Naturelle demo](https://cdn.shopify.com/s/files/1/0838/0052/3057/files/beauty_preview_desktop.png)
+![Naturelle demo](https://cdn.shopify.com/s/files/1/0652/5888/1081/files/Naturelle_demo_desktop.jpg?v=1794303118)
 
 ## Features
 
@@ -34,7 +34,7 @@ variables, theme customization, Oxygen deployment, and troubleshooting, see
 the [Naturélle setup and usage guide](docs/setup.md).
 
 **Prerequisites:**
-- Ensure you have Node.js version 22.12.0 or higher installed.
+- Use Node.js `^22.18.0 || ^24.11.0`; prefer the latest patched release in one of those supported lines.
 - Use the npm package manager included with Node.js.
 
 **Setup overview:**

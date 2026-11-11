@@ -7,41 +7,48 @@ import { overlayInputs } from "~/components/overlay";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
 import { sectionImageSource } from "~/utils/section-placeholder";
 
-export interface SlideShowBannerItemProps
-  extends VariantProps<typeof variants> {
-  horizontalPadding: string;
-}
+export type SlideShowBannerItemProps = VariantProps<typeof variants> & {
+  /** @deprecated Hero images are always full width. */
+  horizontalPadding?: number;
+};
 
-let variants = cva("flex flex-col [&_.paragraph]:mx-[unset]", {
-  variants: {
-    height: {
-      small: "min-h-[40vh] lg:min-h-[50vh]",
-      medium: "min-h-[50vh] lg:min-h-[60vh]",
-      large: "min-h-[70vh] lg:min-h-[80vh]",
-      full: "h-screen-no-nav",
+let variants = cva(
+  "flex flex-col px-10 md:px-12 lg:px-20 [&_.paragraph]:mx-[unset]",
+  {
+    variants: {
+      height: {
+        small: "min-h-[40vh] lg:min-h-[50vh]",
+        medium: "min-h-[50vh] lg:min-h-[60vh]",
+        large: "min-h-[70vh] lg:min-h-[80vh]",
+        full: "h-screen-no-nav",
+      },
+      contentPosition: {
+        "top left":
+          "justify-start items-start [&_.paragraph]:[text-align:left]",
+        "top center":
+          "justify-start items-center [&_.paragraph]:[text-align:center]",
+        "top right":
+          "justify-start items-end [&_.paragraph]:[text-align:right]",
+        "center left":
+          "justify-center items-start [&_.paragraph]:[text-align:left]",
+        "center center":
+          "justify-center items-center [&_.paragraph]:[text-align:center]",
+        "center right":
+          "justify-center items-end [&_.paragraph]:[text-align:right]",
+        "bottom left":
+          "justify-end items-start [&_.paragraph]:[text-align:left]",
+        "bottom center":
+          "justify-end items-center [&_.paragraph]:[text-align:center]",
+        "bottom right":
+          "justify-end items-end [&_.paragraph]:[text-align:right]",
+      },
     },
-    contentPosition: {
-      "top left": "justify-start items-start [&_.paragraph]:[text-align:left]",
-      "top center":
-        "justify-start items-center [&_.paragraph]:[text-align:center]",
-      "top right": "justify-start items-end [&_.paragraph]:[text-align:right]",
-      "center left":
-        "justify-center items-start [&_.paragraph]:[text-align:left]",
-      "center center":
-        "justify-center items-center [&_.paragraph]:[text-align:center]",
-      "center right":
-        "justify-center items-end [&_.paragraph]:[text-align:right]",
-      "bottom left": "justify-end items-start [&_.paragraph]:[text-align:left]",
-      "bottom center":
-        "justify-end items-center [&_.paragraph]:[text-align:center]",
-      "bottom right": "justify-end items-end [&_.paragraph]:[text-align:right]",
+    defaultVariants: {
+      height: "large",
+      contentPosition: "center center",
     },
   },
-  defaultVariants: {
-    height: "large",
-    contentPosition: "center center",
-  },
-});
+);
 
 let HeaderImage = ({
   ref,
@@ -52,24 +59,25 @@ let HeaderImage = ({
     children,
     height,
     contentPosition,
-    horizontalPadding,
+    horizontalPadding: _horizontalPadding,
+    width: _width,
     borderRadius,
     backgroundImage,
     ...rest
   } = props;
   let style = {
-    "--horizontal-padding": `${horizontalPadding}px`,
     "--image-banner-border-radius": `${borderRadius || 0}px`,
   } as React.CSSProperties;
   return (
     <div
       ref={ref as RefObject<HTMLDivElement | null>}
       style={style}
-      className="mx-auto w-full max-w-page px-[var(--horizontal-padding)] pt-10 md:px-[calc(var(--horizontal-padding) * 1.5)] lg:px-[calc(var(--horizontal-padding) * 2)]"
+      className="w-full"
     >
       <div className="overflow-hidden rounded-none lg:rounded-(--image-banner-border-radius)">
         <Section
           {...rest}
+          width="full"
           backgroundImage={sectionImageSource(
             backgroundImage,
             IMAGES_PLACEHOLDERS.image,
@@ -88,7 +96,7 @@ export default HeaderImage;
 
 export const schema = createSchema({
   type: "image-banner",
-  title: "Image banner",
+  title: "Hero image",
   settings: [
     {
       group: "Image",
@@ -112,20 +120,7 @@ export const schema = createSchema({
           label: "Content position",
           defaultValue: "center center",
         },
-        ...layoutInputs,
-        {
-          type: "range",
-          name: "horizontalPadding",
-          label: "Horizontal padding",
-          configs: {
-            min: 0,
-            max: 100,
-            step: 1,
-            unit: "px",
-          },
-          defaultValue: 0,
-          helpText: "Set the horizontal padding value for the entire section",
-        },
+        ...layoutInputs.filter((input) => input.name !== "width"),
       ],
     },
     {

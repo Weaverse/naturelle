@@ -1,0 +1,68 @@
+name: Node compatibility
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Required minimums and current patched releases in both supported majors.
+        node: [22.18.0, 22.x, 24.11.0, 24.x]
+    env:
+      SHOPIFY_CLI_NO_ANALYTICS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      # Keep npm at the audited version used for the compatibility evidence.
+      - name: Use the audited npm version
+        if: runner.os != 'Windows'
+        run: npm install --global npm@10.9.8 --no-audit --no-fund
+      # Bootstrap from the npm bundled beside node.exe on hosted Windows runners.
+      - name: Use the audited npm version on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $nodeDir = Split-Path (Get-Command node).Source
+          & node (Join-Path $nodeDir 'node_modules/npm/bin/npm-cli.js') install --global npm@10.9.8 --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install from the committed lockfile
+        run: npm ci --engine-strict --no-audit --no-fund
+      - name: Verify the resolved dependency graph
+        run: npm ls @shopify/cli @shopify/mini-oxygen @graphql-codegen/cli body-parser undici vite rolldown esbuild framer-motion motion-dom motion-utils --all
+      - name: Verify the pinned local Shopify CLI
+        run: node -e "const assert = require('node:assert/strict'); const pinned = require('./package.json').devDependencies['@shopify/cli']; const resolved = require('./node_modules/@shopify/cli/package.json').version; console.log({pinned, resolved}); assert.equal(resolved, pinned);"
+      - name: Generate GraphQL types
+        run: npm run codegen
+      - name: Check types
+        run: npm run typecheck
+      - name: Check translations
+        run: npm run i18n:check
+      - name: Run unit tests
+        run: npm test
+      - name: Build storefront
+        run: npm run build
+      - name: Check dev startup and dependency optimization
+        id: dev
+        env:
+          NATURELLE_RUNTIME_LOG: ${{ runner.temp }}/naturelle-dev-runtime.log
+        run: node scripts/check-dev-runtime.mjs
+      - name: Preserve dev failure diagnostics
+        if: ${{ failure() && steps.dev.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-compat-dev-${{ matrix.os }}-${{ matrix.node }}
+          path: ${{ runner.temp }}/naturelle-dev-runtime.log
+          if-no-files-found: ignore
+          retention-days: 7

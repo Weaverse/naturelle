@@ -32,7 +32,7 @@ export function Logo({
             loading="eager"
             className={clsx(
               "main-logo",
-              "w-full h-full object-cover",
+              "h-full w-full object-cover transition-opacity duration-500 ease-in-out motion-reduce:transition-none",
               "group-hover/header:opacity-100",
             )}
           />
@@ -43,7 +43,7 @@ export function Logo({
             sizes="auto"
             className={clsx(
               "transparent-logo",
-              "absolute top-0 left-0 w-full h-full object-cover",
+              "absolute top-0 left-0 h-full w-full object-cover transition-opacity duration-500 ease-in-out motion-reduce:transition-none",
               "group-hover/header:opacity-0",
             )}
           />
