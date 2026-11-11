@@ -116,7 +116,7 @@ export function Header() {
       {hasAnnouncement && <ScrollingAnnouncement />}
       <header
         className={cn(
-          "top-0 z-40 w-full border-b transition duration-300 ease-in-out",
+          "top-0 z-40 w-full border-b transition-[background-color,border-color,color,box-shadow] duration-500 ease-in-out motion-reduce:transition-none",
           "border-border-subtle bg-header-bg text-(--color-header-text)",
           "hover:bg-header-bg",
           "hover:text-(--color-header-text)",
@@ -136,7 +136,7 @@ export function Header() {
       >
         <div
           className={cn(
-            "hidden h-[82px] w-full items-center justify-center px-6 py-4 desktop:flex lg:px-10",
+            "hidden h-[82px] w-full items-center justify-center px-6 py-4 transition-colors duration-500 ease-in-out motion-reduce:transition-none desktop:flex lg:px-10",
             showTransparentHeader
               ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text) group-has-[[data-header-menu-content]]/header:bg-background-subtle-1 group-has-[[data-header-menu-content]]/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",
@@ -183,7 +183,7 @@ export function Header() {
         <div
           data-header-menu-row
           className={cn(
-            "z-40 flex h-nav items-center justify-center gap-2.5",
+            "z-40 flex h-nav items-center justify-center gap-2.5 transition-colors duration-500 ease-in-out motion-reduce:transition-none",
             showTransparentHeader
               ? "bg-transparent"
               : "bg-header-bg desktop:bg-transparent",

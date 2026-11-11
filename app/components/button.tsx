@@ -22,7 +22,7 @@ const buttonVariants = cva(
         icon: "h-10 w-10",
       },
       shape: {
-        default: "rounded-md",
+        default: "rounded-xl",
         round: "rounded-full",
         customs: "rounded-[var(--radius)]",
       },
