@@ -48,7 +48,6 @@ export function Header() {
   let { headerMenu } = useShopMenu();
   const settings = useThemeSettings();
   const {
-    typeMenuHeader,
     enableTrialShipping,
     announcementMessage1,
     announcementMessage2,
@@ -190,18 +189,14 @@ export function Header() {
             variants({ width: headerWidth, padding: headerWidth }),
           )}
         >
-          {typeMenuHeader === "drawer" ? (
-            <HeaderMenuDrawer menu={headerMenu} />
-          ) : (
-            <HeaderMenuDrawer
-              menu={headerMenu}
-              className="block desktop:hidden"
-            />
-          )}
+          <HeaderMenuDrawer
+            menu={headerMenu}
+            className="block desktop:hidden"
+          />
           <div className="shrink-0">
             <Logo className="z-30 flex py-1 sm:py-2.5 justify-start desktop:hidden" />
           </div>
-          {typeMenuHeader === "mega" && <MegaMenu menu={headerMenu} />}
+          <MegaMenu menu={headerMenu} />
           <div className="z-30 flex min-w-0 flex-1 items-center justify-end gap-2 desktop:hidden">
             <AccountLink />
             <CartDrawerTrigger />

@@ -44,6 +44,9 @@ export default ImageWithText;
 export const schema = createSchema({
   type: "image-with-text",
   title: "Image with text",
+  enabledOn: {
+    groups: ["body"],
+  },
   settings: [
     {
       group: "Layout",
