@@ -51,7 +51,7 @@ let fontSizeVariants = cva("", {
 let variants = cva("heading", {
   variants: {
     size: {
-      default: "",
+      default: "text-[24px] leading-[130%]",
       custom: "",
       scale: "text-scale",
     },
@@ -139,7 +139,7 @@ const Blogs = ({
     >
       <div className="container flex flex-col gap-10 px-5 py-20 md:px-6 lg:gap-16 lg:px-0">
         {children}
-        <div className="grid grid-cols-2 gap-(--blog-card-gap) desktop:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-(--blog-card-gap) desktop:grid-cols-4">
           {res?.map((idx) => (
             <Link
               key={idx.id}
@@ -171,7 +171,7 @@ const Blogs = ({
 
                   <Tag
                     className={cn(
-                      "line-clamp-3 flex-1",
+                      "line-clamp-3 flex-1 font-heading tracking-normal text-text",
                       size === "custom" &&
                         fontSizeVariants({ mobileSize, desktopSize }),
                       variants({ size, weight }),
