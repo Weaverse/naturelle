@@ -213,7 +213,8 @@ let SingleProduct = ({
                 <div data-motion="fade-up">
                   <Quantity
                     value={quantity}
-                    isDisabled={isLoading}
+                    max={selectedVariant.quantityAvailable}
+                    isDisabled={isLoading || !selectedVariant.availableForSale}
                     onChange={setQuantity}
                   />
                 </div>
