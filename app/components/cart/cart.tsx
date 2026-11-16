@@ -316,7 +316,7 @@ function CartLineItem({
           to={lineItemUrl}
           prefetch="intent"
           onClick={onClose}
-          className="size-26 shrink-0 self-start overflow-hidden rounded-sm"
+          className="size-26 shrink-0 self-start overflow-hidden rounded-sm bg-background-subtle-1"
         >
           <Image
             alt={merchandise.product.title}
