@@ -192,16 +192,88 @@
   to { transform: translate(var(--drawer-slide-x), var(--drawer-slide-y)); }
 }
 
-/* Reserve the scrollbar gutter once; Radix must not add a second gap. */
-@supports (scrollbar-gutter: stable) {
-  html {
-    scrollbar-gutter: stable;
+@layer utilities {
+  body,
+  button,
+  input,
+  select,
+  textarea {
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    font-size: var(--body-base-size);
+    letter-spacing: var(--body-base-spacing);
+    line-height: var(--body-base-line-height);
+    text-rendering: optimizeSpeed;
   }
 
-  html body[data-scroll-locked] {
-    --removed-body-scroll-bar-size: 0px !important;
-    margin-right: 0 !important;
-    padding-right: 0 !important;
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    letter-spacing: var(--heading-base-spacing);
+    line-height: var(--heading-base-line-height);
+  }
+
+  /* Mobile sizes */
+  h1,
+  .h1 {
+    font-size: calc(var(--heading-base-size) * 0.85);
+  }
+  h2,
+  .h2 {
+    font-size: calc(var(--heading-base-size) * 0.63);
+  }
+  h3,
+  .h3 {
+    font-size: calc(var(--heading-base-size) * 0.57);
+  }
+  h4,
+  .h4 {
+    font-size: calc(var(--heading-base-size) * 0.55);
+  }
+  h5,
+  .h5 {
+    font-size: calc(var(--heading-base-size) * 0.44);
+  }
+  h6,
+  .h6 {
+    font-size: calc(var(--heading-base-size) * 0.37);
+  }
+
+  /* Desktop sizes */
+  @media (min-width: 32em) {
+    h1,
+    .h1 {
+      font-size: var(--heading-base-size);
+    }
+    h2,
+    .h2 {
+      font-size: calc(var(--heading-base-size) * 0.828125);
+    }
+    h3,
+    .h3 {
+      font-size: calc(var(--heading-base-size) * 0.6875);
+    }
+    h4,
+    .h4 {
+      font-size: calc(var(--heading-base-size) * 0.578125);
+    }
+    h5,
+    .h5 {
+      font-size: calc(var(--heading-base-size) * 0.484375);
+    }
+    h6,
+    .h6 {
+      font-size: calc(var(--heading-base-size) * 0.40625);
+    }
   }
 }
 
@@ -214,7 +286,6 @@
     font-family: var(--font-body);
     background-color: var(--color-background);
     color: var(--color-text-primary);
-    -webkit-font-smoothing: antialiased;
   }
 
   button,

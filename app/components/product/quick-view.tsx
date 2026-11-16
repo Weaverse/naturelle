@@ -124,9 +124,7 @@ export function QuickView({
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
-                <h2 className="md:pr-8 font-heading text-3xl font-normal leading-tight md:text-4xl">
-                  {product.title}
-                </h2>
+                <h2 className="h3 font-heading font-normal">{product.title}</h2>
                 <p className="text-sm text-text-subtle">
                   {t("product.vendor")}{" "}
                   <span className="text-text-primary">{product.vendor}</span>

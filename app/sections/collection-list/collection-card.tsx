@@ -54,7 +54,7 @@ export function CollectionCard({
         </div>
       </div>
       <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md">
-        <h6 className="text-center font-heading text-[26px] leading-[110%] font-normal text-text-inverse group-hover:underline">
+        <h6 className="text-center font-heading leading-[110%] font-normal text-text-inverse group-hover:underline">
           {collection.title}
         </h6>
       </div>
