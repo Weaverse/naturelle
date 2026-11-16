@@ -110,7 +110,7 @@ function AddressPopup({
       className="relative z-50"
     >
       <div className="fixed inset-0 flex w-screen items-center justify-center bg-black/60 p-4">
-        <Dialog.Panel className="w-full max-w-[446px] space-y-4 border bg-white p-6">
+        <Dialog.Panel className="w-full max-w-[446px] space-y-4 rounded-xl border bg-white p-6">
           <div className="flex items-center justify-between">
             <Dialog.Title>{title}</Dialog.Title>
             <button
