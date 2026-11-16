@@ -297,7 +297,8 @@ let ProductInformation = ({
               <div className="grid grid-cols-[auto_1fr] gap-2.5 sm:w-(--width-button)">
                 <ProductQuantityInput
                   value={quantity}
-                  disabled={isLoading}
+                  max={selectedVariant.quantityAvailable}
+                  disabled={isLoading || !selectedVariant.availableForSale}
                   onChange={setQuantity}
                 />
                 <div data-motion="fade-up">

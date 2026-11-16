@@ -185,8 +185,9 @@ export function QuickView({
 
             <div className="grid grid-cols-[auto_1fr] gap-2">
               <ProductQuantityInput
-                disabled={isLoading}
+                disabled={isLoading || !selectedVariant.availableForSale}
                 value={quantity}
+                max={selectedVariant.quantityAvailable}
                 onChange={setQuantity}
               />
               <AddToCartButton
