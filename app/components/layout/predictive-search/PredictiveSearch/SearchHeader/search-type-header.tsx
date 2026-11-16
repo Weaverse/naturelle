@@ -13,13 +13,14 @@ interface PredictiveSearchProps {
   // Predictive search props
   isOpen?: boolean;
   inline?: boolean;
+  isClosing?: boolean;
   onClose?: () => void;
 }
 
 export function SearchTypeHeader(props: PredictiveSearchProps) {
   const { t } = useTranslation();
   const searchPath = usePrefixPathWithLocale("/search");
-  let { isOpen, inline = false, onClose } = props;
+  let { isOpen, inline = false, isClosing = false, onClose } = props;
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -63,7 +64,9 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
         className={cn(
           "predictive-search-form",
           inline &&
-            "predictive-search-form--inline animate-search-reveal motion-reduce:animate-none",
+            (isClosing
+              ? "predictive-search-form--inline animate-search-conceal motion-reduce:animate-none"
+              : "predictive-search-form--inline animate-search-reveal motion-reduce:animate-none"),
         )}
       >
         {({ fetchResults, inputRef }) => (
@@ -83,7 +86,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               className={cn(
                 "w-full rounded-xl border-2",
                 inline
-                  ? "max-w-[436px] border border-border bg-background-basic px-3 py-3.5 text-base text-text-subtle"
+                  ? "h-[56px] max-w-[436px] border border-border bg-background-basic px-3 py-0 text-base text-text-subtle"
                   : "md:w-96 lg:w-[560px]",
               )}
               type="search"
@@ -124,7 +127,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
         )}
       </PredictiveSearchForm>
       {((inline && isOpen !== false) || (!inline && isOpen)) && (
-        <SearchTypeHeaderResults inline={inline} />
+        <SearchTypeHeaderResults inline={inline} isClosing={isClosing} />
       )}
     </div>
   );
