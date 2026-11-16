@@ -73,7 +73,7 @@ export default function HeroStory({
             </div>
           )}
 
-          <h2 className="font-heading text-[40px] leading-[1.1] font-normal text-text md:text-5xl desktop:max-w-120 desktop:text-[56px]">
+          <h2 className="h3 font-heading font-normal text-text desktop:max-w-120 desktop:!text-[56px]">
             {heading}
           </h2>
 

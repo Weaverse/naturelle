@@ -194,7 +194,7 @@ let ProductInformation = ({
                 <div className="flex flex-col gap-4 sm:gap-5">
                   <h1
                     data-motion="fade-up"
-                    className="font-heading text-3xl font-normal leading-tight tracking-tight md:text-4xl"
+                    className="h3 font-heading font-normal"
                   >
                     {title}
                   </h1>

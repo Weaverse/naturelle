@@ -172,7 +172,7 @@ export default function ProductGridList({
                     {collectionEyebrow}
                   </p>
                 )}
-                <h3 className="max-w-md text-center font-heading text-[44px] leading-[110%] font-normal text-text-inverse">
+                <h3 className="max-w-md text-center font-heading leading-[110%] font-normal text-text-inverse">
                   {collectionHeading || collectionTitle}
                 </h3>
               </div>
