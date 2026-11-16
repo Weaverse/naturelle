@@ -2,13 +2,19 @@ import {
   createSchema,
   type HydrogenComponentProps,
   IMAGES_PLACEHOLDERS,
-  isBrowser,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
 import type { CSSProperties, RefObject } from "react";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import { Image } from "~/components/image";
 import {
@@ -120,18 +126,28 @@ let variants = cva(
 // react-player v3 is ESM-only and lazy-loads individual players internally.
 const ReactPlayer = lazy(() => import("react-player"));
 
-function getPlayerSize(id: string) {
-  if (isBrowser) {
-    let section = document.querySelector(`[data-wv-id="${id}"]`);
-    if (section) {
-      let rect = section.getBoundingClientRect();
-      let aspectRatio = rect.width / rect.height;
-      if (aspectRatio < 16 / 9) {
-        return { width: "auto", height: "100vh" };
-      }
-    }
+type PlayerSize = {
+  width: number | string;
+  height: number | string;
+};
+
+function getPlayerSize(section: HTMLElement | null): PlayerSize {
+  if (!section) {
+    return { width: "100%", height: "100%" };
   }
-  return { width: "100%", height: "auto" };
+
+  let rect = section.getBoundingClientRect();
+  if (!(rect.width && rect.height)) {
+    return { width: "100%", height: "100%" };
+  }
+
+  let sourceRatio = 16 / 9;
+  let width = Math.max(rect.width, rect.height * sourceRatio);
+
+  return {
+    width: Math.ceil(width),
+    height: Math.ceil(width / sourceRatio),
+  };
 }
 
 let VideoBanner = ({
@@ -155,8 +171,11 @@ let VideoBanner = ({
     ...rest
   } = props;
 
-  let id = rest["data-wv-id"];
-  let [size, setSize] = useState(() => getPlayerSize(id));
+  let sectionRef = useRef<HTMLElement | null>(null);
+  let [size, setSize] = useState<PlayerSize>({
+    width: "100%",
+    height: "100%",
+  });
 
   let desktopHeight =
     SECTION_HEIGHTS[height]?.desktop || `${heightOnDesktop}px`;
@@ -173,7 +192,8 @@ let VideoBanner = ({
 
   // Use `useCallback` so we don't recreate the function on each render
   let setRefs = useCallback(
-    (node: HTMLElement) => {
+    (node: HTMLElement | null) => {
+      sectionRef.current = node;
       // Ref's from useRef needs to have the node assigned to `current`
       if (ref) {
         Object.assign(ref, { current: node });
@@ -185,15 +205,23 @@ let VideoBanner = ({
   );
 
   useEffect(() => {
-    function handleResize() {
-      setSize(getPlayerSize(id));
+    let section = sectionRef.current;
+    if (!section) {
+      return;
     }
-    handleResize();
-    window.addEventListener("resize", handleResize);
+
+    function updatePlayerSize() {
+      setSize(getPlayerSize(section));
+    }
+
+    updatePlayerSize();
+    let resizeObserver = new ResizeObserver(updatePlayerSize);
+    resizeObserver.observe(section);
+
     return () => {
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
     };
-  }, [id]);
+  }, []);
 
   const [scope] = useAnimation(ref);
 
@@ -201,56 +229,50 @@ let VideoBanner = ({
     <section
       ref={setRefs}
       {...rest}
-      className="h-full w-full overflow-hidden"
+      className="relative isolate h-(--mobile-height) w-full overflow-hidden sm:h-(--desktop-height)"
       style={sectionStyle}
     >
-      <div
-        className={clsx(
-          "relative flex items-center justify-center overflow-hidden",
-          "h-(--mobile-height) sm:h-(--desktop-height)",
-          "w-[max(var(--mobile-height)/9*16,100vw)] sm:w-[max(var(--desktop-height)/9*16,100vw)]",
-          "translate-x-[min(0px,calc((var(--mobile-height)/9*16-100vw)/-2))] sm:translate-x-[min(0px,calc((var(--desktop-height)/9*16-100vw)/-2))]",
-        )}
-      >
-        {inView && videoSource ? (
-          <Suspense
-            fallback={<div className="w-full h-full bg-background"></div>}
+      {inView && videoSource ? (
+        <Suspense fallback={<div className="absolute inset-0 bg-background" />}>
+          <div
+            className="absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2"
+            style={size}
           >
             <ReactPlayer
               src={videoSource}
               loop={true}
-              width={size.width}
-              height={size.height}
+              width="100%"
+              height="100%"
               controls={false}
-              className="aspect-video"
+              className="h-full w-full [&_iframe]:h-full [&_iframe]:w-full [&_video]:h-full [&_video]:w-full [&_video]:object-cover"
               playing
               muted
               playsInline
             />
-          </Suspense>
-        ) : (
-          <Image
-            data={{
-              url: IMAGES_PLACEHOLDERS.banner_1,
-              altText: "Video placeholder",
-            }}
-            sizes="100vw"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        )}
-        <Overlay
-          enableOverlay={enableOverlay}
-          overlayColor={overlayColor}
-          overlayColorHover={overlayColorHover}
-          overlayOpacity={overlayOpacity}
-          className="z-0"
+          </div>
+        </Suspense>
+      ) : (
+        <Image
+          data={{
+            url: IMAGES_PLACEHOLDERS.banner_1,
+            altText: "Video placeholder",
+          }}
+          sizes="100vw"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div
-          ref={scope}
-          className={clsx(variants({ gap, contentPosition, verticalPadding }))}
-        >
-          {children}
-        </div>
+      )}
+      <Overlay
+        enableOverlay={enableOverlay}
+        overlayColor={overlayColor}
+        overlayColorHover={overlayColorHover}
+        overlayOpacity={overlayOpacity}
+        className="z-0"
+      />
+      <div
+        ref={scope}
+        className={clsx(variants({ gap, contentPosition, verticalPadding }))}
+      >
+        {children}
       </div>
     </section>
   );
