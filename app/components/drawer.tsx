@@ -192,7 +192,7 @@ export function Drawer({
               >
                 <IconArrowLeft
                   viewBox="0 0 32 32"
-                  className="h-8 w-8 opacity-50"
+                  className="size-6 opacity-50"
                   aria-hidden="true"
                 />
               </button>

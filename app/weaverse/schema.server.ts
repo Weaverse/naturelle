@@ -728,12 +728,6 @@ export const themeSchema: HydrogenThemeSchema = {
         },
         {
           type: "color",
-          label: "Announcement border",
-          name: "topbarBorderColor",
-          defaultValue: "#443E40",
-        },
-        {
-          type: "color",
           label: "Announcement background",
           name: "topbarBgColor",
           defaultValue: "#703748",
