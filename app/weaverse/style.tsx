@@ -13,7 +13,6 @@ export function GlobalStyle() {
       colorTextSubtle,
       colorTextInverse,
       topbarTextColor,
-      topbarBorderColor,
       topbarBgColor,
       headerText,
       transparentHeader,
@@ -82,7 +81,6 @@ export function GlobalStyle() {
               --color-text-inverse: ${colorTextInverse};
 
               --color-topbar-text: ${topbarTextColor};
-              --color-topbar-border: ${topbarBorderColor};
               --color-topbar-bg: ${topbarBgColor};
 
               --color-header-text: ${headerText};

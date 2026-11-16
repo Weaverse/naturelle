@@ -40,6 +40,12 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 ({ resource }) =>
                   !resource?.image && resource?.__typename !== "Article",
               );
+            let handleTextHover = () => {
+              const nextValue = hasSubmenu ? id : "";
+              setValue((currentValue) =>
+                currentValue === nextValue ? currentValue : nextValue,
+              );
+            };
             return (
               <Menubar.Menu key={id} value={id}>
                 <Menubar.Trigger
@@ -68,9 +74,8 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                   >
                     <span
                       className="inline-flex items-center gap-1"
-                      onMouseEnter={() => {
-                        setValue(hasSubmenu ? id : "");
-                      }}
+                      onMouseEnter={handleTextHover}
+                      onMouseMove={handleTextHover}
                     >
                       <span className="text-animation">{title}</span>
                       {hasSubmenu && (

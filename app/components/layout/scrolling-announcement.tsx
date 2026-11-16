@@ -208,11 +208,10 @@ export function ScrollingAnnouncement() {
       className={clsx(
         "flex h-(--height-bar) items-center justify-center overflow-hidden",
         "bg-(--color-topbar-bg) text-(--color-topbar-text)",
-        "border-b border-(--color-topbar-border)",
         stickyAnnouncementBar ? "sticky top-0 z-50" : "relative z-40",
       )}
     >
-      <div className="mx-auto flex w-full max-w-page shrink-0 items-center justify-center gap-(--announcement-gap) border-b-(--color-topbar-border) px-8 py-2.5">
+      <div className="mx-auto flex w-full max-w-page shrink-0 items-center justify-center gap-(--announcement-gap) px-8 py-2.5">
         <button
           type="button"
           onClick={goPrev}
