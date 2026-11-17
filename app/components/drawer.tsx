@@ -13,7 +13,7 @@ const panelVariants = cva(
     variants: {
       isForm: {
         cart: "gap-3 overflow-hidden px-6 pt-3 pb-6",
-        filter: "hiddenScroll gap-4 overflow-y-auto px-6 pt-3 pb-6",
+        filter: "hiddenScroll gap-4 overflow-y-auto pb-6",
         menu: "",
         search: "",
       },
@@ -26,7 +26,7 @@ const headerVariants = cva("sticky top-0 flex shrink-0 items-center", {
   variants: {
     isForm: {
       cart: "h-auto py-2.5",
-      filter: "h-11",
+      filter: "z-10 h-14 bg-(--color-drawer-bg) px-6 py-3",
       menu: "h-nav px-6",
       search: "h-nav",
     },
@@ -107,7 +107,7 @@ export function Drawer({
             ? "max-w-none"
             : "max-w-[430px]"
           : isForm === "filter"
-            ? "max-w-none md:max-w-[400px]"
+            ? "max-w-[430px]"
             : "max-w-96";
 
   return (
@@ -203,6 +203,8 @@ export function Drawer({
           </header>
           {isForm === "cart" ? (
             <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          ) : isForm === "filter" ? (
+            <div className="px-6">{children}</div>
           ) : (
             children
           )}
