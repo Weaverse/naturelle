@@ -42,6 +42,9 @@
     "loadPrevious": "Load previous products",
     "loadMore": "Load more",
     "empty": "No results found",
+    "noResultsFor": "No results found for “{{term}}”",
+    "emptyPrompt": "Search by product name, material, room, or collection.",
+    "noResultsHint": "Check the spelling or use a different word or phrase.",
     "clearFilters": "Clear filters"
   },
   "product": {
