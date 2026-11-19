@@ -197,6 +197,7 @@ const LAYOUT_QUERY = `#graphql
       __typename
       ... on Collection {
         title
+        description
         image {
           altText
           height
