@@ -7,6 +7,8 @@ import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
+  isBrandCardMenu,
+  isCollectionMenu,
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
@@ -28,17 +30,11 @@ const mobileContentVariants = {
 
 function menuType(item: SingleMenuItem): MenuType {
   const level = getMaxDepth(item);
-  if (item.items.some((child) => child.resource?.__typename === "Collection")) {
-    return "collection";
-  }
-  if (
-    item.items.length &&
-    item.items.every(
-      (child) =>
-        child.resource?.image && child.resource.__typename !== "Collection",
-    )
-  ) {
+  if (isBrandCardMenu(item)) {
     return "brand";
+  }
+  if (isCollectionMenu(item)) {
+    return "collection";
   }
   if (level > 2) {
     return "multi";
@@ -389,18 +385,20 @@ function BrandContent({
           to={item.to}
           prefetch="intent"
           onClick={onNavigate}
-          className="group/brand relative mb-3 block h-[188px] max-h-[188px] w-full shrink-0 overflow-hidden rounded-xl bg-background-subtle-1 last:mb-0"
+          className="group/brand mb-3 block w-full shrink-0 overflow-hidden rounded-2xl bg-background-subtle-1 last:mb-0"
         >
-          <Image
-            data={item.resource?.image}
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="h-full w-full object-cover transition-transform duration-300 group-hover/brand:scale-[1.03]"
-            width={600}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-          <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse">
-            {item.resource?.title || item.title}
-          </span>
+          <div className="relative h-65 overflow-hidden">
+            <Image
+              data={item.resource?.image}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover/brand:scale-[1.03]"
+              width={600}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+            <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-['Cormorant'] text-[22px] leading-[110%] font-semibold tracking-[-0.44px] text-text-inverse">
+              {item.resource?.title || item.title}
+            </span>
+          </div>
         </Link>
       ))}
     </div>

@@ -32,6 +32,7 @@ export type EnhancedMenu = Pick<MenuFragment, "id"> & {
 export interface SingleMenuItem {
   id: string;
   title: string;
+  type?: string;
   items: SingleMenuItem[];
   to: string;
   resource?: {
@@ -53,4 +54,26 @@ export interface SingleMenuItem {
       width: number;
     };
   };
+}
+
+export function isBrandCardMenu(item: {
+  items?: SingleMenuItem[];
+  type?: string;
+}) {
+  const children = item.items ?? [];
+
+  return (
+    item.type === "CATALOG" &&
+    children.length > 0 &&
+    children.every(
+      (child) =>
+        Boolean(child.resource?.image) && (child.items?.length ?? 0) === 0,
+    )
+  );
+}
+
+export function isCollectionMenu(item: Pick<SingleMenuItem, "items">) {
+  return item.items.some(
+    (child) => child.resource?.__typename === "Collection",
+  );
 }
