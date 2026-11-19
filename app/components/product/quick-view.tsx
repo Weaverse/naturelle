@@ -121,59 +121,60 @@ export function QuickView({
         </div>
 
         <div className="min-w-0 py-1 md:pr-1">
-          <div className="flex flex-col gap-5">
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4">
-                <h2 className="h3 font-heading font-normal">{product.title}</h2>
-                <p className="text-sm text-text-subtle">
-                  {t("product.vendor")}{" "}
-                  <span className="text-text-primary">{product.vendor}</span>
-                  {product.productType && (
-                    <>
-                      <span className="px-2">|</span>
-                      {t("product.type")}{" "}
-                      <span className="text-text-primary">
-                        {product.productType}
-                      </span>
-                    </>
-                  )}
-                </p>
-                <ProductCardRating
-                  ratingValue={product.rating?.value}
-                  ratingCountValue={product.ratingCount?.value}
-                  detailed
-                />
-                <div className="flex items-center gap-3 font-heading text-xl">
-                  {theme.showSalePrice && selectedVariant.compareAtPrice && (
-                    <Money
-                      withoutTrailingZeros
-                      data={selectedVariant.compareAtPrice}
-                      className="text-text-subtle line-through"
-                    />
-                  )}
-                  <SellingPlanPrice
-                    price={selectedVariant.price}
-                    sellingPlan={selectedSellingPlan}
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5">
+              <h2 className="h3 font-heading font-normal md:pr-8">
+                {product.title}
+              </h2>
+              <p className="text-sm text-text-subtle">
+                {t("product.vendor")}{" "}
+                <span className="text-text-primary">{product.vendor}</span>
+                {product.productType && (
+                  <>
+                    <span className="px-2">|</span>
+                    {t("product.type")}{" "}
+                    <span className="text-text-primary">
+                      {product.productType}
+                    </span>
+                  </>
+                )}
+              </p>
+              <ProductCardRating
+                ratingValue={product.rating?.value}
+                ratingCountValue={product.ratingCount?.value}
+                detailed
+              />
+              <div className="flex items-center gap-3 font-heading text-xl">
+                {theme.showSalePrice && selectedVariant.compareAtPrice && (
+                  <Money
+                    withoutTrailingZeros
+                    data={selectedVariant.compareAtPrice}
+                    className="text-text-subtle line-through"
                   />
-                </div>
-                <LowStockIndicator
-                  availableForSale={selectedVariant.availableForSale}
-                  stock={selectedVariant.quantityAvailable}
-                  threshold={theme.lowStockThreshold}
-                  progressColor={theme.lowStockProgressColor}
-                  className="space-y-2"
-                  messageClassName="text-sm"
+                )}
+                <SellingPlanPrice
+                  price={selectedVariant.price}
+                  sellingPlan={selectedSellingPlan}
                 />
               </div>
-
-              <ProductVariants
-                product={product}
-                selectedVariant={selectedVariant}
-                onSelectedVariantChange={handleSelectedVariantChange}
-                variants={variants}
-                hideUnavailableOptions={theme.hideUnavailableOptions}
-              />
             </div>
+
+            <LowStockIndicator
+              availableForSale={selectedVariant.availableForSale}
+              stock={selectedVariant.quantityAvailable}
+              threshold={theme.lowStockThreshold}
+              progressColor={theme.lowStockProgressColor}
+              className="space-y-2"
+              messageClassName="text-sm"
+            />
+
+            <ProductVariants
+              product={product}
+              selectedVariant={selectedVariant}
+              onSelectedVariantChange={handleSelectedVariantChange}
+              variants={variants}
+              hideUnavailableOptions={theme.hideUnavailableOptions}
+            />
 
             <SellingPlanSelector
               sellingPlanGroups={product.sellingPlanGroups}
@@ -183,45 +184,49 @@ export function QuickView({
               disabled={isLoading}
             />
 
-            <div className="grid grid-cols-[auto_1fr] gap-2">
-              <ProductQuantityInput
-                disabled={isLoading || !selectedVariant.availableForSale}
-                value={quantity}
-                max={selectedVariant.quantityAvailable}
-                onChange={setQuantity}
-              />
-              <AddToCartButton
-                disabled={
-                  !selectedVariant.availableForSale ||
-                  (product.requiresSellingPlan && !selectedSellingPlanId)
-                }
-                lines={[
-                  {
-                    merchandiseId: selectedVariant.id,
-                    quantity,
-                    selectedVariant,
-                    sellingPlanId: selectedSellingPlanId || undefined,
-                  },
-                ]}
-                onFetchingStateChange={(state) =>
-                  setIsLoading(state !== "idle")
-                }
-                onAdded={onClose}
-                data-test="add-to-cart"
-                className="w-full rounded-xl"
-              >
-                <span>{atcText}</span>
-              </AddToCartButton>
-            </div>
+            <div className="flex flex-col gap-3 py-4">
+              <div className="grid grid-cols-[auto_1fr] gap-2.5">
+                <ProductQuantityInput
+                  disabled={isLoading || !selectedVariant.availableForSale}
+                  value={quantity}
+                  max={selectedVariant.quantityAvailable}
+                  onChange={setQuantity}
+                />
+                <AddToCartButton
+                  disabled={
+                    !selectedVariant.availableForSale ||
+                    (product.requiresSellingPlan && !selectedSellingPlanId)
+                  }
+                  lines={[
+                    {
+                      merchandiseId: selectedVariant.id,
+                      quantity,
+                      selectedVariant,
+                      sellingPlanId: selectedSellingPlanId || undefined,
+                    },
+                  ]}
+                  onFetchingStateChange={(state) =>
+                    setIsLoading(state !== "idle")
+                  }
+                  onAdded={onClose}
+                  data-test="add-to-cart"
+                  className="w-full rounded-xl"
+                >
+                  <span>{atcText}</span>
+                </AddToCartButton>
+              </div>
 
-            {selectedVariant.availableForSale && !selectedSellingPlanId && (
-              <ShopPayButton
-                key={selectedVariant.id}
-                width="100%"
-                variantIdsAndQuantities={[{ id: selectedVariant.id, quantity }]}
-                storeDomain={storeDomain}
-              />
-            )}
+              {selectedVariant.availableForSale && !selectedSellingPlanId && (
+                <ShopPayButton
+                  key={selectedVariant.id}
+                  width="100%"
+                  variantIdsAndQuantities={[
+                    { id: selectedVariant.id, quantity },
+                  ]}
+                  storeDomain={storeDomain}
+                />
+              )}
+            </div>
 
             <BackInStockForm
               variantId={selectedVariant.id}
@@ -229,7 +234,7 @@ export function QuickView({
             />
 
             {(theme.showShippingPolicy || theme.showRefundPolicy) && (
-              <div className="flex flex-col gap-3 py-2 text-sm text-text-subtle">
+              <div className="flex flex-col gap-3 text-sm text-text-subtle">
                 {theme.showShippingPolicy && shop.shippingPolicy?.handle && (
                   <Link
                     to={`/policies/${shop.shippingPolicy.handle}`}
