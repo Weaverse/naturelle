@@ -23,8 +23,7 @@ interface PromotionGridData {
 }
 
 interface PromotionGridProps
-  extends SectionProps<PromotionGridLoaderData>,
-    PromotionGridData {}
+  extends SectionProps<PromotionGridLoaderData>, PromotionGridData {}
 
 export const loader = async ({
   data,

@@ -20,7 +20,8 @@ export type BackgroundProps = BackgroundImageProps & {
 };
 
 export interface SectionProps<T = any>
-  extends Omit<VariantProps<typeof variants>, "padding">,
+  extends
+    Omit<VariantProps<typeof variants>, "padding">,
     Omit<HydrogenComponentProps<T>, "children">,
     Omit<HTMLAttributes<HTMLElement>, "children">,
     Partial<BackgroundProps>,

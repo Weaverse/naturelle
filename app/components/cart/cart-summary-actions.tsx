@@ -292,9 +292,9 @@ export function GiftCardDialog({
   const submitted = Boolean(code && fetcher.state === "idle" && fetcher.data);
   const success = Boolean(
     submitted &&
-      appliedGiftCards?.find((gc) =>
-        code.toLowerCase().endsWith(gc.lastCharacters),
-      ),
+    appliedGiftCards?.find((gc) =>
+      code.toLowerCase().endsWith(gc.lastCharacters),
+    ),
   );
   const error = submitted && !success;
 

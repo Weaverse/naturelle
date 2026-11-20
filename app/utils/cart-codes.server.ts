@@ -80,11 +80,11 @@ export async function applyCartCode<Result extends CartCodeResult>(
     const giftCardResult = await cart.addGiftCardCodes([giftCardCode]);
     const codeApplied = Boolean(
       !hasCartCodeErrors(giftCardResult) &&
-        giftCardResult.cart?.appliedGiftCards?.some(
-          (card) =>
-            !previousGiftCardIds.has(card.id) ||
-            matchingPreviousGiftCardIds.has(card.id),
-        ),
+      giftCardResult.cart?.appliedGiftCards?.some(
+        (card) =>
+          !previousGiftCardIds.has(card.id) ||
+          matchingPreviousGiftCardIds.has(card.id),
+      ),
     );
 
     if (

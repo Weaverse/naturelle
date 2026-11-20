@@ -6,8 +6,9 @@ import { cn } from "~/utils/cn";
 
 export type CheckboxShape = "square" | "circle";
 
-interface CheckboxProps
-  extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
+interface CheckboxProps extends React.ComponentPropsWithoutRef<
+  typeof CheckboxPrimitive.Root
+> {
   controlClassName?: string;
   label?: React.ReactNode;
   shape?: CheckboxShape;

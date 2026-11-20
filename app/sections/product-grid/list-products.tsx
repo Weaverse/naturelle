@@ -40,7 +40,8 @@ interface CollectionData {
 }
 
 interface ProductGridListProps
-  extends HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
+  extends
+    HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
     ProductGridListData {}
 
 const PRODUCT_GRID_QUERY = `#graphql

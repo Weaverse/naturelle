@@ -32,8 +32,9 @@ declare global {
 declare module "react-router" {
   import type { Storefront as StorefrontBase } from "@shopify/hydrogen";
 
-  interface AppLoadContext
-    extends Awaited<ReturnType<typeof createHydrogenRouterContext>> {
+  interface AppLoadContext extends Awaited<
+    ReturnType<typeof createHydrogenRouterContext>
+  > {
     // to change context type, change the return of createHydrogenRouterContext() instead
     storefront: Omit<StorefrontBase, "i18n"> & {
       i18n: I18nLocale;

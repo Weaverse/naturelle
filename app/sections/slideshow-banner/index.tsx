@@ -30,7 +30,8 @@ let variants = cva("group [&_.swiper]:h-full", {
 });
 
 export interface SlideshowProps
-  extends VariantProps<typeof variants>,
+  extends
+    VariantProps<typeof variants>,
     SlideshowArrowsProps,
     SlideshowDotsProps,
     HydrogenComponentProps {

@@ -39,10 +39,10 @@
     "clean": "rm -rf dist node_modules .shopify .react-router",
     "e2e": "npx playwright test",
     "e2e:ui": "npx playwright test --ui",
-    "biome": "biome check",
-    "biome:fix": "biome check --write",
-    "format": "biome format --write",
-    "format:check": "biome format",
+    "check": "vp check .",
+    "check:fix": "vp check --fix .",
+    "format": "vp fmt --write .",
+    "format:check": "vp fmt --check .",
     "i18n:check": "node scripts/check-translations.mjs",
     "locale:check": "node --test tests/locale.unit.test.ts"
   },
@@ -92,7 +92,6 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.8",
     "@playwright/test": "1.62.1",
     "@shopify/cli": "4.6.1",
     "@shopify/hydrogen-codegen": "0.3.3",
@@ -102,10 +101,10 @@
     "@total-typescript/ts-reset": "0.6.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
-    "@weaverse/biome": "5.8.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
-    "vite": "8.2.1"
+    "vite": "8.2.1",
+    "vite-plus": "1.7.0"
   },
   "engines": {
     "node": "^22.18.0 || ^24.11.0"

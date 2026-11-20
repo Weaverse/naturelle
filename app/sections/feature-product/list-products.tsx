@@ -35,7 +35,8 @@ type FeaturedProductsData = {
 };
 
 interface FeaturedProductsProps
-  extends SlideshowArrowsProps,
+  extends
+    SlideshowArrowsProps,
     HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
     FeaturedProductsData {}
 
