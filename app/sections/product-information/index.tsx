@@ -143,9 +143,8 @@ let ProductInformation = ({
       >
         <div
           className={clsx(
-            "grid grid-cols-1 items-start gap-8 md:grid-cols-2",
-            "md:gap-12",
-            "md:grid-cols-[1fr_clamp(360px,45%,480px)]",
+            "grid grid-cols-1 items-start gap-8",
+            "md:grid-cols-[minmax(0,3fr)_minmax(360px,2fr)] md:gap-12",
           )}
         >
           <div className="min-w-0 flex flex-col gap-10">
@@ -189,104 +188,102 @@ let ProductInformation = ({
               } as React.CSSProperties
             }
           >
-            <div className="flex flex-col justify-start gap-4 lg:gap-6">
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-4 sm:gap-5">
-                  <h1
+            <div className="flex flex-col justify-start gap-6">
+              <div className="flex flex-col gap-4 sm:gap-5">
+                <h1
+                  data-motion="fade-up"
+                  className="h3 font-heading font-normal"
+                >
+                  {title}
+                </h1>
+                {((showVendor && vendor) || product.productType) && (
+                  <Text
                     data-motion="fade-up"
-                    className="font-heading text-3xl font-normal leading-tight tracking-tight md:text-4xl"
+                    className="flex flex-wrap items-center gap-3 text-base font-semibold leading-[1.6] tracking-[-0.01em] text-text-subtle"
                   >
-                    {title}
-                  </h1>
-                  {((showVendor && vendor) || product.productType) && (
-                    <Text
-                      data-motion="fade-up"
-                      className="flex flex-wrap items-center gap-3 text-base font-semibold leading-[1.6] tracking-[-0.01em] text-text-subtle"
-                    >
-                      {showVendor && vendor && (
-                        <span>
-                          {t("product.vendor")} {vendor}
-                        </span>
-                      )}
-                      {product.productType && (
-                        <>
-                          {showVendor && vendor && (
-                            <span
-                              aria-hidden="true"
-                              className="h-4 w-px bg-border-subtle"
-                            />
-                          )}
-                          <span>
-                            {t("product.type")} {product.productType}
-                          </span>
-                        </>
-                      )}
-                    </Text>
-                  )}
-                  {judgemeReviews.reviewNumber > 0 && (
-                    <div
-                      data-motion="fade-up"
-                      className="flex items-center gap-3 text-base leading-none"
-                    >
-                      <StarRating
-                        rating={judgemeReviews.rating}
-                        className="h-5 [&>svg]:size-5"
-                      />
+                    {showVendor && vendor && (
                       <span>
-                        {judgemeReviews.rating.toFixed(1)}/5.0 (
-                        {judgemeReviews.reviewNumber === 1
-                          ? t("reviews.count", {
-                              count: formatNumber(
-                                judgemeReviews.reviewNumber,
-                                locale,
-                              ),
-                            })
-                          : t("reviews.count_other", {
-                              count: formatNumber(
-                                judgemeReviews.reviewNumber,
-                                locale,
-                              ),
-                            })}
-                        )
+                        {t("product.vendor")} {vendor}
                       </span>
-                    </div>
-                  )}
-                  {children}
+                    )}
+                    {product.productType && (
+                      <>
+                        {showVendor && vendor && (
+                          <span
+                            aria-hidden="true"
+                            className="h-4 w-px bg-border-subtle"
+                          />
+                        )}
+                        <span>
+                          {t("product.type")} {product.productType}
+                        </span>
+                      </>
+                    )}
+                  </Text>
+                )}
+                {judgemeReviews.reviewNumber > 0 && (
                   <div
                     data-motion="fade-up"
-                    className="flex gap-3 font-heading text-xl/[1.1] font-medium md:text-2xl/[1.1] lg:text-3xl/[1.1]"
+                    className="flex items-center gap-3 text-base leading-none"
                   >
-                    {showSalePrice && selectedVariant?.compareAtPrice && (
-                      <Money
-                        withoutTrailingZeros
-                        data={selectedVariant.compareAtPrice}
-                        className="text-text-subtle line-through"
-                      />
-                    )}
-
-                    {selectedVariant ? (
-                      <SellingPlanPrice
-                        price={selectedVariant.price}
-                        sellingPlan={selectedSellingPlan}
-                      />
-                    ) : null}
+                    <StarRating
+                      rating={judgemeReviews.rating}
+                      className="h-5 [&>svg]:size-5"
+                    />
+                    <span>
+                      {judgemeReviews.rating.toFixed(1)}/5.0 (
+                      {judgemeReviews.reviewNumber === 1
+                        ? t("reviews.count", {
+                            count: formatNumber(
+                              judgemeReviews.reviewNumber,
+                              locale,
+                            ),
+                          })
+                        : t("reviews.count_other", {
+                            count: formatNumber(
+                              judgemeReviews.reviewNumber,
+                              locale,
+                            ),
+                          })}
+                      )
+                    </span>
                   </div>
-                  <LowStockIndicator
-                    availableForSale={selectedVariant.availableForSale}
-                    stock={selectedVariant.quantityAvailable}
-                    threshold={theme.lowStockThreshold}
-                    progressColor={theme.lowStockProgressColor}
-                  />
-                </div>
-                <ProductVariants
-                  product={product}
-                  selectedVariant={selectedVariant}
-                  onSelectedVariantChange={handleSelectedVariantChange}
-                  variants={variants}
-                  hideUnavailableOptions={hideUnavailableOptions}
+                )}
+                {children}
+                <div
                   data-motion="fade-up"
-                />
+                  className="flex gap-3 font-heading text-xl/[1.1] font-medium md:text-2xl/[1.1] lg:text-3xl/[1.1]"
+                >
+                  {showSalePrice && selectedVariant?.compareAtPrice && (
+                    <Money
+                      withoutTrailingZeros
+                      data={selectedVariant.compareAtPrice}
+                      className="text-text-subtle line-through"
+                    />
+                  )}
+
+                  {selectedVariant ? (
+                    <SellingPlanPrice
+                      price={selectedVariant.price}
+                      sellingPlan={selectedSellingPlan}
+                    />
+                  ) : null}
+                </div>
               </div>
+              <LowStockIndicator
+                availableForSale={selectedVariant.availableForSale}
+                stock={selectedVariant.quantityAvailable}
+                threshold={theme.lowStockThreshold}
+                progressColor={theme.lowStockProgressColor}
+              />
+              <ProductVariants
+                product={product}
+                selectedVariant={selectedVariant}
+                onSelectedVariantChange={handleSelectedVariantChange}
+                variants={variants}
+                hideUnavailableOptions={hideUnavailableOptions}
+                data-motion="fade-up"
+              />
               <SellingPlanSelector
                 sellingPlanGroups={product.sellingPlanGroups}
                 selectedSellingPlanId={selectedSellingPlanId}
@@ -294,56 +291,61 @@ let ProductInformation = ({
                 requiresSellingPlan={product.requiresSellingPlan}
                 disabled={isLoading}
               />
-              <div className="grid grid-cols-[auto_1fr] gap-2.5 sm:w-(--width-button)">
-                <ProductQuantityInput
-                  value={quantity}
-                  disabled={isLoading}
-                  onChange={setQuantity}
-                />
-                <div data-motion="fade-up">
-                  <AddToCartButton
-                    disabled={
-                      !selectedVariant?.availableForSale ||
-                      (product.requiresSellingPlan && !selectedSellingPlanId)
-                    }
-                    lines={[
-                      {
-                        merchandiseId: selectedVariant?.id,
-                        quantity,
-                        selectedVariant,
-                        sellingPlanId: selectedSellingPlanId || undefined,
-                      },
-                    ]}
-                    onFetchingStateChange={(state) =>
-                      setIsLoading(state === "submitting")
-                    }
-                    variant="primary"
-                    data-test="add-to-cart"
-                    className="w-full rounded-xl"
-                  >
-                    <span> {atcText}</span>
-                  </AddToCartButton>
-                </div>
-              </div>
-              {selectedVariant?.availableForSale && !selectedSellingPlanId && (
-                <div data-motion="fade-up" className="sm:w-(--width-button)">
-                  <ShopPayButton
-                    width="100%"
-                    variantIdsAndQuantities={[
-                      { id: selectedVariant?.id, quantity },
-                    ]}
-                    storeDomain={storeDomain}
-                    data-motion="fade-up"
+              <div className="flex flex-col gap-4 py-4">
+                <div className="grid grid-cols-[auto_1fr] gap-2.5 sm:w-(--width-button)">
+                  <ProductQuantityInput
+                    value={quantity}
+                    disabled={isLoading}
+                    onChange={setQuantity}
                   />
+                  <div data-motion="fade-up">
+                    <AddToCartButton
+                      disabled={
+                        !selectedVariant?.availableForSale ||
+                        (product.requiresSellingPlan && !selectedSellingPlanId)
+                      }
+                      lines={[
+                        {
+                          merchandiseId: selectedVariant?.id,
+                          quantity,
+                          selectedVariant,
+                          sellingPlanId: selectedSellingPlanId || undefined,
+                        },
+                      ]}
+                      onFetchingStateChange={(state) =>
+                        setIsLoading(state !== "idle")
+                      }
+                      variant="primary"
+                      data-test="add-to-cart"
+                      className="w-full rounded-xl"
+                    >
+                      <span>{atcText}</span>
+                    </AddToCartButton>
+                  </div>
                 </div>
-              )}
+                {selectedVariant?.availableForSale &&
+                  !selectedSellingPlanId && (
+                    <div
+                      data-motion="fade-up"
+                      className="sm:w-(--width-button)"
+                    >
+                      <ShopPayButton
+                        width="100%"
+                        variantIdsAndQuantities={[
+                          { id: selectedVariant?.id, quantity },
+                        ]}
+                        storeDomain={storeDomain}
+                      />
+                    </div>
+                  )}
+              </div>
               <BackInStockForm
                 variantId={selectedVariant?.id}
                 availableForSale={selectedVariant?.availableForSale}
                 enabled={showBackInStockForm}
               />
               {(showShippingPolicy || showRefundPolicy) && (
-                <div className="flex flex-col gap-3 py-2 text-base leading-[1.6] text-text-primary">
+                <div className="flex flex-col gap-3 text-base leading-[1.6] text-text-primary">
                   {showShippingPolicy && shippingPolicy?.handle && (
                     <Link
                       to={`/policies/${shippingPolicy.handle}`}

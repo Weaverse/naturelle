@@ -8,6 +8,7 @@ import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
   getMaxDepth,
+  isBrandCardMenu,
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
@@ -40,6 +41,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                 ({ resource }) =>
                   !resource?.image && resource?.__typename !== "Article",
               );
+            let hasBrandCards = isBrandCardMenu(menuItem);
             return (
               <Menubar.Menu key={id} value={id}>
                 <Menubar.Trigger
@@ -91,7 +93,9 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                       "data-[state=closed]:pointer-events-none motion-reduce:animate-none",
                       !value &&
                         "data-[state=closed]:animate-fade-out data-[state=closed]:[--fade-out-duration:300ms]",
-                      isDropdown ? "py-6" : "w-screen py-8",
+                      isDropdown
+                        ? "py-6"
+                        : cn("w-screen", hasBrandCards ? "py-10" : "py-8"),
                     ])}
                   >
                     {isDropdown ? (
@@ -99,7 +103,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                     ) : isJournal ? (
                       <JournalMenu items={items} />
                     ) : (
-                      <LayoutMenu items={items} />
+                      <LayoutMenu items={items} hasBrandCards={hasBrandCards} />
                     )}
                   </Menubar.Content>
                 )}
@@ -136,7 +140,17 @@ function DropdownSubMenu({ items }: { items: SingleMenuItem[] }) {
   );
 }
 
-function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
+function LayoutMenu({
+  items,
+  hasBrandCards,
+}: {
+  items: SingleMenuItem[];
+  hasBrandCards: boolean;
+}) {
+  if (hasBrandCards) {
+    return <BrandCardsLayout items={items} />;
+  }
+
   const collectionItems = items.filter(
     (item) => item.resource?.__typename === "Collection",
   );
@@ -209,6 +223,53 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
     );
   }
 
+  return <GenericLayoutMenu items={items} />;
+}
+
+function BrandCardsLayout({ items }: { items: SingleMenuItem[] }) {
+  return (
+    <div className="container mx-auto flex w-full flex-wrap items-stretch justify-center gap-5">
+      {items.map(({ id, title, to, resource }, idx) =>
+        resource?.image ? (
+          <SlideIn
+            key={id}
+            className="group/item min-w-40 max-w-[262px] basis-[calc((100%_-_5rem)/5)] grow shrink overflow-hidden rounded-2xl bg-background-subtle-1 pb-5"
+            style={{ "--idx": idx } as React.CSSProperties}
+          >
+            <Link
+              to={to}
+              prefetch="intent"
+              className="flex h-full flex-col gap-5"
+            >
+              <div className="relative h-65 overflow-hidden">
+                <Image
+                  sizes="(min-width: 1440px) 262px, calc((100vw - 128px) / 5)"
+                  data={resource.image}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover/item:scale-[1.03]"
+                  width={600}
+                />
+                <div className="absolute inset-x-0 bottom-0 flex h-18 items-center bg-gradient-to-b from-transparent to-[rgba(59,32,40,0.6)] p-4">
+                  <p className="line-clamp-1 font-['Cormorant'] text-[22px] leading-[110%] font-semibold tracking-[-0.44px] text-text-inverse underline-offset-4 group-hover/item:underline">
+                    {resource.title || title}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 px-4">
+                {resource.description && (
+                  <p className="line-clamp-2 font-body text-sm leading-[140%] font-normal tracking-[-0.28px] text-text">
+                    {resource.description}
+                  </p>
+                )}
+              </div>
+            </Link>
+          </SlideIn>
+        ) : null,
+      )}
+    </div>
+  );
+}
+
+function GenericLayoutMenu({ items }: { items: SingleMenuItem[] }) {
   return (
     <div className="container mx-auto flex justify-center gap-4">
       {items.map(({ id, title, to, items: children, resource }, idx) =>
@@ -227,7 +288,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                   width={300}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-                <p className="absolute line-clamp-1 right-3 bottom-3 left-3 font-heading text-base text-text-inverse underline-offset-4 group-hover/item:underline">
+                <p className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse underline-offset-4 group-hover/item:underline">
                   {resource.title || title}
                 </p>
               </div>

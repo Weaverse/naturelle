@@ -67,7 +67,7 @@ export function VariantOption(props: VariantOptionProps) {
   }
   if (displayType === "image") {
     return (
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-3 flex-wrap">
         {values.map((value) => {
           return (
             <button

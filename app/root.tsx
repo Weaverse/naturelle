@@ -39,6 +39,7 @@ import tailwind from "./styles/app.css?url";
 import { GlobalStyle } from "./weaverse/style";
 import "@fontsource-variable/montserrat";
 import "@fontsource/belleza";
+import "@fontsource/cormorant/600.css";
 import "@fontsource/playfair-display";
 import { DEFAULT_LOCALE } from "./utils/const";
 import { intlLocale } from "./utils/locale";
