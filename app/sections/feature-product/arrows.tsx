@@ -28,8 +28,9 @@ let variants = cva(
         false: "",
       },
       side: {
-        left: "left-0 -translate-x-3 sm:-translate-x-1/2",
-        right: "right-0 translate-x-3 sm:translate-x-1/2",
+        left: "left-0 -translate-x-3 sm:-translate-x-5 md:-translate-x-6 lg:-translate-x-1/2",
+        right:
+          "right-0 translate-x-3 sm:translate-x-5 md:translate-x-6 lg:translate-x-1/2",
       },
     },
   },

@@ -74,10 +74,10 @@ export default function SearchResults() {
   return (
     <section className="bg-background-basic">
       <PageHeader variant="search">
-        <div className="flex w-full flex-col items-center gap-6 px-6">
+        <div className="flex w-full flex-col items-center gap-6 px-4">
           <h1 className="h2 w-full text-center font-normal text-text">
             {searchTerm
-              ? t("search.resultsFor", { term: searchTerm })
+              ? `${products.totalCount} ${t("search.resultsFor", { term: searchTerm })}`
               : t("search.title")}
           </h1>
           <Form
@@ -97,7 +97,7 @@ export default function SearchResults() {
               onClear={clearSearch}
               name="q"
               placeholder={t("search.placeholder")}
-              className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 md:w-[560px]"
+              className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 sm:w-96 desktop:w-[560px]"
               type="search"
               prefixElement={
                 <button type="submit" aria-label={t("search.title")}>

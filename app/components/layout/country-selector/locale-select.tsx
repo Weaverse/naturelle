@@ -4,6 +4,7 @@ import { useTranslation } from "@weaverse/hydrogen";
 import { useState } from "react";
 import { IconCaret } from "~/components/icon";
 import type { Locale } from "~/types/type-locale";
+import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 
 export type LocaleOption = { key: string; label: string; locale: Locale };
@@ -44,7 +45,13 @@ export function LocaleSelect({
         >
           {label}
         </span>
-        <IconCaret direction="down" className="size-3.5 shrink-0" />
+        <IconCaret
+          direction="down"
+          className={cn(
+            "size-3.5 shrink-0",
+            placement === "header" && "transition-none",
+          )}
+        />
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content

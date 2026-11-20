@@ -36,12 +36,12 @@ function subscribeToScroll(onStoreChange: () => void) {
   return () => window.removeEventListener("scroll", onStoreChange);
 }
 
-function getScrollSnapshot() {
-  return window.scrollY;
+function getScrolledSnapshot() {
+  return window.scrollY >= 50;
 }
 
-function getServerScrollSnapshot() {
-  return 0;
+function getServerScrolledSnapshot() {
+  return false;
 }
 
 export function Header() {
@@ -65,17 +65,15 @@ export function Header() {
     enableTransparentHeader,
   } = settings;
   const isHome = useIsHomePath();
-  const y = useSyncExternalStore(
+  const scrolled = useSyncExternalStore(
     subscribeToScroll,
-    getScrollSnapshot,
-    getServerScrollSnapshot,
+    getScrolledSnapshot,
+    getServerScrolledSnapshot,
   );
   const [isUtilitySearchOpen, setIsUtilitySearchOpen] = useState(false);
   let routeError = useRouteError();
 
   useLockBodyScroll(isUtilitySearchOpen);
-
-  let scrolled = y >= 50;
 
   let enableTransparent = enableTransparentHeader && isHome && !routeError;
   let isTransparent = enableTransparent && !scrolled;
@@ -91,16 +89,15 @@ export function Header() {
       announcementMessage6,
     ].some((message) => message?.trim());
   const resolvedAnnouncementBarHeight = announcementBarHeight || 48;
-  const visibleAnnouncementBarHeight = hasAnnouncement
-    ? stickyAnnouncementBar
+  const stickyAnnouncementBarHeight =
+    hasAnnouncement && stickyAnnouncementBar
       ? resolvedAnnouncementBarHeight
-      : Math.max(resolvedAnnouncementBarHeight - y, 0)
-    : 0;
+      : 0;
 
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--announcement-bar-height",
-      `${visibleAnnouncementBarHeight}px`,
+      `${stickyAnnouncementBarHeight}px`,
     );
 
     return () => {
@@ -108,18 +105,21 @@ export function Header() {
         "--announcement-bar-height",
       );
     };
-  }, [visibleAnnouncementBarHeight]);
+  }, [stickyAnnouncementBarHeight]);
 
   return (
     <>
       {hasAnnouncement && <ScrollingAnnouncement />}
       <header
+        style={{ top: `${stickyAnnouncementBarHeight}px` }}
         className={cn(
           "top-0 z-40 w-full border-b transition-[background-color,border-color,color,box-shadow] duration-500 ease-in-out motion-reduce:transition-none",
           "border-border-subtle bg-header-bg text-(--color-header-text)",
           "hover:bg-header-bg",
           "hover:text-(--color-header-text)",
-          enableTransparent ? "fixed w-full group/header" : "sticky",
+          enableTransparent
+            ? "sticky w-full group/header mb-[calc(-1px-var(--height-nav))] desktop:mb-[calc(-83px-var(--height-nav))]"
+            : "sticky",
           scrolled ? "shadow-header" : "shadow-none",
           showTransparentHeader
             ? [
