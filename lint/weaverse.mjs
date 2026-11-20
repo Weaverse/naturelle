@@ -75,11 +75,17 @@ const COGNITIVE_COMPLEXITY = defineRule({
       ) {
         frame.score += 1;
       }
-      if (
-        node.type === "LogicalExpression" &&
-        frame.logical !== node.operator
-      ) {
-        frame.score += 1;
+      // The Oxlint AST omits parentheses, which start a new logical sequence
+      // in Biome's syntax tree.
+      if (node.type === "LogicalExpression") {
+        let previous = context.sourceCode.getTokenBefore(node);
+        let grouped =
+          node.parent?.type === "LogicalExpression" &&
+          previous?.value === "(" &&
+          previous.range[0] >= node.parent.range[0];
+        if (frame.logical !== node.operator || grouped) {
+          frame.score += 1;
+        }
       }
       frame.logical = node.type === "LogicalExpression" ? node.operator : null;
     }
