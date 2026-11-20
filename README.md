@@ -14,7 +14,7 @@ Explore Naturelle in action:
 
 What you get with Naturelle:
 - **Core Technologies**: Hydrogen, React Router 7, and Oxygen for unmatched performance.
-- **Development Tools**: Shopify CLI and Biome for linting and formatting.
+- **Development Tools**: Shopify CLI and Vite+ checks (Oxlint and Oxfmt).
 - **Programming**: Support for both TypeScript and JavaScript.
 - **Styling**: Tailwind CSS v4 with its first-party Vite plugin.
 - **Rich Components**: A comprehensive set of pre-designed components and routes.
@@ -72,7 +72,7 @@ described in the [setup guide](docs/setup.md). The local storefront runs at
 Before submitting changes, run the same core checks used by the project:
 
 ```bash
-npm run biome
+npm run check
 npm run codegen
 npm run typecheck
 npm test
@@ -88,5 +88,5 @@ For more detailed guidance:
 - [Weaverse Documentation](https://weaverse.io/docs)
 - [Hydrogen Documentation](https://shopify.dev/custom-storefronts/hydrogen)
 - [React Router documentation](https://reactrouter.com/)
-- [Biome documentation](https://biomejs.dev/)
+- [Vite+ checks](https://viteplus.dev/guide/check)
 - [Tailwind CSS documentation](https://tailwindcss.com/)

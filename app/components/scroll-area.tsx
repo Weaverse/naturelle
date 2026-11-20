@@ -18,8 +18,7 @@ const variants = cva("", {
 });
 
 interface ScrollAreaProps
-  extends RadixScrollAreaProps,
-    VariantProps<typeof variants> {
+  extends RadixScrollAreaProps, VariantProps<typeof variants> {
   ref?: React.Ref<HTMLDivElement>;
   style?: React.CSSProperties;
   rootClassName?: string;

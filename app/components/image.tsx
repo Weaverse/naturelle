@@ -6,8 +6,10 @@ import { cn } from "~/utils/cn";
 
 type Crop = "center" | "top" | "bottom" | "left" | "right";
 
-export interface ImageProps
-  extends Omit<React.ComponentPropsWithRef<"img">, "ref"> {
+export interface ImageProps extends Omit<
+  React.ComponentPropsWithRef<"img">,
+  "ref"
+> {
   ref?: React.Ref<HTMLDivElement>;
   imageClassName?: string;
   aspectRatio?: string;

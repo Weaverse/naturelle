@@ -49,7 +49,8 @@ type WeaverseVideo = {
 };
 
 export interface VideoBannerProps
-  extends Omit<VariantProps<typeof variants>, "padding">,
+  extends
+    Omit<VariantProps<typeof variants>, "padding">,
     HydrogenComponentProps,
     OverlayProps {
   videoURL?: WeaverseVideo;

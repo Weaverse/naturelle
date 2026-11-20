@@ -85,7 +85,8 @@ let variants = cva("heading", {
 });
 
 export interface HeadingProps
-  extends VariantProps<typeof variants>,
+  extends
+    VariantProps<typeof variants>,
     VariantProps<typeof fontSizeVariants>,
     Partial<HydrogenComponentProps> {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";

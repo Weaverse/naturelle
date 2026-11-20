@@ -186,8 +186,8 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
     getCartDiscountSummary(cart);
   const codeSubmissionComplete = Boolean(
     submittedCartCode &&
-      codeApplyFetcher.state === "idle" &&
-      codeApplyFetcher.data,
+    codeApplyFetcher.state === "idle" &&
+    codeApplyFetcher.data,
   );
   const codeApplied = Boolean(
     codeSubmissionComplete && codeApplyFetcher.data?.codeApplied,

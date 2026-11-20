@@ -31,11 +31,11 @@ export function isCompleteReview(data: ReviewData) {
   const showVerifiedBuyer = data.showVerifiedBuyer ?? true;
   return Boolean(
     data.reviewerName?.trim() &&
-      hasValidDate &&
-      hasValidRating &&
-      data.title?.trim() &&
-      data.description?.trim() &&
-      (!showVerifiedBuyer || data.verifiedBuyerText?.trim()),
+    hasValidDate &&
+    hasValidRating &&
+    data.title?.trim() &&
+    data.description?.trim() &&
+    (!showVerifiedBuyer || data.verifiedBuyerText?.trim()),
   );
 }
 

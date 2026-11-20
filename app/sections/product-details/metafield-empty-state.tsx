@@ -3,8 +3,7 @@ import { useWeaverseStudioCheck } from "~/hooks/use-weaverse-studio-check";
 import { cn } from "~/utils/cn";
 import type { ProductDetailMetafieldLoaderData } from "./product-metafield";
 
-interface ProductMetafieldEmptyStateProps
-  extends ComponentPropsWithoutRef<"section"> {
+interface ProductMetafieldEmptyStateProps extends ComponentPropsWithoutRef<"section"> {
   loaderData?: ProductDetailMetafieldLoaderData;
   metafield?: string;
   message?: string;

@@ -42,8 +42,7 @@ let variants = cva("paragraph", {
 });
 
 export interface ParagraphProps
-  extends VariantProps<typeof variants>,
-    Partial<HydrogenComponentProps> {
+  extends VariantProps<typeof variants>, Partial<HydrogenComponentProps> {
   as?: "p" | "div";
   content: string;
   color?: string;

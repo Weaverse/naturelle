@@ -85,7 +85,8 @@ type BlogData = {
 };
 
 export interface BlogProps
-  extends HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
+  extends
+    HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
     BlogData,
     VariantProps<typeof variants>,
     VariantProps<typeof fontSizeVariants> {}
