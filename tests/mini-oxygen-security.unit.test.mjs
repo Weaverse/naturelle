@@ -6,9 +6,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-const miniOxygenPackageUrl = import.meta.resolve(
-  "@shopify/mini-oxygen/package.json",
-);
+const miniOxygenPackageUrl = import.meta
+  .resolve("@shopify/mini-oxygen/package.json");
 const { createServer } = await import(
   new URL("./dist/node/server.js", miniOxygenPackageUrl).href
 );

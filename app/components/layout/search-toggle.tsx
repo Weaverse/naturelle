@@ -32,11 +32,11 @@ export function SearchToggle({
   );
   const [isInlineOpen, setIsInlineOpen] = useState(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: close search only when the route changes
   useEffect(() => {
     setIsInlineOpen(false);
     onInlineOpenChange?.(false);
     closeDrawer();
+    // oxlint-disable-next-line react/exhaustive-deps -- close search only when the route changes
   }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {

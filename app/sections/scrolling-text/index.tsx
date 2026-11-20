@@ -14,8 +14,7 @@ let variants = cva("", {
 });
 
 export interface ScrollingProps
-  extends VariantProps<typeof variants>,
-    HydrogenComponentProps {
+  extends VariantProps<typeof variants>, HydrogenComponentProps {
   content: string;
   textSize?: string;
   textColor?: string;

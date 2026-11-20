@@ -72,7 +72,7 @@ jobs:
         run: npm ci
 
       - name: Validate Cloudflare build
-        run: npm run check
+        run: npm run cf-check
 
       - name: Verify main is included
         run: git merge-base --is-ancestor origin/main HEAD

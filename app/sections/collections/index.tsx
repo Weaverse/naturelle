@@ -34,8 +34,7 @@ export interface CollectionNode {
 }
 
 interface CollectionsProps
-  extends SectionProps<CollectionsLoaderData>,
-    CollectionsData {}
+  extends SectionProps<CollectionsLoaderData>, CollectionsData {}
 
 export const COLLECTIONS_QUERY = `#graphql
   query collectionsByIds(

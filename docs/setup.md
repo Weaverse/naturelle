@@ -358,7 +358,7 @@ When adding a section:
 Run focused checks while developing, then the full project checks:
 
 ```bash
-npm run biome
+npm run check
 npm run codegen
 npm run typecheck
 npm test

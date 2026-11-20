@@ -57,7 +57,8 @@ let imageVariants = cva(
 );
 
 interface ImageWithTextImageProps
-  extends VariantProps<typeof wrapperVariants>,
+  extends
+    VariantProps<typeof wrapperVariants>,
     VariantProps<typeof imageVariants>,
     HydrogenComponentProps {
   image: WeaverseImage | string;

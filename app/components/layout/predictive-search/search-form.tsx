@@ -46,7 +46,7 @@ export function PredictiveSearchForm({
 
   // ensure the passed input has a type of search, because SearchResults
   // will select the element based on the input
-  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only initialization
+  // mount-only initialization.
   useEffect(() => {
     if (didInitializeRef.current) {
       return;

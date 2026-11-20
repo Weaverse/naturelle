@@ -46,7 +46,8 @@ export interface HotspotsItemData {
 }
 
 interface HotspotsItemProps
-  extends HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
+  extends
+    HydrogenComponentProps<Awaited<ReturnType<typeof loader>>>,
     HotspotsItemData {}
 
 const ICONS = {
