@@ -33,6 +33,7 @@ export interface InputProps
   suffix?: React.ReactNode;
   prefixElement?: React.ReactNode;
   onClear?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  clearLabel?: string;
   ref?: React.Ref<HTMLInputElement>;
 }
 
@@ -45,6 +46,7 @@ const Input = ({
   onFocus,
   onBlur,
   onClear,
+  clearLabel = "Clear search",
   ref,
   ...rest
 }: InputProps) => {
@@ -55,16 +57,35 @@ const Input = ({
     className,
   );
 
-  let handleClear = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.previousSibling.value = "";
+  let handleClear = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const input = event.currentTarget
+      .previousElementSibling as HTMLInputElement | null;
+    if (!input) {
+      return;
+    }
+    input.value = "";
     if (onClear) {
-      onClear(e);
+      onClear({
+        ...event,
+        target: input,
+        currentTarget: input,
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
     }
   };
   if (type === "search" && !suffix) {
-    suffix = <IconClose className="cursor-pointer" onClick={handleClear} />;
+    suffix = (
+      <button
+        type="button"
+        aria-label={clearLabel}
+        className="flex size-5 shrink-0 items-center justify-center"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={handleClear}
+      >
+        <IconClose aria-hidden="true" />
+      </button>
+    );
   }
   let hasChild = Boolean(prefixElement || suffix);
 

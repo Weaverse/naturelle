@@ -77,6 +77,7 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               name="q"
               onChange={fetchResults}
               onClear={fetchResults}
+              clearLabel={t("accessibility.clearSearch")}
               placeholder={t("search.placeholder")}
               onKeyDown={handleKeyDown}
               ref={inputRef}
