@@ -23,7 +23,7 @@ export function SearchTypeHeaderResults({
 }) {
   const { t } = useTranslation();
   const { pcardImageRatio = "1/1" } = useThemeSettings();
-  const { isLoading, results, totalResults, searchInputRef, searchTerm } =
+  const { isLoading, results, searchInputRef, searchTerm } =
     usePredictiveSearch();
   const items = (type: (typeof results)[number]["type"]) =>
     results.find((result) => result.type === type)?.items || [];
@@ -131,7 +131,7 @@ export function SearchTypeHeaderResults({
                   to={`/search?q=${encodeURIComponent(term)}`}
                   className="inline-flex h-13.5 items-center justify-center rounded-md bg-text px-5 text-sm text-background-basic"
                 >
-                  {t("search.viewAll")} ({totalResults})
+                  {t("search.viewAll")}
                 </Link>
               </div>
             )}

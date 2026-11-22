@@ -12,8 +12,7 @@ import { setNativeInputValue } from "../../set-native-input-value";
 
 export function SearchTypeDrawerResults() {
   const { t } = useTranslation();
-  const { results, totalResults, searchTerm, searchInputRef } =
-    usePredictiveSearch();
+  const { results, searchTerm, searchInputRef } = usePredictiveSearch();
 
   const items = (type: (typeof results)[number]["type"]) =>
     results.find((result) => result.type === type)?.items || [];
@@ -84,7 +83,7 @@ export function SearchTypeDrawerResults() {
           variant="primary"
           className="h-13.5 px-5 text-sm"
         >
-          {t("search.viewAll")} ({totalResults})
+          {t("search.viewAll")}
         </Button>
       </div>
     </div>
