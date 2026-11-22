@@ -7,15 +7,13 @@ import {
   IconQuickViewX,
 } from "~/components/icon";
 import { cn } from "~/utils/cn";
-import {
-  clampProductQuantity,
-  getProductQuantityMax,
-} from "~/utils/product-quantity";
+import { useQuantityDraft } from "~/hooks/use-quantity-draft";
+import { clampProductQuantity } from "~/utils/product-quantity";
 
 interface ProductVariantLike {
   availableForSale: boolean;
   quantityAvailable?: number | null;
-  selectedOptions: Array<{ name: string; value: string }>;
+  selectedOptions: { name: string; value: string }[];
 }
 
 interface ProductFormStateParams<TVariant extends ProductVariantLike> {
@@ -127,22 +125,14 @@ export function ProductQuantityInput({
   className,
 }: ProductQuantityInputProps) {
   const { t } = useTranslation();
-  const maxQuantity = getProductQuantityMax(max);
-  const [draftValue, setDraftValue] = useState(String(value));
-
-  useEffect(() => {
-    setDraftValue(String(clampProductQuantity(value, maxQuantity)));
-  }, [value, maxQuantity]);
-
-  const updateQuantity = (nextQuantity: number) => {
-    const clampedQuantity = clampProductQuantity(nextQuantity, maxQuantity);
-    setDraftValue(String(clampedQuantity));
-    onChange(clampedQuantity);
-  };
-
-  const commitDraftValue = () => {
-    updateQuantity(Number(draftValue));
-  };
+  const {
+    draftValue,
+    maxQuantity,
+    updateQuantity,
+    handleChange,
+    handleBlur,
+    handleKeyDown,
+  } = useQuantityDraft(value, max, onChange);
 
   return (
     <div
@@ -172,23 +162,9 @@ export function ProductQuantityInput({
         className="h-full w-13 border-0 bg-transparent py-3 text-center text-base outline-none"
         disabled={disabled}
         value={draftValue}
-        onBlur={commitDraftValue}
-        onChange={(event) => {
-          const nextDraftValue = event.currentTarget.value;
-          if (!/^\d*$/.test(nextDraftValue)) {
-            return;
-          }
-          if (nextDraftValue === "") {
-            setDraftValue("");
-            return;
-          }
-          updateQuantity(Number(nextDraftValue));
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.currentTarget.blur();
-          }
-        }}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
       <button
         type="button"

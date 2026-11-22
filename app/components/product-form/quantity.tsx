@@ -1,11 +1,7 @@
 import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
 import { Input } from "~/components/input";
-import {
-  clampProductQuantity,
-  getProductQuantityMax,
-} from "~/utils/product-quantity";
+import { useQuantityDraft } from "~/hooks/use-quantity-draft";
 
 interface QuantityProps {
   value: number;
@@ -16,24 +12,14 @@ interface QuantityProps {
 export function Quantity(props: QuantityProps) {
   const { t } = useTranslation();
   let { value, max, onChange, isDisabled } = props;
-  const maxQuantity = getProductQuantityMax(max);
-  const [draftValue, setDraftValue] = useState(String(value));
-
-  useEffect(() => {
-    setDraftValue(String(clampProductQuantity(value, maxQuantity)));
-  }, [value, maxQuantity]);
-
-  const updateQuantity = (nextQuantity: number) => {
-    const clampedQuantity = clampProductQuantity(nextQuantity, maxQuantity);
-    setDraftValue(String(clampedQuantity));
-    onChange(clampedQuantity);
-  };
-
-  let handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.currentTarget.blur();
-    }
-  };
+  const {
+    draftValue,
+    maxQuantity,
+    updateQuantity,
+    handleChange,
+    handleBlur,
+    handleKeyDown,
+  } = useQuantityDraft(value, max, onChange);
   return (
     <div className="space-y-3">
       <legend className="whitespace-pre-wrap max-w-prose text-base font-body font-semibold leading-snug">
@@ -69,18 +55,8 @@ export function Quantity(props: QuantityProps) {
           aria-valuenow={value}
           value={draftValue}
           onKeyDown={handleKeyDown}
-          onBlur={() => updateQuantity(Number(draftValue))}
-          onChange={(e) => {
-            const nextDraftValue = e.currentTarget.value;
-            if (!/^\d*$/.test(nextDraftValue)) {
-              return;
-            }
-            if (nextDraftValue === "") {
-              setDraftValue("");
-              return;
-            }
-            updateQuantity(Number(nextDraftValue));
-          }}
+          onBlur={handleBlur}
+          onChange={handleChange}
           disabled={isDisabled}
         />
         <button
