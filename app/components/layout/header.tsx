@@ -113,12 +113,12 @@ export function Header() {
       <header
         style={{ top: `${stickyAnnouncementBarHeight}px` }}
         className={cn(
-          "top-0 z-40 w-full border-b transition-[background-color,border-color,color,box-shadow] duration-500 ease-in-out motion-reduce:transition-none",
+          "z-40 w-full border-b [--header-utility-height:82px] transition-[background-color,border-color,color,box-shadow] duration-500 ease-in-out motion-reduce:transition-none",
           "border-border-subtle bg-header-bg text-(--color-header-text)",
           "hover:bg-header-bg",
           "hover:text-(--color-header-text)",
           enableTransparent
-            ? "sticky w-full group/header mb-[calc(-1px-var(--height-nav))] desktop:mb-[calc(-83px-var(--height-nav))]"
+            ? "sticky w-full group/header mb-[calc(-1px-var(--height-nav))] desktop:mb-[calc(-1px-var(--header-utility-height)-var(--height-nav))]"
             : "sticky",
           scrolled ? "shadow-header" : "shadow-none",
           showTransparentHeader
@@ -135,7 +135,7 @@ export function Header() {
       >
         <div
           className={cn(
-            "hidden h-[82px] w-full items-center justify-center px-6 py-4 transition-colors duration-500 ease-in-out motion-reduce:transition-none desktop:flex lg:px-10",
+            "hidden h-[var(--header-utility-height)] w-full items-center justify-center px-6 py-4 transition-colors duration-500 ease-in-out motion-reduce:transition-none desktop:flex lg:px-10",
             showTransparentHeader
               ? "bg-transparent text-(--color-transparent-header) group-hover/header:bg-background-subtle-1 group-hover/header:text-(--color-header-text) group-has-[[data-header-menu-content]]/header:bg-background-subtle-1 group-has-[[data-header-menu-content]]/header:text-(--color-header-text)"
               : "bg-background-subtle-1 text-(--color-header-text)",

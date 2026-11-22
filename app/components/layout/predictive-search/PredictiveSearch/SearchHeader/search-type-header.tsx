@@ -64,9 +64,10 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
         className={cn(
           "predictive-search-form",
           inline &&
-            (isClosing
-              ? "predictive-search-form--inline animate-search-conceal motion-reduce:animate-none"
-              : "predictive-search-form--inline animate-search-reveal motion-reduce:animate-none"),
+            cn(
+              "predictive-search-form--inline motion-reduce:animate-none",
+              isClosing ? "animate-search-conceal" : "animate-search-reveal",
+            ),
         )}
       >
         {({ fetchResults, inputRef }) => (
