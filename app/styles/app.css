@@ -202,6 +202,19 @@
   to { transform: translate(var(--drawer-slide-x), var(--drawer-slide-y)); }
 }
 
+/* Reserve the scrollbar gutter once; Radix must not add a second gap. */
+@supports (scrollbar-gutter: stable) {
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  html body[data-scroll-locked] {
+    --removed-body-scroll-bar-size: 0px !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
 @layer utilities {
   body,
   button,
