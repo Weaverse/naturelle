@@ -372,10 +372,10 @@ function CartLineUnitPrice({ line }: { line: CartLine }) {
 
 function getVariantSummary(
   selectedOptions:
-    | Array<{
+    | {
         name?: string;
         value?: string;
-      }>
+      }[]
     | undefined,
 ) {
   if (!selectedOptions?.length) {

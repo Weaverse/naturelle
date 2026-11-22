@@ -39,10 +39,10 @@ export interface SingleMenuItem {
     title?: string;
     description?: string;
     collections?: {
-      nodes: Array<{
+      nodes: {
         id: string;
         title: string;
-      }>;
+      }[];
     };
     handle?: string;
     image?: {

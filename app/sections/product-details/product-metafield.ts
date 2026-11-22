@@ -31,11 +31,11 @@ type ProductDetailStorefront =
   ComponentLoaderArgs<ProductMetafieldData>["weaverse"]["storefront"];
 
 interface MetaobjectReference {
-  fields: Array<{
+  fields: {
     key: string;
     type: string;
     value?: string | null;
-  }>;
+  }[];
   id: string;
 }
 

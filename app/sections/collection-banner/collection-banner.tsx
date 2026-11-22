@@ -42,7 +42,7 @@ const CollectionBanner = (props: CollectionBannerProps) => {
 
   const { collection } = useLoaderData<
     CollectionDetailsQuery & {
-      collections: Array<{ handle: string; title: string }>;
+      collections: { handle: string; title: string }[];
     }
   >();
 
