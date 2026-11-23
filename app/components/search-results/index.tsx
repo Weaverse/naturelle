@@ -1,12 +1,12 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { useTranslation } from "@weaverse/hydrogen";
+import { useEffect, useState } from "react";
 import { Form, useLoaderData, useLocation, useNavigate } from "react-router";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
 import { Grid } from "~/components/grid";
 import { IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
-import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
 import { ProductListingPagination } from "~/components/product-listing/pagination";
@@ -28,6 +28,12 @@ export default function SearchResults() {
   } = useLoaderData<typeof searchLoader>();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchInputValue, setSearchInputValue] = useState(searchTerm);
+
+  useEffect(() => {
+    setSearchInputValue(searchTerm);
+  }, [searchTerm]);
+
   const searchFormParams = new URLSearchParams(location.search);
   searchFormParams.delete("q");
   clearPaginationParams(searchFormParams);
@@ -37,6 +43,11 @@ export default function SearchResults() {
   const noResults =
     products?.totalCount === 0 && Boolean(searchTerm || hasAppliedFilterParams);
 
+  const submittedSearchFormParams = new URLSearchParams(searchFormParams);
+  if (searchInputValue.trim() !== searchTerm) {
+    clearFilterParams(submittedSearchFormParams);
+  }
+
   const clearFiltersParams = new URLSearchParams(location.search);
   clearFilterParams(clearFiltersParams);
   clearPaginationParams(clearFiltersParams);
@@ -44,6 +55,7 @@ export default function SearchResults() {
   const clearFiltersTo = `${location.pathname}${clearFiltersQuery ? `?${clearFiltersQuery}` : ""}`;
 
   const clearSearch = () => {
+    setSearchInputValue("");
     const nextParams = new URLSearchParams(location.search);
     nextParams.delete("q");
     clearFilterParams(nextParams);
@@ -83,16 +95,19 @@ export default function SearchResults() {
             method="get"
             className="relative flex w-full items-center justify-center"
           >
-            {[...searchFormParams.entries()].map(([name, value], index) => (
-              <input
-                key={`${name}-${value}-${index}`}
-                type="hidden"
-                name={name}
-                value={value}
-              />
-            ))}
+            {[...submittedSearchFormParams.entries()].map(
+              ([name, value], index) => (
+                <input
+                  key={`${name}-${value}-${index}`}
+                  type="hidden"
+                  name={name}
+                  value={value}
+                />
+              ),
+            )}
             <Input
-              defaultValue={searchTerm}
+              value={searchInputValue}
+              onChange={(event) => setSearchInputValue(event.target.value)}
               onClear={clearSearch}
               clearLabel={t("accessibility.clearSearch")}
               name="q"
@@ -116,22 +131,11 @@ export default function SearchResults() {
               {t("search.emptyPrompt")}
             </p>
           )}
-          {noResults &&
-            (hasAppliedFilterParams ? (
-              <div className="flex flex-col items-center gap-3 text-center text-base text-text-subtle">
-                <p>{t("search.noResultsWithFilters")}</p>
-                <Link
-                  to={clearFiltersTo}
-                  className="text-text underline underline-offset-4"
-                >
-                  {t("search.clearFilters")}
-                </Link>
-              </div>
-            ) : (
-              <p className="text-center text-base text-text-subtle">
-                {t("search.noResultsHint")}
-              </p>
-            ))}
+          {noResults && (
+            <p className="text-center text-base text-text-subtle">
+              {t("search.noResultsHint")}
+            </p>
+          )}
         </div>
       </PageHeader>
       {products && !noResults && (

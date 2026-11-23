@@ -46,9 +46,7 @@
     "empty": "No results found",
     "noResultsFor": "No results found for “{{term}}”",
     "emptyPrompt": "Search by product name, material, room, or collection.",
-    "noResultsHint": "Check the spelling or use a different word or phrase.",
-    "noResultsWithFilters": "No products match the selected filters.",
-    "clearFilters": "Clear filters"
+    "noResultsHint": "Check the spelling or use a different word or phrase."
   },
   "product": {
     "addToCart": "Add to cart",
