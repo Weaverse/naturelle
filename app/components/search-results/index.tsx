@@ -6,6 +6,7 @@ import { Button } from "~/components/button";
 import { Grid } from "~/components/grid";
 import { IconSearch } from "~/components/icon";
 import { Input } from "~/components/input";
+import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
 import { ProductListingPagination } from "~/components/product-listing/pagination";
@@ -73,7 +74,10 @@ export default function SearchResults() {
               ? t("search.title")
               : noResults
                 ? t("search.noResultsFor", { term: searchTerm })
-                : `${products?.totalCount} ${t("search.resultsFor", { term: searchTerm })}`}
+                : t("search.resultsFor", {
+                    count: products?.totalCount ?? 0,
+                    term: searchTerm,
+                  })}
           </h1>
           <Form
             method="get"
@@ -112,11 +116,22 @@ export default function SearchResults() {
               {t("search.emptyPrompt")}
             </p>
           )}
-          {noResults && (
-            <p className="text-center text-base text-text-subtle">
-              {t("search.noResultsHint")}
-            </p>
-          )}
+          {noResults &&
+            (hasAppliedFilterParams ? (
+              <div className="flex flex-col items-center gap-3 text-center text-base text-text-subtle">
+                <p>{t("search.noResultsWithFilters")}</p>
+                <Link
+                  to={clearFiltersTo}
+                  className="text-text underline underline-offset-4"
+                >
+                  {t("search.clearFilters")}
+                </Link>
+              </div>
+            ) : (
+              <p className="text-center text-base text-text-subtle">
+                {t("search.noResultsHint")}
+              </p>
+            ))}
         </div>
       </PageHeader>
       {products && !noResults && (

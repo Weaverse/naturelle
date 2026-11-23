@@ -45,13 +45,28 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       throw redirect(`${pathname}${query ? `?${query}` : ""}`);
     }
 
+    const seo = seoPayload.collection({
+      url: request.url,
+      collection: {
+        id: "search",
+        title: "Search",
+        handle: "search",
+        descriptionHtml: "Search products",
+        description: "Search products",
+        seo: {
+          title: "Search",
+          description: "Search products",
+        },
+        metafields: [],
+        products: { nodes: [] },
+        updatedAt: new Date().toISOString(),
+      },
+    });
+
     return {
       productfilters: [],
       appliedFilters: [],
-      seo: {
-        title: "Search",
-        description: "Search products",
-      } satisfies SeoConfig,
+      seo,
       searchTerm,
       products: null,
       lowestPriceProduct: null,
