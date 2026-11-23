@@ -14,6 +14,7 @@ import type { loader as searchLoader } from "~/routes/($locale).search";
 import { FILTER_URL_PREFIX } from "~/utils/const";
 import { clearPaginationParams } from "~/utils/filter";
 import { getImageLoadingPriority } from "~/utils/image";
+import { getSearchResultsTranslationKey } from "~/utils/search-results";
 
 export default function SearchResults() {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ export default function SearchResults() {
         <div className="flex w-full flex-col items-center gap-6 px-4">
           <h1 className="h2 w-full text-center font-normal text-text">
             {searchTerm
-              ? t("search.resultsFor", {
+              ? t(getSearchResultsTranslationKey(products.totalCount), {
                   count: products.totalCount,
                   term: searchTerm,
                 })
