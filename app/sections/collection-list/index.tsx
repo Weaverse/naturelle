@@ -24,13 +24,15 @@ let CollectionList = ({
     containerClassName,
     width,
     style,
-    cardOverlayColor = "#453830",
-    cardOverlayOpacity = 30,
+    cardOverlayColor,
+    cardOverlayOpacity,
     ...rest
   } = props;
-  let resolvedWidth = width ?? "fixed";
-  let { sectionClassName, containerClassName: fixedContainerClassName } =
-    getCollectionListLayoutClasses(resolvedWidth);
+  let {
+    resolvedWidth,
+    sectionClassName,
+    containerClassName: fixedContainerClassName,
+  } = getCollectionListLayoutClasses(width);
   let collectionCardStyle = getCollectionCardStyle({
     overlayColor: cardOverlayColor,
     overlayOpacity: cardOverlayOpacity,

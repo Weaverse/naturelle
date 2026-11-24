@@ -12,14 +12,18 @@ const HOVER_OPACITY_INCREASE = 20;
 export function getCollectionListLayoutClasses(
   width: CollectionListWidth | undefined,
 ) {
-  if ((width ?? "fixed") !== "fixed") {
+  const resolvedWidth = width ?? "fixed";
+
+  if (resolvedWidth !== "fixed") {
     return {
+      resolvedWidth,
       sectionClassName: undefined,
       containerClassName: undefined,
     };
   }
 
   return {
+    resolvedWidth,
     sectionClassName: "lg:px-6",
     containerClassName: "lg:max-w-[calc(var(--page-width,1440px)_-_3rem)]",
   };

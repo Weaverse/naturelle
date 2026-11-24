@@ -7,6 +7,7 @@ import {
 
 test("applies the Figma container spacing to fixed width", () => {
   const expected = {
+    resolvedWidth: "fixed",
     sectionClassName: "lg:px-6",
     containerClassName: "lg:max-w-[calc(var(--page-width,1440px)_-_3rem)]",
   };
@@ -21,8 +22,14 @@ test("preserves the native full and stretch width layouts", () => {
     containerClassName: undefined,
   };
 
-  assert.deepEqual(getCollectionListLayoutClasses("full"), expected);
-  assert.deepEqual(getCollectionListLayoutClasses("stretch"), expected);
+  assert.deepEqual(getCollectionListLayoutClasses("full"), {
+    resolvedWidth: "full",
+    ...expected,
+  });
+  assert.deepEqual(getCollectionListLayoutClasses("stretch"), {
+    resolvedWidth: "stretch",
+    ...expected,
+  });
 });
 
 test("uses the Figma collection card colors by default", () => {
