@@ -364,19 +364,20 @@ function ImageCardContent({
           to={item.to}
           prefetch="intent"
           onClick={onNavigate}
-          className="group/card mb-3 block w-full shrink-0 overflow-hidden rounded-2xl bg-background-subtle-1 last:mb-0"
+          className="group/card mb-3 flex w-full shrink-0 flex-col items-start self-stretch overflow-hidden rounded-2xl bg-background-subtle-1 last:mb-0"
         >
-          <div className="relative h-65 overflow-hidden">
+          <div className="relative flex h-45.5 w-full flex-col items-start self-stretch overflow-hidden">
             <Image
               data={item.resource?.image}
               sizes="(min-width: 768px) 50vw, 100vw"
-              className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.03]"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.03]"
               width={600}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-            <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-brand text-[22px] leading-[110%] font-semibold tracking-[-0.44px] text-text-inverse">
-              {item.resource?.title || item.title}
-            </span>
+            <div className="absolute inset-x-0 bottom-0 flex h-18 flex-col items-start justify-center bg-gradient-to-b from-transparent to-menu-card-overlay p-4">
+              <span className="line-clamp-1 font-brand text-[22px] leading-[110%] font-semibold tracking-[-0.44px] text-text-inverse">
+                {item.resource?.title || item.title}
+              </span>
+            </div>
           </div>
         </Link>
       ))}
