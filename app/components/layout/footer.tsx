@@ -118,7 +118,7 @@ export function Footer() {
           <div className="flex flex-1 flex-col items-end justify-center self-stretch">
             {newsletterButtonText && !klaviyoConfigured ? (
               isStudio ? (
-                <div className="w-full max-w-[497px] rounded-md border border-dashed border-(--color-footer-bg) p-4 text-sm text-(--color-footer-bg)">
+                <div className="w-full rounded-md border border-dashed border-(--color-footer-bg) p-4 text-sm text-(--color-footer-bg) md:max-w-[497px]">
                   Configure Klaviyo private token and newsletter list ID
                 </div>
               ) : null
@@ -126,7 +126,7 @@ export function Footer() {
               <fetcher.Form
                 method="POST"
                 action={newsletterAction}
-                className="flex w-full max-w-[497px] items-stretch"
+                className="flex w-full items-stretch md:max-w-[497px]"
               >
                 <Input
                   variant="custom"

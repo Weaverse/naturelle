@@ -15,6 +15,7 @@ import type { loader as searchLoader } from "~/routes/($locale).search";
 import { FILTER_URL_PREFIX } from "~/utils/const";
 import { clearFilterParams, clearPaginationParams } from "~/utils/filter";
 import { getImageLoadingPriority } from "~/utils/image";
+import { getSearchResultsTranslationKey } from "~/utils/search-results";
 
 export default function SearchResults() {
   const { t } = useTranslation();
@@ -80,13 +81,13 @@ export default function SearchResults() {
   return (
     <section className="bg-background-basic">
       <PageHeader variant="search">
-        <div className="flex w-full flex-col items-center gap-6 px-6">
+        <div className="flex w-full flex-col items-center gap-6 px-4">
           <h1 className="h2 w-full text-center font-normal text-text">
             {!searchTerm
               ? t("search.title")
               : noResults
                 ? t("search.noResultsFor", { term: searchTerm })
-                : t("search.resultsFor", {
+                : t(getSearchResultsTranslationKey(products?.totalCount ?? 0), {
                     count: products?.totalCount ?? 0,
                     term: searchTerm,
                   })}
@@ -112,7 +113,7 @@ export default function SearchResults() {
               clearLabel={t("accessibility.clearSearch")}
               name="q"
               placeholder={t("search.placeholder")}
-              className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 md:w-[560px]"
+              className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 sm:w-96 desktop:w-[560px]"
               type="search"
               prefixElement={
                 <button type="submit" aria-label={t("search.title")}>

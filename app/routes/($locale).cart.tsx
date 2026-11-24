@@ -308,7 +308,7 @@ export default function Cart() {
               sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/10" />
-            <h1 className="relative z-10 text-center font-heading text-[64px] leading-[110%] font-normal text-text-inverse">
+            <h1 className="relative z-10 text-center font-heading leading-[110%] font-normal text-text-inverse">
               {t("cart.title")}
             </h1>
           </div>
@@ -376,7 +376,7 @@ function CartNewsletter() {
           aria-hidden="true"
         />
         {cartNewsletterHeading && (
-          <h2 className="max-w-72 text-center font-heading text-[53px] leading-[110%] font-normal text-text md:max-w-none">
+          <h2 className="w-full text-center font-heading leading-[110%] font-normal text-text">
             {cartNewsletterHeading}
           </h2>
         )}

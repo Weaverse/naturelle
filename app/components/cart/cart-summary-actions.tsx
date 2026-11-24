@@ -51,7 +51,7 @@ function dialogContentClass(layout: CartLayout) {
     "data-[state=open]:animate-slide-up data-[state=closed]:animate-slide-down",
     layout === "aside"
       ? "right-0 bottom-0 max-w-[460px] [--slide-down-to:100%] [--slide-up-from:100%]"
-      : "top-1/2 left-1/2 max-w-[400px] -translate-x-1/2 -translate-y-1/2 md:max-w-[420px] [--slide-down-to:40px] [--slide-up-from:40px]",
+      : "top-1/2 left-1/2 max-w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-xl md:max-w-[420px] [--slide-down-to:40px] [--slide-up-from:40px]",
   );
 }
 

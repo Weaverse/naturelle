@@ -119,11 +119,8 @@ export default function MapSection({
                 <Heading
                   as="h2"
                   content={heading}
-                  size="custom"
-                  mobileSize="4xl"
-                  desktopSize="5xl"
                   alignment="left"
-                  className="leading-tight"
+                  className="h4"
                 />
               )}
               {children && (

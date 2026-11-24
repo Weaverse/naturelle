@@ -12,11 +12,11 @@ export type CartWithOptimistic = CartApiQueryFragment & {
 
 export type CartMutationResponse = {
   cart?: CartApiQueryFragment | null;
-  errors?: Array<{ message?: string }>;
-  userErrors?: Array<{
+  errors?: { message?: string }[];
+  userErrors?: {
     code?: string | null;
     field?: string[] | null;
     message?: string;
-  }>;
-  warnings?: Array<{ code?: string; message?: string; target?: string }>;
+  }[];
+  warnings?: { code?: string; message?: string; target?: string }[];
 };
