@@ -74,7 +74,7 @@ export async function loader({
 
   const { country, language } = weaverse.storefront.i18n;
   const { nodes } = await weaverse.storefront.query<{
-    nodes: Array<CollectionNode | null>;
+    nodes: (CollectionNode | null)[];
   }>(COLLECTIONS_QUERY, {
     variables: { country, language, ids },
   });

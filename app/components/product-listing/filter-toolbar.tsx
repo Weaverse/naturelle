@@ -23,7 +23,7 @@ interface ProductListingFilterToolbarProps {
   filterItemsLimit?: number;
   checkboxShape?: "square" | "circle";
   showSearchSort?: boolean;
-  collections?: Array<{ handle: string; title: string }>;
+  collections?: { handle: string; title: string }[];
   clearFiltersTo?: string;
   children?: ReactNode;
   sectionClassName?: string;

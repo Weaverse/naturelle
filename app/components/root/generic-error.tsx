@@ -18,7 +18,7 @@ export function GenericError({
   return (
     <div className="relative flex w-full items-center justify-center py-20">
       <div className="z-10 flex flex-col items-center gap-4 px-6 text-center">
-        <h2 className="font-heading text-2xl font-medium">{heading}</h2>
+        <h2 className="font-heading font-medium">{heading}</h2>
         <span className="font-body font-normal whitespace-pre-line">
           {description}
         </span>

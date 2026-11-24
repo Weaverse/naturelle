@@ -100,15 +100,14 @@ export default function ProductStory({
         {showImage ? (
           <div
             className={cn(
-              "min-w-0 flex-1 overflow-hidden rounded-3xl desktop:h-[600px] desktop:w-[480px] desktop:flex-none",
+              "min-w-0 flex-none overflow-hidden rounded-3xl md:relative md:flex-1 desktop:w-[480px] desktop:flex-none",
               imagePosition === "left" && "md:order-1",
             )}
           >
             <Image
               data={imageData}
               sizes="(min-width: 768px) 50vw, 100vw"
-              aspectRatio="4/5"
-              className="h-full w-full object-cover"
+              className="h-auto w-full object-cover md:absolute md:inset-0 md:h-full"
             />
           </div>
         ) : null}

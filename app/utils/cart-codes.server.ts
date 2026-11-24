@@ -7,17 +7,17 @@ import {
 type CartCodeResult = {
   errors?: unknown;
   userErrors?: unknown[];
-  warnings?: Array<{ code?: string | null; target?: string | null }>;
+  warnings?: { code?: string | null; target?: string | null }[];
   cart?: {
-    discountCodes?: Array<{ code: string; applicable: boolean }>;
-    appliedGiftCards?: Array<{ id: string; lastCharacters?: string }>;
+    discountCodes?: { code: string; applicable: boolean }[];
+    appliedGiftCards?: { id: string; lastCharacters?: string }[];
   } | null;
 };
 
 type CartCodeCart<Result extends CartCodeResult> = {
   get(): Promise<{
-    discountCodes?: Array<{ code: string }>;
-    appliedGiftCards?: Array<{ id: string; lastCharacters?: string }>;
+    discountCodes?: { code: string }[];
+    appliedGiftCards?: { id: string; lastCharacters?: string }[];
   } | null>;
   updateDiscountCodes(codes: string[]): Promise<Result>;
   addGiftCardCodes(codes: string[]): Promise<Result>;

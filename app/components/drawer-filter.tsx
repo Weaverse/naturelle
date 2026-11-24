@@ -35,7 +35,7 @@ type DrawerFilterProps = {
   productNumber?: number;
   filters: Filter[];
   appliedFilters?: AppliedFilter[];
-  collections?: Array<{ handle: string; title: string }>;
+  collections?: { handle: string; title: string }[];
   showSearchSort?: boolean;
   priceRange?: { min?: number; max?: number };
   expandFilters?: boolean;

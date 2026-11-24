@@ -7,11 +7,13 @@ import {
   IconQuickViewX,
 } from "~/components/icon";
 import { cn } from "~/utils/cn";
+import { useQuantityDraft } from "~/hooks/use-quantity-draft";
+import { clampProductQuantity } from "~/utils/product-quantity";
 
 interface ProductVariantLike {
   availableForSale: boolean;
   quantityAvailable?: number | null;
-  selectedOptions: Array<{ name: string; value: string }>;
+  selectedOptions: { name: string; value: string }[];
 }
 
 interface ProductFormStateParams<TVariant extends ProductVariantLike> {
@@ -30,6 +32,7 @@ interface ProductFormStateParams<TVariant extends ProductVariantLike> {
 
 interface ProductQuantityInputProps {
   value: number;
+  max?: number | null;
   disabled: boolean;
   onChange: (value: number) => void;
   className?: string;
@@ -52,7 +55,7 @@ export function useProductFormState<TVariant extends ProductVariantLike>({
 }: ProductFormStateParams<TVariant>) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantityState, setQuantityState] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<TVariant | undefined>(
     () => product?.selectedVariant ?? variants?.nodes[0],
   );
@@ -63,8 +66,22 @@ export function useProductFormState<TVariant extends ProductVariantLike>({
     const nextVariant = productSelectedVariant ?? firstVariant;
     if (nextVariant) {
       setSelectedVariant(nextVariant);
+      setQuantityState((currentQuantity) =>
+        clampProductQuantity(currentQuantity, nextVariant.quantityAvailable),
+      );
     }
   }, [productSelectedVariant, firstVariant]);
+
+  const quantity = clampProductQuantity(
+    quantityState,
+    selectedVariant?.quantityAvailable,
+  );
+
+  const setQuantity = (nextQuantity: number) => {
+    setQuantityState(
+      clampProductQuantity(nextQuantity, selectedVariant?.quantityAvailable),
+    );
+  };
 
   const atcText = selectedVariant?.availableForSale
     ? addToCartText
@@ -74,6 +91,9 @@ export function useProductFormState<TVariant extends ProductVariantLike>({
 
   const handleSelectedVariantChange = (variant: TVariant) => {
     setSelectedVariant(variant);
+    setQuantityState((currentQuantity) =>
+      clampProductQuantity(currentQuantity, variant.quantityAvailable),
+    );
     if (syncVariantWithUrl) {
       const nextSearchParams = new URLSearchParams(searchParams);
       for (const option of variant.selectedOptions) {
@@ -99,11 +119,21 @@ export function useProductFormState<TVariant extends ProductVariantLike>({
 
 export function ProductQuantityInput({
   value,
+  max,
   disabled,
   onChange,
   className,
 }: ProductQuantityInputProps) {
   const { t } = useTranslation();
+  const {
+    draftValue,
+    maxQuantity,
+    updateQuantity,
+    handleChange,
+    handleBlur,
+    handleKeyDown,
+  } = useQuantityDraft(value, max, onChange);
+
   return (
     <div
       className={cn(
@@ -116,22 +146,34 @@ export function ProductQuantityInput({
         className="flex h-full items-center justify-center px-5 py-3 text-base disabled:cursor-not-allowed disabled:opacity-40"
         aria-label={t("product.decreaseQuantity")}
         disabled={disabled || value <= 1}
-        onClick={() => onChange(Math.max(1, value - 1))}
+        onClick={() => updateQuantity(value - 1)}
       >
         −
       </button>
-      <span
-        className="flex h-full w-13 items-center justify-center py-3 text-center text-base"
-        aria-live="polite"
-      >
-        {value}
-      </span>
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        role="spinbutton"
+        aria-label={t("product.quantity")}
+        aria-valuemin={1}
+        aria-valuemax={maxQuantity}
+        aria-valuenow={value}
+        className="h-full w-13 border-0 bg-transparent py-3 text-center text-base outline-none"
+        disabled={disabled}
+        value={draftValue}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+      />
       <button
         type="button"
         className="flex h-full items-center justify-center px-5 py-3 text-base disabled:cursor-not-allowed disabled:opacity-40"
         aria-label={t("product.increaseQuantity")}
-        disabled={disabled}
-        onClick={() => onChange(value + 1)}
+        disabled={
+          disabled || (maxQuantity !== undefined && value >= maxQuantity)
+        }
+        onClick={() => updateQuantity(value + 1)}
       >
         +
       </button>

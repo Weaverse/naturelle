@@ -4,10 +4,10 @@ import { isCombinedListing } from "~/utils/combined-listings";
 
 export function redirectIfHandleIsLocalized(
   request: Request,
-  ...localizedResources: Array<{
+  ...localizedResources: {
     handle: string;
     data: { handle: string } & unknown;
-  }>
+  }[]
 ) {
   const url = new URL(request.url);
   let shouldRedirect = false;

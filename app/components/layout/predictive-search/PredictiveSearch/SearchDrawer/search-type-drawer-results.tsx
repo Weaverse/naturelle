@@ -3,14 +3,16 @@ import { Button } from "~/components/button";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { usePredictiveSearch } from "~/hooks/use-predictive-search";
-import type { NormalizedPredictiveSearchResultItem } from "~/types/search-types";
+import {
+  type NormalizedPredictiveSearchResultItem,
+  PREDICTIVE_SEARCH_SIDE_LIMIT,
+} from "~/types/search-types";
 import { PopularKeywords } from "../../popular-keywords";
 import { setNativeInputValue } from "../../set-native-input-value";
 
 export function SearchTypeDrawerResults() {
   const { t } = useTranslation();
-  const { results, totalResults, searchTerm, searchInputRef } =
-    usePredictiveSearch();
+  const { results, searchTerm, searchInputRef } = usePredictiveSearch();
 
   const items = (type: (typeof results)[number]["type"]) =>
     results.find((result) => result.type === type)?.items || [];
@@ -51,17 +53,19 @@ export function SearchTypeDrawerResults() {
           <section>
             <ResultHeading>{t("search.suggestions")}</ResultHeading>
             <ul className="space-y-2">
-              {items("queries").map((query) => (
-                <li key={query.id}>
-                  <button
-                    type="button"
-                    onClick={() => setSearchKeyword(query.title)}
-                    className="text-left font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text"
-                  >
-                    {query.title}
-                  </button>
-                </li>
-              ))}
+              {items("queries")
+                .slice(0, PREDICTIVE_SEARCH_SIDE_LIMIT)
+                .map((query) => (
+                  <li key={query.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSearchKeyword(query.title)}
+                      className="text-left font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text"
+                    >
+                      {query.title}
+                    </button>
+                  </li>
+                ))}
             </ul>
           </section>
         )}
@@ -79,7 +83,7 @@ export function SearchTypeDrawerResults() {
           variant="primary"
           className="h-13.5 px-5 text-sm"
         >
-          {t("search.viewAll")} ({totalResults})
+          {t("search.viewAll")}
         </Button>
       </div>
     </div>
