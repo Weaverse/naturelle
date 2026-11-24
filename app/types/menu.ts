@@ -32,7 +32,6 @@ export type EnhancedMenu = Pick<MenuFragment, "id"> & {
 export interface SingleMenuItem {
   id: string;
   title: string;
-  type?: string;
   items: SingleMenuItem[];
   to: string;
   resource?: {
@@ -56,24 +55,94 @@ export interface SingleMenuItem {
   };
 }
 
-export function isBrandCardMenu(item: {
+export type MenuLayout =
+  | "link"
+  | "journal"
+  | "collection-card"
+  | "collection"
+  | "image-card"
+  | "dropdown"
+  | "multi";
+
+type ImageMenuItem = SingleMenuItem & {
+  resource: NonNullable<SingleMenuItem["resource"]> & {
+    image: NonNullable<NonNullable<SingleMenuItem["resource"]>["image"]>;
+  };
+};
+
+export type CollectionCardMenuItem = ImageMenuItem & {
+  resource: ImageMenuItem["resource"] & {
+    __typename: "Collection";
+  };
+};
+
+/**
+ * A one-level menu made entirely from image-bearing collections uses the
+ * collection-card layout. Merchants opt into the layout through menu structure
+ * instead of a locale-dependent title, URL, or collection tag.
+ */
+export function isCollectionCardMenu(item: {
   items?: SingleMenuItem[];
-  type?: string;
-}) {
+}): item is { items: CollectionCardMenuItem[] } {
   const children = item.items ?? [];
 
   return (
-    item.type === "CATALOG" &&
     children.length > 0 &&
     children.every(
       (child) =>
-        Boolean(child.resource?.image) && (child.items?.length ?? 0) === 0,
+        child.resource?.__typename === "Collection" &&
+        Boolean(child.resource.image) &&
+        (child.items?.length ?? 0) === 0,
+    )
+  );
+}
+
+export function isImageCardMenu(item: {
+  items?: SingleMenuItem[];
+}): item is { items: ImageMenuItem[] } {
+  const children = item.items ?? [];
+
+  return (
+    children.length > 0 &&
+    children.every(
+      (child) =>
+        Boolean(child.resource?.image) &&
+        child.resource?.__typename !== "Collection" &&
+        (child.items?.length ?? 0) === 0,
     )
   );
 }
 
 export function isCollectionMenu(item: Pick<SingleMenuItem, "items">) {
-  return item.items.some(
-    (child) => child.resource?.__typename === "Collection",
+  return (
+    item.items.length > 0 &&
+    item.items.every((child) => child.resource?.__typename === "Collection")
   );
+}
+
+/** Classifies a Shopify menu once so desktop and mobile share the same rules. */
+export function getMenuLayout(item: SingleMenuItem): MenuLayout {
+  const children = item.items ?? [];
+
+  if (children.length === 0) {
+    return "link";
+  }
+  if (children.some((child) => child.resource?.__typename === "Blog")) {
+    return "journal";
+  }
+  if (isCollectionCardMenu(item)) {
+    return "collection-card";
+  }
+  if (isImageCardMenu(item)) {
+    return "image-card";
+  }
+
+  const level = getMaxDepth(item);
+  if (level === 2) {
+    return "dropdown";
+  }
+  if (isCollectionMenu(item)) {
+    return "collection";
+  }
+  return "multi";
 }
