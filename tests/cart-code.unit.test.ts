@@ -8,12 +8,12 @@ import { applyCartCode } from "../app/utils/cart-codes.server.ts";
 
 type TestResult = {
   cart: {
-    discountCodes: Array<{ code: string; applicable: boolean }>;
-    appliedGiftCards: Array<{ id: string; lastCharacters?: string }>;
+    discountCodes: { code: string; applicable: boolean }[];
+    appliedGiftCards: { id: string; lastCharacters?: string }[];
   };
-  errors: Array<{ message: string }>;
-  userErrors: Array<{ message: string }>;
-  warnings: Array<{ code: string; message: string; target?: string }>;
+  errors: { message: string }[];
+  userErrors: { message: string }[];
+  warnings: { code: string; message: string; target?: string }[];
 };
 
 function result({

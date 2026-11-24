@@ -1,27 +1,25 @@
 import { useTranslation } from "@weaverse/hydrogen";
 import clsx from "clsx";
 import { Input } from "~/components/input";
+import { useQuantityDraft } from "~/hooks/use-quantity-draft";
 
 interface QuantityProps {
   value: number;
+  max?: number | null;
   isDisabled?: boolean;
   onChange: (value: number) => void;
 }
 export function Quantity(props: QuantityProps) {
   const { t } = useTranslation();
-  let { value, onChange, isDisabled } = props;
-  let handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Prevent the user from entering non-numeric characters
-    if (
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "ArrowLeft" &&
-      e.key !== "ArrowRight" &&
-      Number.isNaN(Number(e.key))
-    ) {
-      e.preventDefault();
-    }
-  };
+  let { value, max, onChange, isDisabled } = props;
+  const {
+    draftValue,
+    maxQuantity,
+    updateQuantity,
+    handleChange,
+    handleBlur,
+    handleKeyDown,
+  } = useQuantityDraft(value, max, onChange);
   return (
     <div className="space-y-3">
       <legend className="whitespace-pre-wrap max-w-prose text-base font-body font-semibold leading-snug">
@@ -42,24 +40,34 @@ export function Quantity(props: QuantityProps) {
             value <= 1 && "opacity-50 cursor-not-allowed",
           )}
           disabled={isDisabled || value <= 1}
-          onClick={() => onChange(value - 1)}
+          onClick={() => updateQuantity(value - 1)}
         >
           <span>&#8722;</span>
         </button>
         <Input
           className="h-13.5 w-24 rounded-md border-2 bg-background py-3.5 text-center text-base"
-          value={value}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          role="spinbutton"
+          aria-label={t("product.quantity")}
+          aria-valuemin={1}
+          aria-valuemax={maxQuantity}
+          aria-valuenow={value}
+          value={draftValue}
           onKeyDown={handleKeyDown}
-          onChange={(e) => onChange(Number(e.currentTarget.value))}
+          onBlur={handleBlur}
+          onChange={handleChange}
           disabled={isDisabled}
         />
         <button
           type="button"
-          className="h-13.5 rounded-md border-2 border-border-subtle px-5 py-3.5 text-base transition"
+          className="h-13.5 rounded-md border-2 border-border-subtle px-5 py-3.5 text-base transition disabled:cursor-not-allowed disabled:opacity-50"
           name="increase-quantity"
           aria-label={t("product.increaseQuantity")}
-          onClick={() => onChange(value + 1)}
-          disabled={isDisabled}
+          onClick={() => updateQuantity(value + 1)}
+          disabled={
+            isDisabled || (maxQuantity !== undefined && value >= maxQuantity)
+          }
         >
           <span>&#43;</span>
         </button>

@@ -90,7 +90,7 @@ const NewsletterInput = ({
         className="flex sm:w-[var(--max-width-content)] w-full items-center justify-center gap-2"
       >
         <Input
-          className="w-2/3 bg-transparent"
+          className="w-2/3 bg-background-basic!"
           type="email"
           name="email"
           placeholder={placeholder}
@@ -98,7 +98,6 @@ const NewsletterInput = ({
           required
         />
         <Button
-          className="h-auto py-3.5"
           loading={fetcher.state === "submitting"}
           variant={buttonStyle}
           type="submit"

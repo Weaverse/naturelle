@@ -270,7 +270,7 @@ const Testimonials = ({
             <div className="absolute inset-0 bg-black/20 backdrop-blur-2xl" />
           </div>
           <div className="relative z-10 flex flex-col gap-10 px-5 py-16 text-(--text-color) [&>.heading]:hidden md:px-6 lg:px-(--desktop-content-padding)">
-            <h2 className="line-clamp-1 font-serif text-4xl leading-tight">
+            <h2 className="h3 line-clamp-1 font-serif">
               {selectedProduct?.title || "Product name"}
             </h2>
             <div className="flex flex-col gap-5">{children}</div>

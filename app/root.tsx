@@ -189,7 +189,7 @@ export function ErrorBoundary() {
         />
       </div>
       <div className="z-10 flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-10 sm:py-20">
-        <h2 className="font-medium text-7xl text-white">{errorStatus}</h2>
+        <h2 className="font-medium text-white">{errorStatus}</h2>
         {errorMessage && (
           <span className="font-body font-normal text-white">
             {errorMessage}

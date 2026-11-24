@@ -533,7 +533,7 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
               });
             }}
           >
-            {t("cart.continueToCheckout")}
+            {t("cart.checkout")}
           </a>
         </div>
       )}

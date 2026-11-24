@@ -16,8 +16,10 @@ import { setNativeInputValue } from "../../set-native-input-value";
 
 export function SearchTypeHeaderResults({
   inline = false,
+  isClosing = false,
 }: {
   inline?: boolean;
+  isClosing?: boolean;
 }) {
   const { t } = useTranslation();
   const { pcardImageRatio = "1/1" } = useThemeSettings();
@@ -74,7 +76,12 @@ export function SearchTypeHeaderResults({
       {inline && panelTop > 0 && (
         <div
           aria-hidden="true"
-          className="fixed inset-x-0 bottom-0 z-40 animate-fade-in bg-black/35 [--fade-in-duration:150ms]"
+          className={cn(
+            "fixed inset-x-0 bottom-0 z-40 bg-black/35 motion-reduce:animate-none",
+            isClosing
+              ? "animate-fade-out [--fade-out-duration:200ms]"
+              : "animate-fade-in [--fade-in-duration:150ms]",
+          )}
           style={{ top: panelTop }}
         />
       )}
@@ -84,7 +91,12 @@ export function SearchTypeHeaderResults({
           "z-50 bg-background-basic text-text shadow-header motion-reduce:animate-none",
           inline && panelTop === 0 && "invisible",
           inline
-            ? "fixed inset-x-0 w-screen animate-search-dropdown border-y border-border-subtle"
+            ? cn(
+                "fixed inset-x-0 w-screen border-y border-border-subtle",
+                isClosing
+                  ? "animate-search-dropdown-out"
+                  : "animate-search-dropdown",
+              )
             : "absolute left-1/2 top-24 w-[min(900px,calc(100vw-48px))] -translate-x-1/2 animate-fade-in [--fade-in-duration:150ms]",
         )}
         style={inline ? { top: panelTop } : undefined}
@@ -117,7 +129,7 @@ export function SearchTypeHeaderResults({
               <div className="mt-5 flex justify-center">
                 <Link
                   to={`/search?q=${encodeURIComponent(term)}`}
-                  className="rounded-md bg-text px-5 py-2 text-sm text-background-basic"
+                  className="inline-flex h-13.5 items-center justify-center rounded-md bg-text px-5 text-sm text-background-basic"
                 >
                   {t("search.viewAll")}
                 </Link>

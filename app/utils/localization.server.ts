@@ -30,12 +30,12 @@ type LocalizationQueryData = {
     };
     language: Language;
     availableLanguages: Language[];
-    availableCountries: Array<{
+    availableCountries: {
       isoCode: CountryCode;
       name: string;
       currency: { isoCode: CurrencyCode };
       availableLanguages: Language[];
-    }>;
+    }[];
   };
 };
 

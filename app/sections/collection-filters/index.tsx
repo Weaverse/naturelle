@@ -72,7 +72,7 @@ let CollectionFilters = ({
   let { ref, inView } = useInView();
   let { collection, collections, appliedFilters } = useLoaderData<
     CollectionDetailsQuery & {
-      collections: Array<{ handle: string; title: string }>;
+      collections: { handle: string; title: string }[];
       appliedFilters: AppliedFilter[];
     }
   >();
