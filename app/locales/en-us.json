@@ -38,13 +38,14 @@
     "pages": "Pages",
     "articles": "Articles",
     "viewAll": "View all results",
-    "resultsFor": "{{count}} results for “{{term}}”",
     "resultsFor_one": "{{count}} result for “{{term}}”",
     "resultsFor_other": "{{count}} results for “{{term}}”",
     "loadPrevious": "Load previous products",
     "loadMore": "Load more",
     "empty": "No results found",
-    "clearFilters": "Clear filters"
+    "noResultsFor": "No results found for “{{term}}”",
+    "emptyPrompt": "Search by product name, material, room, or collection.",
+    "noResultsHint": "Check the spelling or use a different word or phrase."
   },
   "product": {
     "addToCart": "Add to cart",

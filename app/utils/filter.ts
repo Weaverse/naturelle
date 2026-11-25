@@ -24,6 +24,15 @@ export function clearPaginationParams(params: URLSearchParams) {
   return params;
 }
 
+export function clearFilterParams(params: URLSearchParams) {
+  for (const key of [...params.keys()]) {
+    if (key.startsWith(FILTER_URL_PREFIX)) {
+      params.delete(key);
+    }
+  }
+  return params;
+}
+
 export function getAppliedFilterLink(
   filter: AppliedFilter,
   params: URLSearchParams,

@@ -23,7 +23,6 @@ interface CollectionsData {
   imageAspectRatio?: "1/1" | "4/3" | "3/4";
   backgroundColor?: string;
   showArrow?: boolean;
-  showCount?: boolean;
 }
 
 export interface CollectionNode {
@@ -112,12 +111,13 @@ function Collections({
     imageAspectRatio,
     backgroundColor,
     showArrow,
-    showCount,
     gap = 60,
     children,
     containerClassName,
     ...rest
-  } = props;
+  } = props as CollectionsProps & { showCount?: boolean };
+  // Discard the removed setting from previously saved section data.
+  const { showCount: _legacyShowCount, ...sectionProps } = rest;
   const collections = loaderData?.collections.length
     ? loaderData.collections
     : Array.from({ length: Number(columns) || 4 }, (_, index) => ({
@@ -128,11 +128,9 @@ function Collections({
   const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(
     null,
   );
-  const [activeCollectionIndex, setActiveCollectionIndex] = useState(0);
   const [canSlidePrev, setCanSlidePrev] = useState(false);
   const [canSlideNext, setCanSlideNext] = useState(false);
   const updateNavigation = (swiper: SwiperClass) => {
-    setActiveCollectionIndex(swiper.activeIndex);
     setCanSlidePrev(!swiper.isBeginning);
     setCanSlideNext(!swiper.isEnd);
   };
@@ -144,7 +142,7 @@ function Collections({
   return (
     <Section
       ref={ref}
-      {...rest}
+      {...sectionProps}
       style={sectionStyle}
       backgroundColor={backgroundColor}
       backgroundFor="section"
@@ -307,22 +305,6 @@ function Collections({
             />
           </button>
         </div>
-
-        {showCount && collections.length > 0 && (
-          <p className="text-center text-sm font-medium text-text-subtle">
-            <span className="lg:hidden">
-              {Math.min((activeCollectionIndex + 2) * 2, collections.length)}
-            </span>
-            <span className="hidden lg:inline">
-              {Math.min(
-                activeCollectionIndex + desktopCollectionsPerView,
-                collections.length,
-              )}
-            </span>
-            <span aria-hidden="true"> / </span>
-            {collections.length}
-          </p>
-        )}
       </div>
       {children}
     </Section>
@@ -355,14 +337,6 @@ export const schema = createSchema({
           name: "showArrow",
           label: "Show card arrow",
           defaultValue: true,
-        },
-        {
-          type: "switch",
-          name: "showCount",
-          label: "Show collection count",
-          defaultValue: true,
-          helpText:
-            "Shows visible collections over the selected total, for example 4 / 8.",
         },
       ],
     },
@@ -433,7 +407,6 @@ export const schema = createSchema({
     imageAspectRatio: "1/1",
     backgroundColor: "#FFFFFF",
     showArrow: true,
-    showCount: true,
     width: "full",
     verticalPadding: "medium",
     gap: 60,

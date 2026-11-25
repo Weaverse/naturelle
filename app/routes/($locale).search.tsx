@@ -4,12 +4,20 @@ import {
   type SeoConfig,
 } from "@shopify/hydrogen";
 import type { SearchSortKeys } from "@shopify/hydrogen/storefront-api-types";
-import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect,
+} from "react-router";
 import { seoPayload } from "~/.server/seo";
 import SearchResults from "~/components/search-results";
 import { SEARCH_QUERY } from "~/graphql/queries";
 import { PAGINATION_SIZE } from "~/utils/const";
-import type { SortParam } from "~/utils/filter";
+import {
+  clearFilterParams,
+  clearPaginationParams,
+  type SortParam,
+} from "~/utils/filter";
 import {
   getAppliedFilters,
   getFiltersFromSearchParams,
@@ -22,7 +30,49 @@ export const shouldRevalidate = skipRevalidationForCartActions;
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { storefront } = context;
   const searchParams = new URL(request.url).searchParams;
-  const searchTerm = searchParams.get("q") ?? "";
+  const searchTerm = searchParams.get("q")?.trim() ?? "";
+
+  if (!searchTerm) {
+    const cleanSearchParams = new URLSearchParams(searchParams);
+    cleanSearchParams.delete("q");
+    clearFilterParams(cleanSearchParams);
+    clearPaginationParams(cleanSearchParams);
+
+    if (cleanSearchParams.toString() !== searchParams.toString()) {
+      const url = new URL(request.url);
+      const pathname = url.pathname.replace(/\.data$/i, "");
+      const query = cleanSearchParams.toString();
+      throw redirect(`${pathname}${query ? `?${query}` : ""}`);
+    }
+
+    const seo = seoPayload.collection({
+      url: request.url,
+      collection: {
+        id: "search",
+        title: "Search",
+        handle: "search",
+        descriptionHtml: "Search products",
+        description: "Search products",
+        seo: {
+          title: "Search",
+          description: "Search products",
+        },
+        metafields: [],
+        products: { nodes: [] },
+        updatedAt: new Date().toISOString(),
+      },
+    });
+
+    return {
+      productfilters: [],
+      appliedFilters: [],
+      seo,
+      searchTerm,
+      products: null,
+      lowestPriceProduct: null,
+      highestPriceProduct: null,
+    };
+  }
   const variables = getPaginationVariables(request, {
     pageBy: PAGINATION_SIZE,
   });
