@@ -19,13 +19,9 @@ import {
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
 import { usePrefixPathWithLocale } from "~/utils/locale";
-import {
-  getSavingsPercentage,
-  isNewArrival,
-  type ProductData,
-} from "~/utils/product";
+import type { ProductData } from "~/utils/product";
 import { getSelectedSellingPlan } from "~/utils/selling-plan";
-import { ProductBadge, type ProductBadgeType } from "./product-badge";
+import { getProductBadge, ProductBadge } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 
 export function QuickView({
@@ -71,30 +67,11 @@ export function QuickView({
 
   const publishedAt = (product as typeof product & { publishedAt?: string })
     .publishedAt;
-  const savingsPercentage = getSavingsPercentage(
-    selectedVariant.price,
-    selectedVariant.compareAtPrice,
-  );
-  let badge: { text: string; type: ProductBadgeType } | null = null;
-  if (!selectedVariant.availableForSale) {
-    badge = {
-      text: theme.soldOutBadgeText || "Out of stock",
-      type: "sold-out",
-    };
-  } else if (savingsPercentage) {
-    badge = {
-      text: (theme.saveBadgeText || "Save [percentage]%").replace(
-        "[percentage]",
-        savingsPercentage,
-      ),
-      type: "save",
-    };
-  } else if (
-    publishedAt &&
-    isNewArrival(publishedAt, theme.newBadgeDaysOld || 30)
-  ) {
-    badge = { text: theme.newBadgeText || "New arrival", type: "new" };
-  }
+  const badge = getProductBadge({
+    variant: selectedVariant,
+    publishedAt,
+    settings: theme,
+  });
   const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
 
   return (

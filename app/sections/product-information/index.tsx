@@ -15,6 +15,10 @@ import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
 import { LowStockIndicator } from "~/components/product/low-stock-indicator";
+import {
+  getProductBadge,
+  ProductBadge,
+} from "~/components/product/product-badge";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
@@ -50,6 +54,7 @@ interface ProductInformationProps extends SectionProps {
   showBackInStockForm: boolean;
   hideUnavailableOptions: boolean;
   // product media props
+  showProductBadge: boolean;
   showThumbnails: boolean;
   imageAspectRatio: string;
   mediaDirection: "horizontal" | "vertical";
@@ -88,6 +93,7 @@ let ProductInformation = ({
     showRefundPolicy,
     showBackInStockForm = true,
     hideUnavailableOptions,
+    showProductBadge = true,
     showThumbnails,
     imageAspectRatio,
     mediaDirection,
@@ -133,6 +139,11 @@ let ProductInformation = ({
     const { title, vendor, descriptionHtml } = product;
     const { shippingPolicy, refundPolicy } = shop;
     const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
+    const badge = getProductBadge({
+      variant: selectedVariant,
+      publishedAt: product.publishedAt,
+      settings: theme,
+    });
     return (
       <Section
         ref={ref}
@@ -148,15 +159,24 @@ let ProductInformation = ({
           )}
         >
           <div className="min-w-0 flex flex-col gap-10">
-            <ProductMedia
-              media={product?.media.nodes}
-              selectedVariant={selectedVariant}
-              showThumbnails={showThumbnails}
-              imageAspectRatio={imageAspectRatio}
-              spacing={spacing}
-              showSlideCounter={showSlideCounter}
-              direction={mediaDirection}
-            />
+            <div className="relative">
+              <ProductMedia
+                media={product?.media.nodes}
+                selectedVariant={selectedVariant}
+                showThumbnails={showThumbnails}
+                imageAspectRatio={imageAspectRatio}
+                spacing={spacing}
+                showSlideCounter={showSlideCounter}
+                direction={mediaDirection}
+              />
+              {showProductBadge && badge && (
+                <ProductBadge
+                  text={badge.text}
+                  type={badge.type}
+                  className="absolute right-[5.17%] top-[17px] z-20 font-normal tracking-[-0.12px]"
+                />
+              )}
+            </div>
             <div className="empty:hidden border-t border-border-subtle">
               {showDetails && descriptionHtml && (
                 <ProductDescription
@@ -532,6 +552,12 @@ export const schema = createSchema({
     {
       group: "Product Media",
       inputs: [
+        {
+          label: "Show product badge",
+          name: "showProductBadge",
+          type: "switch",
+          defaultValue: true,
+        },
         {
           type: "select",
           name: "imageAspectRatio",

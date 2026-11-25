@@ -17,12 +17,12 @@ import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import type { JudgemeReviewsData } from "~/types/judgeme";
 import { cn } from "~/utils/cn";
+import { isDiscounted } from "~/utils/product";
 import {
-  getSavingsPercentage,
-  isDiscounted,
-  isNewArrival,
-} from "~/utils/product";
-import { ProductBadge, type ProductBadgeType } from "./product-badge";
+  getProductBadge,
+  ProductBadge,
+  type ProductBadgeSettings,
+} from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 import { QuickViewTrigger } from "./quick-view";
 
@@ -30,54 +30,15 @@ export type CardProduct =
   | ProductCardFragment
   | NonNullable<ProductQuery["product"]>;
 
-type ProductBadgeSettings = {
-  saveBadgeText?: string;
-  newBadgeText?: string;
-  newBadgeDaysOld?: number;
-  soldOutBadgeText?: string;
-};
-
 export function getProductCardBadge(
   product: CardProduct,
   customBadge: string | undefined,
   settings: ProductBadgeSettings,
-): { text: string; type: ProductBadgeType } | null {
+): ReturnType<typeof getProductBadge> {
   const variant = product.variants.nodes[0];
-  if (!variant) {
-    return null;
-  }
-
-  const {
-    saveBadgeText = "Save [percentage]%",
-    newBadgeText = "New arrival",
-    newBadgeDaysOld = 30,
-    soldOutBadgeText = "Out of stock",
-  } = settings;
-  const savingsPercentage = getSavingsPercentage(
-    variant.price as MoneyV2,
-    variant.compareAtPrice as MoneyV2,
-  );
   const publishedAt = (product as CardProduct & { publishedAt?: string })
     .publishedAt;
-
-  if (!variant.availableForSale) {
-    return { text: customBadge || soldOutBadgeText, type: "sold-out" };
-  }
-  if (savingsPercentage) {
-    return {
-      text:
-        customBadge ||
-        saveBadgeText.replace("[percentage]", String(savingsPercentage)),
-      type: "save",
-    };
-  }
-  if (isNewArrival(publishedAt, newBadgeDaysOld)) {
-    return { text: customBadge || newBadgeText, type: "new" };
-  }
-  if (customBadge) {
-    return { text: customBadge, type: "new" };
-  }
-  return null;
+  return getProductBadge({ variant, publishedAt, customBadge, settings });
 }
 
 export interface ProductCardProps {
