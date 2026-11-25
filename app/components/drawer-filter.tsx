@@ -68,9 +68,8 @@ export function DrawerFilter({
         <div className="flex items-center gap-3">
           <Button
             onClick={openDrawer}
-            shape="default"
             variant="outline"
-            className="h-14 rounded-xl px-5 py-[11px] font-normal lg:hidden"
+            className="px-5 py-[11px] font-normal lg:hidden"
             classNameContainer="flex items-center justify-center gap-2"
           >
             <IconFilters className="size-5" viewBox="0 0 16 16" />
@@ -78,7 +77,7 @@ export function DrawerFilter({
               {t("collection.filter")}
             </span>
           </Button>
-          <div className="btn-outline hidden items-center justify-center gap-2 whitespace-nowrap rounded-xl px-5 py-[11px] font-body font-normal transition-colors lg:inline-flex">
+          <div className="btn-outline hidden h-13.5 items-center justify-center gap-2 whitespace-nowrap rounded-xl px-5 py-[11px] font-body font-normal transition-colors lg:inline-flex">
             <IconFilters className="size-5" viewBox="0 0 16 16" />
             <span className="font-heading text-xl tracking-[-0.2px]">
               {t("collection.filter")}
@@ -197,7 +196,7 @@ function ListItemFilter({
         disabled={option.count === 0}
         onClick={() => handleCheckedChange(!checked)}
         className={cn(
-          "flex items-center justify-center rounded-xl border-2 px-3 py-2 font-body text-base leading-[160%] font-normal tracking-[-0.16px] transition-colors",
+          "flex h-12.5 items-center justify-center rounded-xl border px-3 font-body text-base leading-[160%] font-normal tracking-[-0.16px] transition-colors",
           option.count === 0 &&
             "diagonal cursor-not-allowed text-foreground-subtle opacity-60",
           checked
@@ -622,7 +621,7 @@ function PriceRangeFilter({
       <div className="flex w-full min-w-0 items-center gap-6 overflow-hidden">
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5">
+          <div className="flex h-13.5 min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3 py-0">
             <input
               aria-label={t("collection.minimumPrice")}
               name="minPrice"
@@ -646,7 +645,7 @@ function PriceRangeFilter({
         </div>
         <div className="flex min-w-0 flex-1 items-center gap-1">
           <span aria-hidden="true">{currencySymbol}</span>
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5">
+          <div className="flex h-13.5 min-w-0 flex-1 items-center gap-2 rounded-xl border border-border-subtle bg-background-basic px-3 py-0">
             <input
               aria-label={t("collection.maximumPrice")}
               name="maxPrice"
@@ -748,7 +747,7 @@ export function SortMenu({
       </span>
       <Menu.Button
         aria-label={t("collection.sortProducts", { sort: activeItem.label })}
-        className="flex items-center gap-2.5 rounded-xl border border-border px-4 py-[11px] text-left"
+        className="flex h-13.5 items-center gap-2.5 rounded-xl border border-border px-4 py-[11px] text-left"
       >
         <span className="max-w-[7.5rem] overflow-hidden text-ellipsis whitespace-nowrap font-heading text-xl font-normal tracking-[-0.2px] md:max-w-none">
           {activeItem.label}

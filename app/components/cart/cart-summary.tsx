@@ -9,7 +9,8 @@ import {
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { type SyntheticEvent, useState } from "react";
 import { useFetcher } from "react-router";
-import { buttonVariants } from "~/components/button";
+import { Button, buttonVariants } from "~/components/button";
+import { Input } from "~/components/input";
 import { Link } from "~/components/link";
 import { Skeleton } from "~/components/skeleton";
 import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
@@ -328,13 +329,11 @@ function CartPageSummary({ cart }: { cart: CartWithOptimistic }) {
       {checkoutUrl && (
         <a
           href={checkoutUrl}
-          className={buttonVariants({
-            shape: "default",
-            className: cn(
-              "w-full rounded-xl font-body text-base leading-[160%] tracking-[-0.16px]",
-              isCartUpdating && "pointer-events-none opacity-50",
-            ),
-          })}
+          className={cn(
+            buttonVariants(),
+            "w-full py-3 text-base leading-[160%] tracking-[-0.16px]",
+            isCartUpdating && "pointer-events-none opacity-50",
+          )}
           aria-disabled={isCartUpdating || undefined}
           aria-busy={isCartUpdating || undefined}
           tabIndex={isCartUpdating ? -1 : undefined}
@@ -500,25 +499,21 @@ function CartAsideSummary({ cart }: { cart: CartWithOptimistic }) {
           <Link
             to="/cart"
             onClick={closeCart}
-            className={buttonVariants({
-              variant: "secondary",
-              shape: "default",
-              className:
-                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
-            })}
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "min-w-0 flex-1 py-3 text-base leading-[160%] tracking-[-0.16px]",
+            )}
           >
             {t("cart.viewCart")}
           </Link>
           <a
             href={checkoutUrl}
             target="_self"
-            className={buttonVariants({
-              shape: "default",
-              className: cn(
-                "h-auto min-w-0 flex-1 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
-                isCartUpdating && "pointer-events-none opacity-50",
-              ),
-            })}
+            className={cn(
+              buttonVariants(),
+              "min-w-0 flex-1 py-3 text-base leading-[160%] tracking-[-0.16px]",
+              isCartUpdating && "pointer-events-none opacity-50",
+            )}
             aria-disabled={isCartUpdating || undefined}
             aria-busy={isCartUpdating || undefined}
             tabIndex={isCartUpdating ? -1 : undefined}
@@ -683,21 +678,21 @@ function PageCartCodeForm({
         {label || t("cart.code")}
       </label>
       <div className="flex gap-2">
-        <input
+        <Input
           id="cart-code"
           name="code"
           value={code}
           onChange={(event) => onCodeChange(event.target.value)}
           placeholder={t("cart.enterCode")}
-          className="min-w-0 flex-1 rounded-xl border border-border bg-background px-3 py-2 font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle outline-none placeholder:text-text-subtle"
+          className="min-w-0 flex-1 rounded-xl border-border bg-background font-body text-sm leading-none font-normal tracking-[-0.14px] text-text-subtle placeholder:text-text-subtle"
         />
-        <button
+        <Button
           type="submit"
           disabled={!code.trim() || isSubmitting}
-          className="h-13.5 rounded-xl bg-text-primary px-6 py-3.5 font-body text-base leading-[160%] font-semibold tracking-[-0.16px] text-text-inverse disabled:cursor-not-allowed disabled:opacity-50"
+          className="text-base leading-[160%] tracking-[-0.16px]"
         >
           {t("cart.apply")}
-        </button>
+        </Button>
       </div>
       {submissionComplete &&
         (applied ? (

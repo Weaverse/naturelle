@@ -97,7 +97,7 @@ export default function Faqs({
                 as="a"
                 to={buttonLink || "/pages/contact"}
                 variant="secondary"
-                className="mt-7 rounded-xl"
+                className="mt-7"
               >
                 {buttonText}
               </Button>

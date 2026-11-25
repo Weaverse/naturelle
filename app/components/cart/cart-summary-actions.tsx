@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
 import { getCartMutationError } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
@@ -14,7 +15,9 @@ import { usePrefixPathWithLocale } from "~/utils/locale";
 type CartLayout = "page" | "aside";
 
 const dialogTitleClass = "mb-4 font-semibold tracking-[-0.16px] text-text";
-const dialogFieldClass =
+const dialogInputClass =
+  "rounded-lg text-base font-normal tracking-[-0.16px] text-text placeholder:text-text";
+const dialogTextareaClass =
   "w-full rounded-lg border border-border-subtle p-3 font-normal tracking-[-0.16px] text-text placeholder:text-text";
 const dialogButtonClass = "w-full rounded-lg tracking-[-0.16px]";
 
@@ -148,7 +151,7 @@ export function NoteDialog({
           </label>
           <textarea
             id={noteId}
-            className={cn(dialogFieldClass, "min-h-[92px] resize-none")}
+            className={cn(dialogTextareaClass, "min-h-[92px] resize-none")}
             placeholder={t("cart.notePlaceholder")}
             rows={3}
             name="cartNote"
@@ -240,14 +243,14 @@ export function DiscountDialog({ layout = "aside" }: { layout?: CartLayout }) {
           <label htmlFor={discountCodeId} className="sr-only">
             {t("cart.discountCode")}
           </label>
-          <input
+          <Input
             id={discountCodeId}
             value={code}
             onChange={(e) => {
               setCode(e.target.value);
               fetcher.data = null;
             }}
-            className={dialogFieldClass}
+            className={dialogInputClass}
             type="text"
             name="discountCode"
             placeholder={t("cart.discountCode")}
@@ -345,9 +348,9 @@ export function GiftCardDialog({
           <label htmlFor={giftCardCodeId} className="sr-only">
             {t("cart.giftCardCode")}
           </label>
-          <input
+          <Input
             id={giftCardCodeId}
-            className={dialogFieldClass}
+            className={dialogInputClass}
             type="text"
             name="giftCardCode"
             placeholder={t("cart.giftCardCode")}

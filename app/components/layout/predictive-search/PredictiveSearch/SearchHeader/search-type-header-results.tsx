@@ -1,5 +1,6 @@
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useRef, useState } from "react";
+import { Button } from "~/components/button";
 import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { Skeleton } from "~/components/skeleton";
@@ -127,12 +128,12 @@ export function SearchTypeHeaderResults({
             </div>
             {hasTerm && products.length > 0 && (
               <div className="mt-5 flex justify-center">
-                <Link
+                <Button
                   to={`/search?q=${encodeURIComponent(term)}`}
-                  className="inline-flex h-13.5 items-center justify-center rounded-md bg-text px-5 text-sm text-background-basic"
+                  className="rounded-md px-5 text-sm"
                 >
                   {t("search.viewAll")}
-                </Link>
+                </Button>
               </div>
             )}
           </section>

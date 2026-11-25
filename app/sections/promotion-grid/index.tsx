@@ -139,11 +139,8 @@ export default function PromotionGrid({
             <h4 className="mt-1 max-w-sm text-center">{headings[index]}</h4>
             <span
               className={cn(
-                buttonVariants({
-                  variant: "secondary",
-                  shape: "default",
-                }),
-                "mt-5 rounded-xl px-6 py-3.5 font-body text-base leading-[160%] tracking-[-0.16px]",
+                buttonVariants({ variant: "secondary" }),
+                "mt-5 text-base leading-[160%] tracking-[-0.16px]",
               )}
             >
               {buttonText ?? "Explore collection"}

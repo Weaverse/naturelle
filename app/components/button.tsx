@@ -16,9 +16,9 @@ const buttonVariants = cva(
         custom: "",
       },
       size: {
-        default: "h-14 px-6 py-3.5",
+        default: "h-13.5 px-6 py-3.5",
         sm: "h-10 px-3",
-        lg: "h-14 px-8 py-3.5",
+        lg: "h-13.5 px-8 py-3.5",
         icon: "h-10 w-10",
       },
       shape: {
@@ -34,6 +34,8 @@ const buttonVariants = cva(
     defaultVariants: {
       variant: "primary",
       size: "default",
+      shape: "default",
+      fontFamily: "body",
     },
   },
 );
@@ -43,7 +45,6 @@ export interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   loading?: boolean;
-  asChild?: boolean;
   as?: React.ElementType;
   to?: string;
   target?: string;
@@ -58,7 +59,6 @@ const Button = ({
   size = "default",
   shape = "default",
   fontFamily = "body",
-  asChild,
   as = "button",
   classNameContainer,
   children,

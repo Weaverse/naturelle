@@ -134,7 +134,6 @@ export default function MapSection({
                   target={buttonTarget}
                   variant="primary"
                   data-motion="fade-up"
-                  className="h-auto rounded-2xl px-5 py-3.5 text-sm"
                 >
                   {buttonText}
                 </Button>

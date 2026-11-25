@@ -15,6 +15,7 @@ import { Link } from "~/components/link";
 import { ProductCard } from "~/components/product/product-card";
 import { PRODUCT_CARD_FRAGMENT } from "~/graphql/fragments";
 import { useRootLoaderData } from "~/root";
+import { cn } from "~/utils/cn";
 import { DEFAULT_LOCALE } from "~/utils/const";
 import { getImageLoadingPriority } from "~/utils/image";
 import { formatCurrency } from "~/utils/locale";
@@ -180,10 +181,10 @@ export default function ProductGridList({
 
               {collectionButtonText && (
                 <span
-                  className={buttonVariants({
-                    variant: "secondary",
-                    className: "gap-3 rounded-xl transition-all! duration-300",
-                  })}
+                  className={cn(
+                    buttonVariants({ variant: "secondary" }),
+                    "gap-3 transition-all! duration-300",
+                  )}
                 >
                   {collectionButtonText}
                 </span>
