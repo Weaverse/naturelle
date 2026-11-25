@@ -1,5 +1,6 @@
 import type { Filter } from "@shopify/hydrogen/storefront-api-types";
 import { useTranslation } from "@weaverse/hydrogen";
+import { useEffect, useState } from "react";
 import { Form, useLoaderData, useLocation, useNavigate } from "react-router";
 import type { ProductCardFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
@@ -9,10 +10,10 @@ import { Input } from "~/components/input";
 import { ProductCard } from "~/components/product/product-card";
 import { ProductListingFilterToolbar } from "~/components/product-listing/filter-toolbar";
 import { ProductListingPagination } from "~/components/product-listing/pagination";
-import { PageHeader, Text } from "~/components/text";
+import { PageHeader } from "~/components/text";
 import type { loader as searchLoader } from "~/routes/($locale).search";
 import { FILTER_URL_PREFIX } from "~/utils/const";
-import { clearPaginationParams } from "~/utils/filter";
+import { clearFilterParams, clearPaginationParams } from "~/utils/filter";
 import { getImageLoadingPriority } from "~/utils/image";
 import { getSearchResultsTranslationKey } from "~/utils/search-results";
 
@@ -28,6 +29,12 @@ export default function SearchResults() {
   } = useLoaderData<typeof searchLoader>();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchInputValue, setSearchInputValue] = useState(searchTerm);
+
+  useEffect(() => {
+    setSearchInputValue(searchTerm);
+  }, [searchTerm]);
+
   const searchFormParams = new URLSearchParams(location.search);
   searchFormParams.delete("q");
   clearPaginationParams(searchFormParams);
@@ -37,19 +44,22 @@ export default function SearchResults() {
   const noResults =
     products?.totalCount === 0 && Boolean(searchTerm || hasAppliedFilterParams);
 
-  const clearFiltersParams = new URLSearchParams(location.search);
-  for (const key of [...clearFiltersParams.keys()]) {
-    if (key.startsWith(FILTER_URL_PREFIX)) {
-      clearFiltersParams.delete(key);
-    }
+  const submittedSearchFormParams = new URLSearchParams(searchFormParams);
+  if (searchInputValue.trim() !== searchTerm) {
+    clearFilterParams(submittedSearchFormParams);
   }
+
+  const clearFiltersParams = new URLSearchParams(location.search);
+  clearFilterParams(clearFiltersParams);
   clearPaginationParams(clearFiltersParams);
   const clearFiltersQuery = clearFiltersParams.toString();
   const clearFiltersTo = `${location.pathname}${clearFiltersQuery ? `?${clearFiltersQuery}` : ""}`;
 
   const clearSearch = () => {
+    setSearchInputValue("");
     const nextParams = new URLSearchParams(location.search);
     nextParams.delete("q");
+    clearFilterParams(nextParams);
     clearPaginationParams(nextParams);
     const query = nextParams.toString();
     navigate(`${location.pathname}${query ? `?${query}` : ""}`, {
@@ -68,37 +78,39 @@ export default function SearchResults() {
   };
   const storefrontFilters = (productfilters as Filter[] | undefined) ?? [];
 
-  if (!products) {
-    return null;
-  }
-
   return (
     <section className="bg-background-basic">
       <PageHeader variant="search">
         <div className="flex w-full flex-col items-center gap-6 px-4">
           <h1 className="h2 w-full text-center font-normal text-text">
-            {searchTerm
-              ? t(getSearchResultsTranslationKey(products.totalCount), {
-                  count: products.totalCount,
-                  term: searchTerm,
-                })
-              : t("search.title")}
+            {!searchTerm
+              ? t("search.title")
+              : noResults
+                ? t("search.noResultsFor", { term: searchTerm })
+                : t(getSearchResultsTranslationKey(products?.totalCount ?? 0), {
+                    count: products?.totalCount ?? 0,
+                    term: searchTerm,
+                  })}
           </h1>
           <Form
             method="get"
             className="relative flex w-full items-center justify-center"
           >
-            {[...searchFormParams.entries()].map(([name, value], index) => (
-              <input
-                key={`${name}-${value}-${index}`}
-                type="hidden"
-                name={name}
-                value={value}
-              />
-            ))}
+            {[...submittedSearchFormParams.entries()].map(
+              ([name, value], index) => (
+                <input
+                  key={`${name}-${value}-${index}`}
+                  type="hidden"
+                  name={name}
+                  value={value}
+                />
+              ),
+            )}
             <Input
-              defaultValue={searchTerm}
+              value={searchInputValue}
+              onChange={(event) => setSearchInputValue(event.target.value)}
               onClear={clearSearch}
+              clearLabel={t("accessibility.clearSearch")}
               name="q"
               placeholder={t("search.placeholder")}
               className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 sm:w-96 desktop:w-[560px]"
@@ -115,26 +127,34 @@ export default function SearchResults() {
               variant="search"
             />
           </Form>
+          {!searchTerm && (
+            <p className="text-center text-base text-text-subtle">
+              {t("search.emptyPrompt")}
+            </p>
+          )}
+          {noResults && (
+            <p className="text-center text-base text-text-subtle">
+              {t("search.noResultsHint")}
+            </p>
+          )}
         </div>
       </PageHeader>
-      <ProductListingFilterToolbar
-        showSearchSort
-        appliedFilters={appliedFilters}
-        productNumber={products.totalCount}
-        filters={storefrontFilters}
-        priceRange={priceRange}
-        expandFilters
-        showFiltersCount
-        enableSwatches
-        displayAsButtonFor="Size, More filters"
-        filterItemsLimit={10}
-        checkboxShape="square"
-        clearFiltersTo={clearFiltersTo}
-        contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
-      >
-        {noResults ? (
-          <NoResults />
-        ) : (
+      {products && !noResults && (
+        <ProductListingFilterToolbar
+          showSearchSort
+          appliedFilters={appliedFilters}
+          productNumber={products.totalCount}
+          filters={storefrontFilters}
+          priceRange={priceRange}
+          expandFilters
+          showFiltersCount
+          enableSwatches
+          displayAsButtonFor="Size, More filters"
+          filterItemsLimit={10}
+          checkboxShape="square"
+          clearFiltersTo={clearFiltersTo}
+          contentClassName="min-w-0 flex-1 space-y-5 pb-12 lg:pb-20"
+        >
           <ProductListingPagination
             connection={products}
             renderPrevious={({ PreviousLink, isLoading }) => (
@@ -172,17 +192,8 @@ export default function SearchResults() {
               </Grid>
             )}
           />
-        )}
-      </ProductListingFilterToolbar>
+        </ProductListingFilterToolbar>
+      )}
     </section>
-  );
-}
-
-function NoResults() {
-  const { t } = useTranslation();
-  return (
-    <div className="mx-auto flex w-full max-w-page justify-center px-5 py-20 text-center md:px-6">
-      <Text className="opacity-50">{t("search.empty")}</Text>
-    </div>
   );
 }
