@@ -2,6 +2,7 @@ import { CircleNotchIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { Image, Money } from "@shopify/hydrogen";
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useRef, useState } from "react";
+import { Button } from "~/components/button";
 import { PaymentMethods } from "~/components/layout/footer/payment-methods";
 import { Link } from "~/components/link";
 import {
@@ -682,13 +683,9 @@ export function CartEmpty({
   return (
     <div hidden={!visible} className={cn(layout === "aside" && "px-0 py-2")}>
       <p className="mb-4">{t("cart.emptyDescription")}</p>
-      <Link
-        to="/collections"
-        onClick={onClose}
-        className="text-animation font-medium"
-      >
+      <Button to="/collections" onClick={onClose} variant="primary">
         {t("cart.continueShopping")} →
-      </Link>
+      </Button>
       {visible ? <CartPopularCollections layout={layout} /> : null}
     </div>
   );
