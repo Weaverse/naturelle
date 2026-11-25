@@ -234,12 +234,12 @@ let SingleProduct = ({
                     ]}
                     variant="primary"
                     onFetchingStateChange={(state) =>
-                      setIsLoading(state === "submitting")
+                      setIsLoading(state !== "idle")
                     }
                     data-test="add-to-cart"
                     className="w-full rounded-xl"
                   >
-                    <span> {atcText}</span>
+                    <span>{atcText}</span>
                   </AddToCartButton>
                 </div>
                 {selectedVariant?.availableForSale &&
@@ -254,7 +254,6 @@ let SingleProduct = ({
                           },
                         ]}
                         storeDomain={storeDomain}
-                        data-motion="fade-up"
                       />
                     </div>
                   )}

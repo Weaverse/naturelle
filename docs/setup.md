@@ -327,6 +327,22 @@ global change because the same token or setting can affect many pages.
 | Quick view | Product form labels, stock treatment, policy links, media layout, thumbnails, and image spacing | Keep behavior aligned with the Product information and Single product sections. |
 | Product card | Quick view, image ratio/radius/hover image, alignment, vendor, and price display | Use one catalog image treatment across collections and search. |
 
+### Collection-card navigation
+
+The header chooses its collection-card layout from the Shopify menu structure;
+merchants do not need to add a special tag or use a particular menu title.
+
+To use collection cards, create a top-level menu item whose direct children:
+
+- all link to Shopify collections;
+- all have a collection image; and
+- have no nested menu items below them.
+
+If those conditions are not met, the shared menu classifier selects the
+journal, collection, image-card, dropdown, or multi-level layout from the
+resource types and nesting structure. Desktop and mobile use that same
+classification while rendering viewport-specific presentations.
+
 Shopify resource data—products, variants, collections, menus, policies,
 selling plans, metafields, and metaobjects—is edited in Shopify Admin. Studio
 chooses and presents that data; it does not replace Shopify as its source of

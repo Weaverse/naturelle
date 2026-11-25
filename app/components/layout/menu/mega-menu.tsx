@@ -6,8 +6,11 @@ import { IconCaret } from "~/components/icon";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import {
+  type CollectionCardMenuItem,
   type EnhancedMenu,
-  getMaxDepth,
+  getMenuLayout,
+  isCollectionCardMenu,
+  type MenuLayout,
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
@@ -28,18 +31,8 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
         <nav className="z-30 hidden h-full grow items-center justify-center gap-9 desktop:flex">
           {menuItems.map((menuItem) => {
             let { id, items = [], title, to } = menuItem;
-            let level = getMaxDepth(menuItem);
-            let hasSubmenu = level > 1;
-            let isJournal = items.some(
-              ({ resource }) => resource?.__typename === "Blog",
-            );
-            let isDropdown =
-              !isJournal &&
-              level === 2 &&
-              items.every(
-                ({ resource }) =>
-                  !resource?.image && resource?.__typename !== "Article",
-              );
+            let layout = getMenuLayout(menuItem);
+            let hasSubmenu = layout !== "link";
             let handleTextHover = () => {
               const nextValue = hasSubmenu ? id : "";
               setValue((currentValue) =>
@@ -87,7 +80,7 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                     </span>
                   </Link>
                 </Menubar.Trigger>
-                {level > 1 && (
+                {hasSubmenu && (
                   <Menubar.Content
                     data-header-menu-content=""
                     className={cn([
@@ -96,15 +89,22 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                       "data-[state=closed]:pointer-events-none motion-reduce:animate-none",
                       !value &&
                         "data-[state=closed]:animate-fade-out data-[state=closed]:[--fade-out-duration:300ms]",
-                      isDropdown ? "py-6" : "w-screen py-8",
+                      layout === "dropdown"
+                        ? "py-6"
+                        : cn(
+                            "w-screen",
+                            layout === "collection-card"
+                              ? "max-h-[var(--radix-menubar-content-available-height)] overflow-y-auto overscroll-contain py-10"
+                              : "py-8",
+                          ),
                     ])}
                   >
-                    {isDropdown ? (
+                    {layout === "dropdown" ? (
                       <DropdownSubMenu items={items} />
-                    ) : isJournal ? (
+                    ) : layout === "journal" ? (
                       <JournalMenu items={items} />
                     ) : (
-                      <LayoutMenu items={items} />
+                      <LayoutMenu item={menuItem} layout={layout} />
                     )}
                   </Menubar.Content>
                 )}
@@ -141,10 +141,23 @@ function DropdownSubMenu({ items }: { items: SingleMenuItem[] }) {
   );
 }
 
-function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
-  const collectionItems = items.filter(
-    (item) => item.resource?.__typename === "Collection",
-  );
+function LayoutMenu({
+  item: menuItem,
+  layout,
+}: {
+  item: SingleMenuItem;
+  layout: MenuLayout;
+}) {
+  if (layout === "collection-card" && isCollectionCardMenu(menuItem)) {
+    return <CollectionCardsLayout items={menuItem.items} />;
+  }
+
+  const { items } = menuItem;
+
+  const collectionItems =
+    layout === "collection"
+      ? items.filter((item) => item.resource?.__typename === "Collection")
+      : [];
 
   if (collectionItems.length) {
     const featuredCollection = collectionItems.find(
@@ -214,6 +227,51 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
     );
   }
 
+  return <GenericLayoutMenu items={items} />;
+}
+
+function CollectionCardsLayout({ items }: { items: CollectionCardMenuItem[] }) {
+  return (
+    <div className="container mx-auto flex w-full flex-wrap items-stretch justify-center gap-5">
+      {items.map(({ id, title, to, resource }, idx) => (
+        <SlideIn
+          key={id}
+          className="group/item min-w-40 max-w-[262px] basis-[calc((100%_-_5rem)/5)] grow shrink overflow-hidden rounded-2xl bg-background-subtle-1 pb-5"
+          style={{ "--idx": idx } as React.CSSProperties}
+        >
+          <Link
+            to={to}
+            prefetch="intent"
+            className="flex h-full flex-col gap-5"
+          >
+            <div className="relative h-65 overflow-hidden">
+              <Image
+                sizes="(min-width: 1440px) 262px, calc((100vw - 128px) / 5)"
+                data={resource.image}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover/item:scale-[1.03]"
+                width={600}
+              />
+              <div className="absolute inset-x-0 bottom-0 flex h-18 items-center bg-gradient-to-b from-transparent to-menu-card-overlay p-4">
+                <p className="line-clamp-1 font-brand text-[22px] leading-[110%] font-semibold tracking-[-0.44px] text-text-inverse underline-offset-4 group-hover/item:underline">
+                  {resource.title || title}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 px-4">
+              {resource.description && (
+                <p className="line-clamp-2 font-body text-sm leading-[140%] font-normal tracking-[-0.28px] text-text">
+                  {resource.description}
+                </p>
+              )}
+            </div>
+          </Link>
+        </SlideIn>
+      ))}
+    </div>
+  );
+}
+
+function GenericLayoutMenu({ items }: { items: SingleMenuItem[] }) {
   return (
     <div className="container mx-auto flex justify-center gap-4">
       {items.map(({ id, title, to, items: children, resource }, idx) =>
@@ -232,7 +290,7 @@ function LayoutMenu({ items }: { items: SingleMenuItem[] }) {
                   width={300}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-                <p className="absolute line-clamp-1 right-3 bottom-3 left-3 font-heading text-base text-text-inverse underline-offset-4 group-hover/item:underline">
+                <p className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse underline-offset-4 group-hover/item:underline">
                   {resource.title || title}
                 </p>
               </div>

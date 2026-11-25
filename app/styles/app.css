@@ -7,6 +7,7 @@
   --font-body: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Belleza", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-display: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-brand: "Cormorant", ui-serif, Georgia, serif;
 
   /* Breakpoints */
   --breakpoint-*: initial;
@@ -44,6 +45,7 @@
   --color-label-soldout-background: var(--color-label-bg-soldout);
   --color-button-primary-text: var(--color-button-primary-text);
   --color-button-primary-background: var(--color-button-primary-background);
+  --color-menu-card-overlay: rgba(59, 32, 40, 0.6);
 
   /* Height Overrides */
   --height-screen: var(--screen-height, 100vh);
