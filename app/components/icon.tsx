@@ -144,6 +144,88 @@ export function IconBag(props: IconProps) {
   );
 }
 
+export function Truck(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.stroke || "currentColor"}
+      strokeWidth={props.strokeWidth ?? 1}
+    >
+      <path
+        d="M16.5 7.50002H20.4938C20.6432 7.49904 20.7894 7.54329 20.9132 7.62695C21.037 7.71061 21.1326 7.82977 21.1875 7.96877L22.5 11.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M1.5 13.5H16.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M19.875 18C19.875 19.2426 18.8676 20.25 17.625 20.25C16.3824 20.25 15.375 19.2426 15.375 18C15.375 16.7574 16.3824 15.75 17.625 15.75C18.8676 15.75 19.875 16.7574 19.875 18Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.625 18C8.625 19.2426 7.61764 20.25 6.375 20.25C5.13236 20.25 4.125 19.2426 4.125 18C4.125 16.7574 5.13236 15.75 6.375 15.75C7.61764 15.75 8.625 16.7574 8.625 18Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M15.375 18H8.625" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M4.125 18H2.25C2.05109 18 1.86032 17.921 1.71967 17.7803C1.57902 17.6397 1.5 17.4489 1.5 17.25V6.75C1.5 6.55109 1.57902 6.36032 1.71967 6.21967C1.86032 6.07902 2.05109 6 2.25 6H16.5V16.05"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.5 11.25H22.5V17.25C22.5 17.4489 22.421 17.6397 22.2803 17.7803C22.1397 17.921 21.9489 18 21.75 18H19.875"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
+export function Undo2(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.stroke || "currentColor"}
+      strokeWidth={props.strokeWidth ?? 1}
+    >
+      <path
+        d="M7.5 12.75L3 8.25L7.5 3.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.5 18.75H15.75C17.1424 18.75 18.4777 18.1969 19.4623 17.2123C20.4469 16.2277 21 14.8924 21 13.5C21 12.1076 20.4469 10.7723 19.4623 9.78769C18.4777 8.80312 17.1424 8.25 15.75 8.25H3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
+export function Leaf(props: IconProps) {
+  return (
+    <Icon
+      {...props}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.stroke || "currentColor"}
+      strokeWidth={props.strokeWidth ?? 1}
+    >
+      <path d="M15 9L3.75 20.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M6 18C1.5 10.5 7.5 3 20.25 3.75C21 16.5 13.5 22.5 6 18Z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Icon>
+  );
+}
+
 export function IconArrowRight(props: IconProps) {
   return (
     <Icon

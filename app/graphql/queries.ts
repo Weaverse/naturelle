@@ -104,6 +104,25 @@ export const PRODUCT_QUERY = `#graphql
       ratingCount: metafield(namespace: "reviews", key: "rating_count") {
         value
       }
+      vegan: metafield(namespace: "info", key: "vegan") {
+        value
+      }
+      summary: metafield(namespace: "info", key: "summary") {
+        type
+        value
+      }
+      overview: metafield(namespace: "info", key: "productDetails") {
+        type
+        value
+      }
+      ingredients: metafield(namespace: "info", key: "ingredients") {
+        type
+        value
+      }
+      instructions: metafield(namespace: "info", key: "instructions") {
+        type
+        value
+      }
       options {
         ...ProductOption
       }
