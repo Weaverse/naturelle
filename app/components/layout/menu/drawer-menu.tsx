@@ -6,7 +6,7 @@ import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 import {
   type EnhancedMenu,
-  getMaxDepth,
+  getMenuLayout,
   type SingleMenuItem,
 } from "~/types/menu";
 import { cn } from "~/utils/cn";
@@ -18,36 +18,11 @@ const headingClass =
   "font-heading text-xl leading-[150%] font-normal tracking-[-0.2px] text-text-subtle uppercase hover:text-text-primary";
 const layoutClass =
   "overflow-auto border-t border-border-subtle px-6 pt-8 pb-16";
-type MenuType = "brand" | "collection" | "multi" | "single" | "link";
-
 const mobileContentVariants = {
   enter: (direction: number) => ({ opacity: 0, x: direction > 0 ? 24 : -24 }),
   center: { opacity: 1, x: 0 },
   exit: (direction: number) => ({ opacity: 0, x: direction > 0 ? -24 : 24 }),
 };
-
-function menuType(item: SingleMenuItem): MenuType {
-  const level = getMaxDepth(item);
-  if (item.items.some((child) => child.resource?.__typename === "Collection")) {
-    return "collection";
-  }
-  if (
-    item.items.length &&
-    item.items.every(
-      (child) =>
-        child.resource?.image && child.resource.__typename !== "Collection",
-    )
-  ) {
-    return "brand";
-  }
-  if (level > 2) {
-    return "multi";
-  }
-  if (level === 2) {
-    return "single";
-  }
-  return "link";
-}
 
 export function HeaderMenuDrawer({
   menu,
@@ -147,7 +122,7 @@ function MobileMenu({
           ) : (
             <div className="flex flex-col gap-5 text-text-subtle">
               {items.map((item) =>
-                menuType(item) === "link" ? (
+                getMenuLayout(item) === "link" ? (
                   <MenuLink
                     key={item.id}
                     item={item}
@@ -205,14 +180,14 @@ function MenuContent({
   item: SingleMenuItem;
   onNavigate: () => void;
 }) {
-  const type = menuType(item);
-  if (type === "collection") {
+  const layout = getMenuLayout(item);
+  if (layout === "collection") {
     return <CollectionContent items={item.items} onNavigate={onNavigate} />;
   }
-  if (type === "brand") {
-    return <BrandContent items={item.items} onNavigate={onNavigate} />;
+  if (layout === "collection-card" || layout === "image-card") {
+    return <ImageCardContent items={item.items} onNavigate={onNavigate} />;
   }
-  if (type === "multi") {
+  if (layout === "journal" || layout === "multi") {
     return <MultiContent items={item.items} onNavigate={onNavigate} />;
   }
   return <SingleContent items={item.items} onNavigate={onNavigate} />;
@@ -368,7 +343,7 @@ function CollectionContent({
   );
 }
 
-function BrandContent({
+function ImageCardContent({
   items,
   onNavigate,
 }: {
@@ -389,18 +364,21 @@ function BrandContent({
           to={item.to}
           prefetch="intent"
           onClick={onNavigate}
-          className="group/brand relative mb-3 block h-[188px] max-h-[188px] w-full shrink-0 overflow-hidden rounded-xl bg-background-subtle-1 last:mb-0"
+          className="group/card mb-3 flex w-full shrink-0 flex-col items-start self-stretch overflow-hidden rounded-2xl bg-background-subtle-1 last:mb-0"
         >
-          <Image
-            data={item.resource?.image}
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="h-full w-full object-cover transition-transform duration-300 group-hover/brand:scale-[1.03]"
-            width={600}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-          <span className="absolute right-3 bottom-3 left-3 line-clamp-1 font-heading text-base text-text-inverse">
-            {item.resource?.title || item.title}
-          </span>
+          <div className="relative flex h-45.5 w-full flex-col items-start self-stretch overflow-hidden">
+            <Image
+              data={item.resource?.image}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-[1.03]"
+              width={600}
+            />
+            <div className="absolute inset-x-0 bottom-0 flex h-18 flex-col items-start justify-center bg-gradient-to-b from-transparent to-menu-card-overlay p-4">
+              <span className="line-clamp-1 font-brand text-[22px] leading-[110%] font-semibold tracking-[-0.44px] text-text-inverse">
+                {item.resource?.title || item.title}
+              </span>
+            </div>
+          </div>
         </Link>
       ))}
     </div>

@@ -1,6 +1,4 @@
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings } from "@weaverse/hydrogen";
-import type { CSSProperties } from "react";
 import { Image } from "~/components/image";
 import { Link } from "~/components/link";
 
@@ -13,33 +11,14 @@ export function CollectionCard({
   imageAspectRatio: string;
   loading?: HTMLImageElement["loading"];
 }) {
-  let settings = useThemeSettings();
-  let { colorBackground } = settings;
-  const calculateColor = (hex: string) =>
-    `#${[...new Array(3)]
-      .map((_, i) =>
-        Math.max(
-          0,
-          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
-            [177, 166, 223][i],
-        )
-          .toString(16)
-          .padStart(2, "0"),
-      )
-      .join("")}`;
-
-  let style: CSSProperties = {
-    "--calculate-color": calculateColor(colorBackground),
-  } as CSSProperties;
   return (
     <Link
       to={`/collections/${collection.handle}`}
-      className="group relative grid gap-4 rounded-md"
-      style={style}
+      className="group relative grid gap-4 overflow-hidden rounded-2xl bg-background-subtle-1"
       data-motion="slide-in"
     >
-      <div className="flex h-full w-full items-center justify-center rounded-md">
-        <div className="card-image h-full w-full rounded-md bg-primary/5">
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="card-image h-full w-full bg-background-subtle-1">
           {collection?.image && (
             <Image
               data={collection.image}
@@ -48,17 +27,18 @@ export function CollectionCard({
               aspectRatio={imageAspectRatio}
               sizes="(max-width: 32em) 100vw, 45vw"
               loading={loading}
-              className="h-full w-full rounded-md object-cover"
+              className="h-full w-full object-cover"
             />
           )}
         </div>
       </div>
+
       <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md">
-        <h6 className="text-center font-heading leading-[110%] font-normal text-text-inverse group-hover:underline">
+        <h6 className="text-center font-heading text-[26px] leading-[110%] font-normal text-text-inverse group-hover:underline">
           {collection.title}
         </h6>
       </div>
-      <div className="absolute inset-0 rounded-md bg-[var(--calculate-color)] opacity-30 transition-opacity duration-500 group-hover:opacity-50" />
+      <div className="absolute inset-0 bg-(--collection-card-overlay) transition-colors duration-500 group-hover:bg-(--collection-card-overlay-hover)" />
     </Link>
   );
 }
