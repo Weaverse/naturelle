@@ -94,8 +94,6 @@ export interface ProductCardProps {
   showPrice?: boolean;
   showStar?: boolean;
   showVendor?: boolean;
-  showViewDetailsLink?: boolean;
-  viewDetailsLinkText?: string;
 }
 
 export function ProductCard({
@@ -111,8 +109,6 @@ export function ProductCard({
   showPrice = true,
   showStar = true,
   showVendor,
-  showViewDetailsLink = false,
-  viewDetailsLinkText = "View full details",
 }: ProductCardProps) {
   const { t } = useTranslation();
   const themeSettings = useThemeSettings();
@@ -259,14 +255,6 @@ export function ProductCard({
                 />
               )}
           </div>
-        )}
-        {showViewDetailsLink && (
-          <Link
-            to={`/products/${product.handle}`}
-            className="text-sm underline underline-offset-4"
-          >
-            {viewDetailsLinkText}
-          </Link>
         )}
       </div>
     </article>
