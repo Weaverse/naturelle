@@ -93,7 +93,9 @@ export function MegaMenu(props: { menu: EnhancedMenu | null | undefined }) {
                         ? "py-6"
                         : cn(
                             "w-screen",
-                            layout === "collection-card" ? "py-10" : "py-8",
+                            layout === "collection-card"
+                              ? "max-h-[var(--radix-menubar-content-available-height)] overflow-y-auto overscroll-contain py-10"
+                              : "py-8",
                           ),
                     ])}
                   >
