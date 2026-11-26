@@ -17,6 +17,7 @@ import {
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
+import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 import type { ProductData } from "~/utils/product";
 import { getSelectedSellingPlan } from "~/utils/selling-plan";
@@ -72,11 +73,21 @@ export function QuickView({
     settings: theme,
   });
   const isVegan = product.vegan?.value === "true";
+  const hasMultipleImages =
+    product.media.nodes.filter((media) => media.__typename === "MediaImage")
+      .length > 1;
 
   return (
-    <div className="max-h-[90vh] w-[min(94vw,1100px)] overflow-y-auto rounded-xl bg-background p-5 md:p-6">
-      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.9fr)]">
-        <div className="relative min-w-0 md:[&_.swiper]:h-[min(836px,75vh)] [&_.swiper-slide_img]:rounded-xl">
+    <div className="max-h-[90vh] w-[min(94vw,1280px)] overflow-y-auto rounded-2xl bg-background p-5 md:p-6 lg:p-8">
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.9fr)] desktop:gap-8 lg:grid-cols-[minmax(0,720px)_minmax(0,1fr)]">
+        <div
+          className={cn(
+            "relative min-w-0 [&_.swiper-slide_img]:rounded-xl",
+            hasMultipleImages
+              ? "md:[&_.swiper]:h-[min(836px,calc(90vh-166px))] lg:[&_.swiper]:h-[min(836px,calc(90vh-182px))]"
+              : "md:[&_.swiper]:h-[min(836px,calc(90vh-48px))] lg:[&_.swiper]:h-[min(836px,calc(90vh-64px))]",
+          )}
+        >
           <ProductMedia
             media={product.media.nodes}
             selectedVariant={selectedVariant}
@@ -84,6 +95,8 @@ export function QuickView({
             thumbnailLayout="strip"
             showPagination={false}
             imageAspectRatio={theme.imageAspectRatio}
+            imageFit="contain"
+            spacing={12}
             showSlideCounter={theme.showSlideCounter}
             direction="horizontal"
           />
@@ -96,8 +109,8 @@ export function QuickView({
           )}
         </div>
 
-        <div className="min-w-0 py-1 md:pr-1">
-          <div className="flex flex-col gap-6">
+        <div className="min-w-0 py-1 md:pr-1 desktop:flex desktop:items-center">
+          <div className="flex flex-col gap-6 desktop:w-full">
             <div className="flex flex-col gap-5">
               <h2 className="h3 font-heading font-normal md:pr-8">
                 {product.title}
@@ -133,19 +146,18 @@ export function QuickView({
                   sellingPlan={selectedSellingPlan}
                 />
               </div>
+              {product.summary?.value &&
+                (product.summary.type === "rich_text_field" ? (
+                  <RichText
+                    data={product.summary.value}
+                    className="font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle [&_p]:m-0"
+                  />
+                ) : (
+                  <p className="whitespace-pre-line font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle">
+                    {product.summary.value}
+                  </p>
+                ))}
             </div>
-
-            {product.summary?.value &&
-              (product.summary.type === "rich_text_field" ? (
-                <RichText
-                  data={product.summary.value}
-                  className="font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle [&_p]:m-0"
-                />
-              ) : (
-                <p className="whitespace-pre-line font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle">
-                  {product.summary.value}
-                </p>
-              ))}
 
             <LowStockIndicator
               availableForSale={selectedVariant.availableForSale}
@@ -172,7 +184,7 @@ export function QuickView({
               disabled={isLoading}
             />
 
-            <div className="flex flex-col gap-3 py-4">
+            <div className="flex flex-col gap-3 pt-4">
               <div className="grid grid-cols-[auto_1fr] gap-2.5">
                 <ProductQuantityInput
                   disabled={isLoading || !selectedVariant.availableForSale}
@@ -224,7 +236,7 @@ export function QuickView({
             {(theme.showShippingPolicy ||
               theme.showRefundPolicy ||
               isVegan) && (
-              <div className="flex flex-col gap-3 text-base leading-[1.6] tracking-[-0.16px] text-text-primary">
+              <div className="flex flex-col gap-2 text-base leading-[1.6] tracking-[-0.16px] text-text-primary">
                 {theme.showShippingPolicy && shop.shippingPolicy?.handle && (
                   <Link
                     to={`/policies/${shop.shippingPolicy.handle}`}
@@ -255,7 +267,7 @@ export function QuickView({
             <Link
               to={`/products/${product.handle}`}
               onClick={onClose}
-              className="w-fit text-sm text-text-primary underline underline-offset-4"
+              className="w-fit text-base text-text-primary underline underline-offset-4"
             >
               {t("product.viewDetails")}
             </Link>

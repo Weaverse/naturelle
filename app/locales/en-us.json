@@ -285,6 +285,7 @@
   "carousel": {
     "previous": "Scroll left",
     "next": "Scroll right",
+    "goToSlide": "Go to slide {{index}}",
     "previousInstagram": "Previous Instagram post",
     "nextInstagram": "Next Instagram post"
   },

@@ -2,11 +2,18 @@ import {
   createSchema,
   type HydrogenComponentProps,
   IMAGES_PLACEHOLDERS,
+  useTranslation,
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import type { RefObject } from "react";
-import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
+import {
+  A11y,
+  Autoplay,
+  EffectFade,
+  Navigation,
+  Pagination,
+} from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useAnimation } from "~/hooks/use-animation";
 import type { SlideshowArrowsProps } from "./arrows";
@@ -47,6 +54,7 @@ let Slideshow = ({
   ref,
   ...props
 }: SlideshowProps & { ref?: RefObject<HTMLDivElement | null> }) => {
+  const { t } = useTranslation();
   let {
     height,
     showArrows,
@@ -77,6 +85,11 @@ let Slideshow = ({
         effect="fade"
         loop={loop}
         autoplay={autoRotate ? { delay: changeSlidesEvery * 1000 } : false}
+        a11y={{
+          paginationBulletMessage: t("carousel.goToSlide", {
+            index: "{{index}}",
+          }),
+        }}
         navigation={
           showArrows && {
             nextEl: ".slideshow-arrow-next",
@@ -93,6 +106,7 @@ let Slideshow = ({
           }
         }
         modules={[
+          A11y,
           EffectFade,
           autoRotate ? Autoplay : null,
           showArrows ? Navigation : null,

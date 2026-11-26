@@ -20,6 +20,7 @@ interface ProductMediaProps {
   enableZoom?: boolean;
   showPagination?: boolean;
   thumbnailLayout?: "swiper" | "strip";
+  imageFit?: "cover" | "contain";
 }
 
 export function ProductMedia(props: ProductMediaProps) {
@@ -36,13 +37,15 @@ export function ProductMedia(props: ProductMediaProps) {
     enableZoom,
     showPagination = true,
     thumbnailLayout = "swiper",
+    imageFit = "cover",
   } = props;
 
   const media = useMemo(
     () => _media.filter((med) => med.__typename === "MediaImage"),
     [_media],
   );
-  const useStripThumbnails = showThumbnails && thumbnailLayout === "strip";
+  const useStripThumbnails =
+    showThumbnails && thumbnailLayout === "strip" && media.length > 1;
   const useSwiperThumbnails = showThumbnails && thumbnailLayout === "swiper";
   const usePagination = showPagination && !showThumbnails;
   let [swiper, setSwiper] = useState<SwiperClass | null>(null);
@@ -119,8 +122,16 @@ export function ProductMedia(props: ProductMediaProps) {
                   <Image
                     data={image}
                     loading={i === 0 ? "eager" : "lazy"}
-                    aspectRatio={imageAspectRatio}
-                    className="fadeIn h-auto w-full rounded-2xl object-cover"
+                    aspectRatio={
+                      imageFit === "contain" ? undefined : imageAspectRatio
+                    }
+                    className={cn(
+                      "fadeIn h-auto w-full rounded-2xl",
+                      imageFit === "contain" && "h-full bg-background-basic",
+                    )}
+                    imageClassName={
+                      imageFit === "contain" ? "object-contain" : "object-cover"
+                    }
                     sizes="auto"
                   />
                   {enableZoom && (
@@ -157,7 +168,10 @@ export function ProductMedia(props: ProductMediaProps) {
         </div>
         {useStripThumbnails && (
           <div className="min-w-0 w-full">
-            <div className="flex gap-2 overflow-x-auto overscroll-x-contain touch-pan-x pb-0.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
+            <div
+              className="flex overflow-x-auto overscroll-x-contain touch-pan-x pb-0.5 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden"
+              style={{ gap: spacing }}
+            >
               {media.map((med, i) => {
                 const isActive = currentIndex === i;
                 return (

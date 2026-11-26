@@ -147,6 +147,17 @@ let ProductInformation = ({
       publishedAt: product.publishedAt,
       settings: theme,
     });
+    const overview = product.overview?.value
+      ? {
+          content: product.overview.value,
+          type: product.overview.type,
+        }
+      : product.descriptionHtml
+        ? {
+            content: product.descriptionHtml,
+            type: "html",
+          }
+        : null;
     return (
       <Section
         ref={ref}
@@ -181,11 +192,11 @@ let ProductInformation = ({
               )}
             </div>
             <div className="empty:hidden border-t border-border-subtle">
-              {showDetails && product.overview?.value && (
+              {showDetails && overview && (
                 <ProductDescription
                   title={t("product.overview")}
-                  content={product.overview.value}
-                  type={product.overview.type}
+                  content={overview.content}
+                  type={overview.type}
                 />
               )}
               {showDetails && product.ingredients?.value && (
@@ -465,6 +476,11 @@ function ProductDescription({
                   <RichText
                     data={content}
                     className="prose max-w-none text-sm text-text-subtle"
+                  />
+                ) : type === "html" ? (
+                  <div
+                    className="prose max-w-none text-sm text-text-subtle"
+                    dangerouslySetInnerHTML={{ __html: content }}
                   />
                 ) : (
                   <div className="whitespace-pre-line text-sm text-text-subtle">
