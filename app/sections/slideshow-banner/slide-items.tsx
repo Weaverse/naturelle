@@ -120,6 +120,7 @@ export default Slide;
 export const schema = createSchema({
   title: "Slide",
   type: "slideshowbanner--slide",
+  limit: 3,
   childTypes: ["subheading", "heading", "paragraph", "button"],
   settings: [
     {

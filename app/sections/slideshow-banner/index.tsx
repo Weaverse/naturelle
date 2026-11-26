@@ -5,7 +5,6 @@ import {
 } from "@weaverse/hydrogen";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
-import clsx from "clsx";
 import type { RefObject } from "react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -33,7 +32,7 @@ export interface SlideshowProps
   extends
     VariantProps<typeof variants>,
     SlideshowArrowsProps,
-    SlideshowDotsProps,
+    Omit<SlideshowDotsProps, "dotsPosition">,
     HydrogenComponentProps {
   showArrows: boolean;
   showDots: boolean;
@@ -69,6 +68,8 @@ let Slideshow = ({
 
   let id = rest["data-wv-id"];
   let key = `slideshow-${id}-${loop}-${autoRotate}-${changeSlidesEvery}`;
+  let progressPosition: "top" | "bottom" =
+    dotsPosition === "top" ? "top" : "bottom";
 
   return (
     <section key={key} ref={scope} {...rest} className={variants({ height })}>
@@ -86,12 +87,8 @@ let Slideshow = ({
           showDots && {
             el: ".slideshow-dots",
             clickable: true,
-            bulletClass: clsx(
-              "dot rounded-full cursor-pointer",
-              "w-2.5 h-2.5 p-0",
-              "outline outline-offset-2 outline-2 outline-transparent",
-              "transition-all duration-200",
-            ),
+            bulletElement: "button",
+            bulletClass: "dot",
             bulletActiveClass: "active",
           }
         }
@@ -108,7 +105,7 @@ let Slideshow = ({
           </SwiperSlide>
         ))}
         {showArrows && <Arrows {...props} />}
-        {showDots && <Dots {...props} />}
+        {showDots && <Dots {...props} dotsPosition={progressPosition} />}
       </Swiper>
     </section>
   );
@@ -241,24 +238,22 @@ export const schema = createSchema({
 
         {
           type: "heading",
-          label: "Dots",
+          label: "Progress",
         },
         {
           type: "switch",
-          label: "Show dots",
+          label: "Show progress",
           name: "showDots",
           defaultValue: true,
         },
         {
           type: "select",
-          label: "Dots position",
+          label: "Progress position",
           name: "dotsPosition",
           configs: {
             options: [
               { value: "top", label: "Top" },
               { value: "bottom", label: "Bottom" },
-              { value: "left", label: "Left" },
-              { value: "right", label: "Right" },
             ],
           },
           defaultValue: "bottom",
@@ -266,7 +261,7 @@ export const schema = createSchema({
         },
         {
           type: "select",
-          label: "Dots color",
+          label: "Progress color",
           name: "dotsColor",
           configs: {
             options: [
