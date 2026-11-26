@@ -1,9 +1,9 @@
-import { Money, ShopPayButton } from "@shopify/hydrogen";
+import { Money, RichText, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
-import { IconBag } from "~/components/icon";
+import { IconBag, Leaf, Truck, Undo2 } from "~/components/icon";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
@@ -13,7 +13,6 @@ import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import {
   ProductQuantityInput,
-  ProductShareLinks,
   useProductFormState,
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
@@ -72,7 +71,7 @@ export function QuickView({
     publishedAt,
     settings: theme,
   });
-  const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
+  const isVegan = product.vegan?.value === "true";
 
   return (
     <div className="max-h-[90vh] w-[min(94vw,1100px)] overflow-y-auto rounded-xl bg-background p-5 md:p-6">
@@ -135,6 +134,18 @@ export function QuickView({
                 />
               </div>
             </div>
+
+            {product.summary?.value &&
+              (product.summary.type === "rich_text_field" ? (
+                <RichText
+                  data={product.summary.value}
+                  className="font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle [&_p]:m-0"
+                />
+              ) : (
+                <p className="whitespace-pre-line font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle">
+                  {product.summary.value}
+                </p>
+              ))}
 
             <LowStockIndicator
               availableForSale={selectedVariant.availableForSale}
@@ -210,25 +221,33 @@ export function QuickView({
               availableForSale={selectedVariant.availableForSale}
             />
 
-            {(theme.showShippingPolicy || theme.showRefundPolicy) && (
-              <div className="flex flex-col gap-3 text-sm text-text-subtle">
+            {(theme.showShippingPolicy ||
+              theme.showRefundPolicy ||
+              isVegan) && (
+              <div className="flex flex-col gap-3 text-base leading-[1.6] tracking-[-0.16px] text-text-primary">
                 {theme.showShippingPolicy && shop.shippingPolicy?.handle && (
                   <Link
                     to={`/policies/${shop.shippingPolicy.handle}`}
-                    className="flex items-center gap-2 hover:text-text-primary"
+                    className="flex items-start gap-2 hover:text-text-primary"
                   >
-                    <span aria-hidden="true">▱</span>{" "}
+                    <Truck aria-hidden="true" className="size-6 shrink-0" />
                     {t("product.viewShippingPolicy")}
                   </Link>
                 )}
                 {theme.showRefundPolicy && shop.refundPolicy?.handle && (
                   <Link
                     to={`/policies/${shop.refundPolicy.handle}`}
-                    className="flex items-center gap-2 hover:text-text-primary"
+                    className="flex items-start gap-2 hover:text-text-primary"
                   >
-                    <span aria-hidden="true">↩</span>{" "}
+                    <Undo2 aria-hidden="true" className="size-6 shrink-0" />
                     {t("product.viewReturnsPolicy")}
                   </Link>
+                )}
+                {isVegan && (
+                  <div className="flex items-start gap-2">
+                    <Leaf aria-hidden="true" className="size-6 shrink-0" />
+                    <span>{t("product.veganProduct")}</span>
+                  </div>
                 )}
               </div>
             )}
@@ -240,8 +259,6 @@ export function QuickView({
             >
               {t("product.viewDetails")}
             </Link>
-
-            <ProductShareLinks productUrl={productUrl} title={product.title} />
           </div>
         </div>
       </div>
