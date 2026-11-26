@@ -76,7 +76,7 @@ export function QuickView({
   return (
     <div className="max-h-[90vh] w-[min(94vw,1100px)] overflow-y-auto rounded-xl bg-background p-5 md:p-6">
       <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.9fr)]">
-        <div className="relative min-w-0 [&_.swiper-slide_img]:rounded-xl">
+        <div className="relative min-w-0 md:[&_.swiper]:h-[min(836px,75vh)] [&_.swiper-slide_img]:rounded-xl">
           <ProductMedia
             media={product.media.nodes}
             selectedVariant={selectedVariant}
