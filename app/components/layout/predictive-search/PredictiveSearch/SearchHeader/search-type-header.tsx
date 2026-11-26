@@ -86,9 +86,9 @@ export function SearchTypeHeader(props: PredictiveSearchProps) {
               onKeyDown={handleKeyDown}
               ref={inputRef}
               className={cn(
-                "w-full rounded-xl border-2",
+                "rounded-xl",
                 inline
-                  ? "h-[56px] max-w-[436px] border border-border bg-background-basic px-3 py-0 text-base text-text-subtle"
+                  ? "max-w-[436px] border-border bg-background-basic text-base text-text-subtle"
                   : "md:w-96 lg:w-[560px]",
               )}
               type="search"

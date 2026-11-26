@@ -160,7 +160,7 @@ export function ReviewForm({
 
         <Button
           variant="primary"
-          className="min-h-12 self-center rounded-lg px-6"
+          className="self-center rounded-lg"
           onClick={() => {
             setMessage("");
             setIsSuccessVisible(false);
@@ -236,7 +236,7 @@ export function ReviewForm({
                   name="email"
                   placeholder="laura@mymail.com"
                   autoComplete="email"
-                  className="w-full rounded-lg bg-transparent"
+                  className="rounded-lg"
                 />
                 <span className="block font-normal text-text-subtle text-xs">
                   {t("reviews.emailPrivacy")}
@@ -255,7 +255,7 @@ export function ReviewForm({
                   name="name"
                   placeholder="Laura"
                   autoComplete="name"
-                  className="w-full rounded-lg bg-transparent"
+                  className="rounded-lg"
                 />
               </label>
 
@@ -269,7 +269,7 @@ export function ReviewForm({
                   id={`${formId}-title`}
                   type="text"
                   name="title"
-                  className="w-full rounded-lg bg-transparent"
+                  className="rounded-lg"
                 />
               </label>
 
@@ -309,7 +309,7 @@ export function ReviewForm({
               <Button
                 type="button"
                 variant="custom"
-                className="rounded-xl border-0 bg-transparent"
+                className="border-0 bg-transparent"
                 onClick={() => setIsFormVisible(false)}
               >
                 {t("actions.cancel")}
@@ -318,7 +318,6 @@ export function ReviewForm({
                 type="submit"
                 loading={isSubmitting}
                 disabled={rating === 0 || isSubmitting}
-                className="rounded-xl"
               >
                 {t("reviews.submitReview")}
               </Button>

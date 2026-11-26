@@ -130,7 +130,7 @@ export function Footer() {
               >
                 <Input
                   variant="custom"
-                  className="min-w-0 max-w-90 flex-1 rounded-l-xl rounded-r-none border border-(--color-footer-bg) bg-(--color-footer-text)/8 px-5 py-3.5 text-(--color-footer-bg) placeholder:text-(--color-footer-bg) placeholder:opacity-70"
+                  className="min-w-0 max-w-90 flex-1 rounded-l-xl rounded-r-none border-(--color-footer-bg) bg-(--color-footer-text)/8 px-5 text-(--color-footer-bg) placeholder:text-(--color-footer-bg) placeholder:opacity-70"
                   type="email"
                   name="email"
                   placeholder={newsletterPlaceholder}
@@ -142,8 +142,7 @@ export function Footer() {
                   variant="custom"
                   loading={fetcher.state === "submitting"}
                   type="submit"
-                  shape="default"
-                  className="h-auto shrink-0 rounded-l-none rounded-r-xl bg-(--color-footer-bg) px-7 py-3.5 text-(--color-footer-text)"
+                  className="shrink-0 rounded-l-none rounded-r-xl bg-(--color-footer-bg) px-7 text-(--color-footer-text)"
                 >
                   {newsletterButtonText}
                 </Button>

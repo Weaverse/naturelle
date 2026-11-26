@@ -1,20 +1,23 @@
 import { Disclosure } from "@headlessui/react";
-import { Money, ShopPayButton } from "@shopify/hydrogen";
+import { Money, RichText, ShopPayButton } from "@shopify/hydrogen";
 import {
   createSchema,
   useThemeSettings,
   useTranslation,
 } from "@weaverse/hydrogen";
 import clsx from "clsx";
-import { Truck, Undo2 } from "lucide-react";
 import type { RefObject } from "react";
 import { useLoaderData } from "react-router";
 import type { ProductQuery, VariantsQuery } from "storefront-api.generated";
-import { IconCaret } from "~/components/icon";
+import { IconCaret, Leaf, Truck, Undo2 } from "~/components/icon";
 import { Link } from "~/components/link";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
 import { BackInStockForm } from "~/components/product/back-in-stock-form";
 import { LowStockIndicator } from "~/components/product/low-stock-indicator";
+import {
+  getProductBadge,
+  ProductBadge,
+} from "~/components/product/product-badge";
 import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import { layoutInputs, Section, type SectionProps } from "~/components/section";
@@ -26,7 +29,6 @@ import type { ProductLoaderType } from "~/routes/($locale).products.$handle";
 import { cn } from "~/utils/cn";
 import { DEFAULT_LOCALE } from "~/utils/const";
 import { formatNumber } from "~/utils/locale";
-import { getExcerpt } from "~/utils/misc";
 import {
   ProductQuantityInput,
   ProductShareLinks,
@@ -50,6 +52,7 @@ interface ProductInformationProps extends SectionProps {
   showBackInStockForm: boolean;
   hideUnavailableOptions: boolean;
   // product media props
+  showProductBadge: boolean;
   showThumbnails: boolean;
   imageAspectRatio: string;
   mediaDirection: "horizontal" | "vertical";
@@ -88,6 +91,7 @@ let ProductInformation = ({
     showRefundPolicy,
     showBackInStockForm = true,
     hideUnavailableOptions,
+    showProductBadge = true,
     showThumbnails,
     imageAspectRatio,
     mediaDirection,
@@ -130,9 +134,30 @@ let ProductInformation = ({
     );
   }
   if (product && variants) {
-    const { title, vendor, descriptionHtml } = product;
+    const { title, vendor } = product;
     const { shippingPolicy, refundPolicy } = shop;
     const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
+    const isVegan = product.vegan?.value === "true";
+    const showShippingLink =
+      showShippingPolicy && Boolean(shippingPolicy?.handle);
+    const showRefundLink = showRefundPolicy && Boolean(refundPolicy?.handle);
+    const showProductLinks = showShippingLink || showRefundLink || isVegan;
+    const badge = getProductBadge({
+      variant: selectedVariant,
+      publishedAt: product.publishedAt,
+      settings: theme,
+    });
+    const overview = product.overview?.value
+      ? {
+          content: product.overview.value,
+          type: product.overview.type,
+        }
+      : product.descriptionHtml
+        ? {
+            content: product.descriptionHtml,
+            type: "html",
+          }
+        : null;
     return (
       <Section
         ref={ref}
@@ -148,34 +173,44 @@ let ProductInformation = ({
           )}
         >
           <div className="min-w-0 flex flex-col gap-10">
-            <ProductMedia
-              media={product?.media.nodes}
-              selectedVariant={selectedVariant}
-              showThumbnails={showThumbnails}
-              imageAspectRatio={imageAspectRatio}
-              spacing={spacing}
-              showSlideCounter={showSlideCounter}
-              direction={mediaDirection}
-            />
+            <div className="relative">
+              <ProductMedia
+                media={product?.media.nodes}
+                selectedVariant={selectedVariant}
+                showThumbnails={showThumbnails}
+                imageAspectRatio={imageAspectRatio}
+                spacing={spacing}
+                showSlideCounter={showSlideCounter}
+                direction={mediaDirection}
+              />
+              {showProductBadge && badge && (
+                <ProductBadge
+                  text={badge.text}
+                  type={badge.type}
+                  className="absolute right-[5.17%] top-[17px] z-20 font-normal tracking-[-0.12px]"
+                />
+              )}
+            </div>
             <div className="empty:hidden border-t border-border-subtle">
-              {showDetails && descriptionHtml && (
+              {showDetails && overview && (
                 <ProductDescription
-                  title={t("product.description")}
-                  content={descriptionHtml}
+                  title={t("product.overview")}
+                  content={overview.content}
+                  type={overview.type}
                 />
               )}
-              {showShippingPolicy && shippingPolicy?.body && (
+              {showDetails && product.ingredients?.value && (
                 <ProductDescription
-                  title={t("product.shipping")}
-                  content={getExcerpt(shippingPolicy.body)}
-                  learnMore={`/policies/${shippingPolicy.handle}`}
+                  title={t("product.ingredients")}
+                  content={product.ingredients.value}
+                  type={product.ingredients.type}
                 />
               )}
-              {showRefundPolicy && refundPolicy?.body && (
+              {showDetails && product.instructions?.value && (
                 <ProductDescription
-                  title={t("product.returns")}
-                  content={getExcerpt(refundPolicy.body)}
-                  learnMore={`/policies/${refundPolicy.handle}`}
+                  title={t("product.howToUse")}
+                  content={product.instructions.value}
+                  type={product.instructions.type}
                 />
               )}
             </div>
@@ -270,6 +305,21 @@ let ProductInformation = ({
                   ) : null}
                 </div>
               </div>
+              {product.summary?.value &&
+                (product.summary.type === "rich_text_field" ? (
+                  <RichText
+                    data-motion="fade-up"
+                    data={product.summary.value}
+                    className="font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle [&_p]:m-0"
+                  />
+                ) : (
+                  <p
+                    data-motion="fade-up"
+                    className="whitespace-pre-line font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle"
+                  >
+                    {product.summary.value}
+                  </p>
+                ))}
               <LowStockIndicator
                 availableForSale={selectedVariant.availableForSale}
                 stock={selectedVariant.quantityAvailable}
@@ -345,25 +395,31 @@ let ProductInformation = ({
                 availableForSale={selectedVariant?.availableForSale}
                 enabled={showBackInStockForm}
               />
-              {(showShippingPolicy || showRefundPolicy) && (
-                <div className="flex flex-col gap-3 text-base leading-[1.6] text-text-primary">
-                  {showShippingPolicy && shippingPolicy?.handle && (
+              {showProductLinks && (
+                <div className="flex flex-col gap-3 text-base leading-[1.6] tracking-[-0.16px] text-text-primary">
+                  {showShippingLink && (
                     <Link
                       to={`/policies/${shippingPolicy.handle}`}
-                      className="flex items-center gap-2 hover:text-text-primary"
+                      className="flex items-start gap-2 hover:text-text-primary"
                     >
                       <Truck aria-hidden="true" className="size-6 shrink-0" />
                       {t("product.viewShippingPolicy")}
                     </Link>
                   )}
-                  {showRefundPolicy && refundPolicy?.handle && (
+                  {showRefundLink && (
                     <Link
                       to={`/policies/${refundPolicy.handle}`}
-                      className="flex items-center gap-2 hover:text-text-primary"
+                      className="flex items-start gap-2 hover:text-text-primary"
                     >
                       <Undo2 aria-hidden="true" className="size-6 shrink-0" />
                       {t("product.viewReturnsPolicy")}
                     </Link>
+                  )}
+                  {isVegan && (
+                    <div className="flex items-start gap-2">
+                      <Leaf aria-hidden="true" className="size-6 shrink-0" />
+                      <span>{t("product.veganProduct")}</span>
+                    </div>
                   )}
                 </div>
               )}
@@ -385,13 +441,12 @@ let ProductInformation = ({
 function ProductDescription({
   title,
   content,
-  learnMore,
+  type,
 }: {
   title: string;
   content: string;
-  learnMore?: string;
+  type: string;
 }) {
-  const { t } = useTranslation();
   return (
     <Disclosure as="div" className="border-b border-border-subtle">
       {({ open }) => (
@@ -406,20 +461,35 @@ function ProductDescription({
               direction={open ? "down" : "right"}
             />
           </Disclosure.Button>
-          <Disclosure.Panel className="pb-5">
-            <div
-              className="prose max-w-none text-sm text-text-subtle"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
-            {learnMore && (
-              <Link
-                to={learnMore}
-                className="mt-4 inline-block text-sm underline underline-offset-4"
-              >
-                {t("product.learnMore")}
-              </Link>
+          <div
+            inert={!open}
+            className={cn(
+              "grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none",
+              open
+                ? "grid-rows-[1fr] opacity-100"
+                : "grid-rows-[0fr] opacity-0",
             )}
-          </Disclosure.Panel>
+          >
+            <div className="min-h-0 overflow-hidden">
+              <Disclosure.Panel static className="pb-5">
+                {type === "rich_text_field" ? (
+                  <RichText
+                    data={content}
+                    className="prose max-w-none text-sm text-text-subtle"
+                  />
+                ) : type === "html" ? (
+                  <div
+                    className="prose max-w-none text-sm text-text-subtle"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                ) : (
+                  <div className="whitespace-pre-line text-sm text-text-subtle">
+                    {content}
+                  </div>
+                )}
+              </Disclosure.Panel>
+            </div>
+          </div>
         </>
       )}
     </Disclosure>
@@ -504,18 +574,6 @@ export const schema = createSchema({
         },
         {
           type: "switch",
-          label: "Show shipping policy",
-          name: "showShippingPolicy",
-          defaultValue: true,
-        },
-        {
-          type: "switch",
-          label: "Show refund policy",
-          name: "showRefundPolicy",
-          defaultValue: true,
-        },
-        {
-          type: "switch",
           label: "Show back-in-stock form",
           name: "showBackInStockForm",
           defaultValue: true,
@@ -530,8 +588,31 @@ export const schema = createSchema({
       ],
     },
     {
+      group: "Product links",
+      inputs: [
+        {
+          type: "switch",
+          label: "Show shipping policy",
+          name: "showShippingPolicy",
+          defaultValue: true,
+        },
+        {
+          type: "switch",
+          label: "Show refund policy",
+          name: "showRefundPolicy",
+          defaultValue: true,
+        },
+      ],
+    },
+    {
       group: "Product Media",
       inputs: [
+        {
+          label: "Show product badge",
+          name: "showProductBadge",
+          type: "switch",
+          defaultValue: true,
+        },
         {
           type: "select",
           name: "imageAspectRatio",

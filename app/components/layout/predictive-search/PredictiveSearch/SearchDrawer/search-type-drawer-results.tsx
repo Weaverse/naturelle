@@ -79,9 +79,8 @@ export function SearchTypeDrawerResults() {
       <div className="flex shrink-0 justify-center border-border-subtle border-t bg-background-basic px-4 py-4">
         <Button
           to={`/search?q=${encodeURIComponent(term)}`}
-          size="sm"
           variant="primary"
-          className="h-13.5 px-5 text-sm"
+          className="px-5 text-sm"
         >
           {t("search.viewAll")}
         </Button>

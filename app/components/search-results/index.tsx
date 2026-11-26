@@ -113,7 +113,7 @@ export default function SearchResults() {
               clearLabel={t("accessibility.clearSearch")}
               name="q"
               placeholder={t("search.placeholder")}
-              className="w-full rounded-xl border border-border-subtle bg-background-basic px-3 py-3.5 sm:w-96 desktop:w-[560px]"
+              className="rounded-xl bg-background-basic sm:w-96 md:w-[560px]"
               type="search"
               prefixElement={
                 <button type="submit" aria-label={t("search.title")}>

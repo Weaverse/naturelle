@@ -1,6 +1,6 @@
 import type { Collection } from "@shopify/hydrogen/storefront-api-types";
-import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
-import { type CSSProperties, useEffect, useRef } from "react";
+import { useTranslation } from "@weaverse/hydrogen";
+import { useEffect, useRef } from "react";
 import { useFetcher } from "react-router";
 import { Image } from "~/components/image";
 import { cn } from "~/utils/cn";
@@ -17,7 +17,7 @@ type CollectionResponse = {
 
 export function CartPopularCollections({ layout }: { layout?: string }) {
   const { t } = useTranslation();
-  let { load, data } = useFetcher<CollectionResponse>();
+  let { load, data, state } = useFetcher<CollectionResponse>();
   let productsApiPath = usePrefixPathWithLocale(`/api/collections`);
   const loadedPath = useRef<string | null>(null);
   useEffect(() => {
@@ -27,11 +27,14 @@ export function CartPopularCollections({ layout }: { layout?: string }) {
     loadedPath.current = productsApiPath;
     load(productsApiPath);
   }, [load, productsApiPath]);
-  if (!data) {
+  const itemCount = layout === "aside" ? 4 : 6;
+  const nodes = data?.collections.nodes.slice(0, itemCount);
+  const isLoading =
+    !data && (state !== "idle" || loadedPath.current !== productsApiPath);
+
+  if (!(data || isLoading)) {
     return null;
   }
-  let { collections } = data;
-  let nodes = collections.nodes.slice(0, layout === "aside" ? 4 : 6);
 
   return (
     <div
@@ -44,16 +47,25 @@ export function CartPopularCollections({ layout }: { layout?: string }) {
       <Grid
         items={layout === "aside" ? 2 : 3}
         data-test="collection-grid"
-        className=" w-full"
+        className="w-full"
+        aria-busy={isLoading}
       >
-        {nodes.map((collection: any, i: any) => (
-          <PopularCard
-            key={collection.id}
-            collection={collection as Collection}
-            imageAspectRatio={"1/1"}
-            loading={getImageLoadingPriority(i, 2)}
-          />
-        ))}
+        {nodes
+          ? nodes.map((collection, index) => (
+              <PopularCard
+                key={collection.id}
+                collection={collection}
+                imageAspectRatio="1/1"
+                loading={getImageLoadingPriority(index, 2)}
+              />
+            ))
+          : Array.from({ length: itemCount }, (_, index) => (
+              <div
+                key={`popular-collection-placeholder-${index}`}
+                className="aspect-square rounded-md bg-background-subtle-1"
+                aria-hidden="true"
+              />
+            ))}
       </Grid>
     </div>
   );
@@ -68,33 +80,14 @@ function PopularCard({
   imageAspectRatio: string;
   loading?: HTMLImageElement["loading"];
 }) {
-  let settings = useThemeSettings();
-  let { colorBackground } = settings;
-  const calculateColor = (hex: string) =>
-    `#${[...new Array(3)]
-      .map((_, i) =>
-        Math.max(
-          0,
-          Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16) -
-            [177, 166, 223][i],
-        )
-          .toString(16)
-          .padStart(2, "0"),
-      )
-      .join("")}`;
-
-  let style: CSSProperties = {
-    "--calculate-color": calculateColor(colorBackground),
-  } as CSSProperties;
   return (
     <Link
       to={`/collections/${collection.handle}`}
       className="group relative grid gap-4 rounded-md"
-      style={style}
       data-motion="slide-in"
     >
       <div className="flex h-full w-full items-center justify-center rounded-md">
-        <div className="card-image h-full w-full rounded-md bg-primary/5">
+        <div className="card-image h-full w-full rounded-md bg-background-subtle-1">
           {collection?.image && (
             <Image
               data={collection.image}
@@ -109,19 +102,11 @@ function PopularCard({
         </div>
       </div>
       <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md">
-        <h3
-          className="text-white font-medium text-animation"
-          style={
-            {
-              "--underline-color": "#ffffff",
-              "--underline-size": "3px",
-            } as React.CSSProperties
-          }
-        >
+        <h3 className="text-center font-heading text-[26px] leading-[110%] font-normal text-text-inverse group-hover:underline">
           {collection.title}
         </h3>
       </div>
-      <div className="absolute inset-0 rounded-md bg-(--calculate-color) opacity-30 transition-opacity duration-500 group-hover:opacity-50" />
+      <div className="absolute inset-0 rounded-md bg-[#453830]/30 transition-colors duration-500 group-hover:bg-[#453830]/50" />
     </Link>
   );
 }

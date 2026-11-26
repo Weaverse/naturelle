@@ -1,4 +1,3 @@
-import { XIcon } from "@phosphor-icons/react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CartForm } from "@shopify/hydrogen";
 import { useTranslation } from "@weaverse/hydrogen";
@@ -6,6 +5,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { CartApiQueryFragment } from "storefront-api.generated";
 import { Button } from "~/components/button";
+import { IconCheckSquare, IconClose, IconXSquare } from "~/components/icon";
+import { Input } from "~/components/input";
 import { CART_CODE_APPLY_ACTION } from "~/utils/cart-code";
 import { getCartMutationError } from "~/utils/cart-error";
 import { cn } from "~/utils/cn";
@@ -13,8 +14,10 @@ import { usePrefixPathWithLocale } from "~/utils/locale";
 
 type CartLayout = "page" | "aside";
 
-const dialogTitleClass = "mb-4 font-semibold tracking-[-0.16px] text-text";
-const dialogFieldClass =
+const dialogTitleBaseClass = "font-semibold tracking-[-0.16px] text-text";
+const dialogInputClass =
+  "rounded-lg text-base font-normal tracking-[-0.16px] text-text placeholder:text-text";
+const dialogTextareaClass =
   "w-full rounded-lg border border-border-subtle p-3 font-normal tracking-[-0.16px] text-text placeholder:text-text";
 const dialogButtonClass = "w-full rounded-lg tracking-[-0.16px]";
 
@@ -25,15 +28,15 @@ export function CartActionBanner({
   variant: "success" | "error";
   children: React.ReactNode;
 }) {
+  const Icon = variant === "success" ? IconCheckSquare : IconXSquare;
+
   return (
     <div
-      className={cn(
-        "w-full px-3 py-2 text-center text-sm",
-        variant === "success" && "bg-green-100 text-green-700",
-        variant === "error" && "bg-red-100 text-red-700",
-      )}
+      className="flex w-full items-start justify-center gap-2 rounded-xl bg-background-subtle-1 px-6 py-[18px] text-left font-body text-base leading-none font-normal tracking-[-0.16px] text-text"
+      role={variant === "error" ? "alert" : "status"}
     >
-      {children}
+      <Icon aria-hidden="true" className="size-4 shrink-0" />
+      <span className="min-w-0 break-words">{children}</span>
     </div>
   );
 }
@@ -136,19 +139,19 @@ export function NoteDialog({
             className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center"
             aria-label={t("accessibility.close")}
           >
-            <XIcon size={16} />
+            <IconClose aria-hidden="true" className="size-4" />
           </button>
         </Dialog.Close>
-        <Dialog.Title asChild>
-          <p className={dialogTitleClass}>{t("cart.noteTitle")}</p>
-        </Dialog.Title>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+          <Dialog.Title asChild>
+            <p className={dialogTitleBaseClass}>{t("cart.noteDialogTitle")}</p>
+          </Dialog.Title>
           <label htmlFor={noteId} className="sr-only">
             {t("cart.noteTitle")}
           </label>
           <textarea
             id={noteId}
-            className={cn(dialogFieldClass, "min-h-[92px] resize-none")}
+            className={cn(dialogTextareaClass, "min-h-[92px] resize-none")}
             placeholder={t("cart.notePlaceholder")}
             rows={3}
             name="cartNote"
@@ -230,24 +233,24 @@ export function DiscountDialog({ layout = "aside" }: { layout?: CartLayout }) {
             className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center"
             aria-label={t("accessibility.close")}
           >
-            <XIcon size={16} />
+            <IconClose aria-hidden="true" className="size-4" />
           </button>
         </Dialog.Close>
-        <Dialog.Title asChild>
-          <p className={dialogTitleClass}>{t("cart.discountTitle")}</p>
-        </Dialog.Title>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <Dialog.Title asChild>
+            <p className={dialogTitleBaseClass}>{t("cart.discountTitle")}</p>
+          </Dialog.Title>
           <label htmlFor={discountCodeId} className="sr-only">
             {t("cart.discountCode")}
           </label>
-          <input
+          <Input
             id={discountCodeId}
             value={code}
             onChange={(e) => {
               setCode(e.target.value);
               fetcher.data = null;
             }}
-            className={dialogFieldClass}
+            className={dialogInputClass}
             type="text"
             name="discountCode"
             placeholder={t("cart.discountCode")}
@@ -335,19 +338,19 @@ export function GiftCardDialog({
             className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center"
             aria-label={t("accessibility.close")}
           >
-            <XIcon size={16} />
+            <IconClose aria-hidden="true" className="size-4" />
           </button>
         </Dialog.Close>
-        <Dialog.Title asChild>
-          <p className={dialogTitleClass}>{t("cart.giftCardTitle")}</p>
-        </Dialog.Title>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <Dialog.Title asChild>
+            <p className={dialogTitleBaseClass}>{t("cart.giftCardTitle")}</p>
+          </Dialog.Title>
           <label htmlFor={giftCardCodeId} className="sr-only">
             {t("cart.giftCardCode")}
           </label>
-          <input
+          <Input
             id={giftCardCodeId}
-            className={dialogFieldClass}
+            className={dialogInputClass}
             type="text"
             name="giftCardCode"
             placeholder={t("cart.giftCardCode")}

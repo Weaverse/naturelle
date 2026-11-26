@@ -7,7 +7,7 @@ import { IconArrowLeft, IconArrowRight, IconCaret } from "~/components/icon";
 
 let variants = cva(
   [
-    "absolute top-1/2 z-50 -translate-y-1/2",
+    "absolute top-1/2 z-10 -translate-y-1/2",
     "flex size-[52px] items-center justify-center p-0 text-center",
     "max-sm:bg-background",
     "transition-all duration-200",

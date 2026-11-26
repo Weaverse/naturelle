@@ -9,19 +9,23 @@ export interface SlideshowDotsProps extends VariantProps<typeof variants> {
 let variants = cva(
   [
     "slideshow-dots",
-    "absolute z-10 flex justify-center items-center px-2.5 gap-4",
+    "absolute z-10 flex h-1 w-auto! items-end justify-center gap-2",
+    "[&_.dot]:relative [&_.dot]:h-0.5! [&_.dot]:w-12! [&_.dot]:cursor-pointer",
+    "[&_.dot]:shrink-0 [&_.dot]:rounded-none! [&_.dot]:opacity-100!",
+    "[&_.dot]:transition-[height,background-color] [&_.dot]:duration-200",
+    "[&_.dot]:before:absolute [&_.dot]:before:-inset-y-3 [&_.dot]:before:inset-x-0",
+    "[&_.dot]:before:content-['']",
+    "[&_.dot.active]:h-1!",
   ],
   {
     variants: {
       dotsPosition: {
-        top: "left-0 right-0 !top-14",
-        bottom: "left-0 right-0 !bottom-14",
-        left: "top-0 bottom-0 flex-col left-5",
-        right: "top-0 bottom-0 flex-col right-5",
+        top: "left-1/2! top-14! -translate-x-1/2",
+        bottom: "bottom-14! left-1/2! -translate-x-1/2",
       },
       dotsColor: {
-        light: "[&_.dot]:bg-white [&_.active]:!outline-white",
-        dark: "[&_.dot]:bg-black [&_.active]:!outline-black",
+        light: "[&_.dot]:bg-white/50 [&_.dot.active]:bg-white!",
+        dark: "[&_.dot]:bg-black/50 [&_.dot.active]:bg-black!",
       },
     },
     defaultVariants: {

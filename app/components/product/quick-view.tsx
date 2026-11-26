@@ -1,9 +1,9 @@
-import { Money, ShopPayButton } from "@shopify/hydrogen";
+import { Money, RichText, ShopPayButton } from "@shopify/hydrogen";
 import { useThemeSettings, useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/button";
-import { IconBag } from "~/components/icon";
+import { IconBag, Leaf, Truck, Undo2 } from "~/components/icon";
 import { Link } from "~/components/link";
 import { Modal } from "~/components/modal";
 import { AddToCartButton } from "~/components/product/add-to-cart-button";
@@ -13,19 +13,15 @@ import { SellingPlanPrice } from "~/components/product/selling-plan-price";
 import { SellingPlanSelector } from "~/components/product/selling-plan-selector";
 import {
   ProductQuantityInput,
-  ProductShareLinks,
   useProductFormState,
 } from "~/components/product-form/pdp-form";
 import { ProductMedia } from "~/components/product-form/product-media";
 import { ProductVariants } from "~/components/product-form/variants";
+import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
-import {
-  getSavingsPercentage,
-  isNewArrival,
-  type ProductData,
-} from "~/utils/product";
+import type { ProductData } from "~/utils/product";
 import { getSelectedSellingPlan } from "~/utils/selling-plan";
-import { ProductBadge, type ProductBadgeType } from "./product-badge";
+import { getProductBadge, ProductBadge } from "./product-badge";
 import { ProductCardRating } from "./product-card-rating";
 
 export function QuickView({
@@ -71,36 +67,27 @@ export function QuickView({
 
   const publishedAt = (product as typeof product & { publishedAt?: string })
     .publishedAt;
-  const savingsPercentage = getSavingsPercentage(
-    selectedVariant.price,
-    selectedVariant.compareAtPrice,
-  );
-  let badge: { text: string; type: ProductBadgeType } | null = null;
-  if (!selectedVariant.availableForSale) {
-    badge = {
-      text: theme.soldOutBadgeText || "Out of stock",
-      type: "sold-out",
-    };
-  } else if (savingsPercentage) {
-    badge = {
-      text: (theme.saveBadgeText || "Save [percentage]%").replace(
-        "[percentage]",
-        savingsPercentage,
-      ),
-      type: "save",
-    };
-  } else if (
-    publishedAt &&
-    isNewArrival(publishedAt, theme.newBadgeDaysOld || 30)
-  ) {
-    badge = { text: theme.newBadgeText || "New arrival", type: "new" };
-  }
-  const productUrl = `${storeDomain.replace(/\/$/, "")}/products/${product.handle}`;
+  const badge = getProductBadge({
+    variant: selectedVariant,
+    publishedAt,
+    settings: theme,
+  });
+  const isVegan = product.vegan?.value === "true";
+  const hasMultipleImages =
+    product.media.nodes.filter((media) => media.__typename === "MediaImage")
+      .length > 1;
 
   return (
-    <div className="max-h-[90vh] w-[min(94vw,1100px)] overflow-y-auto rounded-xl bg-background p-5 md:p-6">
-      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.9fr)]">
-        <div className="relative min-w-0 [&_.swiper-slide_img]:rounded-xl">
+    <div className="max-h-[90vh] w-[min(94vw,1280px)] overflow-y-auto rounded-2xl bg-background p-5 md:p-6 lg:p-8">
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.9fr)] desktop:gap-8 lg:grid-cols-[minmax(0,720px)_minmax(0,1fr)]">
+        <div
+          className={cn(
+            "relative min-w-0 [&_.swiper-slide_img]:rounded-xl",
+            hasMultipleImages
+              ? "md:[&_.swiper]:h-[min(836px,calc(90vh-166px))] lg:[&_.swiper]:h-[min(836px,calc(90vh-182px))]"
+              : "md:[&_.swiper]:h-[min(836px,calc(90vh-48px))] lg:[&_.swiper]:h-[min(836px,calc(90vh-64px))]",
+          )}
+        >
           <ProductMedia
             media={product.media.nodes}
             selectedVariant={selectedVariant}
@@ -108,6 +95,8 @@ export function QuickView({
             thumbnailLayout="strip"
             showPagination={false}
             imageAspectRatio={theme.imageAspectRatio}
+            imageFit="contain"
+            spacing={12}
             showSlideCounter={theme.showSlideCounter}
             direction="horizontal"
           />
@@ -120,8 +109,8 @@ export function QuickView({
           )}
         </div>
 
-        <div className="min-w-0 py-1 md:pr-1">
-          <div className="flex flex-col gap-6">
+        <div className="min-w-0 py-1 md:pr-1 desktop:flex desktop:items-center">
+          <div className="flex flex-col gap-6 desktop:w-full">
             <div className="flex flex-col gap-5">
               <h2 className="h3 font-heading font-normal md:pr-8">
                 {product.title}
@@ -157,6 +146,17 @@ export function QuickView({
                   sellingPlan={selectedSellingPlan}
                 />
               </div>
+              {product.summary?.value &&
+                (product.summary.type === "rich_text_field" ? (
+                  <RichText
+                    data={product.summary.value}
+                    className="font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle [&_p]:m-0"
+                  />
+                ) : (
+                  <p className="whitespace-pre-line font-sans text-base font-normal leading-[1.6] tracking-[-0.16px] text-text-subtle">
+                    {product.summary.value}
+                  </p>
+                ))}
             </div>
 
             <LowStockIndicator
@@ -184,7 +184,7 @@ export function QuickView({
               disabled={isLoading}
             />
 
-            <div className="flex flex-col gap-3 py-4">
+            <div className="flex flex-col gap-3 pt-4">
               <div className="grid grid-cols-[auto_1fr] gap-2.5">
                 <ProductQuantityInput
                   disabled={isLoading || !selectedVariant.availableForSale}
@@ -233,25 +233,33 @@ export function QuickView({
               availableForSale={selectedVariant.availableForSale}
             />
 
-            {(theme.showShippingPolicy || theme.showRefundPolicy) && (
-              <div className="flex flex-col gap-3 text-sm text-text-subtle">
+            {(theme.showShippingPolicy ||
+              theme.showRefundPolicy ||
+              isVegan) && (
+              <div className="flex flex-col gap-2 text-base leading-[1.6] tracking-[-0.16px] text-text-primary">
                 {theme.showShippingPolicy && shop.shippingPolicy?.handle && (
                   <Link
                     to={`/policies/${shop.shippingPolicy.handle}`}
-                    className="flex items-center gap-2 hover:text-text-primary"
+                    className="flex items-start gap-2 hover:text-text-primary"
                   >
-                    <span aria-hidden="true">▱</span>{" "}
+                    <Truck aria-hidden="true" className="size-6 shrink-0" />
                     {t("product.viewShippingPolicy")}
                   </Link>
                 )}
                 {theme.showRefundPolicy && shop.refundPolicy?.handle && (
                   <Link
                     to={`/policies/${shop.refundPolicy.handle}`}
-                    className="flex items-center gap-2 hover:text-text-primary"
+                    className="flex items-start gap-2 hover:text-text-primary"
                   >
-                    <span aria-hidden="true">↩</span>{" "}
+                    <Undo2 aria-hidden="true" className="size-6 shrink-0" />
                     {t("product.viewReturnsPolicy")}
                   </Link>
+                )}
+                {isVegan && (
+                  <div className="flex items-start gap-2">
+                    <Leaf aria-hidden="true" className="size-6 shrink-0" />
+                    <span>{t("product.veganProduct")}</span>
+                  </div>
                 )}
               </div>
             )}
@@ -259,12 +267,10 @@ export function QuickView({
             <Link
               to={`/products/${product.handle}`}
               onClick={onClose}
-              className="w-fit text-sm text-text-primary underline underline-offset-4"
+              className="w-fit text-base text-text-primary underline underline-offset-4"
             >
               {t("product.viewDetails")}
             </Link>
-
-            <ProductShareLinks productUrl={productUrl} title={product.title} />
           </div>
         </div>
       </div>

@@ -50,8 +50,10 @@ export default function Faqs({
       gap={0}
       verticalPadding="none"
       containerClassName={cn(
-        "mx-auto grid w-full max-w-page items-stretch gap-(--faq-gap) px-5 py-20 md:px-6 lg:px-40",
-        showImage && "md:grid-cols-2",
+        "mx-auto grid w-full items-stretch gap-(--faq-gap) py-20",
+        showImage
+          ? "max-w-page px-5 md:grid-cols-2 md:px-6 lg:px-40"
+          : "max-w-180 px-5 md:px-0",
       )}
       style={
         {
@@ -97,7 +99,7 @@ export default function Faqs({
                 as="a"
                 to={buttonLink || "/pages/contact"}
                 variant="secondary"
-                className="mt-7 rounded-xl"
+                className="mt-7"
               >
                 {buttonText}
               </Button>
@@ -108,7 +110,7 @@ export default function Faqs({
 
       <div
         className={cn(
-          "flex w-full max-w-page flex-col justify-start gap-6 overflow-hidden",
+          "flex w-full flex-col justify-start gap-6 overflow-hidden",
           showImage
             ? "pt-10 md:pt-20 lg:gap-10 lg:pl-16 lg:pr-10"
             : "mx-auto gap-4",

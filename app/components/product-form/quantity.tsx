@@ -36,7 +36,7 @@ export function Quantity(props: QuantityProps) {
           name="decrease-quantity"
           aria-label={t("product.decreaseQuantity")}
           className={clsx(
-            "h-13.5 rounded-md border-2 border-border-subtle px-5 py-3.5 text-base transition",
+            "inline-flex h-13.5 items-center justify-center rounded-md border-2 border-border-subtle px-5 text-base transition",
             value <= 1 && "opacity-50 cursor-not-allowed",
           )}
           disabled={isDisabled || value <= 1}
@@ -45,7 +45,7 @@ export function Quantity(props: QuantityProps) {
           <span>&#8722;</span>
         </button>
         <Input
-          className="h-13.5 w-24 rounded-md border-2 bg-background py-3.5 text-center text-base"
+          className="w-24 bg-background text-center text-base"
           inputMode="numeric"
           pattern="[0-9]*"
           role="spinbutton"
@@ -61,7 +61,7 @@ export function Quantity(props: QuantityProps) {
         />
         <button
           type="button"
-          className="h-13.5 rounded-md border-2 border-border-subtle px-5 py-3.5 text-base transition disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex h-13.5 items-center justify-center rounded-md border-2 border-border-subtle px-5 text-base transition disabled:cursor-not-allowed disabled:opacity-50"
           name="increase-quantity"
           aria-label={t("product.increaseQuantity")}
           onClick={() => updateQuantity(value + 1)}

@@ -41,8 +41,6 @@ export interface HotspotsItemData {
   showBadge: boolean;
   showPrice: boolean;
   showStar: boolean;
-  showViewDetailsLink: boolean;
-  viewDetailsLinkText: string;
 }
 
 interface HotspotsItemProps
@@ -99,8 +97,6 @@ let HotspotsItem = ({
     showBadge,
     showPrice,
     showStar,
-    showViewDetailsLink,
-    viewDetailsLinkText,
     children,
     loaderData,
     ...rest
@@ -180,8 +176,6 @@ let HotspotsItem = ({
                 showBadge={showBadge}
                 showPrice={showPrice}
                 showStar={showStar}
-                showViewDetailsLink={showViewDetailsLink}
-                viewDetailsLinkText={viewDetailsLinkText}
                 className="relative z-10 mt-4 h-auto max-w-[326px] lg:mt-10"
               />
             )}
@@ -369,19 +363,6 @@ export const schema = createSchema({
           name: "showPrice",
           label: "Show price",
           defaultValue: true,
-        },
-        {
-          type: "switch",
-          name: "showViewDetailsLink",
-          label: "Show view details link",
-          defaultValue: false,
-        },
-        {
-          type: "text",
-          name: "viewDetailsLinkText",
-          label: "View details link text",
-          defaultValue: "View full details",
-          condition: "showViewDetailsLink.eq.true",
         },
       ],
     },

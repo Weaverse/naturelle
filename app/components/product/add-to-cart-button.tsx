@@ -70,6 +70,7 @@ export function AddToCartButton({
           onFetchingStateChange={onFetchingStateChange}
           props={props}
           variant={variant}
+          width={width}
         >
           {children}
         </AddToCartContent>
@@ -90,6 +91,7 @@ function AddToCartContent({
   onFetchingStateChange,
   props,
   variant,
+  width,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
@@ -102,6 +104,7 @@ function AddToCartContent({
   onFetchingStateChange?: (state: string) => void;
   props: Record<string, any>;
   variant: "primary" | "secondary" | "outline";
+  width: "auto" | "full";
 }) {
   const pendingToken = useRef<string | null>(null);
   const submitted = useRef(false);
@@ -139,8 +142,11 @@ function AddToCartContent({
       <Button
         as="button"
         type="submit"
-        size="lg"
-        className={cn("h-13.5 px-6 py-3.5 text-base", className)}
+        className={cn(
+          width === "full" ? "w-full" : "w-auto",
+          "text-base",
+          className,
+        )}
         disabled={Boolean(disabled || isAdding || !hasValidLines)}
         loading={fetcher.state === "submitting"}
         variant={variant}

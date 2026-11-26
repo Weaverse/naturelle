@@ -29,9 +29,7 @@ type FeaturedProductsData = {
   showNumber: boolean;
   showPrice: boolean;
   showStar: boolean;
-  showViewDetailsLink: boolean;
   numberPosition: "top" | "bottom";
-  viewDetailsLinkText: string;
 };
 
 interface FeaturedProductsProps
@@ -57,9 +55,7 @@ const ListProducts = ({
     showNumber,
     showPrice,
     showStar,
-    showViewDetailsLink,
     numberPosition,
-    viewDetailsLinkText,
     loaderData,
     ...rest
   } = props;
@@ -105,8 +101,6 @@ const ListProducts = ({
             loading={getImageLoadingPriority(i)}
             showPrice={showPrice}
             showStar={showStar}
-            showViewDetailsLink={showViewDetailsLink}
-            viewDetailsLinkText={viewDetailsLinkText}
           />
         </SwiperSlide>
       ));
@@ -219,19 +213,6 @@ export const schema = createSchema({
           label: "Show price",
           name: "showPrice",
           defaultValue: true,
-        },
-        {
-          type: "switch",
-          label: "Show view details link",
-          name: "showViewDetailsLink",
-          defaultValue: true,
-        },
-        {
-          type: "text",
-          label: "View details link text",
-          name: "viewDetailsLinkText",
-          defaultValue: "View full details",
-          condition: "showViewDetailsLink.eq.true",
         },
       ],
     },

@@ -11,7 +11,9 @@ import { useFetcher } from "react-router";
 import { Button, buttonVariants } from "~/components/button";
 import Heading from "~/components/heading";
 import { Image } from "~/components/image";
+import { Input } from "~/components/input";
 import { useAnimation } from "~/hooks/use-animation";
+import { cn } from "~/utils/cn";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 import { sectionImage } from "~/utils/section-placeholder";
 
@@ -38,8 +40,10 @@ function hasConfiguredImage(image?: WeaverseImage | string) {
   return Boolean(imageUrl && imageUrl !== IMAGES_PLACEHOLDERS.image);
 }
 
-const fieldClassName =
-  "w-full rounded-xl border border-border-subtle bg-background px-3 py-3.5 tracking-[-0.16px] text-text outline-none placeholder:text-text-subtle transition-colors hover:border-border focus-visible:border-border";
+const inputClassName =
+  "rounded-xl bg-background tracking-[-0.16px] text-text outline-none placeholder:text-text-subtle transition-colors hover:border-border focus-visible:border-border";
+const textareaClassName =
+  "min-h-28 w-full resize-y rounded-xl border border-border-subtle bg-background p-3 tracking-[-0.16px] text-text outline-none placeholder:text-text-subtle transition-colors hover:border-border focus-visible:border-border";
 
 const labelClassName =
   "text-sm leading-normal font-semibold tracking-[0.7px] text-text uppercase";
@@ -152,12 +156,10 @@ let ContactForm = ({
               {imageButtonLabel && (
                 <a
                   href="#contact-us-form"
-                  className={buttonVariants({
-                    variant: "secondary",
-                    shape: "default",
-                    className:
-                      "h-auto min-h-13.5 rounded-xl py-3.5 tracking-[-0.16px]",
-                  })}
+                  className={cn(
+                    buttonVariants({ variant: "secondary" }),
+                    "tracking-[-0.16px]",
+                  )}
                 >
                   {imageButtonLabel}
                 </a>
@@ -204,9 +206,10 @@ let ContactForm = ({
                 <label className={labelClassName} htmlFor="contact-email">
                   {t("contact.email")} *
                 </label>
-                <input
+                <Input
                   id="contact-email"
-                  className={fieldClassName}
+                  className={inputClassName}
+                  variant="custom"
                   type="email"
                   name="email"
                   placeholder={t("contact.emailPlaceholder")}
@@ -219,9 +222,10 @@ let ContactForm = ({
                 <label className={labelClassName} htmlFor="contact-name">
                   {t("contact.name")} *
                 </label>
-                <input
+                <Input
                   id="contact-name"
-                  className={fieldClassName}
+                  className={inputClassName}
+                  variant="custom"
                   type="text"
                   name="name"
                   placeholder={t("contact.namePlaceholder")}
@@ -236,7 +240,7 @@ let ContactForm = ({
                 </label>
                 <textarea
                   id="contact-message"
-                  className={clsx(fieldClassName, "min-h-28 resize-y")}
+                  className={textareaClassName}
                   name="message"
                   placeholder={t("contact.messagePlaceholder")}
                   required
@@ -247,7 +251,7 @@ let ContactForm = ({
             {buttonLabel && (
               <Button
                 data-motion="fade-up"
-                className="h-auto min-h-13.5 w-full rounded-xl py-3.5 tracking-[-0.16px]"
+                className="w-full tracking-[-0.16px]"
                 loading={isSubmitting}
                 type="submit"
                 variant="primary"

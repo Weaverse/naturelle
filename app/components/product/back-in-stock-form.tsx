@@ -2,6 +2,7 @@ import { useTranslation } from "@weaverse/hydrogen";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useRouteLoaderData } from "react-router";
 import { Button } from "~/components/button";
+import { Input } from "~/components/input";
 import type { RootLoader } from "~/root";
 import { usePrefixPathWithLocale } from "~/utils/locale";
 
@@ -75,17 +76,17 @@ export function BackInStockForm({
         }}
       >
         <input type="hidden" name="variantId" value={variantId ?? ""} />
-        <input
+        <Input
           required
           type="email"
           name="email"
           aria-label={t("product.backInStockEmail")}
           placeholder={t("product.backInStockEmail")}
-          className="min-h-12 min-w-0 flex-1 rounded-md border border-border bg-background px-3 outline-none focus-visible:ring-2 focus-visible:ring-text-primary"
+          className="min-w-0 flex-1 border-border bg-background text-base focus-visible:ring-2 focus-visible:ring-text-primary"
         />
         <Button
           type="submit"
-          className="h-14 shrink-0 px-5 py-3.5 font-normal"
+          className="shrink-0 px-5 font-normal"
           loading={fetcher.state === "submitting"}
           disabled={fetcher.state !== "idle"}
         >

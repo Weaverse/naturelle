@@ -140,8 +140,7 @@ export function ReviewList({
         <div className="flex justify-center pt-6">
           <Button
             variant="outline"
-            fontFamily="body"
-            className="rounded-xl text-base font-medium leading-[1.6] tracking-[-0.01em]"
+            className="text-base font-medium leading-[1.6] tracking-[-0.01em]"
             loading={fetcher.state !== "idle"}
             disabled={fetcher.state !== "idle"}
             onClick={loadMore}

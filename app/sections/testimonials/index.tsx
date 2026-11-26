@@ -232,11 +232,10 @@ const Testimonials = ({
               <Link
                 to={productUrl}
                 prefetch="intent"
-                className={buttonVariants({
-                  variant: "primary",
-                  className:
-                    "pointer-events-auto flex h-auto min-h-9 w-fit max-w-[320px] items-center justify-between gap-3 rounded-xl px-[18px] py-3.5 font-body text-base leading-[1.6] tracking-[-0.16px] shadow-[0_10px_24px_rgba(0,0,0,0.2)]",
-                })}
+                className={cn(
+                  buttonVariants({ variant: "primary" }),
+                  "pointer-events-auto w-fit max-w-[320px] justify-between gap-3 px-[18px] text-base leading-[1.6] tracking-[-0.16px] shadow-[0_10px_24px_rgba(0,0,0,0.2)]",
+                )}
               >
                 <span>{ratingButtonText}</span>
                 <IconCaret
