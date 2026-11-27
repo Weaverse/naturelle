@@ -15,7 +15,11 @@ import { parseEnv } from "node:util";
 
 const STARTUP_TIMEOUT_MS = 120_000;
 const HTTP_TIMEOUT_MS = 60_000;
-const FIRST_SSR_REQUEST_TIMEOUT_MS = 120_000;
+// Hosted Windows runners can take more than two minutes to compile the first
+// Oxygen SSR graph on Node 22. Keep the assertions unchanged while allowing
+// the cold request enough time to complete.
+const FIRST_SSR_REQUEST_TIMEOUT_MS =
+  process.platform === "win32" ? 240_000 : 120_000;
 const READINESS_POLL_INTERVAL_MS = 1000;
 const SHUTDOWN_GRACE_MS = 10_000;
 const CODEGEN_SETTLE_MS = 3000;

@@ -62,13 +62,23 @@ disposable configuration. See the
 [`node-support-validation.md`](node-support-validation.md) record for completed
 runs and outstanding acceptance.
 
-On 2026-11-08, a native macOS arm64 host using npm 10.9.8 completed the
-strict clean install, selected dependency-graph check, codegen, typecheck, 53
+On 2026-11-27, the manually triggered compatibility workflow completed the
+strict clean install, selected dependency-graph check, codegen, typecheck,
 application tests, translation check, production build, and credential-free
-dev/optimizer/Oxygen worker probe on exact Node 22.18.0 and 24.11.0. This is
-one-time migration evidence for those runtimes on macOS only. Linux and
-Windows remain pending until the manual compatibility workflow completes;
-catalog and Studio acceptance are not inferred from this probe.
+dev/optimizer/Oxygen worker probe for exact Node 22.18.0 and 24.11.0 plus the
+current patched releases on Linux, macOS and Windows. The tested candidate was
+`b288281b54dece89e1f387a93a1f9d851fb95477`, with lockfile SHA-256
+`0614b4bfd7ed816168fb558137373c9f5d0d02015128fbb34ca92b8fefa74af9`.
+Windows Node 22 required reruns after the first SSR request exceeded the former
+120-second limit; the probe now allows 240 seconds for that cold request without
+changing its response assertions. See the
+[workflow run](https://github.com/Weaverse/naturelle/actions/runs/45934548577).
+
+The same candidate and lockfile were also checked manually with Node 24.19.0
+and npm 11.17.0 against approved disposable Shopify and Weaverse configuration.
+Home, product and collection rendering, Studio connection, editing and
+revalidation, publish persistence, and reload/reconnect behavior passed. Store
+and project identifiers are intentionally not committed.
 
 Published MiniOxygen does not include every hardening change evaluated by the
 earlier local fork. The retained regression tests and
