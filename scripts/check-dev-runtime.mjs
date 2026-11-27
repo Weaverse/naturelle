@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import { createWriteStream } from "node:fs";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
@@ -8,10 +8,48 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve as resolvePath } from "node:path";
 import { finished } from "node:stream/promises";
 import { setTimeout } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
 import { parseEnv } from "node:util";
 
 // Exercise the real CLI, worker/SSR module graph and Vite optimizer.
 // Storefront rendering and the Studio connection require separate checks.
+
+const WINDOWS_ATTEMPT_ENV = "NATURELLE_RUNTIME_ATTEMPT";
+const WINDOWS_MAX_ATTEMPTS = 2;
+
+// Windows hosted runners intermittently hang during MiniOxygen cold startup or
+// lose the internal worker connection. A fresh process has proven reliable, so
+// retry the complete bounded probe once rather than weakening its assertions.
+if (process.platform === "win32" && !process.env[WINDOWS_ATTEMPT_ENV]) {
+  let exitCode = 1;
+  for (let attempt = 1; attempt <= WINDOWS_MAX_ATTEMPTS; attempt += 1) {
+    console.log(
+      `Windows dev runtime attempt ${attempt}/${WINDOWS_MAX_ATTEMPTS}`,
+    );
+    const result = spawnSync(
+      process.execPath,
+      [fileURLToPath(import.meta.url)],
+      {
+        env: {
+          ...process.env,
+          [WINDOWS_ATTEMPT_ENV]: String(attempt),
+        },
+        stdio: "inherit",
+      },
+    );
+    if (result.error) {
+      throw result.error;
+    }
+    exitCode = result.status ?? 1;
+    if (exitCode === 0) {
+      break;
+    }
+    if (attempt < WINDOWS_MAX_ATTEMPTS) {
+      console.warn("Windows dev runtime failed; restarting the probe once");
+    }
+  }
+  process.exit(exitCode);
+}
 
 const STARTUP_TIMEOUT_MS = 120_000;
 const HTTP_TIMEOUT_MS = 60_000;
