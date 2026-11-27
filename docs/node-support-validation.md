@@ -29,8 +29,10 @@ Every matrix job ran a strict clean install, selected dependency-graph check,
 GraphQL codegen, typecheck, localization check, unit tests, production build,
 and the credential-free dev/optimizer/Oxygen worker probe. The first Windows
 Node 22 SSR requests exceeded the original 120-second request limit; reruns
-completed with the same code and lockfile. The probe now allows 240 seconds for
-the first Windows SSR request while preserving every response assertion.
+completed with the same code and lockfile. The probe now restarts the complete
+bounded check once on Windows after a failure. Each attempt retains the
+120-second first-request limit and every response assertion; a deterministic
+failure still fails the second attempt.
 
 The runtime probe uses an empty environment and strips merchant credentials
 from the child process. Shopify catalog rendering and Weaverse Studio behavior

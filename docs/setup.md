@@ -70,8 +70,8 @@ current patched releases on Linux, macOS and Windows. The tested candidate was
 `b288281b54dece89e1f387a93a1f9d851fb95477`, with lockfile SHA-256
 `0614b4bfd7ed816168fb558137373c9f5d0d02015128fbb34ca92b8fefa74af9`.
 Windows Node 22 required reruns after the first SSR request exceeded the former
-120-second limit; the probe now allows 240 seconds for that cold request without
-changing its response assertions. See the
+120-second limit. The probe now restarts once after a Windows failure, with the
+same bounded timeout and response assertions on both attempts. See the
 [workflow run](https://github.com/Weaverse/naturelle/actions/runs/45934548577).
 
 The same candidate and lockfile were also checked manually with Node 24.19.0

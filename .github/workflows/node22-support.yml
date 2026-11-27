@@ -10,7 +10,9 @@ jobs:
   compatibility:
     name: Node ${{ matrix.node }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    # Windows may run the bounded dev-runtime probe twice after a transient
+    # MiniOxygen cold-start failure; keep enough headroom for both attempts.
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && 25 || 20 }}
     strategy:
       fail-fast: false
       matrix:
